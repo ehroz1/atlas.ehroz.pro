@@ -7,5 +7,7 @@
   { "id": "3d-motion", "order": 6, "name": { "en": "3D & Motion" }, "description": { "en": "Three-dimensional scenes and interactive animation for the web." } },
   { "id": "typography", "order": 7, "name": { "en": "Type" }, "description": { "en": "Free and well-made fonts, plus places to find them." } },
   { "id": "inspiration", "order": 8, "name": { "en": "Inspiration" }, "description": { "en": "Galleries and archives worth scrolling before you start." } },
-  { "id": "learning", "order": 9, "name": { "en": "Learning" }, "description": { "en": "Docs, courses and tutorials that explain things properly." } }
+  { "id": "assets", "order": 9, "name": { "en": "Stock & Assets" }, "description": { "en": "Free photos, video, music, textures, mockups and public-domain archives." } },
+  { "id": "utilities", "order": 10, "name": { "en": "Utilities" }, "description": { "en": "Converters, cleaners and small tools for one-off jobs." } },
+  { "id": "learning", "order": 11, "name": { "en": "Learning" }, "description": { "en": "Docs, courses and tutorials that explain things properly." } }
 ]
