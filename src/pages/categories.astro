@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import { getTools, getCategories } from '~/lib/data';
 import { useTranslations, loc, plural } from '~/i18n';
@@ -25,7 +26,7 @@ for (const tool of tools) {
         const names = byCategory.get(c.id) ?? [];
         return (
           <li>
-            <a class="category-row" href={`/category/${c.id}`}>
+            <a class="category-row" href={u(`/category/${c.id}`)}>
               <span class="category-row__name">{loc(c.data.name)}</span>
               <span class="category-row__text">
                 {loc(c.data.description)}

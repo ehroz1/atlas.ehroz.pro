@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 /**
  * Home hero: screenshots scattered around the edges of a rounded panel,
  * a short statement and one blue button in the middle.
@@ -34,6 +35,6 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
   <div class="hero-panel__content">
     <h1 class="hero-panel__title" id="hero-title">{t('hero.title', { count: tools.length })}</h1>
     <p class="hero-panel__sub">{t('hero.sub', { categories: categoryCount })}</p>
-    <a class="btn btn--accent hero-panel__cta" href="/submit">{t('hero.cta')}</a>
+    <a class="btn btn--accent hero-panel__cta" href={u('/submit')}>{t('hero.cta')}</a>
   </div>
 </section>

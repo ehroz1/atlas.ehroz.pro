@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import type { Category } from '~/lib/data';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
 
@@ -13,10 +14,10 @@ const t = useTranslations(lang);
 ---
 <nav aria-label={t('filter.label')}>
   <ul class="chips chips--scroll" role="list">
-    <li><a class="chip" href="/" aria-current={!current ? 'page' : undefined}>{t('filter.all')}</a></li>
+    <li><a class="chip" href={u('/')} aria-current={!current ? 'page' : undefined}>{t('filter.all')}</a></li>
     {categories.map((c) => (
       <li>
-        <a class="chip" href={`/category/${c.id}`} aria-current={current === c.id ? 'page' : undefined}>
+        <a class="chip" href={u(`/category/${c.id}`)} aria-current={current === c.id ? 'page' : undefined}>
           {loc(c.data.name, lang)}
         </a>
       </li>

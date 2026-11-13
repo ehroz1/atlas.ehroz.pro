@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import HeroDrawing from '~/components/HeroDrawing.astro';
 import { useTranslations } from '~/i18n';
@@ -10,7 +11,7 @@ const t = useTranslations('en');
       <HeroDrawing class="hero__drawing" />
       <h1 class="t-statement">{t('notFound.title')}</h1>
       <p>{t('notFound.body')}</p>
-      <a class="btn mt-4" href="/">← {t('notFound.home')}</a>
+      <a class="btn mt-4" href={u('/')}>← {t('notFound.home')}</a>
     </div>
   </div>
 </Base>

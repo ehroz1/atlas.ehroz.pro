@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
@@ -30,7 +31,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
 <Base title={d.name} description={`${d.name} — ${loc(d.summary)}`}>
   <div class="container">
     <div style="padding-top: var(--s-8)">
-      <a class="back" href={`/category/${category.id}`}>← {categoryName}</a>
+      <a class="back" href={u(`/category/${category.id}`)}>← {categoryName}</a>
     </div>
 
     <header class="tool-head">
@@ -48,7 +49,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       <dl class="meta">
         <div class="meta__row">
           <dt>{t('tool.category')}</dt>
-          <dd><a href={`/category/${category.id}`}>{categoryName}</a></dd>
+          <dd><a href={u(`/category/${category.id}`)}>{categoryName}</a></dd>
         </div>
         <div class="meta__row">
           <dt>{t('tool.pricing')}</dt>
@@ -63,7 +64,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
         <div class="meta__row">
           <dt>{t('tool.tags')}</dt>
           <dd class="tags">
-            {d.tags.map((tag) => <a class="tag" href={`/?q=${encodeURIComponent(tag)}#sites`}>{tag}</a>)}
+            {d.tags.map((tag) => <a class="tag" href={u(`/?q=${encodeURIComponent(tag)}#sites`)}>{tag}</a>)}
           </dd>
         </div>
         <div class="meta__row">
@@ -95,7 +96,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0">
         <div class="section-head">
           <h2 class="t-title">{t('tool.more', { category: categoryName })}</h2>
-          <a class="link t-small" href={`/category/${category.id}`}>{t('tool.seeAll')}</a>
+          <a class="link t-small" href={u(`/category/${category.id}`)}>{t('tool.seeAll')}</a>
         </div>
         <div class="cards">
           {related.map((r) => <ToolCard tool={r} categoryName={categoryName} hideCategory />)}

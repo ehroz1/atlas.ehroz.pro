@@ -1,4 +1,5 @@
 ---
+import { u, pagePath } from '~/lib/url';
 /**
  * Floating top bar: brand · Sites|Wall · search & filter · Submit · menu.
  *
@@ -15,7 +16,7 @@ import { useTranslations, loc, defaultLang, type Lang } from '~/i18n';
 interface Props { lang?: Lang }
 const { lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const path = pagePath(Astro.url.pathname);
 
 const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
@@ -62,7 +63,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
 <header class="site-header">
   <div class="site-header__inner">
     <div class="bar-group">
-      <a class="bar-logo" href="/" aria-label={t('nav.home')} data-home>
+      <a class="bar-logo" href={u('/')} aria-label={t('nav.home')} data-home>
         <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
           <path d="M18.6 3.6c6 1.2 9.9 6.6 9.4 12.7-.5 6.6-6 11.6-12.7 11.3C8.7 27.3 3.8 21.7 4.1 15.1 4.5 8.7 9.8 3.7 16.2 3.5c.8 0 1.6 0 2.4.1"/>
           <path d="M13.2 4.4c-2.8 4-3.7 9.1-2.4 13.9 1 3.7 3.2 6.9 6 9.1"/>
@@ -72,8 +73,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
         <span class="bar-logo__word">Atlas<span class="bar-logo__more" aria-hidden="true">.ehroz.pro</span><sup>°</sup></span>
       </a>
       <nav class="segmented" aria-label={t('nav.sections')}>
-        <a class="segmented__item" href="/" aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
-        <a class="segmented__item" href="/wall" aria-current={section === 'wall' ? 'page' : undefined}>{t('nav.wall')}</a>
+        <a class="segmented__item" href={u('/')} aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
+        <a class="segmented__item" href={u('/wall')} aria-current={section === 'wall' ? 'page' : undefined}>{t('nav.wall')}</a>
       </nav>
     </div>
 
@@ -89,7 +90,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     </div>
 
     <div class="bar-group bar-group--end">
-      <a class="btn btn--bar btn--chrome" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>
+      <a class="btn btn--bar btn--chrome" href={u('/submit')} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
       <div class="bar-menu">
@@ -99,19 +100,19 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
           </svg>
         </button>
         <nav class="menu" id="site-menu" aria-label={t('nav.menu')} hidden data-menu>
-          <a class="menu__item" href="/about" aria-current={path === '/about' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/about')} aria-current={path === '/about' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
             {t('nav.about')}
           </a>
-          <a class="menu__item" href="/categories" aria-current={path === '/categories' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/categories')} aria-current={path === '/categories' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
             {t('nav.categories')}
           </a>
-          <a class="menu__item" href="/wall" aria-current={path === '/wall' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/wall')} aria-current={path === '/wall' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="7" height="5" rx="1"/><rect x="13.5" y="5" width="7" height="5" rx="1"/><rect x="7.5" y="14" width="9" height="5" rx="1"/></svg>
             {t('nav.wall')}
           </a>
-          <a class="menu__item" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/submit')} aria-current={path === '/submit' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             {t('nav.submit')}
           </a>
@@ -179,11 +180,11 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   const label = document.querySelector<HTMLElement>('[data-finder-label]')!;
   const badge = document.querySelector<HTMLElement>('[data-finder-badge]')!;
 
-  /* URLs are built from the logo's href so links work on the real site
-     ("/") and in a static copy served from a sub-folder ("../index.html"). */
+  /* URLs are built from the logo's href, which already carries the site's
+     base ("/", "/atlas.ehroz.pro/") or, in a static copy, "../index.html". */
   const home = document.querySelector<HTMLAnchorElement>('[data-home]')!.getAttribute('href')!;
   const fileMode = home.endsWith('index.html');
-  const base = fileMode ? home.replace(/index\.html$/, '') : '/';
+  const base = fileMode ? home.replace(/index\.html$/, '') : home.endsWith('/') ? home : home + '/';
   const pageUrl = (p: string, query = '') =>
     base + (p ? p + (fileMode ? '/index.html' : '') : fileMode ? 'index.html' : '') + query;
 

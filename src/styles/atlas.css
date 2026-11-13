@@ -36,31 +36,28 @@
 
 @font-face {
   font-family: "Medeo Sans";
-  src: url("/fonts/MedeoSansVariable.woff2") format("woff2-variations"),
-       url("/fonts/MedeoSansVariable.woff2") format("woff2");
+  src: url("../assets/fonts/MedeoSansVariable.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Medeo Sans";
-  src: url("/fonts/MedeoSansVariable-Italic.woff2") format("woff2-variations"),
-       url("/fonts/MedeoSansVariable-Italic.woff2") format("woff2");
+  src: url("../assets/fonts/MedeoSansVariable-Italic.woff2") format("woff2");
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
 }
 @font-face {
   font-family: "Medeo Mono";
-  src: url("/fonts/MedeoMonoVariable.woff2") format("woff2-variations"),
-       url("/fonts/MedeoMonoVariable.woff2") format("woff2");
+  src: url("../assets/fonts/MedeoMonoVariable.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Medeo Serif";
-  src: url("/fonts/MedeoSerif-Regular.woff2") format("woff2");
+  src: url("../assets/fonts/MedeoSerif-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;

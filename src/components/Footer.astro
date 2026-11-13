@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import { getTools, getCategories } from '~/lib/data';
 import { useTranslations, defaultLang, formatDate, type Lang } from '~/i18n';
 interface Props { lang?: Lang }
@@ -15,9 +16,9 @@ const year = new Date().getFullYear();
       <span>{t('footer.updated', { date: formatDate(latest, lang) })}</span>
     </div>
     <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label="Footer">
-      <a href="/">{t('filter.all')}</a>
-      <a href="/about">{t('nav.about')}</a>
-      <a href="/submit">{t('nav.submit')}</a>
+      <a href={u('/')}>{t('filter.all')}</a>
+      <a href={u('/about')}>{t('nav.about')}</a>
+      <a href={u('/submit')}>{t('nav.submit')}</a>
     </nav>
   </div>
 </footer>

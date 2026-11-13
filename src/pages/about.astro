@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 /**
  * About, laid out like deck.gallery's pricing page: big headline,
  * screenshots peeking in from the edges, three joined columns.
@@ -61,7 +62,7 @@ const icon = {
             <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>No forced sign-up just to look around</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--chrome" href="/">Browse sites</a>
+            <a class="btn btn--chrome" href={u('/')}>Browse sites</a>
             <span class="plan__note">{free} of them have a free plan</span>
           </div>
         </article>
@@ -82,7 +83,7 @@ const icon = {
             <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.plus} /></svg>Anyone can suggest a site</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--accent" href="/submit">Submit a site</a>
+            <a class="btn btn--accent" href={u('/submit')}>Submit a site</a>
             <span class="plan__note">Takes about a minute</span>
           </div>
         </article>
@@ -100,7 +101,7 @@ const icon = {
             <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>“Top 100 AI tools”</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--chrome" href="/categories">See categories</a>
+            <a class="btn btn--chrome" href={u('/categories')}>See categories</a>
             <span class="plan__note">Outbound links carry only a ref tag</span>
           </div>
         </article>

@@ -1,8 +1,15 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
+// On GitHub Pages without a custom domain the site lives in a sub-folder
+// (ehroz1.github.io/atlas.ehroz.pro/). The deploy workflow passes that in;
+// locally and on the custom domain both are unset.
+const site = process.env.SITE_URL || 'https://atlas.ehroz.pro';
+const base = process.env.BASE_PATH || '/';
+
 export default defineConfig({
-  site: 'https://atlas.ehroz.pro',
+  site,
+  base,
   trailingSlash: 'ignore',
   build: { assets: 'assets' },
   i18n: {

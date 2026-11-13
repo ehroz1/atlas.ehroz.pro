@@ -85,13 +85,17 @@ PUBLIC_SUBMIT_ENDPOINT=https://formspree.io/f/xxxxxx
 
 `.github/workflows/deploy.yml` builds the site and publishes `dist/` to
 GitHub Pages on every push to `main` or `claude/brave-shannon-o9pdvr`.
+Repo **Settings → Pages → Source** must be **GitHub Actions**.
 
-One-time setup:
+The workflow reads the Pages address from `actions/configure-pages` and
+passes it to Astro (`SITE_URL`, `BASE_PATH`), so the same code works at
+`https://ehroz1.github.io/atlas.ehroz.pro/` and, once set, at the custom
+domain root. In code, always build internal links with `u('/path')` from
+`src/lib/url.ts`, never a bare `"/path"`.
 
-1. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Custom domain: `public/CNAME` already contains `atlas.ehroz.pro`. Add a DNS
-   record at your registrar: `CNAME atlas → ehroz1.github.io`, then tick
-   **Enforce HTTPS** in Settings → Pages once the certificate is issued.
+Custom domain: Settings → Pages → Custom domain → `atlas.ehroz.pro`, plus a
+DNS record `CNAME atlas → ehroz1.github.io` at the registrar. The next deploy
+then builds for the domain root automatically.
 
 ## Fonts
 

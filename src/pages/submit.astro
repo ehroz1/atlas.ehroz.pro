@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import { getCategories } from '~/lib/data';
 import { loc } from '~/i18n';
@@ -16,7 +17,7 @@ const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
         <h1 class="t-statement">Submit a site</h1>
         <p class="t-secondary">
           Tell us what it is and why it's good. We read everything and add the ones that
-          fit <a class="link" href="/about">the criteria</a>. Skip the marketing copy, one honest
+          fit <a class="link" href={u('/about')}>the criteria</a>. Skip the marketing copy, one honest
           sentence is better.
         </p>
       </div>

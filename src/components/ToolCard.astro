@@ -1,4 +1,5 @@
 ---
+import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
 import { domainOf, type Tool } from '~/lib/data';
@@ -22,7 +23,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
 ---
 <a
   class="card"
-  href={`/tool/${tool.id}`}
+  href={u(`/tool/${tool.id}`)}
   data-card
   data-id={tool.id}
   data-name={d.name.toLowerCase()}

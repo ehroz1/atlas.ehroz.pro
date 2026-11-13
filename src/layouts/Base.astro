@@ -1,5 +1,7 @@
 ---
+import { u } from '~/lib/url';
 import '~/styles/atlas.css';
+import sansFont from '~/assets/fonts/MedeoSansVariable.woff2?url';
 import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
 import { useTranslations, defaultLang, type Lang } from '~/i18n';
@@ -30,8 +32,8 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
     <title>{fullTitle}</title>
     <meta name="description" content={desc} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preload" href="/fonts/MedeoSansVariable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#0d0d0d" />
     <meta name="color-scheme" content="dark" />
     <meta property="og:type" content="website" />
