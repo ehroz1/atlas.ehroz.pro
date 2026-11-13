@@ -1,0 +1,13 @@
+---
+import View from '~/views/Tool.astro';
+import { getTools, type Tool } from '~/lib/data';
+import { langParams, type Lang } from '~/i18n';
+export async function getStaticPaths() {
+  const tools = await getTools();
+  return langParams().flatMap(({ params, props }) =>
+    tools.map((tool) => ({ params: { ...params, slug: tool.id }, props: { ...props, tool } })),
+  );
+}
+const { lang, tool } = Astro.props as { lang: Lang; tool: Tool };
+---
+<View lang={lang} tool={tool} />

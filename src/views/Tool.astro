@@ -1,0 +1,138 @@
+---
+import { u } from '~/lib/url';
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
+import { alternativesOf, similarTo } from '~/lib/related';
+import { getPage } from '~/lib/routes';
+import { software } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import { SITE } from '~/site.config';
+import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
+
+interface Props { tool: Tool; lang: Lang }
+const { tool, lang } = Astro.props;
+const d = tool.data;
+const t = useTranslations(lang);
+
+const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage(`tool/${tool.id}`)]);
+const category = categories.find((c) => c.id === d.category)!;
+const categoryName = loc(category.data.name, lang);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const alternatives = alternativesOf(tool, all);
+const similar = similarTo(tool, all, new Set(alternatives.map((x) => x.id)));
+const shot = shotFor(tool.id);
+const domain = domainOf(d.url);
+const outbound = new URL(d.url);
+outbound.searchParams.set('ref', SITE.ref);
+const url = absUrl(entry.path, lang);
+
+const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: categoryName, path: `/category/${category.id}` }, { name: d.name, path: entry.path }]}
+  nodes={[software(url, tool, lang, categoryName)]}
+  pageExtra={{ mainEntity: { '@id': url + '#software' }, about: { '@id': url + '#software' } }}
+  toolId={tool.id}
+>
+  <div class="container">
+    <header class="tool-head" style="padding-top: var(--s-6)">
+      <div class="tool-head__title">
+        <h1 class="t-display">{d.name}</h1>
+        <p class="t-lead" style="max-width: 34rem">{loc(d.description, lang)}</p>
+        <div class="tool-head__actions">
+          <a class="btn btn--solid" href={outbound.href} target="_blank" rel="noopener" data-track-tool={tool.id}>
+            {t('tool.visit', { domain })} <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+          <button class="btn" type="button" data-copy data-label-done={t('tool.copied')}>{t('tool.copy')}</button>
+        </div>
+      </div>
+
+      <dl class="meta">
+        <div class="meta__row">
+          <dt>{t('tool.category')}</dt>
+          <dd><a href={u(`/category/${category.id}`, lang)}>{categoryName}</a></dd>
+        </div>
+        <div class="meta__row">
+          <dt>{t('tool.pricing')}</dt>
+          <dd>{pricing}</dd>
+        </div>
+        {d.platforms.length > 0 && (
+          <div class="meta__row">
+            <dt>{t('tool.platforms')}</dt>
+            <dd>{d.platforms.join(', ')}</dd>
+          </div>
+        )}
+        <div class="meta__row">
+          <dt>{t('tool.tags')}</dt>
+          <dd class="tags">
+            {d.tags.map((tag) => <a class="tag" href={u(`/?q=${encodeURIComponent(tag)}#sites`, lang)}>{tag}</a>)}
+          </dd>
+        </div>
+        <div class="meta__row">
+          <dt>{t('tool.added')}</dt>
+          <dd><time datetime={d.added.toISOString().slice(0, 10)}>{formatDate(d.added, lang)}</time></dd>
+        </div>
+      </dl>
+    </header>
+
+    <a class="tile" href={outbound.href} target="_blank" rel="noopener" aria-label={t('tool.visit', { domain })} data-track-tool={tool.id}>
+      {shot ? (
+        <Image
+          class="tile__shot"
+          src={shot}
+          alt={t('tool.shotAlt', { name: d.name })}
+          widths={[720, 1080, 1440]}
+          sizes="(min-width: 64rem) 820px, 90vw"
+          loading="eager"
+          fetchpriority="high"
+          format="webp"
+          quality={82}
+        />
+      ) : (
+        <div class="shot-fallback">{domain}</div>
+      )}
+    </a>
+
+    {alternatives.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
+        <div class="section-head">
+          <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
+        </div>
+        <div class="cards">
+          {alternatives.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
+        </div>
+      </section>
+    )}
+
+    {similar.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="similar">
+        <div class="section-head">
+          <h2 class="t-title" id="similar">{t('tool.similar')}</h2>
+          <a class="link t-small" href={u(`/category/${category.id}`, lang)}>{t('tool.more', { category: categoryName })}</a>
+        </div>
+        <div class="cards">
+          {similar.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  btn?.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(location.origin + location.pathname);
+      btn.textContent = btn.dataset.labelDone ?? 'Copied';
+      setTimeout(() => (btn.textContent = label), 1600);
+    } catch {
+      /* clipboard blocked — nothing to do */
+    }
+  });
+</script>

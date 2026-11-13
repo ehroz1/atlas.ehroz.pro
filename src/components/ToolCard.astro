@@ -2,7 +2,8 @@
 import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
-import { domainOf, type Tool } from '~/lib/data';
+import { domainOf, getTools, type Tool } from '~/lib/data';
+import { newIds, newUntil } from '~/lib/related';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
 
 interface Props {
@@ -19,13 +20,15 @@ const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = fa
 const shot = shotFor(tool.id);
 const d = tool.data;
 const t = useTranslations(lang);
+const isNew = newIds(await getTools()).has(tool.id);
 const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`);
 ---
 <a
   class="card"
-  href={u(`/tool/${tool.id}`)}
+  href={u(`/tool/${tool.id}`, lang)}
   data-card
   data-id={tool.id}
+  data-own={d.own ? '' : undefined}
   data-name={d.name.toLowerCase()}
 >
   <div class="card__media">
@@ -45,6 +48,11 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
       <div class="shot-fallback" aria-hidden="true">{domainOf(d.url)}</div>
     )}
     <span class="card__badge">{badge}</span>
+    {/* "New" and "Viewed" share the left corner. The script in Base.astro
+        shows "Viewed" for sites opened before (and then hides "New"), and
+        drops "New" once its date has passed, even if the site wasn't rebuilt. */}
+    {isNew && <span class="card__badge card__badge--new" data-new-until={newUntil(tool)}>{t('card.new')}</span>}
+    <span class="card__badge card__badge--seen" data-seen-badge hidden>{t('card.seen')}</span>
   </div>
   <div class="card__caption">
     <div class="card__row">

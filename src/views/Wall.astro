@@ -15,6 +15,13 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import { getTools } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
+import { getPage } from '~/lib/routes';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('wall');
 
 const tools = (await getTools()).filter((x) => shotFor(x.id));
 const COLS = 8;
@@ -23,9 +30,10 @@ const ROWS = 8; // keep even so the brick offset repeats cleanly
 const pick = (r: number, c: number) => tools[(r * COLS + c + r * 3) % tools.length];
 const seen = new Set<string>();
 ---
-<Base title="Wall" description="Every site in Atlas on one endless wall of screenshots." flush bare>
-  <h1 class="visually-hidden">All sites</h1>
-  <div class="wall" tabindex="0" aria-label="Wall of sites. Drag, scroll or use the arrow keys to move." data-wall data-cols={COLS} data-rows={ROWS}>
+<Base lang={lang} entry={entry} flush bare>
+  <h1 class="visually-hidden">{t('wall.h1')}</h1>
+  <p class="visually-hidden">{t('wall.description')}</p>
+  <div class="wall" tabindex="0" aria-label={t('wall.aria')} data-wall data-cols={COLS} data-rows={ROWS}>
     <div class="wall__plane" data-wall-plane>
       {Array.from({ length: ROWS }, (_, r) => (
         <div class="wall__row">
@@ -34,7 +42,7 @@ const seen = new Set<string>();
             const first = !seen.has(tool.id);
             seen.add(tool.id);
             return (
-              <a class="wall__item" href={u(`/tool/${tool.id}`)} draggable="false"
+              <a class="wall__item" href={u(`/tool/${tool.id}`, lang)} draggable="false"
                 aria-label={first ? tool.data.name : undefined}
                 aria-hidden={first ? undefined : 'true'}
                 tabindex={first ? undefined : -1}>
@@ -47,7 +55,7 @@ const seen = new Set<string>();
       ))}
     </div>
   </div>
-  <p class="wall__hint" data-wall-hint>Scroll or drag to explore</p>
+  <p class="wall__hint" data-wall-hint>{t('wall.hint')}</p>
 </Base>
 
 <script>

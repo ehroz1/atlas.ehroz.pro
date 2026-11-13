@@ -1,0 +1,38 @@
+# After a production deploy, tell Yandex and Bing (IndexNow) which pages
+# changed: sitemap entries whose lastmod is within the last few days.
+# Fires after the GitHub Pages deploy, or after a Vercel production
+# deployment (Vercel reports deployment_status to GitHub).
+name: IndexNow
+
+on:
+  workflow_run:
+    workflows: [Deploy to GitHub Pages]
+    types: [completed]
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Pages changed in the last N days
+        default: '3'
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production') ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for the CDN
+        run: sleep 60
+      - run: node scripts/indexnow.mjs
+        env:
+          DAYS: ${{ github.event.inputs.days || '3' }}

@@ -1,17 +1,44 @@
 ---
+/* One 404 for the whole site (GitHub Pages and Vercel serve /404.html).
+   noindex, no canonical; links to the main pages in both languages. */
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import HeroDrawing from '~/components/HeroDrawing.astro';
-import { useTranslations } from '~/i18n';
-const t = useTranslations('en');
+import { useTranslations, defaultLang, langs } from '~/i18n';
+const t = useTranslations(defaultLang);
+const blocks = langs.map((lang) => {
+  const tl = useTranslations(lang);
+  return {
+    lang,
+    title: tl('notFound.title'),
+    body: tl('notFound.body'),
+    links: [
+      ['/', tl('notFound.home')],
+      ['/categories', tl('nav.categories')],
+      ['/about', tl('nav.about')],
+      ['/contact', tl('nav.contact')],
+    ] as const,
+  };
+});
 ---
-<Base title="Not found">
+<Base title={t('notFound.metaTitle')} description={t('notFound.body')} noindex>
   <div class="container">
-    <div class="empty" style="padding-block: var(--s-32)">
+    <div class="empty" style="padding-block: var(--s-24)">
       <HeroDrawing class="hero__drawing" />
-      <h1 class="t-statement">{t('notFound.title')}</h1>
-      <p>{t('notFound.body')}</p>
-      <a class="btn mt-4" href={u('/')}>← {t('notFound.home')}</a>
+      {blocks.map((b, i) => (
+        <div lang={b.lang} class={i ? 'mt-12' : ''}>
+          {i === 0 ? <h1 class="t-statement">{b.title}</h1> : <h2 class="t-title">{b.title}</h2>}
+          <p class="mt-2">{b.body}</p>
+          <ul class="chips mt-4" role="list" style="justify-content: center">
+            {b.links.map(([path, label]) => <li><a class="chip" href={u(path, b.lang)}>{label}</a></li>)}
+          </ul>
+        </div>
+      ))}
     </div>
   </div>
+  <script is:inline>
+    addEventListener('DOMContentLoaded', function () {
+      if (window.atlasTrack) window.atlasTrack('page_not_found', { page_path: location.pathname, referrer: document.referrer });
+    });
+  </script>
 </Base>

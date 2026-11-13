@@ -1,10 +1,12 @@
-# Builds the Astro site and publishes it to GitHub Pages.
+# Builds the Astro site, runs the SEO checks and publishes it to GitHub Pages.
 # One-time setup: repo Settings → Pages → Source: "GitHub Actions".
+# If the site moves to Vercel, Vercel builds it itself (vercel.json) and this
+# workflow can be switched off.
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/brave-shannon-o9pdvr]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -33,6 +35,7 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      - run: npm run check:seo
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

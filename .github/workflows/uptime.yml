@@ -1,0 +1,28 @@
+# Is the site up? Every hour. A failed run makes GitHub email the repo owner.
+name: Uptime
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Home page answers 200
+        run: |
+          for url in https://atlas.ehroz.pro/ https://atlas.ehroz.pro/en/ https://atlas.ehroz.pro/robots.txt; do
+            ok=0
+            for i in 1 2 3; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url")
+              echo "$url → $code (try $i)"
+              if [ "$code" = "200" ]; then ok=1; break; fi
+              sleep 20
+            done
+            [ $ok = 1 ] || { echo "::error::$url is down"; exit 1; }
+          done

@@ -2,10 +2,13 @@
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import { getTools, getCategories } from '~/lib/data';
-import { useTranslations, loc, plural } from '~/i18n';
+import { getPage } from '~/lib/routes';
+import { useTranslations, loc, plural, type Lang } from '~/i18n';
 
-const t = useTranslations('en');
-const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('categories')]);
 const byCategory = new Map<string, string[]>();
 for (const tool of tools) {
   const list = byCategory.get(tool.data.category) ?? [];
@@ -13,11 +16,11 @@ for (const tool of tools) {
   byCategory.set(tool.data.category, list);
 }
 ---
-<Base title={t('categories.title')} description={t('categories.lead')}>
+<Base lang={lang} entry={entry} crumbs={[{ name: t('categories.title'), path: '/categories' }]}>
   <div class="container">
-    <section class="hero" style="padding-top: clamp(var(--s-12), 8vw, var(--s-24))">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
       <h1 class="t-statement">{t('categories.title')}</h1>
-      <p class="t-secondary mt-2">{t('categories.lead')}</p>
+      <p class="t-secondary mt-2">{t('categories.lead', { count: categories.length })}</p>
     </section>
 
     <div class="section" style="padding-bottom: 0; padding-top: var(--s-12)">
@@ -26,14 +29,14 @@ for (const tool of tools) {
         const names = byCategory.get(c.id) ?? [];
         return (
           <li>
-            <a class="category-row" href={u(`/category/${c.id}`)}>
-              <span class="category-row__name">{loc(c.data.name)}</span>
+            <a class="category-row" href={u(`/category/${c.id}`, lang)}>
+              <span class="category-row__name">{loc(c.data.name, lang)}</span>
               <span class="category-row__text">
-                {loc(c.data.description)}
+                {loc(c.data.description, lang)}
                 <span class="category-row__examples">{names.slice(0, 4).join(', ')}{names.length > 4 ? '…' : ''}</span>
               </span>
               <span class="category-row__count t-tabular">
-                {t(`results.count.${plural('en', names.length)}`, { count: names.length })}
+                {t(`results.count.${plural(lang, names.length)}`, { count: names.length })}
               </span>
             </a>
           </li>

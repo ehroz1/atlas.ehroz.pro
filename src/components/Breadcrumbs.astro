@@ -1,0 +1,15 @@
+---
+/** Visible breadcrumbs. The same items go into the page's BreadcrumbList. */
+import type { Crumb } from '~/lib/schema';
+interface Props { items: Crumb[]; label: string }
+const { items, label } = Astro.props;
+---
+<nav class="crumbs" aria-label={label}>
+  <ol class="crumbs__list">
+    {items.map((c, i) => (
+      <li class="crumbs__item">
+        {i < items.length - 1 ? <a href={c.href}>{c.name}</a> : <span aria-current="page">{c.name}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>

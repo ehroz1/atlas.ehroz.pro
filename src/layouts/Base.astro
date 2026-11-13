@@ -1,55 +1,165 @@
 ---
-import { u } from '~/lib/url';
+/**
+ * Every page goes through here. A page passes its entry from
+ * src/lib/routes.ts and gets: title, description, canonical, hreflang,
+ * Open Graph / Twitter, one schema.org @graph, breadcrumbs, robots rules
+ * (noindex off production), verification tags and analytics.
+ */
+import { u, splitPath } from '~/lib/url';
 import '~/styles/atlas.css';
 import sansFont from '~/assets/fonts/MedeoSansVariable.woff2?url';
 import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
-import { useTranslations, defaultLang, type Lang } from '~/i18n';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
+import Analytics from '~/components/Analytics.astro';
+import { useTranslations, defaultLang, langs, type Lang } from '~/i18n';
+import { absUrl, fitTitle, fitDescription } from '~/lib/seo';
+import { IS_PROD } from '~/lib/env';
+import { SEARCH_VERIFICATION } from '~/analytics.config';
+import { SITE } from '~/site.config';
+import type { PageEntry } from '~/lib/routes';
+import * as schema from '~/lib/schema';
 
 interface Props {
+  lang?: Lang;
+  /** the page's entry from routes.ts; absent only on 404 */
+  entry?: PageEntry;
+  /** used when there's no entry (404) */
   title?: string;
   description?: string;
-  lang?: Lang;
-  image?: string;
+  /** visible breadcrumbs, the last item is the current page */
+  crumbs?: { name: string; path: string }[];
+  /** container class for the breadcrumbs, to line up with the page */
+  crumbsContainer?: string;
+  /** extra schema.org nodes (ItemList, SoftwareApplication…) */
+  nodes?: Record<string, unknown>[];
+  /** extra fields on the WebPage node (mainEntity, about…) */
+  pageExtra?: Record<string, unknown>;
+  noindex?: boolean;
   /** content starts under the floating bar instead of below it (Wall) */
   flush?: boolean;
   /** hide the footer (pages that are a single full-bleed view) */
   bare?: boolean;
+  /** on a site's own page: its id, remembered as "viewed" */
+  toolId?: string;
 }
 
-const { title, description, lang = defaultLang, image, flush = false, bare = false } = Astro.props;
+const { lang = defaultLang, entry, crumbs, crumbsContainer = 'container', nodes = [], pageExtra, flush = false, bare = false, toolId } = Astro.props;
+const noindex = Astro.props.noindex || !entry;
 const t = useTranslations(lang);
-const fullTitle = title ? `${title} · ${t('site.name')}` : t('site.title');
-const desc = description ?? t('site.description');
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = image ? new URL(image, Astro.site).href : undefined;
+
+const title = entry ? entry.title[lang] : fitTitle(`${Astro.props.title} · ${SITE.name}`);
+const description = entry ? entry.description[lang] : fitDescription(Astro.props.description ?? t('site.description'));
+const canonical = entry ? absUrl(entry.path, lang) : undefined;
+const alternates = entry ? langs.map((l) => ({ lang: l, href: absUrl(entry.path, l) })) : [];
+const ogImage = absUrl(`/${entry ? entry.og[lang] : `og/${lang}/home`}.png`, defaultLang);
+const updated = entry?.updated.toISOString();
+const robots = !IS_PROD || noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+const ogLocale = t('site.locale');
+const otherLocales = langs.filter((l) => l !== lang).map((l) => useTranslations(l)('site.locale'));
+
+// language switch target: the same page in the other language
+const other = langs.find((l) => l !== lang)!;
+const here = splitPath(Astro.url.pathname).path;
+const switchHref = entry ? u(entry.path, other) : u('/', other);
+
+// breadcrumbs: home first
+const crumbItems: schema.Crumb[] | undefined = crumbs && [
+  { name: SITE.name, url: absUrl('/', lang), href: u('/', lang) },
+  ...crumbs.map((c) => ({ name: c.name, url: absUrl(c.path, lang), href: u(c.path, lang) })),
+];
+
+const jsonLd =
+  entry &&
+  schema.graph([
+    schema.website(),
+    schema.person(lang),
+    schema.webPage(entry, lang, canonical!, ogImage, !!crumbItems, pageExtra),
+    schema.imageObject(canonical!, ogImage, entry.title[lang]),
+    ...(crumbItems ? [schema.breadcrumbs(canonical!, crumbItems)] : []),
+    ...nodes,
+  ]);
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-path={here}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
-    <meta name="description" content={desc} />
-    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    {entry && <link rel="alternate" hreflang="x-default" href={absUrl(entry.path, defaultLang)} />}
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={u('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={u('/apple-touch-icon.png')} />
     <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
     <meta name="theme-color" content="#0d0d0d" />
     <meta name="color-scheme" content="dark" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={desc} />
-    <meta property="og:url" content={canonical} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta property="og:type" content={entry?.kind === 'tool' ? 'article' : 'website'} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={ogLocale} />
+    {otherLocales.map((l) => <meta property="og:locale:alternate" content={l} />)}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    {updated && <meta property="og:updated_time" content={updated} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {IS_PROD && SEARCH_VERIFICATION.google && <meta name="google-site-verification" content={SEARCH_VERIFICATION.google} />}
+    {IS_PROD && SEARCH_VERIFICATION.yandex && <meta name="yandex-verification" content={SEARCH_VERIFICATION.yandex} />}
+    {IS_PROD && SEARCH_VERIFICATION.bing && <meta name="msvalidate.01" content={SEARCH_VERIFICATION.bing} />}
+    <link rel="sitemap" type="application/xml" href={u('/sitemap-index.xml')} />
+    <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={u('/rss.xml')} />
+    {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
     <slot name="head" />
   </head>
-  <body>
+  <body data-tool={toolId}>
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
-    <Header lang={lang} />
+    <Header lang={lang} switchHref={switchHref} />
     <main id="main" class:list={{ 'main--flush': flush }}>
+      {crumbItems && (
+        <div class={crumbsContainer}>
+          <Breadcrumbs items={crumbItems} label={t('nav.breadcrumbs')} />
+        </div>
+      )}
       <slot />
     </main>
-    {!bare && <Footer lang={lang} />}
+    {!bare && <Footer lang={lang} switchHref={switchHref} />}
+    {/* "Viewed" and "New", per browser. Inline at the end of the body so the
+        marks are there on first paint. localStorage key: atlas:seen = [ids],
+        most recent first. Without storage nothing is marked. */}
+    <script is:inline>
+      (function () {
+        var KEY = 'atlas:seen', seen = [];
+        try { seen = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+        if (!Array.isArray(seen)) seen = [];
+        var marked = new Set(seen);
+        var here = document.body.getAttribute('data-tool');
+        if (here) {
+          seen = [here].concat(seen.filter(function (id) { return id !== here; })).slice(0, 500);
+          try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
+        }
+        var today = new Date().toISOString().slice(0, 10);
+        document.querySelectorAll('[data-card]').forEach(function (card) {
+          if (marked.has(card.getAttribute('data-id'))) {
+            card.classList.add('is-seen');
+            var b = card.querySelector('[data-seen-badge]');
+            if (b) b.hidden = false;
+          }
+          var n = card.querySelector('[data-new-until]');
+          if (n && n.getAttribute('data-new-until') < today) n.remove();
+        });
+        window.__atlasSeen = marked;
+      })();
+    </script>
+    <Analytics lang={lang} />
   </body>
 </html>
