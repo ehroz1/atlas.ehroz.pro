@@ -1268,5 +1268,30 @@
     "added": "2026-11-13",
     "summary": { "en": "A throwaway email address for sign-ups." },
     "description": { "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while." }
+  },
+  {
+    "id": "ehroz",
+    "name": "Ehroz",
+    "url": "https://ehroz.pro",
+    "category": "utilities",
+    "pricing": "free",
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["apps", "tools", "browser extensions", "astana"],
+    "added": "2026-11-14",
+    "summary": { "en": "Small apps for Mac, Windows and the web by one maker." },
+    "description": { "en": "A workshop of converters, image, video and speech tools, Mac utilities and browser extensions, all built and used daily by the author, with new ones added regularly." }
+  },
+  {
+    "id": "snowpuff",
+    "name": "Snowpuff",
+    "url": "https://snowpuff.ehroz.pro",
+    "category": "utilities",
+    "pricing": "free",
+    "openSource": true,
+    "platforms": ["macOS", "Windows"],
+    "tags": ["desktop", "snow", "fun", "menu bar"],
+    "added": "2026-11-14",
+    "summary": { "en": "Warm falling snow on your Mac or Windows desktop." },
+    "description": { "en": "Snow falls over your screen, settles on windows and the Dock, grows icicles, and scatters when you blow into the microphone. It hides itself during calls." }
   }
 ]
