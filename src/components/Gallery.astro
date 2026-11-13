@@ -89,9 +89,13 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         emptyTitle.textContent = (emptyTitle.dataset.template ?? '').replace('{query}', raw.trim());
       }
 
-      const url = new URL(location.href);
-      q ? url.searchParams.set('q', raw.trim()) : url.searchParams.delete('q');
-      history.replaceState(history.state, '', url);
+      try {
+        const url = new URL(location.href);
+        q ? url.searchParams.set('q', raw.trim()) : url.searchParams.delete('q');
+        history.replaceState(history.state, '', url);
+      } catch {
+        /* sandboxed frames may refuse history changes; search still works */
+      }
     };
 
     const reset = () => {
