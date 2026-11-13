@@ -634,6 +634,29 @@ hr { border: 0; border-top: var(--border); }
 .finder__clear { padding: var(--s-2) var(--s-4); border-radius: var(--r-pill); color: var(--c-chrome-muted); font-size: var(--fs-15); }
 .finder__clear:hover { color: var(--c-chrome-text); }
 .finder__clear[hidden] { display: block !important; visibility: hidden; }
+.finder__foot-end { display: flex; align-items: center; gap: var(--s-2); }
+/* Feeling lucky: a quiet pill next to Done, same height */
+.finder__lucky {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 2.875rem;
+  padding-inline: 1rem;
+  border-radius: var(--r-pill);
+  color: var(--c-chrome-muted);
+  font-size: var(--fs-15);
+  transition: color var(--dur-fast) var(--ease);
+}
+.finder__lucky svg { width: 1.125rem; height: 1.125rem; flex: none; }
+.finder__lucky:hover { color: var(--c-chrome-text); }
+.finder__lucky:disabled { color: var(--c-text-disabled); cursor: default; }
+.finder__lucky-text { white-space: nowrap; }
+/* phones: the dice alone, the label stays for screen readers */
+@media (max-width: 40rem) {
+  .finder__lucky { padding-inline: 0.875rem; }
+  .finder__lucky svg { width: 1.375rem; height: 1.375rem; }
+  .finder__lucky-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
 .finder__done {
   height: 2.875rem;
   padding-inline: 1.25rem;
@@ -991,6 +1014,14 @@ hr { border: 0; border-top: var(--border); }
   color: var(--c-chrome-text);
   font-size: var(--fs-13);
 }
+/* left corner: "New" (white, the few newest sites only) or "Viewed" (dark) */
+.card__badge--new,
+.card__badge--seen { right: auto; left: var(--s-3); }
+.card__badge--new { background: var(--c-text); color: var(--c-text-invert); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.card__badge--seen { color: var(--c-text-2); }
+.card.is-seen .card__badge--new { display: none; }
+.card.is-seen .card__name { color: var(--c-text-2); }
+.card.is-seen:hover .card__name { color: var(--c-signal); }
 .card__caption { display: flex; flex-direction: column; gap: 2px; padding-inline: 1px; }
 .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
 .card__name { font-size: var(--fs-15); font-weight: var(--fw-medium); }

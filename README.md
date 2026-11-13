@@ -71,6 +71,28 @@ docs/DESIGN.md           ← design rules and the "does it look generated?" chec
    the domain instead. You can also drop any 16:10 image into
    `src/assets/shots/<id>.jpg` by hand.
 
+## Alternatives, similar sites, "New"
+
+- `src/data/alternatives.json` lists groups of sites that do the same job;
+  each site's page shows the others in its groups as "Alternatives to …".
+  Unknown ids fail the build.
+- "Similar sites" is computed from shared tags, category and pricing
+  (`src/lib/related.ts`), so good tags matter.
+- "New" goes on the `NEW_MAX` (6) most recent sites added in the last
+  `NEW_DAYS` (14) days, by `added` and then by position in `tools.json`.
+- "Viewed" marks and the "Feeling lucky" button in search work per browser
+  (`localStorage`), no server needed.
+
+## Feeds and sharing
+
+Built with the site, no extra setup:
+
+- `/rss.xml` — the 50 newest sites
+- `/sitemap.xml` and `/robots.txt` — use the deploy URL automatically
+- `/og/<id>.jpg` — 1200×630 share image for each site, `/og/default.jpg`
+  for the rest. Drawn by `src/lib/og.ts` (satori + sharp) from the
+  screenshot and the fonts in `src/assets/og/`.
+
 ## Submit form
 
 `/submit` posts to whatever URL is in `PUBLIC_SUBMIT_ENDPOINT` (Formspree,

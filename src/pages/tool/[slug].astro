@@ -5,6 +5,7 @@ import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
 import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
+import { alternativesOf, similarTo } from '~/lib/related';
 import { useTranslations, loc, formatDate } from '~/i18n';
 
 export async function getStaticPaths() {
@@ -20,7 +21,9 @@ const t = useTranslations('en');
 const [all, categories] = await Promise.all([getTools(), getCategories()]);
 const category = categories.find((c) => c.id === d.category)!;
 const categoryName = loc(category.data.name);
-const related = all.filter((x) => x.data.category === d.category && x.id !== tool.id).slice(0, 4);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name)]));
+const alternatives = alternativesOf(tool, all);
+const similar = similarTo(tool, all, new Set(alternatives.map((x) => x.id)));
 const shot = shotFor(tool.id);
 const domain = domainOf(d.url);
 const outbound = new URL(d.url);
@@ -28,7 +31,7 @@ outbound.searchParams.set('ref', 'atlas.ehroz.pro');
 
 const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
 ---
-<Base title={d.name} description={`${d.name} — ${loc(d.summary)}`}>
+<Base title={d.name} description={`${d.name} — ${loc(d.summary)}`} image={u(`/og/${tool.id}.jpg`)} toolId={tool.id}>
   <div class="container">
     <div style="padding-top: var(--s-8)">
       <a class="back" href={u(`/category/${category.id}`)}>← {categoryName}</a>
@@ -92,14 +95,25 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       )}
     </a>
 
-    {related.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0">
+    {alternatives.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
         <div class="section-head">
-          <h2 class="t-title">{t('tool.more', { category: categoryName })}</h2>
-          <a class="link t-small" href={u(`/category/${category.id}`)}>{t('tool.seeAll')}</a>
+          <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
         </div>
         <div class="cards">
-          {related.map((r) => <ToolCard tool={r} categoryName={categoryName} hideCategory />)}
+          {alternatives.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} />)}
+        </div>
+      </section>
+    )}
+
+    {similar.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="similar">
+        <div class="section-head">
+          <h2 class="t-title" id="similar">{t('tool.similar')}</h2>
+          <a class="link t-small" href={u(`/category/${category.id}`)}>{t('tool.more', { category: categoryName })}</a>
+        </div>
+        <div class="cards">
+          {similar.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} />)}
         </div>
       </section>
     )}

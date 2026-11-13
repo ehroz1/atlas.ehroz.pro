@@ -39,6 +39,8 @@ export const en = {
   'search.noCategories': 'No category with that name.',
   'search.clearAll': 'Clear all',
   'search.done': 'Done',
+  'search.lucky': 'Feeling lucky',
+  'search.luckyHint': 'Open a random site from the current results',
   'search.filters.one': '{count} filter',
   'search.filters.other': '{count} filters',
   'menu.shortcut': 'opens search',
@@ -57,6 +59,9 @@ export const en = {
   'pricing.paid': 'Paid',
   'pricing.openSource': 'Open source',
 
+  'card.new': 'New',
+  'card.seen': 'Viewed',
+
   'tool.back': 'All sites',
   'tool.visit': 'Open {domain}',
   'tool.category': 'Category',
@@ -65,6 +70,8 @@ export const en = {
   'tool.tags': 'Tags',
   'tool.added': 'Added',
   'tool.more': 'More in {category}',
+  'tool.alternatives': 'Alternatives to {name}',
+  'tool.similar': 'Similar sites',
   'tool.seeAll': 'See all',
   'tool.copy': 'Copy link',
   'tool.copied': 'Copied',
@@ -75,6 +82,8 @@ export const en = {
 
   'footer.note': 'Curated by hand. No sponsored placements.',
   'footer.updated': 'Updated {date}',
+  'footer.rss': 'RSS',
+  'rss.title': 'Atlas — new sites',
 
   'notFound.title': 'This page isn’t in the atlas',
   'notFound.body': 'The link may be old, or the site was removed from the list.',
