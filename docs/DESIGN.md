@@ -122,7 +122,7 @@ put them together.
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Home hero | `.hero-panel`, `.collage`, `.collage__item` (`--x`/`--y`), `.hero-panel__title/__sub/__cta` | rounded panel, screenshots clipped at the edges, title + grey subline + blue button in the middle; positions live in `HeroCollage.astro` |
+| Home hero | `.hero-panel`, `.collage`, `.collage--live`, `.collage__item` (`--x`/`--y`), `.hero-panel__title/__sub/__cta` | rounded panel; screenshots circle slowly around the text on two rounded-rect loops (outer half off the edges, inner slower and counter-wise); two belts on phones; static `--x/--y` layout without JS or with reduced motion. Logic in `HeroCollage.astro` |
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |

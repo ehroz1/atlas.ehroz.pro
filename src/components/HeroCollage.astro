@@ -1,10 +1,15 @@
 ---
 import { u } from '~/lib/url';
 /**
- * Home hero: screenshots scattered around the edges of a rounded panel,
- * a short statement and one blue button in the middle.
- * Positions are percentages of the panel (left/top of each shot); items
- * marked `mid` sit beside the text and are hidden on narrow screens.
+ * Home hero: screenshots circling slowly around the edges of a rounded
+ * panel, a short statement and one blue button in the middle.
+ *
+ * Two loops (rounded rectangles): the outer one runs half off the panel's
+ * edges, the inner one a little further in and slower, so the shots slide
+ * past each other. The `--x/--y` slots are the static layout used without
+ * JavaScript and with reduced motion. On narrow screens the loop would
+ * cross the text, so the outer shots run as two belts instead (top row
+ * left, bottom row right) and the inner ones are hidden.
  */
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
@@ -24,10 +29,10 @@ const slots = [
 const withShots = tools.filter((tool) => shotFor(tool.id));
 const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.length] })).filter((x) => x.tool);
 ---
-<section class="hero-panel" aria-labelledby="hero-title">
+<section class="hero-panel" aria-labelledby="hero-title" data-hero>
   <div class="collage" aria-hidden="true">
     {items.map(({ x, y, mid, tool }) => (
-      <div class:list={['collage__item', { 'collage__item--mid': mid }]} style={`--x:${x}%;--y:${y}%`}>
+      <div class:list={['collage__item', { 'collage__item--mid': mid }]} style={`--x:${x}%;--y:${y}%`} data-loop={mid ? 'inner' : 'outer'}>
         <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 17vw, 34vw" format="webp" quality={72} loading="eager" />
       </div>
     ))}
@@ -38,3 +43,122 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
     <a class="btn btn--accent hero-panel__cta" href={u('/submit')}>{t('hero.cta')}</a>
   </div>
 </section>
+
+<script>
+  const panel = document.querySelector<HTMLElement>('[data-hero]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (panel) {
+    const collage = panel.querySelector<HTMLElement>('.collage')!;
+    const outer = Array.from(panel.querySelectorAll<HTMLElement>('[data-loop="outer"]'));
+    const inner = Array.from(panel.querySelectorAll<HTMLElement>('[data-loop="inner"]'));
+
+    /** Point at distance s along a rounded rectangle (x0,y0,w,h,r), clockwise from top-left. */
+    function along(s: number, x0: number, y0: number, w: number, h: number, r: number) {
+      r = Math.max(0, Math.min(r, w / 2, h / 2));
+      const sw = w - 2 * r, sh = h - 2 * r, arc = (Math.PI * r) / 2;
+      const P = 2 * (sw + sh) + 4 * arc;
+      s = ((s % P) + P) % P;
+      const segs: [number, (d: number) => [number, number]][] = [
+        [sw, (d) => [x0 + r + d, y0]],
+        [arc, (d) => { const a = -Math.PI / 2 + d / r; return [x0 + w - r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
+        [sh, (d) => [x0 + w, y0 + r + d]],
+        [arc, (d) => { const a = d / r; return [x0 + w - r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
+        [sw, (d) => [x0 + w - r - d, y0 + h]],
+        [arc, (d) => { const a = Math.PI / 2 + d / r; return [x0 + r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
+        [sh, (d) => [x0, y0 + h - r - d]],
+        [arc, (d) => { const a = Math.PI + d / r; return [x0 + r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
+      ];
+      for (const [len, fn] of segs) {
+        if (s <= len) return fn(s);
+        s -= len;
+      }
+      return segs[0][1](0);
+    }
+
+    let W = 0, H = 0, tw = 0, th = 0;
+    const measure = () => {
+      W = panel.clientWidth;
+      H = panel.clientHeight;
+      const probe = outer[0] ?? inner[0];
+      tw = probe?.offsetWidth ?? 0;
+      th = probe?.offsetHeight ?? 0;
+    };
+
+    // Loop geometry (tile centres). Outer: half a tile beyond the edges.
+    // Inner: tucked in so tiles stay clear of the text block.
+    const loops = () => [
+      { items: outer, x0: tw * 0.2, y0: th * 0.05, w: W - tw * 0.4, h: H - th * 0.1, speed: 26 },
+      { items: inner, x0: tw * 0.75, y0: th * 0.62, w: W - tw * 1.5, h: H - th * 1.24, speed: -17 },
+    ];
+
+    let t = 0;
+    const drawBelts = () => {
+      const gap = 12;
+      const step = tw + gap;
+      const rows = [outer.filter((_, i) => i % 2 === 0), outer.filter((_, i) => i % 2 === 1)];
+      rows.forEach((items, r) => {
+        const len = Math.max(items.length * step, W + step);
+        const y = r === 0 ? gap : H - th - gap;
+        const dir = r === 0 ? -1 : 1;
+        items.forEach((el, i) => {
+          const xx = (((dir * t * 22 + i * step) % len) + len) % len - step;
+          el.style.transform = `translate3d(${xx}px, ${y}px, 0)`;
+        });
+      });
+    };
+    const draw = () => {
+      if (W < 768) return drawBelts();
+      for (const { items, x0, y0, w, h, speed } of loops()) {
+        if (!items.length) continue;
+        const r = Math.min(w, h) * 0.35;
+        const sw = w - 2 * r, sh = h - 2 * r;
+        const P = 2 * (sw + sh) + 2 * Math.PI * r;
+        items.forEach((el, i) => {
+          const [cx, cy] = along(t * speed + (i / items.length) * P, x0, y0, w, h, r);
+          el.style.transform = `translate3d(${cx - tw / 2}px, ${cy - th / 2}px, 0)`;
+        });
+      }
+    };
+
+    let running = false;
+    let visible = true;
+    let last = 0;
+    const frame = (now: number) => {
+      if (!running) return;
+      t += Math.min(0.05, (now - last) / 1000);
+      last = now;
+      draw();
+      requestAnimationFrame(frame);
+    };
+    const start = () => {
+      if (running || !visible || reduced.matches) return;
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+    };
+    const stop = () => { running = false; };
+
+    const setup = () => {
+      if (reduced.matches) {
+        stop();
+        collage.classList.remove('collage--live');
+        outer.concat(inner).forEach((el) => (el.style.transform = ''));
+        return;
+      }
+      collage.classList.add('collage--live');
+      measure();
+      draw();
+      start();
+    };
+
+    // Only animate while the hero is on screen.
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible ? start() : stop();
+    }).observe(panel);
+    new ResizeObserver(() => { measure(); draw(); }).observe(panel);
+    reduced.addEventListener('change', setup);
+    setup();
+  }
+</script>
