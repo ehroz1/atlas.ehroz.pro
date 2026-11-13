@@ -28,7 +28,7 @@ jobs:
           node-version: 22
           cache: npm
       - id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - run: npm ci
       # base_path is "/atlas.ehroz.pro" on github.io, "" once a custom domain is set
       - run: npm run build
