@@ -26,6 +26,8 @@ const tools = defineCollection({
     tags: z.array(z.string()).default([]),
     added: z.coerce.date(),
     featured: z.boolean().default(false),
+    /** the owner's own sites: placed near the top of the home grid, see Gallery.astro */
+    own: z.boolean().default(false),
     /** one line for cards, ~60 characters */
     summary: localized,
     /** 1–3 sentences for the tool page */

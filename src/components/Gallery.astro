@@ -16,8 +16,10 @@ interface Props {
   lang?: Lang;
   /** show the category chips above the grid (off on home: the search panel has them) */
   filters?: boolean;
+  /** place the owner's own sites near the top, by visit number (home only) */
+  promote?: boolean;
 }
-const { tools, categories, current, lang = defaultLang, filters = true } = Astro.props;
+const { tools, categories, current, lang = defaultLang, filters = true, promote = false } = Astro.props;
 const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
@@ -38,15 +40,47 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
   </div>
   {/* Shuffle the cards for every visit. Inline and synchronous, so it runs
       before the first paint and nobody sees the original order flash by.
-      (All card images are lazy: whichever cards land on top load first.) */}
-  <script is:inline>
+      (All card images are lazy: whichever cards land on top load first.)
+
+      With `promote`, the owner's own sites ([data-own]) are then put at
+      random places inside a window of ranks that depends on the visit:
+        1st visit → places 1–6, 2nd → 4–12, 3rd and later → 6–21.
+      A visit = a browser session; reloading in the same tab doesn't count. */}
+  <script is:inline define:vars={{ promote }}>
     (function () {
       var grid = document.currentScript.previousElementSibling;
-      var cards = Array.prototype.slice.call(grid.children);
-      for (var i = cards.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
+      var shuffle = function (a) {
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      };
+      var cards = shuffle(Array.prototype.slice.call(grid.children));
+
+      if (promote) {
+        var visit = 1;
+        try {
+          visit = Number(sessionStorage.getItem('atlas:visit')) || 0;
+          if (!visit) {
+            visit = (Number(localStorage.getItem('atlas:visits')) || 0) + 1;
+            localStorage.setItem('atlas:visits', String(visit));
+            sessionStorage.setItem('atlas:visit', String(visit));
+          }
+        } catch (e) { visit = 1; }
+        var windows = [[1, 6], [4, 12], [6, 21]];
+        var w = windows[Math.min(visit, windows.length) - 1];
+        var own = cards.filter(function (c) { return c.hasAttribute('data-own'); });
+        var rest = cards.filter(function (c) { return !c.hasAttribute('data-own'); });
+        var lo = w[0] - 1, hi = Math.min(w[1], cards.length) - 1;
+        // pick distinct random ranks inside the window, smallest first
+        var ranks = [];
+        for (var r = lo; r <= hi; r++) ranks.push(r);
+        ranks = shuffle(ranks).slice(0, own.length).sort(function (a, b) { return a - b; });
+        cards = rest;
+        ranks.forEach(function (rank, i) { cards.splice(rank, 0, own[i]); });
       }
+
       cards.forEach(function (c) { grid.appendChild(c); });
     })();
   </script>

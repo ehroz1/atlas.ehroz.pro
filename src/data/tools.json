@@ -5,12 +5,27 @@
     "url": "https://claude.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
-    "tags": ["assistant", "writing", "code", "chat"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "assistant",
+      "writing",
+      "code",
+      "chat"
+    ],
     "added": "2026-11-01",
     "featured": true,
-    "summary": { "en": "An AI assistant for writing, research and code." },
-    "description": { "en": "Chat-based assistant from Anthropic. Good at long documents, careful writing and programming help; can read files you upload and build small interactive pages." }
+    "summary": {
+      "en": "An AI assistant for writing, research and code."
+    },
+    "description": {
+      "en": "Chat-based assistant from Anthropic. Good at long documents, careful writing and programming help; can read files you upload and build small interactive pages."
+    }
   },
   {
     "id": "perplexity",
@@ -18,11 +33,24 @@
     "url": "https://www.perplexity.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "iOS", "Android"],
-    "tags": ["search", "research", "citations"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "search",
+      "research",
+      "citations"
+    ],
     "added": "2026-11-01",
-    "summary": { "en": "Search that answers with sources you can check." },
-    "description": { "en": "Ask a question, get a written answer with numbered links to where each claim came from. Handy when you want a starting point rather than ten blue links." }
+    "summary": {
+      "en": "Search that answers with sources you can check."
+    },
+    "description": {
+      "en": "Ask a question, get a written answer with numbered links to where each claim came from. Handy when you want a starting point rather than ten blue links."
+    }
   },
   {
     "id": "cursor",
@@ -30,11 +58,23 @@
     "url": "https://cursor.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["macOS", "Windows", "Linux"],
-    "tags": ["code editor", "agents", "vs code"],
+    "platforms": [
+      "macOS",
+      "Windows",
+      "Linux"
+    ],
+    "tags": [
+      "code editor",
+      "agents",
+      "vs code"
+    ],
     "added": "2026-11-02",
-    "summary": { "en": "A code editor built around AI edits and agents." },
-    "description": { "en": "A fork of VS Code with AI completion, chat over your codebase and agents that make multi-file changes. Your existing extensions and keybindings carry over." }
+    "summary": {
+      "en": "A code editor built around AI edits and agents."
+    },
+    "description": {
+      "en": "A fork of VS Code with AI completion, chat over your codebase and agents that make multi-file changes. Your existing extensions and keybindings carry over."
+    }
   },
   {
     "id": "elevenlabs",
@@ -42,11 +82,22 @@
     "url": "https://elevenlabs.io",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": ["Web", "API"],
-    "tags": ["voice", "text to speech", "dubbing"],
+    "platforms": [
+      "Web",
+      "API"
+    ],
+    "tags": [
+      "voice",
+      "text to speech",
+      "dubbing"
+    ],
     "added": "2026-11-02",
-    "summary": { "en": "Natural-sounding text to speech and voice dubbing." },
-    "description": { "en": "Generate narration in many languages, clone a voice with consent, or dub a video while keeping the speaker's tone. Has an API for apps." }
+    "summary": {
+      "en": "Natural-sounding text to speech and voice dubbing."
+    },
+    "description": {
+      "en": "Generate narration in many languages, clone a voice with consent, or dub a video while keeping the speaker's tone. Has an API for apps."
+    }
   },
   {
     "id": "midjourney",
@@ -54,11 +105,20 @@
     "url": "https://www.midjourney.com",
     "category": "ai",
     "pricing": "paid",
-    "platforms": ["Web"],
-    "tags": ["image generation", "illustration"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "image generation",
+      "illustration"
+    ],
     "added": "2026-11-03",
-    "summary": { "en": "Image generation with a strong eye for style." },
-    "description": { "en": "Turns text prompts into images. Known for painterly, cinematic results and a large public gallery to learn prompts from. Subscription only." }
+    "summary": {
+      "en": "Image generation with a strong eye for style."
+    },
+    "description": {
+      "en": "Turns text prompts into images. Known for painterly, cinematic results and a large public gallery to learn prompts from. Subscription only."
+    }
   },
   {
     "id": "figma",
@@ -66,12 +126,24 @@
     "url": "https://www.figma.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["ui design", "prototyping", "collaboration"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "ui design",
+      "prototyping",
+      "collaboration"
+    ],
     "added": "2026-11-01",
     "featured": true,
-    "summary": { "en": "The shared canvas most product teams design in." },
-    "description": { "en": "Interface design, prototyping and design systems in the browser, with real-time collaboration. FigJam covers whiteboarding; Dev Mode covers handoff." }
+    "summary": {
+      "en": "The shared canvas most product teams design in."
+    },
+    "description": {
+      "en": "Interface design, prototyping and design systems in the browser, with real-time collaboration. FigJam covers whiteboarding; Dev Mode covers handoff."
+    }
   },
   {
     "id": "framer",
@@ -79,11 +151,22 @@
     "url": "https://www.framer.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS"],
-    "tags": ["website builder", "no-code", "cms"],
+    "platforms": [
+      "Web",
+      "macOS"
+    ],
+    "tags": [
+      "website builder",
+      "no-code",
+      "cms"
+    ],
     "added": "2026-11-03",
-    "summary": { "en": "Design a website on a canvas and publish it as is." },
-    "description": { "en": "A visual site builder that feels like a design tool. Layouts, animation and a CMS, then one click to a fast hosted site on your own domain." }
+    "summary": {
+      "en": "Design a website on a canvas and publish it as is."
+    },
+    "description": {
+      "en": "A visual site builder that feels like a design tool. Layouts, animation and a CMS, then one click to a fast hosted site on your own domain."
+    }
   },
   {
     "id": "coolors",
@@ -91,11 +174,21 @@
     "url": "https://coolors.co",
     "category": "design",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS"],
-    "tags": ["color", "palettes"],
+    "platforms": [
+      "Web",
+      "iOS"
+    ],
+    "tags": [
+      "color",
+      "palettes"
+    ],
     "added": "2026-11-04",
-    "summary": { "en": "Press space, get a color palette. Lock what you like." },
-    "description": { "en": "Quick palette generator: hit the spacebar to shuffle, lock the colors you want to keep, export to CSS or images. Also checks contrast." }
+    "summary": {
+      "en": "Press space, get a color palette. Lock what you like."
+    },
+    "description": {
+      "en": "Quick palette generator: hit the spacebar to shuffle, lock the colors you want to keep, export to CSS or images. Also checks contrast."
+    }
   },
   {
     "id": "excalidraw",
@@ -104,11 +197,21 @@
     "category": "productivity",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["whiteboard", "diagrams", "sketch"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "whiteboard",
+      "diagrams",
+      "sketch"
+    ],
     "added": "2026-11-04",
-    "summary": { "en": "A whiteboard with a hand-drawn look, right in the tab." },
-    "description": { "en": "Sketch diagrams and flows that look drawn by hand. No account needed, shareable links, end-to-end encrypted collaboration. Open source." }
+    "summary": {
+      "en": "A whiteboard with a hand-drawn look, right in the tab."
+    },
+    "description": {
+      "en": "Sketch diagrams and flows that look drawn by hand. No account needed, shareable links, end-to-end encrypted collaboration. Open source."
+    }
   },
   {
     "id": "spline",
@@ -116,11 +219,23 @@
     "url": "https://spline.design",
     "category": "3d-motion",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["3d", "web", "interactive"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "3d",
+      "web",
+      "interactive"
+    ],
     "added": "2026-11-05",
-    "summary": { "en": "3D design in the browser, exportable to the web." },
-    "description": { "en": "Model, light and animate 3D scenes without leaving the browser, then embed them on a site or export to code. Friendly for people new to 3D." }
+    "summary": {
+      "en": "3D design in the browser, exportable to the web."
+    },
+    "description": {
+      "en": "Model, light and animate 3D scenes without leaving the browser, then embed them on a site or export to code. Friendly for people new to 3D."
+    }
   },
   {
     "id": "rive",
@@ -128,11 +243,23 @@
     "url": "https://rive.app",
     "category": "3d-motion",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["animation", "state machines", "runtime"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "animation",
+      "state machines",
+      "runtime"
+    ],
     "added": "2026-11-05",
-    "summary": { "en": "Interactive animations that run in apps and sites." },
-    "description": { "en": "Design animations with state machines so they react to input, then ship them with small runtimes for web, iOS, Android, Flutter and game engines." }
+    "summary": {
+      "en": "Interactive animations that run in apps and sites."
+    },
+    "description": {
+      "en": "Design animations with state machines so they react to input, then ship them with small runtimes for web, iOS, Android, Flutter and game engines."
+    }
   },
   {
     "id": "github",
@@ -140,11 +267,24 @@
     "url": "https://github.com",
     "category": "development",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["git", "hosting", "ci", "open source"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "git",
+      "hosting",
+      "ci",
+      "open source"
+    ],
     "added": "2026-11-01",
-    "summary": { "en": "Where code lives, gets reviewed and ships." },
-    "description": { "en": "Git hosting with pull requests, issues, Actions for CI/CD and Pages for static sites. Most open-source projects are here." }
+    "summary": {
+      "en": "Where code lives, gets reviewed and ships."
+    },
+    "description": {
+      "en": "Git hosting with pull requests, issues, Actions for CI/CD and Pages for static sites. Most open-source projects are here."
+    }
   },
   {
     "id": "vercel",
@@ -152,11 +292,22 @@
     "url": "https://vercel.com",
     "category": "development",
     "pricing": "freemium",
-    "platforms": ["Web", "CLI"],
-    "tags": ["hosting", "deploy", "frontend"],
+    "platforms": [
+      "Web",
+      "CLI"
+    ],
+    "tags": [
+      "hosting",
+      "deploy",
+      "frontend"
+    ],
     "added": "2026-11-06",
-    "summary": { "en": "Push to git, get a deployed frontend with previews." },
-    "description": { "en": "Hosting for frontend frameworks. Each pull request gets its own preview URL; serverless functions and edge caching are built in." }
+    "summary": {
+      "en": "Push to git, get a deployed frontend with previews."
+    },
+    "description": {
+      "en": "Hosting for frontend frameworks. Each pull request gets its own preview URL; serverless functions and edge caching are built in."
+    }
   },
   {
     "id": "supabase",
@@ -165,11 +316,22 @@
     "category": "development",
     "pricing": "freemium",
     "openSource": true,
-    "platforms": ["Web", "API"],
-    "tags": ["postgres", "auth", "backend"],
+    "platforms": [
+      "Web",
+      "API"
+    ],
+    "tags": [
+      "postgres",
+      "auth",
+      "backend"
+    ],
     "added": "2026-11-06",
-    "summary": { "en": "A Postgres database with auth and storage attached." },
-    "description": { "en": "Managed Postgres plus authentication, file storage, realtime subscriptions and edge functions. Open source, so you can self-host it too." }
+    "summary": {
+      "en": "A Postgres database with auth and storage attached."
+    },
+    "description": {
+      "en": "Managed Postgres plus authentication, file storage, realtime subscriptions and edge functions. Open source, so you can self-host it too."
+    }
   },
   {
     "id": "regex101",
@@ -177,11 +339,21 @@
     "url": "https://regex101.com",
     "category": "development",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["regex", "debugging", "utility"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "regex",
+      "debugging",
+      "utility"
+    ],
     "added": "2026-11-07",
-    "summary": { "en": "Write a regular expression and see why it matches." },
-    "description": { "en": "Test regex against sample text with a plain-English explanation of every token. Supports PCRE, JavaScript, Python, Go and more." }
+    "summary": {
+      "en": "Write a regular expression and see why it matches."
+    },
+    "description": {
+      "en": "Test regex against sample text with a plain-English explanation of every token. Supports PCRE, JavaScript, Python, Go and more."
+    }
   },
   {
     "id": "caniuse",
@@ -189,11 +361,21 @@
     "url": "https://caniuse.com",
     "category": "development",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["browser support", "css", "html"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "browser support",
+      "css",
+      "html"
+    ],
     "added": "2026-11-07",
-    "summary": { "en": "Which browsers support a web feature, at a glance." },
-    "description": { "en": "Support tables for HTML, CSS and JavaScript features across desktop and mobile browsers, with usage percentages and known issues." }
+    "summary": {
+      "en": "Which browsers support a web feature, at a glance."
+    },
+    "description": {
+      "en": "Support tables for HTML, CSS and JavaScript features across desktop and mobile browsers, with usage percentages and known issues."
+    }
   },
   {
     "id": "raycast",
@@ -201,11 +383,22 @@
     "url": "https://www.raycast.com",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": ["macOS", "Windows"],
-    "tags": ["launcher", "shortcuts", "extensions"],
+    "platforms": [
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "launcher",
+      "shortcuts",
+      "extensions"
+    ],
     "added": "2026-11-08",
-    "summary": { "en": "A launcher that replaces a dozen small utilities." },
-    "description": { "en": "Open apps, search files, manage windows, keep clipboard history and run community extensions from one keyboard shortcut." }
+    "summary": {
+      "en": "A launcher that replaces a dozen small utilities."
+    },
+    "description": {
+      "en": "Open apps, search files, manage windows, keep clipboard history and run community extensions from one keyboard shortcut."
+    }
   },
   {
     "id": "linear",
@@ -213,11 +406,24 @@
     "url": "https://linear.app",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows", "iOS"],
-    "tags": ["issue tracking", "projects", "teams"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows",
+      "iOS"
+    ],
+    "tags": [
+      "issue tracking",
+      "projects",
+      "teams"
+    ],
     "added": "2026-11-08",
-    "summary": { "en": "Issue tracking that is fast enough to enjoy." },
-    "description": { "en": "Plan and track product work with issues, cycles and projects. Keyboard-first, quick to load, integrates with GitHub and Slack." }
+    "summary": {
+      "en": "Issue tracking that is fast enough to enjoy."
+    },
+    "description": {
+      "en": "Plan and track product work with issues, cycles and projects. Keyboard-first, quick to load, integrates with GitHub and Slack."
+    }
   },
   {
     "id": "notion",
@@ -225,11 +431,25 @@
     "url": "https://www.notion.com",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
-    "tags": ["notes", "wiki", "databases"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "notes",
+      "wiki",
+      "databases"
+    ],
     "added": "2026-11-09",
-    "summary": { "en": "Notes, docs and simple databases in one workspace." },
-    "description": { "en": "Pages made of blocks that can hold text, tables, boards and calendars. Works as a personal notebook or a team wiki." }
+    "summary": {
+      "en": "Notes, docs and simple databases in one workspace."
+    },
+    "description": {
+      "en": "Pages made of blocks that can hold text, tables, boards and calendars. Works as a personal notebook or a team wiki."
+    }
   },
   {
     "id": "descript",
@@ -237,11 +457,23 @@
     "url": "https://www.descript.com",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["video editing", "podcast", "transcription"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "video editing",
+      "podcast",
+      "transcription"
+    ],
     "added": "2026-11-09",
-    "summary": { "en": "Edit video and podcasts by editing the transcript." },
-    "description": { "en": "Delete a sentence in the text and it disappears from the recording. Also removes filler words, records screens and adds captions." }
+    "summary": {
+      "en": "Edit video and podcasts by editing the transcript."
+    },
+    "description": {
+      "en": "Delete a sentence in the text and it disappears from the recording. Also removes filler words, records screens and adds captions."
+    }
   },
   {
     "id": "davinci-resolve",
@@ -249,11 +481,23 @@
     "url": "https://www.blackmagicdesign.com/products/davinciresolve",
     "category": "video-audio",
     "pricing": "free",
-    "platforms": ["macOS", "Windows", "Linux"],
-    "tags": ["video editing", "color grading", "audio"],
+    "platforms": [
+      "macOS",
+      "Windows",
+      "Linux"
+    ],
+    "tags": [
+      "video editing",
+      "color grading",
+      "audio"
+    ],
     "added": "2026-11-10",
-    "summary": { "en": "Professional editing and color grading, free to use." },
-    "description": { "en": "Editing, color, visual effects and audio post in one application. The free version covers most needs; Studio adds extra effects and hardware support." }
+    "summary": {
+      "en": "Professional editing and color grading, free to use."
+    },
+    "description": {
+      "en": "Editing, color, visual effects and audio post in one application. The free version covers most needs; Studio adds extra effects and hardware support."
+    }
   },
   {
     "id": "google-fonts",
@@ -262,11 +506,20 @@
     "category": "typography",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["fonts", "open license"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "fonts",
+      "open license"
+    ],
     "added": "2026-11-10",
-    "summary": { "en": "Over a thousand open-license font families." },
-    "description": { "en": "Browse, compare and download fonts licensed for commercial use, or load them straight into a site. Filters for language support and variable axes." }
+    "summary": {
+      "en": "Over a thousand open-license font families."
+    },
+    "description": {
+      "en": "Browse, compare and download fonts licensed for commercial use, or load them straight into a site. Filters for language support and variable axes."
+    }
   },
   {
     "id": "fontshare",
@@ -274,11 +527,20 @@
     "url": "https://www.fontshare.com",
     "category": "typography",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["fonts", "free for commercial use"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "fonts",
+      "free for commercial use"
+    ],
     "added": "2026-11-11",
-    "summary": { "en": "Quality typefaces from a foundry, free for any use." },
-    "description": { "en": "A collection of fonts by the Indian Type Foundry that you can use in personal and commercial work at no cost. Fewer families, higher bar." }
+    "summary": {
+      "en": "Quality typefaces from a foundry, free for any use."
+    },
+    "description": {
+      "en": "A collection of fonts by the Indian Type Foundry that you can use in personal and commercial work at no cost. Fewer families, higher bar."
+    }
   },
   {
     "id": "godly",
@@ -286,11 +548,20 @@
     "url": "https://godly.website",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["web design", "gallery"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "web design",
+      "gallery"
+    ],
     "added": "2026-11-11",
-    "summary": { "en": "A gallery of standout web design, shown in motion." },
-    "description": { "en": "Curated websites shown as short video previews, so you see the animation and not just a still. Filter by type and style." }
+    "summary": {
+      "en": "A gallery of standout web design, shown in motion."
+    },
+    "description": {
+      "en": "Curated websites shown as short video previews, so you see the animation and not just a still. Filter by type and style."
+    }
   },
   {
     "id": "mobbin",
@@ -298,11 +569,21 @@
     "url": "https://mobbin.com",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["ui patterns", "mobile", "screens"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "ui patterns",
+      "mobile",
+      "screens"
+    ],
     "added": "2026-11-12",
-    "summary": { "en": "Screens and flows from real apps, searchable." },
-    "description": { "en": "A large library of screenshots from shipped iOS, Android and web apps. Search by pattern, like onboarding or paywall, to see how others solved it." }
+    "summary": {
+      "en": "Screens and flows from real apps, searchable."
+    },
+    "description": {
+      "en": "A large library of screenshots from shipped iOS, Android and web apps. Search by pattern, like onboarding or paywall, to see how others solved it."
+    }
   },
   {
     "id": "mdn",
@@ -311,11 +592,22 @@
     "category": "learning",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["documentation", "html", "css", "javascript"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "documentation",
+      "html",
+      "css",
+      "javascript"
+    ],
     "added": "2026-11-12",
-    "summary": { "en": "The reference for HTML, CSS and JavaScript." },
-    "description": { "en": "Accurate, example-heavy documentation for web platform APIs, with guides for beginners and compatibility tables on every page." }
+    "summary": {
+      "en": "The reference for HTML, CSS and JavaScript."
+    },
+    "description": {
+      "en": "Accurate, example-heavy documentation for web platform APIs, with guides for beginners and compatibility tables on every page."
+    }
   },
   {
     "id": "codrops",
@@ -323,11 +615,21 @@
     "url": "https://tympanus.net/codrops/",
     "category": "learning",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["tutorials", "creative coding", "webgl"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "tutorials",
+      "creative coding",
+      "webgl"
+    ],
     "added": "2026-11-12",
-    "summary": { "en": "Creative front-end tutorials and experiments." },
-    "description": { "en": "Step-by-step articles on animation, WebGL and layout techniques, each with a live demo and source code you can take apart." }
+    "summary": {
+      "en": "Creative front-end tutorials and experiments."
+    },
+    "description": {
+      "en": "Step-by-step articles on animation, WebGL and layout techniques, each with a live demo and source code you can take apart."
+    }
   },
   {
     "id": "the-odin-project",
@@ -336,11 +638,21 @@
     "category": "learning",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["course", "web development", "beginners"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "course",
+      "web development",
+      "beginners"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A free full-stack curriculum, built by its community." },
-    "description": { "en": "A structured path from zero to building full-stack apps with JavaScript or Ruby. Projects over videos, with an active Discord for help." }
+    "summary": {
+      "en": "A free full-stack curriculum, built by its community."
+    },
+    "description": {
+      "en": "A structured path from zero to building full-stack apps with JavaScript or Ruby. Projects over videos, with an active Discord for help."
+    }
   },
   {
     "id": "picta",
@@ -348,23 +660,46 @@
     "url": "https://picta.cc",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["stock photos", "search", "icons", "video"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "stock photos",
+      "search",
+      "icons",
+      "video"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "One search across the free stock libraries." },
-    "description": { "en": "Searches Pixabay, Pexels, Unsplash, Wikimedia Commons and other free libraries at once, for photos, icons and video. No account needed." }
+    "summary": {
+      "en": "One search across the free stock libraries."
+    },
+    "description": {
+      "en": "Searches Pixabay, Pexels, Unsplash, Wikimedia Commons and other free libraries at once, for photos, icons and video. No account needed."
+    },
+    "own": true
   },
   {
     "id": "bla-bla",
     "name": "BLA-BLA",
-    "url": "https://bla-bla-text.picta.cc",
+    "url": "https://ehroz.pro/bla-bla/",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["transcription", "audio", "speech to text"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "transcription",
+      "audio",
+      "speech to text"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Turn audio and video into text in the browser." },
-    "description": { "en": "Upload a recording and get a transcript. Works with Russian, English and Kazakh, and runs on free speech APIs, so it costs nothing." }
+    "summary": {
+      "en": "Turn audio and video into text in the browser."
+    },
+    "description": {
+      "en": "Upload a recording and get a transcript. Works with Russian, English and Kazakh, and runs on free speech APIs, so it costs nothing."
+    },
+    "own": true
   },
   {
     "id": "grok",
@@ -372,11 +707,23 @@
     "url": "https://grok.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["assistant", "chat", "image generation"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "assistant",
+      "chat",
+      "image generation"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A chat assistant with looser content limits." },
-    "description": { "en": "xAI's assistant. Answers more bluntly than most rivals, can search the live web and X, and generates images." }
+    "summary": {
+      "en": "A chat assistant with looser content limits."
+    },
+    "description": {
+      "en": "xAI's assistant. Answers more bluntly than most rivals, can search the live web and X, and generates images."
+    }
   },
   {
     "id": "chatgpt",
@@ -384,11 +731,26 @@
     "url": "https://chatgpt.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
-    "tags": ["assistant", "chat", "image generation", "spreadsheets"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "assistant",
+      "chat",
+      "image generation",
+      "spreadsheets"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "The all-rounder: chat, images, files and tables." },
-    "description": { "en": "OpenAI's assistant. Writes, codes, reads PDFs and spreadsheets, builds charts and generates images in the same conversation." }
+    "summary": {
+      "en": "The all-rounder: chat, images, files and tables."
+    },
+    "description": {
+      "en": "OpenAI's assistant. Writes, codes, reads PDFs and spreadsheets, builds charts and generates images in the same conversation."
+    }
   },
   {
     "id": "copilot",
@@ -396,11 +758,24 @@
     "url": "https://copilot.microsoft.com",
     "category": "ai",
     "pricing": "free",
-    "platforms": ["Web", "Windows", "iOS", "Android"],
-    "tags": ["assistant", "chat", "microsoft"],
+    "platforms": [
+      "Web",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "assistant",
+      "chat",
+      "microsoft"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Microsoft's free AI chat, tied into Windows and Edge." },
-    "description": { "en": "A chat assistant with web search, image generation and voice. Handy if you already live in Windows, Edge or Office." }
+    "summary": {
+      "en": "Microsoft's free AI chat, tied into Windows and Edge."
+    },
+    "description": {
+      "en": "A chat assistant with web search, image generation and voice. Handy if you already live in Windows, Edge or Office."
+    }
   },
   {
     "id": "deepseek",
@@ -409,11 +784,24 @@
     "category": "ai",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["assistant", "chat", "reasoning", "open weights"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "assistant",
+      "chat",
+      "reasoning",
+      "open weights"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A free chat assistant with strong reasoning." },
-    "description": { "en": "Chinese lab whose chat is free to use and shows its reasoning steps. Open model weights are published for people who want to run it themselves." }
+    "summary": {
+      "en": "A free chat assistant with strong reasoning."
+    },
+    "description": {
+      "en": "Chinese lab whose chat is free to use and shows its reasoning steps. Open model weights are published for people who want to run it themselves."
+    }
   },
   {
     "id": "google-ai-studio",
@@ -421,11 +809,22 @@
     "url": "https://aistudio.google.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["gemini", "prompts", "image editing", "api"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "gemini",
+      "prompts",
+      "image editing",
+      "api"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Try Gemini models, including photo edits that keep faces intact." },
-    "description": { "en": "Google's playground for Gemini. Good for editing a photo with a text instruction without warping the faces, and for testing prompts before using the API." }
+    "summary": {
+      "en": "Try Gemini models, including photo edits that keep faces intact."
+    },
+    "description": {
+      "en": "Google's playground for Gemini. Good for editing a photo with a text instruction without warping the faces, and for testing prompts before using the API."
+    }
   },
   {
     "id": "krea",
@@ -433,11 +832,22 @@
     "url": "https://www.krea.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["image generation", "video", "upscaling", "real-time"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "image generation",
+      "video",
+      "upscaling",
+      "real-time"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Image, video and upscaling tools in one place." },
-    "description": { "en": "Generates images and video, upscales and enhances them, and has a real-time mode that redraws as you sketch. Several models are available under one login." }
+    "summary": {
+      "en": "Image, video and upscaling tools in one place."
+    },
+    "description": {
+      "en": "Generates images and video, upscales and enhances them, and has a real-time mode that redraws as you sketch. Several models are available under one login."
+    }
   },
   {
     "id": "firefly",
@@ -445,11 +855,21 @@
     "url": "https://firefly.adobe.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["image generation", "adobe", "video"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "image generation",
+      "adobe",
+      "video"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Adobe's image and video generator, trained on licensed work." },
-    "description": { "en": "Text-to-image, generative fill and video from Adobe. Its models are trained on licensed content, which makes the results safer to use commercially." }
+    "summary": {
+      "en": "Adobe's image and video generator, trained on licensed work."
+    },
+    "description": {
+      "en": "Text-to-image, generative fill and video from Adobe. Its models are trained on licensed content, which makes the results safer to use commercially."
+    }
   },
   {
     "id": "pixelcut",
@@ -457,11 +877,23 @@
     "url": "https://www.pixelcut.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["uncrop", "background removal", "photo editing"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "uncrop",
+      "background removal",
+      "photo editing"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Extend a photo past its edges, remove backgrounds." },
-    "description": { "en": "Photo editor with an Uncrop tool that generates new image beyond the original frame, plus background removal and product shots." }
+    "summary": {
+      "en": "Extend a photo past its edges, remove backgrounds."
+    },
+    "description": {
+      "en": "Photo editor with an Uncrop tool that generates new image beyond the original frame, plus background removal and product shots."
+    }
   },
   {
     "id": "higgsfield",
@@ -469,11 +901,22 @@
     "url": "https://higgsfield.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS"],
-    "tags": ["video generation", "image generation", "camera moves"],
+    "platforms": [
+      "Web",
+      "iOS"
+    ],
+    "tags": [
+      "video generation",
+      "image generation",
+      "camera moves"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Video and image generation with camera-move presets." },
-    "description": { "en": "A hub for several video and image models with ready-made camera movements and effects, so a still can become a shot in one click." }
+    "summary": {
+      "en": "Video and image generation with camera-move presets."
+    },
+    "description": {
+      "en": "A hub for several video and image models with ready-made camera movements and effects, so a still can become a shot in one click."
+    }
   },
   {
     "id": "kling",
@@ -481,11 +924,20 @@
     "url": "https://app.klingai.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["video generation", "image to video"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "video generation",
+      "image to video"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Video generation from text or a still image." },
-    "description": { "en": "Kuaishou's video model. Known for natural motion and for animating a single photo. Free credits renew daily." }
+    "summary": {
+      "en": "Video generation from text or a still image."
+    },
+    "description": {
+      "en": "Kuaishou's video model. Known for natural motion and for animating a single photo. Free credits renew daily."
+    }
   },
   {
     "id": "pika",
@@ -493,11 +945,21 @@
     "url": "https://pika.art",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS"],
-    "tags": ["video generation", "effects"],
+    "platforms": [
+      "Web",
+      "iOS"
+    ],
+    "tags": [
+      "video generation",
+      "effects"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Short AI video clips with playful effects." },
-    "description": { "en": "Turns text or images into short clips, and has effects that melt, inflate or crush the object in the frame. Quick to learn." }
+    "summary": {
+      "en": "Short AI video clips with playful effects."
+    },
+    "description": {
+      "en": "Turns text or images into short clips, and has effects that melt, inflate or crush the object in the frame. Quick to learn."
+    }
   },
   {
     "id": "genspark",
@@ -505,11 +967,21 @@
     "url": "https://www.genspark.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["agent", "slides", "research"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "agent",
+      "slides",
+      "research"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "An agent that builds slides and research from a prompt." },
-    "description": { "en": "Describe the topic and it searches, writes and lays out a presentation or a report. Useful for a first draft you then rework." }
+    "summary": {
+      "en": "An agent that builds slides and research from a prompt."
+    },
+    "description": {
+      "en": "Describe the topic and it searches, writes and lays out a presentation or a report. Useful for a first draft you then rework."
+    }
   },
   {
     "id": "lovable",
@@ -517,11 +989,21 @@
     "url": "https://lovable.dev",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["app builder", "no-code", "agent"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "app builder",
+      "no-code",
+      "agent"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Describe an app and get a working site." },
-    "description": { "en": "Generates a full web app from a chat, with a database and login, and syncs the code to GitHub so you can keep going by hand." }
+    "summary": {
+      "en": "Describe an app and get a working site."
+    },
+    "description": {
+      "en": "Generates a full web app from a chat, with a database and login, and syncs the code to GitHub so you can keep going by hand."
+    }
   },
   {
     "id": "claude-prompt-library",
@@ -529,11 +1011,21 @@
     "url": "https://platform.claude.com/docs/en/resources/prompt-library/library",
     "category": "ai",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["prompts", "examples", "anthropic"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "prompts",
+      "examples",
+      "anthropic"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Ready-to-copy prompts for common jobs." },
-    "description": { "en": "Anthropic's collection of tested prompts: summarising, rewriting, coding, data cleanup and more, each with the system prompt shown." }
+    "summary": {
+      "en": "Ready-to-copy prompts for common jobs."
+    },
+    "description": {
+      "en": "Anthropic's collection of tested prompts: summarising, rewriting, coding, data cleanup and more, each with the system prompt shown."
+    }
   },
   {
     "id": "prompthero",
@@ -541,11 +1033,22 @@
     "url": "https://prompthero.com/midjourney-prompts",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["prompts", "midjourney", "3d", "image generation"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "prompts",
+      "midjourney",
+      "3d",
+      "image generation"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Prompts for image models, with the pictures they made." },
-    "description": { "en": "A searchable archive of image prompts for Midjourney, Stable Diffusion and others, each shown next to its result. Good for learning wording." }
+    "summary": {
+      "en": "Prompts for image models, with the pictures they made."
+    },
+    "description": {
+      "en": "A searchable archive of image prompts for Midjourney, Stable Diffusion and others, each shown next to its result. Good for learning wording."
+    }
   },
   {
     "id": "filatov-prompts",
@@ -553,11 +1056,21 @@
     "url": "https://filatov.design/prompts",
     "category": "ai",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["prompts", "styles", "image generation"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "prompts",
+      "styles",
+      "image generation"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Tested styles for image models, with editable templates." },
-    "description": { "en": "Collections of visual styles for GPT Image, Midjourney, Recraft and others. Each has a working prompt with variables you can change." }
+    "summary": {
+      "en": "Tested styles for image models, with editable templates."
+    },
+    "description": {
+      "en": "Collections of visual styles for GPT Image, Midjourney, Recraft and others. Each has a working prompt with variables you can change."
+    }
   },
   {
     "id": "deepl-write",
@@ -565,11 +1078,23 @@
     "url": "https://www.deepl.com/en/write",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": ["Web", "Windows", "macOS"],
-    "tags": ["writing", "grammar", "translation"],
+    "platforms": [
+      "Web",
+      "Windows",
+      "macOS"
+    ],
+    "tags": [
+      "writing",
+      "grammar",
+      "translation"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Fix and polish your writing, in several languages." },
-    "description": { "en": "A writing assistant from the DeepL translation team. Suggests clearer wording and corrects grammar, and lets you pick a tone." }
+    "summary": {
+      "en": "Fix and polish your writing, in several languages."
+    },
+    "description": {
+      "en": "A writing assistant from the DeepL translation team. Suggests clearer wording and corrects grammar, and lets you pick a tone."
+    }
   },
   {
     "id": "google-translate",
@@ -577,11 +1102,23 @@
     "url": "https://translate.google.com",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["translation", "camera", "offline"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "translation",
+      "camera",
+      "offline"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Translate text, pages and photos in over 100 languages." },
-    "description": { "en": "The default translator. Handles text, whole documents, speech and camera input, and can download languages for offline use." }
+    "summary": {
+      "en": "Translate text, pages and photos in over 100 languages."
+    },
+    "description": {
+      "en": "The default translator. Handles text, whole documents, speech and camera input, and can download languages for offline use."
+    }
   },
   {
     "id": "napkin",
@@ -589,11 +1126,21 @@
     "url": "https://www.napkin.ai",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["diagrams", "infographics", "mind maps"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "diagrams",
+      "infographics",
+      "mind maps"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Turn a paragraph into a diagram or infographic." },
-    "description": { "en": "Paste text and it proposes visuals: flows, mind maps, comparisons. Everything stays editable and exports as an image or SVG." }
+    "summary": {
+      "en": "Turn a paragraph into a diagram or infographic."
+    },
+    "description": {
+      "en": "Paste text and it proposes visuals: flows, mind maps, comparisons. Everything stays editable and exports as an image or SVG."
+    }
   },
   {
     "id": "unsplash",
@@ -601,11 +1148,21 @@
     "url": "https://unsplash.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["photos", "stock", "free"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "photos",
+      "stock",
+      "free"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free high-resolution photos with a simple licence." },
-    "description": { "en": "A large library of photographs from working photographers, free to use without credit. Strong on landscapes, people and workspaces." }
+    "summary": {
+      "en": "Free high-resolution photos with a simple licence."
+    },
+    "description": {
+      "en": "A large library of photographs from working photographers, free to use without credit. Strong on landscapes, people and workspaces."
+    }
   },
   {
     "id": "pexels",
@@ -613,11 +1170,21 @@
     "url": "https://www.pexels.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["photos", "video", "stock"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "photos",
+      "video",
+      "stock"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free stock photos and video clips." },
-    "description": { "en": "Photographs and short video clips under a permissive licence. The video section is one of the better free ones." }
+    "summary": {
+      "en": "Free stock photos and video clips."
+    },
+    "description": {
+      "en": "Photographs and short video clips under a permissive licence. The video section is one of the better free ones."
+    }
   },
   {
     "id": "pixabay",
@@ -625,11 +1192,22 @@
     "url": "https://pixabay.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["photos", "vectors", "illustrations", "video"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "photos",
+      "vectors",
+      "illustrations",
+      "video"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Photos, vectors, illustrations and video, all free." },
-    "description": { "en": "A long-running library with more than photos: vectors, illustrations, music and sound effects are there as well." }
+    "summary": {
+      "en": "Photos, vectors, illustrations and video, all free."
+    },
+    "description": {
+      "en": "A long-running library with more than photos: vectors, illustrations, music and sound effects are there as well."
+    }
   },
   {
     "id": "freepik",
@@ -637,11 +1215,22 @@
     "url": "https://www.freepik.com",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["vectors", "photos", "templates", "ai"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "vectors",
+      "photos",
+      "templates",
+      "ai"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Vectors, photos, templates and an AI generator." },
-    "description": { "en": "A huge catalogue of vectors, PSDs and mockups. The free tier requires attribution; a subscription removes that and unlocks the AI tools." }
+    "summary": {
+      "en": "Vectors, photos, templates and an AI generator."
+    },
+    "description": {
+      "en": "A huge catalogue of vectors, PSDs and mockups. The free tier requires attribution; a subscription removes that and unlocks the AI tools."
+    }
   },
   {
     "id": "icons8",
@@ -649,11 +1238,23 @@
     "url": "https://icons8.com",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["icons", "illustrations", "photos"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "icons",
+      "illustrations",
+      "photos"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Icons in many styles, plus illustrations and photos." },
-    "description": { "en": "A big icon set in dozens of consistent styles, with a desktop app for dropping icons straight into designs." }
+    "summary": {
+      "en": "Icons in many styles, plus illustrations and photos."
+    },
+    "description": {
+      "en": "A big icon set in dozens of consistent styles, with a desktop app for dropping icons straight into designs."
+    }
   },
   {
     "id": "mixkit",
@@ -661,11 +1262,21 @@
     "url": "https://mixkit.co",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["stock video", "music", "sound effects"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "stock video",
+      "music",
+      "sound effects"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free video clips, music and sound effects." },
-    "description": { "en": "Envato's free library. Clips and tracks are cleared for commercial use without attribution, so it works for client videos." }
+    "summary": {
+      "en": "Free video clips, music and sound effects."
+    },
+    "description": {
+      "en": "Envato's free library. Clips and tracks are cleared for commercial use without attribution, so it works for client videos."
+    }
   },
   {
     "id": "sapiens",
@@ -673,11 +1284,21 @@
     "url": "https://sapiens.ui8.net",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["illustrations", "characters", "builder"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "illustrations",
+      "characters",
+      "builder"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Assemble a character illustration from parts." },
-    "description": { "en": "Pick pose, clothes, hair and skin tone, then export a flat illustration as PNG or SVG." }
+    "summary": {
+      "en": "Assemble a character illustration from parts."
+    },
+    "description": {
+      "en": "Pick pose, clothes, hair and skin tone, then export a flat illustration as PNG or SVG."
+    }
   },
   {
     "id": "blush",
@@ -685,11 +1306,21 @@
     "url": "https://blush.design",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["illustrations", "vectors", "customisable"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "illustrations",
+      "vectors",
+      "customisable"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Illustration packs you can recolour and mix." },
-    "description": { "en": "Collections by independent artists with a built-in editor for changing colours and swapping parts. Exports to PNG and SVG." }
+    "summary": {
+      "en": "Illustration packs you can recolour and mix."
+    },
+    "description": {
+      "en": "Collections by independent artists with a built-in editor for changing colours and swapping parts. Exports to PNG and SVG."
+    }
   },
   {
     "id": "texturelabs",
@@ -697,11 +1328,22 @@
     "url": "https://texturelabs.org",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["textures", "grain", "paper", "overlays"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "textures",
+      "grain",
+      "paper",
+      "overlays"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free textures for art and design." },
-    "description": { "en": "Hand-made textures: paper, concrete, grain, scratches. Mostly seamless and large enough for print." }
+    "summary": {
+      "en": "Free textures for art and design."
+    },
+    "description": {
+      "en": "Hand-made textures: paper, concrete, grain, scratches. Mostly seamless and large enough for print."
+    }
   },
   {
     "id": "the-mockup-club",
@@ -709,11 +1351,21 @@
     "url": "https://themockup.club",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["mockups", "psd", "branding"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "mockups",
+      "psd",
+      "branding"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free mockups for showing off a design." },
-    "description": { "en": "A catalogue of free PSD mockups for posters, packaging, devices and stationery, collected from designers." }
+    "summary": {
+      "en": "Free mockups for showing off a design."
+    },
+    "description": {
+      "en": "A catalogue of free PSD mockups for posters, packaging, devices and stationery, collected from designers."
+    }
   },
   {
     "id": "artlist",
@@ -721,11 +1373,21 @@
     "url": "https://artlist.io",
     "category": "assets",
     "pricing": "paid",
-    "platforms": ["Web"],
-    "tags": ["music", "stock video", "sound effects"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "music",
+      "stock video",
+      "sound effects"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Licensed music and footage, on subscription." },
-    "description": { "en": "Royalty-free music, sound effects and stock footage under one licence. Paid, but the catalogue is curated and the licence is clear." }
+    "summary": {
+      "en": "Licensed music and footage, on subscription."
+    },
+    "description": {
+      "en": "Royalty-free music, sound effects and stock footage under one licence. Paid, but the catalogue is curated and the licence is clear."
+    }
   },
   {
     "id": "mobygratis",
@@ -733,11 +1395,21 @@
     "url": "https://mobygratis.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["music", "royalty free", "film"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "music",
+      "royalty free",
+      "film"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free music by Moby for non-commercial projects." },
-    "description": { "en": "The musician offers his tracks for student films, indie projects and non-profits. Read the licence before using it commercially." }
+    "summary": {
+      "en": "Free music by Moby for non-commercial projects."
+    },
+    "description": {
+      "en": "The musician offers his tracks for student films, indie projects and non-profits. Read the licence before using it commercially."
+    }
   },
   {
     "id": "photoroom",
@@ -745,11 +1417,22 @@
     "url": "https://www.photoroom.com/tools/background-remover",
     "category": "design",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["background removal", "product photos"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "background removal",
+      "product photos"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Remove the background of a photo in a click." },
-    "description": { "en": "Cuts out the subject cleanly, including hair, then lets you place it on a new background or a plain colour." }
+    "summary": {
+      "en": "Remove the background of a photo in a click."
+    },
+    "description": {
+      "en": "Cuts out the subject cleanly, including hair, then lets you place it on a new background or a plain colour."
+    }
   },
   {
     "id": "background-removal-hf",
@@ -758,11 +1441,21 @@
     "category": "utilities",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["background removal", "open source", "demo"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "background removal",
+      "open source",
+      "demo"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A free background remover that runs in a Space." },
-    "description": { "en": "A community demo on Hugging Face using an open model. No sign-up, and you can download the transparent PNG." }
+    "summary": {
+      "en": "A free background remover that runs in a Space."
+    },
+    "description": {
+      "en": "A community demo on Hugging Face using an open model. No sign-up, and you can download the transparent PNG."
+    }
   },
   {
     "id": "halftone-maker",
@@ -770,11 +1463,22 @@
     "url": "https://halftonemaker.com",
     "category": "design",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["halftone", "dithering", "svg", "effects"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "halftone",
+      "dithering",
+      "svg",
+      "effects"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Turn an image into halftone dots, lines or stipple." },
-    "description": { "en": "Adjust the grid and see the result live, then export clean SVG. Also renders halftone video to MP4." }
+    "summary": {
+      "en": "Turn an image into halftone dots, lines or stipple."
+    },
+    "description": {
+      "en": "Adjust the grid and see the result live, then export clean SVG. Also renders halftone video to MP4."
+    }
   },
   {
     "id": "ui-layouts-clip-paths",
@@ -782,11 +1486,21 @@
     "url": "https://tools.ui-layouts.com/clip-paths",
     "category": "development",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["svg", "css", "clip-path"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "svg",
+      "css",
+      "clip-path"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Pick a shape, copy the clip-path." },
-    "description": { "en": "Drag points to get a CSS or SVG clip-path, with a gallery of ready shapes for cards, images and dividers." }
+    "summary": {
+      "en": "Pick a shape, copy the clip-path."
+    },
+    "description": {
+      "en": "Drag points to get a CSS or SVG clip-path, with a gallery of ready shapes for cards, images and dividers."
+    }
   },
   {
     "id": "svg-converter",
@@ -794,11 +1508,21 @@
     "url": "https://svgconverter.online",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["svg", "vectorize", "png"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "svg",
+      "vectorize",
+      "png"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Turn a PNG or JPG into a colour SVG." },
-    "description": { "en": "Vectorises a raster image while keeping colours and transparency. Runs without an account." }
+    "summary": {
+      "en": "Turn a PNG or JPG into a colour SVG."
+    },
+    "description": {
+      "en": "Vectorises a raster image while keeping colours and transparency. Runs without an account."
+    }
   },
   {
     "id": "space-type-generator",
@@ -806,11 +1530,21 @@
     "url": "https://spacetypegenerator.com",
     "category": "design",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["type", "generative", "poster"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "type",
+      "generative",
+      "poster"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Make poster type from letters that bend and stretch." },
-    "description": { "en": "Type a word and warp it into an odd typographic shape you can export. Good for quick posters and covers." }
+    "summary": {
+      "en": "Make poster type from letters that bend and stretch."
+    },
+    "description": {
+      "en": "Type a word and warp it into an odd typographic shape you can export. Good for quick posters and covers."
+    }
   },
   {
     "id": "meshgradient",
@@ -818,11 +1552,21 @@
     "url": "https://meshgradient.in",
     "category": "design",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["gradients", "backgrounds", "png"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "gradients",
+      "backgrounds",
+      "png"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Generate soft mesh gradients and export them." },
-    "description": { "en": "Drag colour points on a grid and the gradient follows. Download as PNG for backgrounds and covers." }
+    "summary": {
+      "en": "Generate soft mesh gradients and export them."
+    },
+    "description": {
+      "en": "Drag colour points on a grid and the gradient follows. Download as PNG for backgrounds and covers."
+    }
   },
   {
     "id": "antlii",
@@ -830,11 +1574,21 @@
     "url": "https://antlii.work",
     "category": "design",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["generative", "procedural", "graphics"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "generative",
+      "procedural",
+      "graphics"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Interactive tools for generative graphics." },
-    "description": { "en": "A small studio's set of browser tools for making procedural patterns and graphics, with outputs you can export." }
+    "summary": {
+      "en": "Interactive tools for generative graphics."
+    },
+    "description": {
+      "en": "A small studio's set of browser tools for making procedural patterns and graphics, with outputs you can export."
+    }
   },
   {
     "id": "photopea",
@@ -842,11 +1596,21 @@
     "url": "https://www.photopea.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["photo editing", "psd", "photoshop alternative"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "photo editing",
+      "psd",
+      "photoshop alternative"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A Photoshop-style editor that opens PSD files in the tab." },
-    "description": { "en": "Layers, masks, filters and PSD, Sketch and Figma file support, with no install. Free with ads." }
+    "summary": {
+      "en": "A Photoshop-style editor that opens PSD files in the tab."
+    },
+    "description": {
+      "en": "Layers, masks, filters and PSD, Sketch and Figma file support, with no install. Free with ads."
+    }
   },
   {
     "id": "upscayl",
@@ -855,11 +1619,24 @@
     "category": "utilities",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["macOS", "Windows", "Linux"],
-    "tags": ["upscaling", "ai", "desktop", "open source"],
+    "platforms": [
+      "macOS",
+      "Windows",
+      "Linux"
+    ],
+    "tags": [
+      "upscaling",
+      "ai",
+      "desktop",
+      "open source"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Enlarge photos on your own computer, free." },
-    "description": { "en": "Open-source desktop app that upscales images with AI models locally, so nothing is uploaded anywhere." }
+    "summary": {
+      "en": "Enlarge photos on your own computer, free."
+    },
+    "description": {
+      "en": "Open-source desktop app that upscales images with AI models locally, so nothing is uploaded anywhere."
+    }
   },
   {
     "id": "auphonic",
@@ -867,11 +1644,22 @@
     "url": "https://auphonic.com",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["audio", "podcast", "noise reduction", "loudness"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "audio",
+      "podcast",
+      "noise reduction",
+      "loudness"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Automatic clean-up for speech recordings." },
-    "description": { "en": "Levels loudness, cuts background noise and balances voices in a podcast or video. Two free hours a month." }
+    "summary": {
+      "en": "Automatic clean-up for speech recordings."
+    },
+    "description": {
+      "en": "Levels loudness, cuts background noise and balances voices in a podcast or video. Two free hours a month."
+    }
   },
   {
     "id": "adobe-enhance-speech",
@@ -879,11 +1667,21 @@
     "url": "https://podcast.adobe.com/en/enhance",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["audio", "noise reduction", "speech"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "audio",
+      "noise reduction",
+      "speech"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Make a noisy voice recording sound like a studio." },
-    "description": { "en": "Upload speech and get a cleaned version back. Removes echo and background noise; the free tier has a length limit." }
+    "summary": {
+      "en": "Make a noisy voice recording sound like a studio."
+    },
+    "description": {
+      "en": "Upload speech and get a cleaned version back. Removes echo and background noise; the free tier has a length limit."
+    }
   },
   {
     "id": "turboscribe",
@@ -891,11 +1689,21 @@
     "url": "https://turboscribe.ai",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["transcription", "subtitles", "speech to text"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "transcription",
+      "subtitles",
+      "speech to text"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Fast transcripts of audio and video in many languages." },
-    "description": { "en": "Drop in a recording and get an editable transcript with timestamps. Free plan covers a few short files a day." }
+    "summary": {
+      "en": "Fast transcripts of audio and video in many languages."
+    },
+    "description": {
+      "en": "Drop in a recording and get an editable transcript with timestamps. Free plan covers a few short files a day."
+    }
   },
   {
     "id": "rotato-compress",
@@ -903,11 +1711,21 @@
     "url": "https://tools.rotato.app/compress",
     "category": "video-audio",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["video", "compression", "private"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "video",
+      "compression",
+      "private"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Shrink a video without uploading it." },
-    "description": { "en": "Compresses in the browser, so the file stays on your machine. You can compare the result with the original before saving." }
+    "summary": {
+      "en": "Shrink a video without uploading it."
+    },
+    "description": {
+      "en": "Compresses in the browser, so the file stays on your machine. You can compare the result with the original before saving."
+    }
   },
   {
     "id": "speedtest",
@@ -915,11 +1733,24 @@
     "url": "https://www.speedtest.net",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
-    "tags": ["network", "internet speed"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "network",
+      "internet speed"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Check your internet speed in one click." },
-    "description": { "en": "Ookla's test for download, upload and latency. The standard way to settle an argument with a provider." }
+    "summary": {
+      "en": "Check your internet speed in one click."
+    },
+    "description": {
+      "en": "Ookla's test for download, upload and latency. The standard way to settle an argument with a provider."
+    }
   },
   {
     "id": "convertio",
@@ -927,11 +1758,21 @@
     "url": "https://convertio.co",
     "category": "utilities",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["converter", "files", "documents"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "converter",
+      "files",
+      "documents"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Convert almost any file format online." },
-    "description": { "en": "Documents, images, audio, video and archives. Free for small files; larger ones need a plan." }
+    "summary": {
+      "en": "Convert almost any file format online."
+    },
+    "description": {
+      "en": "Documents, images, audio, video and archives. Free for small files; larger ones need a plan."
+    }
   },
   {
     "id": "ilovepdf",
@@ -939,11 +1780,26 @@
     "url": "https://www.ilovepdf.com",
     "category": "utilities",
     "pricing": "freemium",
-    "platforms": ["Web", "Windows", "macOS", "iOS", "Android"],
-    "tags": ["pdf", "merge", "convert", "compress"],
+    "platforms": [
+      "Web",
+      "Windows",
+      "macOS",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "pdf",
+      "merge",
+      "convert",
+      "compress"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Merge, split, compress and convert PDFs." },
-    "description": { "en": "A tidy set of PDF tools, including PDF to JPG. Covers most one-off jobs without installing anything." }
+    "summary": {
+      "en": "Merge, split, compress and convert PDFs."
+    },
+    "description": {
+      "en": "A tidy set of PDF tools, including PDF to JPG. Covers most one-off jobs without installing anything."
+    }
   },
   {
     "id": "iloveimg",
@@ -951,11 +1807,25 @@
     "url": "https://www.iloveimg.com",
     "category": "utilities",
     "pricing": "freemium",
-    "platforms": ["Web", "Windows", "iOS", "Android"],
-    "tags": ["images", "resize", "compress", "convert"],
+    "platforms": [
+      "Web",
+      "Windows",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "images",
+      "resize",
+      "compress",
+      "convert"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Resize, crop, compress and convert images." },
-    "description": { "en": "Same team as iLovePDF, for pictures: batch resize, compress, convert formats, add watermarks." }
+    "summary": {
+      "en": "Resize, crop, compress and convert images."
+    },
+    "description": {
+      "en": "Same team as iLovePDF, for pictures: batch resize, compress, convert formats, add watermarks."
+    }
   },
   {
     "id": "qr-code-monkey",
@@ -963,11 +1833,21 @@
     "url": "https://www.qrcode-monkey.com",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["qr", "logo", "vector"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "qr",
+      "logo",
+      "vector"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "QR codes with your colours and logo." },
-    "description": { "en": "Customise colours, shapes and add a logo, then export as PNG, SVG or PDF. The codes do not expire." }
+    "summary": {
+      "en": "QR codes with your colours and logo."
+    },
+    "description": {
+      "en": "Customise colours, shapes and add a logo, then export as PNG, SVG or PDF. The codes do not expire."
+    }
   },
   {
     "id": "cosmos",
@@ -975,11 +1855,22 @@
     "url": "https://www.cosmos.so",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS"],
-    "tags": ["moodboards", "references", "pinterest alternative"],
+    "platforms": [
+      "Web",
+      "iOS"
+    ],
+    "tags": [
+      "moodboards",
+      "references",
+      "pinterest alternative"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A quieter Pinterest for designers." },
-    "description": { "en": "Save images, links and video into collections. The feed leans toward art and design, with far fewer ads." }
+    "summary": {
+      "en": "A quieter Pinterest for designers."
+    },
+    "description": {
+      "en": "Save images, links and video into collections. The feed leans toward art and design, with far fewer ads."
+    }
   },
   {
     "id": "same-energy",
@@ -987,11 +1878,20 @@
     "url": "https://same.energy",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["visual search", "references"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "visual search",
+      "references"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Find images that look like the one you have." },
-    "description": { "en": "Visual search: start from a picture and get others with the same mood, colours or composition." }
+    "summary": {
+      "en": "Find images that look like the one you have."
+    },
+    "description": {
+      "en": "Visual search: start from a picture and get others with the same mood, colours or composition."
+    }
   },
   {
     "id": "dribbble",
@@ -999,11 +1899,21 @@
     "url": "https://dribbble.com",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["portfolio", "ui design", "community"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "portfolio",
+      "ui design",
+      "community"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Designers share their work in progress and finished." },
-    "description": { "en": "Shots from illustrators, brand and UI designers. A good place to see what's current and to find people to hire." }
+    "summary": {
+      "en": "Designers share their work in progress and finished."
+    },
+    "description": {
+      "en": "Shots from illustrators, brand and UI designers. A good place to see what's current and to find people to hire."
+    }
   },
   {
     "id": "logobaker",
@@ -1011,11 +1921,21 @@
     "url": "https://logobaker.pro",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["logos", "feedback", "community"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "logos",
+      "feedback",
+      "community"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Logo designs and critique from other designers." },
-    "description": { "en": "A gallery of logos with feedback from the community, useful for seeing how others solve a brief." }
+    "summary": {
+      "en": "Logo designs and critique from other designers."
+    },
+    "description": {
+      "en": "A gallery of logos with feedback from the community, useful for seeing how others solve a brief."
+    }
   },
   {
     "id": "refero",
@@ -1023,11 +1943,22 @@
     "url": "https://refero.design",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["ui", "ux", "references", "screens"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "ui",
+      "ux",
+      "references",
+      "screens"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Searchable screenshots of real websites and apps." },
-    "description": { "en": "Tens of thousands of web and iOS screens, filterable by pattern and category. Handy at the start of an interface project." }
+    "summary": {
+      "en": "Searchable screenshots of real websites and apps."
+    },
+    "description": {
+      "en": "Tens of thousands of web and iOS screens, filterable by pattern and category. Handy at the start of an interface project."
+    }
   },
   {
     "id": "logggos",
@@ -1035,11 +1966,20 @@
     "url": "https://www.logggos.club",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["logos", "branding"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "logos",
+      "branding"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A catalogue of well-made logos." },
-    "description": { "en": "Browse by industry, style, typography and colour. Around a thousand carefully chosen marks." }
+    "summary": {
+      "en": "A catalogue of well-made logos."
+    },
+    "description": {
+      "en": "Browse by industry, style, typography and colour. Around a thousand carefully chosen marks."
+    }
   },
   {
     "id": "logobook",
@@ -1047,11 +1987,21 @@
     "url": "https://logobook.com",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["logos", "trademarks", "symbols"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "logos",
+      "trademarks",
+      "symbols"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A collection of the world's logos and symbols." },
-    "description": { "en": "Sorted by name, style and designer. More historical range than most logo galleries." }
+    "summary": {
+      "en": "A collection of the world's logos and symbols."
+    },
+    "description": {
+      "en": "Sorted by name, style and designer. More historical range than most logo galleries."
+    }
   },
   {
     "id": "branding-style-guides",
@@ -1059,11 +2009,21 @@
     "url": "https://brandingstyleguides.com",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["brand guidelines", "pdf", "archive"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "brand guidelines",
+      "pdf",
+      "archive"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "An archive of brand guideline documents." },
-    "description": { "en": "PDF brand books from companies of all sizes. Shows how identity systems are actually documented." }
+    "summary": {
+      "en": "An archive of brand guideline documents."
+    },
+    "description": {
+      "en": "PDF brand books from companies of all sizes. Shows how identity systems are actually documented."
+    }
   },
   {
     "id": "pentagram",
@@ -1071,11 +2031,21 @@
     "url": "https://www.pentagram.com",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["branding", "packaging", "design studio"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "branding",
+      "packaging",
+      "design studio"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Work from one of the best-known design studios." },
-    "description": { "en": "Identities, packaging, books and environments by the partners at Pentagram. Case studies are detailed." }
+    "summary": {
+      "en": "Work from one of the best-known design studios."
+    },
+    "description": {
+      "en": "Identities, packaging, books and environments by the partners at Pentagram. Case studies are detailed."
+    }
   },
   {
     "id": "dark-design",
@@ -1083,11 +2053,21 @@
     "url": "https://www.dark.design",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["web design", "dark mode", "gallery"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "web design",
+      "dark mode",
+      "gallery"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A gallery of dark-themed websites." },
-    "description": { "en": "Hand-picked sites with dark interfaces, a useful reference for contrast, accents and imagery on black." }
+    "summary": {
+      "en": "A gallery of dark-themed websites."
+    },
+    "description": {
+      "en": "Hand-picked sites with dark interfaces, a useful reference for contrast, accents and imagery on black."
+    }
   },
   {
     "id": "brusheezy",
@@ -1095,11 +2075,21 @@
     "url": "https://www.brusheezy.com",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["brushes", "patterns", "photoshop"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "brushes",
+      "patterns",
+      "photoshop"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Photoshop brushes, patterns and textures." },
-    "description": { "en": "A large library of brushes, patterns, gradients and actions for Photoshop and compatible editors. Some need an account." }
+    "summary": {
+      "en": "Photoshop brushes, patterns and textures."
+    },
+    "description": {
+      "en": "A large library of brushes, patterns, gradients and actions for Photoshop and compatible editors. Some need an account."
+    }
   },
   {
     "id": "xuix-pack",
@@ -1107,11 +2097,21 @@
     "url": "https://xuix.ru/pack",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["icons", "images", "design resources"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "icons",
+      "images",
+      "design resources"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Free icon and image collections." },
-    "description": { "en": "Free packs of icons and pictures for sites, apps and presentations, in Russian." }
+    "summary": {
+      "en": "Free icon and image collections."
+    },
+    "description": {
+      "en": "Free packs of icons and pictures for sites, apps and presentations, in Russian."
+    }
   },
   {
     "id": "tbc-ornaments",
@@ -1119,11 +2119,21 @@
     "url": "https://tbc-ornaments.uz",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["ornament", "pattern", "culture"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "ornament",
+      "pattern",
+      "culture"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A digital catalogue of Uzbek ornament." },
-    "description": { "en": "Scanned and catalogued traditional patterns, searchable by type. A good source for pattern and decorative work." }
+    "summary": {
+      "en": "A digital catalogue of Uzbek ornament."
+    },
+    "description": {
+      "en": "Scanned and catalogued traditional patterns, searchable by type. A good source for pattern and decorative work."
+    }
   },
   {
     "id": "shriftoteka",
@@ -1131,11 +2141,21 @@
     "url": "https://myskotom.ru",
     "category": "typography",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["cyrillic", "fonts", "free"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "cyrillic",
+      "fonts",
+      "free"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Over 1,700 free fonts with Cyrillic." },
-    "description": { "en": "A library of Cyrillic typefaces with the author and licence listed for each, so you can check commercial use." }
+    "summary": {
+      "en": "Over 1,700 free fonts with Cyrillic."
+    },
+    "description": {
+      "en": "A library of Cyrillic typefaces with the author and licence listed for each, so you can check commercial use."
+    }
   },
   {
     "id": "pd-image-archive",
@@ -1143,11 +2163,21 @@
     "url": "https://pdimagearchive.org",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["public domain", "archive", "old images"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "public domain",
+      "archive",
+      "old images"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Old prints and photographs with no copyright." },
-    "description": { "en": "Hand-picked out-of-copyright works, free to reuse. New images are added weekly." }
+    "summary": {
+      "en": "Old prints and photographs with no copyright."
+    },
+    "description": {
+      "en": "Hand-picked out-of-copyright works, free to reuse. New images are added weekly."
+    }
   },
   {
     "id": "public-work",
@@ -1155,11 +2185,21 @@
     "url": "https://public.work",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["public domain", "visual search", "museums"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "public domain",
+      "visual search",
+      "museums"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Visual search over 100,000 copyright-free images." },
-    "description": { "en": "From the Cosmos team. Pulls from the Met, New York Public Library and other collections into one search." }
+    "summary": {
+      "en": "Visual search over 100,000 copyright-free images."
+    },
+    "description": {
+      "en": "From the Cosmos team. Pulls from the Met, New York Public Library and other collections into one search."
+    }
   },
   {
     "id": "wikimedia-commons",
@@ -1167,11 +2207,21 @@
     "url": "https://commons.wikimedia.org",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["images", "media", "open licence"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "images",
+      "media",
+      "open licence"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "The media library behind Wikipedia." },
-    "description": { "en": "Tens of millions of images, audio and video files, each with its licence stated. Check the licence per file." }
+    "summary": {
+      "en": "The media library behind Wikipedia."
+    },
+    "description": {
+      "en": "Tens of millions of images, audio and video files, each with its licence stated. Check the licence per file."
+    }
   },
   {
     "id": "getty-open-content",
@@ -1179,11 +2229,21 @@
     "url": "https://www.getty.edu/projects/open-content-program/",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["museum", "art", "open access"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "museum",
+      "art",
+      "open access"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "High-resolution images from the Getty collection." },
-    "description": { "en": "Artworks from the Getty museum, free to download and use for any purpose." }
+    "summary": {
+      "en": "High-resolution images from the Getty collection."
+    },
+    "description": {
+      "en": "Artworks from the Getty museum, free to download and use for any purpose."
+    }
   },
   {
     "id": "smithsonian-open-access",
@@ -1191,11 +2251,21 @@
     "url": "https://www.si.edu/openaccess",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["museum", "science", "open access"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "museum",
+      "science",
+      "open access"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Millions of images from the Smithsonian, in CC0." },
-    "description": { "en": "Artworks, specimens and historical objects from the Smithsonian, free to use without permission." }
+    "summary": {
+      "en": "Millions of images from the Smithsonian, in CC0."
+    },
+    "description": {
+      "en": "Artworks, specimens and historical objects from the Smithsonian, free to use without permission."
+    }
   },
   {
     "id": "met-open-access",
@@ -1203,11 +2273,21 @@
     "url": "https://www.metmuseum.org/about-the-met/policies-and-documents/open-access",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["museum", "art", "open access"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "museum",
+      "art",
+      "open access"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Public-domain artworks from the Met." },
-    "description": { "en": "Hundreds of thousands of images of works in the Met collection, free to use. Available through the museum's online collection." }
+    "summary": {
+      "en": "Public-domain artworks from the Met."
+    },
+    "description": {
+      "en": "Hundreds of thousands of images of works in the Met collection, free to use. Available through the museum's online collection."
+    }
   },
   {
     "id": "nga-free-images",
@@ -1215,11 +2295,21 @@
     "url": "https://www.nga.gov/artworks/free-images-and-open-access",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["museum", "art", "open access"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "museum",
+      "art",
+      "open access"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Open-access images from the National Gallery of Art." },
-    "description": { "en": "Paintings, prints and photographs from the Washington museum, downloadable in high resolution." }
+    "summary": {
+      "en": "Open-access images from the National Gallery of Art."
+    },
+    "description": {
+      "en": "Paintings, prints and photographs from the Washington museum, downloadable in high resolution."
+    }
   },
   {
     "id": "artic-open-access",
@@ -1227,11 +2317,21 @@
     "url": "https://www.artic.edu/open-access/open-access-images",
     "category": "assets",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["museum", "art", "open access"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "museum",
+      "art",
+      "open access"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "CC0 images from the Art Institute of Chicago." },
-    "description": { "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data." }
+    "summary": {
+      "en": "CC0 images from the Art Institute of Chicago."
+    },
+    "description": {
+      "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data."
+    }
   },
   {
     "id": "headai",
@@ -1239,11 +2339,23 @@
     "url": "https://headai.bot/?ref=WEE",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": ["Web", "Telegram"],
-    "tags": ["image generation", "video generation", "audio", "all-in-one"],
+    "platforms": [
+      "Web",
+      "Telegram"
+    ],
+    "tags": [
+      "image generation",
+      "video generation",
+      "audio",
+      "all-in-one"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "Many AI models for photo, video and audio in one app." },
-    "description": { "en": "One account for image, video, music and voice-over models, plus utilities like background removal and lip-sync. Works in the browser and in Telegram, and is paid with credits." }
+    "summary": {
+      "en": "Many AI models for photo, video and audio in one app."
+    },
+    "description": {
+      "en": "One account for image, video, music and voice-over models, plus utilities like background removal and lip-sync. Works in the browser and in Telegram, and is paid with credits."
+    }
   },
   {
     "id": "uprock-fonts",
@@ -1251,11 +2363,21 @@
     "url": "https://www.fonts.uprock.ru",
     "category": "typography",
     "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["cyrillic", "fonts", "free"],
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "cyrillic",
+      "fonts",
+      "free"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "500+ free fonts with Cyrillic, filterable by licence." },
-    "description": { "en": "A catalogue of Cyrillic typefaces from the Uprock studio. Filter by category, style, purpose and licence, and preview each font with your own text." }
+    "summary": {
+      "en": "500+ free fonts with Cyrillic, filterable by licence."
+    },
+    "description": {
+      "en": "A catalogue of Cyrillic typefaces from the Uprock studio. Filter by category, style, purpose and licence, and preview each font with your own text."
+    }
   },
   {
     "id": "temp-mail",
@@ -1263,11 +2385,23 @@
     "url": "https://temp-mail.org",
     "category": "utilities",
     "pricing": "freemium",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["email", "disposable", "privacy"],
+    "platforms": [
+      "Web",
+      "iOS",
+      "Android"
+    ],
+    "tags": [
+      "email",
+      "disposable",
+      "privacy"
+    ],
     "added": "2026-11-13",
-    "summary": { "en": "A throwaway email address for sign-ups." },
-    "description": { "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while." }
+    "summary": {
+      "en": "A throwaway email address for sign-ups."
+    },
+    "description": {
+      "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while."
+    }
   },
   {
     "id": "ehroz",
@@ -1275,11 +2409,25 @@
     "url": "https://ehroz.pro",
     "category": "utilities",
     "pricing": "free",
-    "platforms": ["Web", "macOS", "Windows"],
-    "tags": ["apps", "tools", "browser extensions", "astana"],
+    "platforms": [
+      "Web",
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "apps",
+      "tools",
+      "browser extensions",
+      "astana"
+    ],
     "added": "2026-11-14",
-    "summary": { "en": "Small apps for Mac, Windows and the web by one maker." },
-    "description": { "en": "A workshop of converters, image, video and speech tools, Mac utilities and browser extensions, all built and used daily by the author, with new ones added regularly." }
+    "summary": {
+      "en": "Small apps for Mac, Windows and the web by one maker."
+    },
+    "description": {
+      "en": "A workshop of converters, image, video and speech tools, Mac utilities and browser extensions, all built and used daily by the author, with new ones added regularly."
+    },
+    "own": true
   },
   {
     "id": "snowpuff",
@@ -1288,10 +2436,23 @@
     "category": "utilities",
     "pricing": "free",
     "openSource": true,
-    "platforms": ["macOS", "Windows"],
-    "tags": ["desktop", "snow", "fun", "menu bar"],
+    "platforms": [
+      "macOS",
+      "Windows"
+    ],
+    "tags": [
+      "desktop",
+      "snow",
+      "fun",
+      "menu bar"
+    ],
     "added": "2026-11-14",
-    "summary": { "en": "Warm falling snow on your Mac or Windows desktop." },
-    "description": { "en": "Snow falls over your screen, settles on windows and the Dock, grows icicles, and scatters when you blow into the microphone. It hides itself during calls." }
+    "summary": {
+      "en": "Warm falling snow on your Mac or Windows desktop."
+    },
+    "description": {
+      "en": "Snow falls over your screen, settles on windows and the Dock, grows icicles, and scatters when you blow into the microphone. It hides itself during calls."
+    },
+    "own": true
   }
 ]

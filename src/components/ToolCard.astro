@@ -26,6 +26,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   href={u(`/tool/${tool.id}`)}
   data-card
   data-id={tool.id}
+  data-own={d.own ? '' : undefined}
   data-name={d.name.toLowerCase()}
 >
   <div class="card__media">

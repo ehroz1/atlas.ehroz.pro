@@ -10,7 +10,7 @@ const [tools, categories] = await Promise.all([getTools(), getCategories()]);
   <div class="container container--wide">
     <HeroCollage tools={tools} categoryCount={categories.length} />
     <div style="padding-top: var(--grid-gap)">
-      <Gallery tools={tools} categories={categories} filters={false} />
+      <Gallery tools={tools} categories={categories} filters={false} promote />
     </div>
   </div>
 </Base>
