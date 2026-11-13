@@ -9,7 +9,7 @@ const latest = new Date(Math.max(...tools.map((x) => x.data.added.getTime())));
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
-  <div class="container site-footer__inner">
+  <div class="container container--wide site-footer__inner">
     <div class="stack" style="--gap: var(--s-1)">
       <span>© {year} Atlas · {t('footer.note')}</span>
       <span>{t('footer.updated', { date: formatDate(latest, lang) })}</span>

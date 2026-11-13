@@ -73,8 +73,13 @@ const section =
     </div>
 
     <div class="bar-group bar-group--end">
-      <a class="btn btn--bar btn--accent" href="/submit">
+      <a class="btn btn--bar btn--chrome" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
+      </a>
+      <a class="bar-icon" href="/about" aria-label={t('nav.about')} title={t('nav.about')} aria-current={path === '/about' ? 'page' : undefined}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.1"/>
+        </svg>
       </a>
     </div>
   </div>

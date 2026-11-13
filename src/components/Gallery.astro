@@ -14,15 +14,17 @@ interface Props {
   categories: Category[];
   current?: string;
   lang?: Lang;
+  /** show the category chips above the grid (off on home: the search panel has them) */
+  filters?: boolean;
 }
-const { tools, categories, current, lang = defaultLang } = Astro.props;
+const { tools, categories, current, lang = defaultLang, filters = true } = Astro.props;
 const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
 ---
 <section id="sites" aria-label="Sites">
-  <div class="toolbar">
-    <CategoryChips categories={categories} current={current} lang={lang} />
+  <div class={filters ? 'toolbar' : 'visually-hidden'}>
+    {filters && <CategoryChips categories={categories} current={current} lang={lang} />}
     <span class="toolbar__count t-tabular" data-count aria-live="polite"
       data-one={t('results.count.one')} data-other={t('results.count.other')}>
       {countText(tools.length)}
@@ -31,7 +33,7 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
 
   <div class="cards" data-cards>
     {tools.map((tool, i) => (
-      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} eager={i < 2} hideCategory={!!current} />
+      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} eager={i < 3} hideCategory={!!current} />
     ))}
   </div>
 

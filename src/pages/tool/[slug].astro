@@ -73,7 +73,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       </dl>
     </header>
 
-    <a class="tile tile--large" href={outbound.href} target="_blank" rel="noopener" aria-label={t('tool.visit', { domain })}>
+    <a class="tile" href={outbound.href} target="_blank" rel="noopener" aria-label={t('tool.visit', { domain })}>
       {shot ? (
         <Image
           class="tile__shot"
@@ -87,7 +87,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
           quality={82}
         />
       ) : (
-        <div class="tile__fallback">{domain}</div>
+        <div class="shot-fallback">{domain}</div>
       )}
     </a>
 

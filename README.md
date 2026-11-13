@@ -81,6 +81,18 @@ yet.
 PUBLIC_SUBMIT_ENDPOINT=https://formspree.io/f/xxxxxx
 ```
 
+## Deploy (GitHub Pages)
+
+`.github/workflows/deploy.yml` builds the site and publishes `dist/` to
+GitHub Pages on every push to `main` or `claude/brave-shannon-o9pdvr`.
+
+One-time setup:
+
+1. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Custom domain: `public/CNAME` already contains `atlas.ehroz.pro`. Add a DNS
+   record at your registrar: `CNAME atlas → ehroz1.github.io`, then tick
+   **Enforce HTTPS** in Settings → Pages once the certificate is issued.
+
 ## Fonts
 
 Medeo by its authors, licensed under the SIL Open Font License

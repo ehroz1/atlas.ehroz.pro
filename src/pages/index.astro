@@ -1,23 +1,16 @@
 ---
 import Base from '~/layouts/Base.astro';
-import HeroDrawing from '~/components/HeroDrawing.astro';
+import HeroCollage from '~/components/HeroCollage.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
-import { useTranslations } from '~/i18n';
 
-const t = useTranslations('en');
 const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 ---
 <Base>
-  <div class="container">
-    <section class="hero">
-      <HeroDrawing class="hero__drawing" />
-      <h1 class="t-statement hero__statement">{t('hero.statement')}</h1>
-      <p class="hero__aside">{t('hero.aside')} <a href="/submit">{t('hero.asideLink')}</a></p>
-    </section>
-
-    <div class="section" style="padding-bottom: 0">
-      <Gallery tools={tools} categories={categories} />
+  <div class="container container--wide">
+    <HeroCollage tools={tools} categoryCount={categories.length} />
+    <div style="padding-top: var(--grid-gap)">
+      <Gallery tools={tools} categories={categories} filters={false} />
     </div>
   </div>
 </Base>

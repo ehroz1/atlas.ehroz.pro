@@ -19,6 +19,9 @@ export const en = {
   'nav.skip': 'Skip to content',
 
   'hero.statement': 'A hand-picked index of useful websites and tools for makers, developers and the curious.',
+  'hero.title': 'Browse {count} hand-picked sites',
+  'hero.sub': 'For makers, developers and the curious',
+  'hero.cta': 'Submit a site',
   'hero.aside': 'Know a good one?',
   'hero.asideLink': 'Send it over',
 

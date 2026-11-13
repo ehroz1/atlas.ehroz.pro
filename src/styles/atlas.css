@@ -69,71 +69,67 @@
 
 :root {
   /* 1. COLOR ---------------------------------------------------------------
-     A near-monochrome palette. The page is white, content is ink, and
-     surfaces are separated by one flat grey — not by shadows or borders.
-     The top bar is the one dark element: floating ink pills (“chrome”)
-     over the page. Color appears in three places only: the bar's primary
-     button (--c-accent), the hero drawing (--c-ink-blue) and hover
-     highlights (--c-signal). Never add a fourth.                         */
+     Dark, near-monochrome — the look of deck.gallery. The page is almost
+     black, content is white, and surfaces step up in small, flat greys.
+     Screenshots carry all the color. Accents, one job each:
+       --c-accent   the one primary button on a screen (blue pill)
+       --c-ink-blue line illustrations
+       --c-signal   hover on chips / category names, errors
+     Never add a fourth.                                                   */
 
   /* raw scale — do not use directly in components */
-  --gray-0:   #ffffff;
-  --gray-25:  #fafafa;
-  --gray-50:  #f5f5f5;   /* tile surface */
-  --gray-100: #efefef;   /* tile hover, input fill */
-  --gray-150: #e8e8e8;   /* hairlines */
-  --gray-200: #dedede;   /* chip border */
-  --gray-300: #c9c9c9;
-  --gray-400: #a3a3a3;
-  --gray-500: #8a8a8a;   /* muted text */
-  --gray-600: #6b6b6b;   /* secondary text */
-  --gray-800: #2b2b2b;
-  --gray-900: #141414;   /* ink */
+  --gray-1000: #0d0d0d;  /* page */
+  --gray-950: #141414;   /* tiles, hero panel */
+  --gray-900: #1c1c1c;   /* pills, inputs */
+  --gray-850: #242424;   /* pill hover */
+  --gray-800: #2c2c2c;   /* active segment, hairlines */
+  --gray-700: #3a3a3a;   /* strong lines */
+  --gray-500: #6f6f6f;   /* disabled */
+  --gray-400: #8c8c8c;   /* muted text */
+  --gray-300: #b0b0b0;   /* secondary text */
+  --gray-100: #ededed;
+  --gray-0:   #ffffff;   /* text */
 
-  --blue-600: #2f5bea;
-  --blue-500: #1268ff;   /* bar primary button */
+  --blue-500: #1268ff;   /* primary button */
   --blue-450: #2a78ff;
-
-  --ink-950:  #161616;   /* bar pills */
-  --ink-900:  #222222;   /* bar pill hover, panel rows */
-  --ink-850:  #2e2e2e;   /* active segment */
-  --ink-700:  #4a4a4a;
-  --ink-400:  #a8a8a8;   /* bar placeholder & muted text */
-  --red-500:  #e5534b;
-  --green-600:#2f8a4e;
+  --blue-400: #5b8cff;   /* illustrations on dark */
+  --red-400:  #ff6b5e;
+  --green-400:#4cc27a;
 
   /* semantic — use these */
-  --c-bg:            var(--gray-0);
-  --c-surface:       var(--gray-50);
-  --c-surface-hover: var(--gray-100);
-  --c-fill:          var(--gray-100);     /* inputs, pressed states */
-  --c-line:          var(--gray-150);
-  --c-line-strong:   var(--gray-200);
-  --c-line-active:   var(--gray-800);
+  --c-bg:            var(--gray-1000);
+  --c-surface:       var(--gray-950);
+  --c-surface-hover: var(--gray-900);
+  --c-fill:          var(--gray-900);     /* inputs, pressed states */
+  --c-fill-hover:    var(--gray-850);
+  --c-line:          var(--gray-800);
+  --c-line-strong:   var(--gray-700);
+  --c-line-active:   var(--gray-100);
 
-  --c-text:          var(--gray-900);
-  --c-text-2:        var(--gray-600);
-  --c-text-3:        var(--gray-500);
-  --c-text-disabled: var(--gray-400);
-  --c-text-invert:   var(--gray-0);
+  --c-text:          var(--gray-0);
+  --c-text-2:        var(--gray-300);
+  --c-text-3:        var(--gray-400);
+  --c-text-disabled: var(--gray-500);
+  --c-text-invert:   var(--gray-1000);
+  --c-solid-hover:   var(--gray-100);     /* white button on hover */
 
-  --c-ink-blue:      var(--blue-600);     /* illustrations only */
-  --c-accent:        var(--blue-500);     /* one primary button in the bar */
+  --c-ink-blue:      var(--blue-400);
+  --c-accent:        var(--blue-500);
   --c-accent-hover:  var(--blue-450);
+  --c-signal:        var(--red-400);
+  --c-success:       var(--green-400);
 
-  /* chrome = the dark floating top bar and its search panel */
-  --c-chrome:        var(--ink-950);
-  --c-chrome-hover:  var(--ink-900);
-  --c-chrome-active: var(--ink-850);
-  --c-chrome-line:   var(--ink-700);
-  --c-chrome-text:   #ffffff;
-  --c-chrome-muted:  var(--ink-400);
-  --c-signal:        var(--red-500);      /* hover on chips, "new" marks */
-  --c-success:       var(--green-600);
+  /* chrome = the floating top bar and its search panel */
+  --c-chrome:        var(--gray-900);
+  --c-chrome-hover:  var(--gray-850);
+  --c-chrome-active: var(--gray-800);
+  --c-chrome-line:   var(--gray-700);
+  --c-chrome-text:   var(--gray-0);
+  --c-chrome-muted:  var(--gray-400);
 
-  --c-focus:         var(--blue-600);
-  --c-selection:     #dfe7fd;
-  --c-shot-shadow:   rgb(0 0 0 / 0.06);
+  --c-focus:         var(--blue-450);
+  --c-selection:     rgb(42 120 255 / 0.35);
+  --c-shot-shadow:   rgb(0 0 0 / 0.4);
 
 
   /* 2. TYPOGRAPHY ----------------------------------------------------------
@@ -190,14 +186,15 @@
 
   --section-gap: clamp(var(--s-16), 10vw, var(--s-32));  /* hero ↔ grid */
 
-  --container:        60rem;    /* 960px main column */
+  --container:        60rem;    /* 960px text-heavy pages */
+  --container-wide:   120rem;   /* gallery pages run nearly edge to edge */
   --container-narrow: 36rem;    /* 576px text pages, forms */
-  --gutter:           clamp(1rem, 4vw, 1.5rem);
+  --gutter:           clamp(1rem, 2.2vw, 2rem);
   --bar-h:            2.75rem;  /* 44px pill height in the top bar */
   --bar-top:          max(var(--s-4), env(safe-area-inset-top, 0px));
   --header-h:         calc(var(--bar-h) + var(--s-4) * 2);  /* space reserved under the bar */
 
-  --grid-gap:    0.5rem;        /* gap between tiles — deliberately tight */
+  --grid-gap:    clamp(1rem, 2.2vw, 2.5rem);  /* between cards */
   --grid-gap-y:  var(--s-8);    /* tile + caption to next row */
 
   --control-h-sm: 1.875rem;     /* 30px chips, small pills */
@@ -213,15 +210,17 @@
   --r-tile: 2px;      /* tiles stay nearly square — like paper, not like apps */
   --r-pill: 999px;    /* chips, buttons, search */
   --r-panel: 22px;    /* search panel under the bar */
+  --r-hero: clamp(16px, 2vw, 28px);  /* the hero panel */
+  --r-card: 4px;      /* gallery cards */
 
   --border: 1px solid var(--c-line);
   --border-strong: 1px solid var(--c-line-strong);
 
   /* Only one shadow exists: the soft lift under a screenshot.
      Cards, buttons and the header are flat. */
-  --shadow-shot: 0 1px 2px var(--c-shot-shadow), 0 8px 24px -8px rgb(0 0 0 / 0.12);
+  --shadow-shot: 0 1px 2px var(--c-shot-shadow), 0 10px 30px -10px rgb(0 0 0 / 0.6);
   /* …plus one for things that float above the page: the search panel. */
-  --shadow-float: 0 16px 48px -12px rgb(0 0 0 / 0.35);
+  --shadow-float: 0 16px 48px -12px rgb(0 0 0 / 0.7);
 
   --ease:      cubic-bezier(0.2, 0, 0, 1);
   --dur-fast:  120ms;
@@ -231,7 +230,7 @@
   --z-header: 30;
   --z-overlay: 50;
 
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 
@@ -294,6 +293,7 @@ hr { border: 0; border-top: var(--border); }
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
+.container--wide { max-width: calc(var(--container-wide) + var(--gutter) * 2); }
 .container--narrow { max-width: calc(var(--container-narrow) + var(--gutter) * 2); }
 
 /* vertical flow with a configurable gap: <div class="stack" style="--gap: var(--s-6)"> */
@@ -355,7 +355,7 @@ hr { border: 0; border-top: var(--border); }
   align-items: center;
   gap: var(--s-2);
   width: 100%;
-  max-width: 82rem;
+  max-width: calc(var(--container-wide) + var(--gutter) * 2);
   margin-inline: auto;
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
@@ -446,7 +446,7 @@ hr { border: 0; border-top: var(--border); }
   color: inherit;
   font-size: var(--fs-15);
 }
-.bar-search__input::placeholder { color: var(--c-chrome-text); opacity: 1; }
+.bar-search__input::placeholder { color: var(--c-chrome-muted); opacity: 1; }
 .bar-search__input:focus::placeholder { color: var(--c-chrome-muted); }
 .bar-search__input::-webkit-search-cancel-button { display: none; }
 .bar-search__clear {
@@ -531,6 +531,23 @@ hr { border: 0; border-top: var(--border); }
 .btn.btn--accent { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
 .btn.btn--accent:hover { background: var(--c-accent-hover); border-color: var(--c-accent-hover); }
 .btn.btn--accent:active { background: var(--c-accent); }
+.btn.btn--chrome { background: var(--c-chrome); border-color: var(--c-chrome); color: var(--c-chrome-text); }
+.btn.btn--chrome:hover { background: var(--c-chrome-hover); border-color: var(--c-chrome-hover); }
+
+/* round icon button in the bar (About) */
+.bar-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--bar-h);
+  height: var(--bar-h);
+  border-radius: var(--r-pill);
+  background: var(--c-chrome);
+  color: var(--c-chrome-text);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.bar-icon:hover, .bar-icon[aria-current="page"] { background: var(--c-chrome-hover); }
+.bar-icon svg { width: 22px; height: 22px; }
 
 .only-wide { display: inline; }
 .only-narrow { display: none; }
@@ -596,8 +613,8 @@ hr { border: 0; border-top: var(--border); }
 .btn:active { background: var(--c-fill); }
 
 .btn--solid { background: var(--c-text); border-color: var(--c-text); color: var(--c-text-invert); }
-.btn--solid:hover { background: var(--gray-800); border-color: var(--gray-800); }
-.btn--solid:active { background: var(--gray-900); }
+.btn--solid:hover { background: var(--c-solid-hover); border-color: var(--c-solid-hover); }
+.btn--solid:active { background: var(--c-text-2); }
 
 .btn--ghost { border-color: transparent; background: transparent; }
 .btn--ghost:hover { border-color: transparent; background: var(--c-fill); }
@@ -719,68 +736,108 @@ hr { border: 0; border-top: var(--border); }
 .hero__aside a { color: var(--c-text); }
 .hero__aside a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 
+/* Home hero: a rounded panel with screenshots scattered around its edges
+   (clipped by the panel) and a short statement + one blue button in the
+   clear middle. Each .collage__item is placed with --x / --y in % of the
+   panel, so the arrangement is data, not CSS.                           */
+.hero-panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 26rem;
+  aspect-ratio: 2.8 / 1;
+  overflow: hidden;
+  border: var(--border);
+  border-radius: var(--r-hero);
+  background: var(--c-bg);
+  isolation: isolate;
+}
+.hero-panel__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-1);
+  max-width: 34rem;
+  padding: var(--s-6);
+  text-align: center;
+}
+.hero-panel__title { font-size: clamp(var(--fs-17), 0.9rem + 0.8vw, var(--fs-24)); font-weight: var(--fw-medium); letter-spacing: var(--ls-snug); }
+.hero-panel__sub { font-size: clamp(var(--fs-17), 0.9rem + 0.8vw, var(--fs-24)); color: var(--c-text-3); letter-spacing: var(--ls-snug); line-height: var(--lh-snug); }
+.hero-panel__cta { margin-top: var(--s-6); }
+
+.collage { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.collage__item {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 16.5%;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  background: var(--c-surface);
+  box-shadow: var(--shadow-shot);
+}
+.collage__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+@media (max-width: 48rem) {
+  .hero-panel { aspect-ratio: auto; min-height: 27rem; }
+  .collage__item { width: 34%; }
+  .collage__item--mid { display: none; }
+}
+
 
 /* 13. TILES & CARDS ---------------------------------------------------------
-   .tile  – the grey square that frames a screenshot. Screenshot sits in the
-            middle at ~80% width with the only shadow in the system.
-   .card  – tile + caption (name, category, one-line summary). The whole
-            card is a single link.
-   .cards – the grid. Two columns from 40rem up; tight horizontal gap,
-            larger vertical gap so captions breathe.                     */
+   .card   – one site in the grid: a full-bleed screenshot (.card__media)
+             with a pricing badge, then a caption (name, category, summary).
+             The whole card is a single link.
+   .cards  – the grid. 1 → 2 → 3 columns.
+   .tile   – a framed screenshot on a surface, used large on the tool page. */
 
 .cards {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--grid-gap-y) var(--grid-gap);
 }
-@media (min-width: 40rem) {
-  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-.tile {
-  position: relative;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 7 / 5;
-  padding: 10% 10%;
-  overflow: hidden;
-  border-radius: var(--r-tile);
-  background: var(--c-surface);
-  transition: background-color var(--dur) var(--ease);
-}
-.tile__shot {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top center;
-  border-radius: var(--r-xs);
-  box-shadow: var(--shadow-shot);
-  background: var(--c-bg);
-  transition: transform var(--dur-slow) var(--ease);
-}
-/* fallback when a tool has no screenshot yet: the domain set large */
-.tile__fallback {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--r-xs);
-  background: var(--c-bg);
-  box-shadow: var(--shadow-shot);
-  font-size: clamp(var(--fs-20), 3vw, 2rem);
-  font-weight: var(--fw-medium);
-  letter-spacing: var(--ls-tight);
-  color: var(--c-text);
-}
-.tile--large { aspect-ratio: 3 / 2; padding: 7% 8%; }
+@media (min-width: 40rem) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .card { display: flex; flex-direction: column; gap: var(--s-3); color: inherit; }
-.card:hover .tile { background: var(--c-surface-hover); }
-.card:hover .tile__shot { transform: translateY(-4px); }
 .card:focus-visible { outline-offset: 4px; }
+.card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--c-surface);
+}
+.card__shot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform var(--dur-slow) var(--ease);
+}
+.card:hover .card__shot { transform: scale(1.02); }
+.card__badge {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  display: inline-flex;
+  align-items: center;
+  height: 1.75rem;
+  padding-inline: 0.7rem;
+  border-radius: var(--r-pill);
+  background: rgb(13 13 13 / 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--c-chrome-text);
+  font-size: var(--fs-13);
+}
 .card__caption { display: flex; flex-direction: column; gap: 2px; padding-inline: 1px; }
 .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
 .card__name { font-size: var(--fs-15); font-weight: var(--fw-medium); }
+.card:hover .card__name { color: var(--c-signal); }
 .card__category { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
 .card__summary {
   font-size: var(--fs-14);
@@ -790,6 +847,39 @@ hr { border: 0; border-top: var(--border); }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* fallback when a site has no screenshot yet: the domain set large */
+.shot-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--c-surface);
+  font-size: clamp(var(--fs-20), 2.4vw, 2rem);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-tight);
+  color: var(--c-text-2);
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  padding: 7% 8%;
+  overflow: hidden;
+  border-radius: var(--r-hero);
+  background: var(--c-surface);
+}
+.tile__shot {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-shot);
+}
+.tile .shot-fallback { aspect-ratio: 16 / 10; height: auto; border-radius: var(--r-sm); background: var(--c-fill); }
 
 /* toolbar above the grid: chips on the left, result count on the right */
 .toolbar {
@@ -910,14 +1000,14 @@ hr { border: 0; border-top: var(--border); }
   transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 .input::placeholder, .textarea::placeholder { color: var(--c-text-3); opacity: 1; }
-.input:hover, .textarea:hover, .select:hover { background: #e9e9e9; }
+.input:hover, .textarea:hover, .select:hover { background: var(--c-fill-hover); }
 .input:focus, .textarea:focus, .select:focus { outline: none; background: var(--c-bg); border-color: var(--c-line-active); }
 .input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--c-signal); }
 .textarea { min-height: 7.5rem; resize: vertical; line-height: var(--lh-body); }
 .select {
   appearance: none;
   padding-right: 2.25rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a8a' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238c8c8c' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
 }

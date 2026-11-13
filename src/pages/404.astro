@@ -1,11 +1,13 @@
 ---
 import Base from '~/layouts/Base.astro';
+import HeroDrawing from '~/components/HeroDrawing.astro';
 import { useTranslations } from '~/i18n';
 const t = useTranslations('en');
 ---
 <Base title="Not found">
   <div class="container">
     <div class="empty" style="padding-block: var(--s-32)">
+      <HeroDrawing class="hero__drawing" />
       <h1 class="t-statement">{t('notFound.title')}</h1>
       <p>{t('notFound.body')}</p>
       <a class="btn mt-4" href="/">← {t('notFound.home')}</a>

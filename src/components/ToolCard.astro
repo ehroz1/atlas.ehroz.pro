@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
 import { domainOf, searchText, type Tool } from '~/lib/data';
-import { loc, defaultLang, type Lang } from '~/i18n';
+import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
 
 interface Props {
   tool: Tool;
@@ -17,6 +17,8 @@ interface Props {
 const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false } = Astro.props;
 const shot = shotFor(tool.id);
 const d = tool.data;
+const t = useTranslations(lang);
+const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`);
 ---
 <a
   class="card"
@@ -25,22 +27,23 @@ const d = tool.data;
   data-search={searchText(tool, categoryName)}
   data-name={d.name.toLowerCase()}
 >
-  <div class="tile">
+  <div class="card__media">
     {shot ? (
       <Image
-        class="tile__shot"
+        class="card__shot"
         src={shot}
         alt=""
         widths={[480, 720, 960]}
-        sizes="(min-width: 64rem) 380px, (min-width: 40rem) 40vw, 80vw"
+        sizes="(min-width: 64rem) 32vw, (min-width: 40rem) 48vw, 92vw"
         loading={eager ? 'eager' : 'lazy'}
         fetchpriority={eager ? 'high' : undefined}
         format="webp"
         quality={78}
       />
     ) : (
-      <div class="tile__fallback" aria-hidden="true">{domainOf(d.url)}</div>
+      <div class="shot-fallback" aria-hidden="true">{domainOf(d.url)}</div>
     )}
+    <span class="card__badge">{badge}</span>
   </div>
   <div class="card__caption">
     <div class="card__row">

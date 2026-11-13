@@ -4,17 +4,18 @@ Everything visual lives in **`src/styles/atlas.css`**. This document explains th
 rules behind it, so new pages look like they were made at the same time as the
 first ones.
 
-The reference is [deck.gallery](https://www.deck.gallery): a white page, a single
-calm statement, pill-shaped controls, and a tight grid of grey tiles with
-screenshots floating in them. When in doubt, do less.
+The reference is [deck.gallery](https://www.deck.gallery): a near-black page,
+floating dark pills for navigation, a rounded hero panel with screenshots
+scattered around its edges, and a grid of full-bleed screenshots. When in doubt,
+do less.
 
 ---
 
 ## 1. Principles
 
-1. **Content is the color.** The interface is black, white and grey. The
-   screenshots of the sites are what people came to see, so the frame stays
-   quiet.
+1. **Content is the color.** The interface is near-black, white and grey
+   (dark theme only). The screenshots of the sites are what people came to
+   see, so the frame stays quiet.
 2. **One statement per screen.** A page has one large sentence or title. No
    eyebrow labels, no subtitles stacked on subtitles.
 3. **Space between sections, density inside them.** Big vertical gaps between
@@ -38,21 +39,19 @@ Use semantic tokens (`--c-text`, `--c-surface`), never the raw scale
 
 | Token | Value | Use |
 |---|---|---|
-| `--c-bg` | `#fff` | page |
-| `--c-surface` | `#f5f5f5` | tiles |
-| `--c-surface-hover` | `#efefef` | tile on hover |
-| `--c-fill` | `#efefef` | search, inputs, pressed buttons |
-| `--c-line` / `--c-line-strong` | `#e8e8e8` / `#dedede` | chip and button outlines, dividers |
-| `--c-line-active` | `#2b2b2b` | current chip, focused input |
-| `--c-text` | `#141414` | main text |
-| `--c-text-2` | `#6b6b6b` | summaries, secondary text |
-| `--c-text-3` | `#8a8a8a` | meta, counts, labels |
-| `--c-chrome` | `#161616` | top-bar pills, search panel |
-| `--c-chrome-hover` / `--c-chrome-active` | `#222` / `#2e2e2e` | pill hover, current segment, highlighted result |
-| `--c-chrome-muted` | `#a8a8a8` | secondary text inside the bar |
-| `--c-accent` | `#1268ff` | **the one primary button in the bar** ("Submit a site") |
-| `--c-ink-blue` | `#2f5bea` | **illustrations only** |
-| `--c-signal` | `#e5534b` | chip hover, errors |
+| `--c-bg` | `#0d0d0d` | page, hero panel |
+| `--c-surface` | `#141414` | screenshot placeholders, tool-page frame |
+| `--c-fill` / `--c-fill-hover` | `#1c1c1c` / `#242424` | inputs |
+| `--c-line` / `--c-line-strong` | `#2c2c2c` / `#3a3a3a` | hairlines, chip outlines, hero panel border |
+| `--c-line-active` | `#ededed` | current chip, focused input |
+| `--c-text` | `#fff` | main text |
+| `--c-text-2` | `#b0b0b0` | summaries, secondary text |
+| `--c-text-3` | `#8c8c8c` | meta, counts, hero subline |
+| `--c-chrome` | `#1c1c1c` | top-bar pills, search panel |
+| `--c-chrome-hover` / `--c-chrome-active` | `#242424` / `#2c2c2c` | pill hover, current segment, highlighted result |
+| `--c-accent` | `#1268ff` | **one primary button per screen** (hero "Submit a site") |
+| `--c-ink-blue` | `#5b8cff` | **illustrations only** |
+| `--c-signal` | `#ff6b5e` | hover on card/category names, errors |
 
 Three accents, one job each. Don't add a fourth, don't use blue for links or
 other buttons, and don't use gradients.
@@ -91,7 +90,7 @@ and gap. Common pairs:
 ### Shape
 
 - Pills (`--r-pill`) for anything you click: buttons, chips, search.
-- Tiles are almost square-cornered (`--r-tile`: 2px), like paper.
+- Cards: `--r-card` (4px). Hero panel and tool-page frame: `--r-hero`.
 - Screenshots: `--r-xs` (3px). Form inputs: `--r-md` (10px).
 - Never mix: a pill button inside a pill search is fine; a rounded-2xl card is not.
 
@@ -99,8 +98,8 @@ and gap. Common pairs:
 
 - Main column: `--container` 960px + gutters. Text pages and forms:
   `.container--narrow` (576px).
-- The grid is **two columns** from 640px up, one column below. Don't go to
-  three or four; the screenshots need the width.
+- Gallery pages use `.container--wide` (nearly edge to edge, like the bar).
+  The grid is 1 column on phones, 2 from 640px, 3 from 1024px.
 
 ---
 
@@ -119,11 +118,13 @@ put them together.
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Hero | `.hero`, `.hero__drawing`, `.hero__statement` | drawing → sentence → small aside |
+| Home hero | `.hero-panel`, `.collage`, `.collage__item` (`--x`/`--y`), `.hero-panel__title/__sub/__cta` | rounded panel, screenshots clipped at the edges, title + grey subline + blue button in the middle; positions live in `HeroCollage.astro` |
+| Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
-| Tile | `.tile`, `.tile__shot`, `.tile__fallback`, `.tile--large` | grey frame, shot at ~80% width |
-| Card | `.card`, `.card__name`, `.card__category`, `.card__summary` | whole card is one link |
-| Grid | `.cards`, `.toolbar` | chips + count above, cards below |
+| Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |
+| Tile | `.tile`, `.tile__shot` | large framed screenshot on the tool page |
+| No screenshot | `.shot-fallback` | the domain set large |
+| Grid | `.cards`, `.toolbar` | 1 → 2 → 3 columns; chips + count above on category pages |
 | Facts | `.meta` (a `<dl>`), `.tags`, `.tag` | label column 6rem, hairline between rows |
 | Text | `.prose` | 34rem measure, 17px |
 | Forms | `.form`, `.field`, `.input`, `.textarea`, `.select`, `.checkbox` | filled, no border until focus |
