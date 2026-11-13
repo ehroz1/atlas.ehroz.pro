@@ -1,13 +1,13 @@
 ---
 import { u } from '~/lib/url';
 /**
- * Home hero: one chain of screenshots running round the panel along a
- * single rounded-rectangle track, like a train, with the statement and
- * blue button in the middle.
+ * Home hero: one chain of screenshots running round a single, even
+ * ellipse, like a train, with the statement and blue button in the middle.
  *
- * The track runs through the panel's top and bottom edges (those shots
- * are half cut off) and along its sides. The script spaces as many shots
- * as fit the track evenly and moves them clockwise. With reduced motion
+ * The ellipse touches the panel's top and bottom edges (those shots are
+ * half cut off) and its sides. Shots are spaced by equal arc length, and
+ * their number is always even, so the ring is mirror-symmetric at every
+ * moment. They move clockwise. With reduced motion
  * they are placed on the same track and stay still; without JavaScript
  * only the statement shows.
  */
@@ -48,44 +48,50 @@ const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i)
     const SPEED = 28; // px per second along the track
     const SPACING = 1.12; // distance between shots, in shot widths
 
-    /** Point at distance s along a rounded rectangle, clockwise from the top-left. */
-    function along(s: number, x0: number, y0: number, w: number, h: number, r: number): [number, number] {
-      const sw = w - 2 * r, sh = h - 2 * r, arc = (Math.PI * r) / 2;
-      const P = 2 * (sw + sh) + 4 * arc;
-      s = ((s % P) + P) % P;
-      const segs: [number, (d: number) => [number, number]][] = [
-        [sw, (d) => [x0 + r + d, y0]],
-        [arc, (d) => { const a = -Math.PI / 2 + d / r; return [x0 + w - r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
-        [sh, (d) => [x0 + w, y0 + r + d]],
-        [arc, (d) => { const a = d / r; return [x0 + w - r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
-        [sw, (d) => [x0 + w - r - d, y0 + h]],
-        [arc, (d) => { const a = Math.PI / 2 + d / r; return [x0 + r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
-        [sh, (d) => [x0, y0 + h - r - d]],
-        [arc, (d) => { const a = Math.PI + d / r; return [x0 + r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
-      ];
-      for (const [len, fn] of segs) {
-        if (s <= len) return fn(s);
-        s -= len;
+    // Ellipse with an arc-length table, so equal steps along the line are
+    // equal distances on screen (plain angle steps bunch up at the ends).
+    const SAMPLES = 1024;
+    let cx = 0, cy = 0, rx = 0, ry = 0, tw = 0, th = 0, P = 0, count = 0;
+    const lens = new Float64Array(SAMPLES + 1);
+    const build = () => {
+      let prevX = rx, prevY = 0;
+      lens[0] = 0;
+      for (let i = 1; i <= SAMPLES; i++) {
+        const a = (i / SAMPLES) * Math.PI * 2;
+        const x = rx * Math.cos(a), y = ry * Math.sin(a);
+        lens[i] = lens[i - 1] + Math.hypot(x - prevX, y - prevY);
+        prevX = x;
+        prevY = y;
       }
-      return segs[0][1](0);
-    }
+      P = lens[SAMPLES];
+    };
+    /** Point at distance s along the ellipse, clockwise from the right-hand side. */
+    const along = (s: number): [number, number] => {
+      s = ((s % P) + P) % P;
+      let lo = 0, hi = SAMPLES;
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        lens[mid] < s ? (lo = mid + 1) : (hi = mid);
+      }
+      const i = Math.max(1, lo);
+      const f = (s - lens[i - 1]) / (lens[i] - lens[i - 1] || 1);
+      const a = ((i - 1 + f) / SAMPLES) * Math.PI * 2;
+      return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
+    };
 
-    // Track geometry, recomputed on resize.
-    let tw = 0, th = 0, x0 = 0, y0 = 0, w = 0, h = 0, r = 0, P = 0, count = 0;
     const measure = () => {
       const W = panel.clientWidth;
       const H = panel.clientHeight;
       tw = items[0].offsetWidth;
       th = items[0].offsetHeight;
+      cx = W / 2;
+      cy = H / 2;
       // Desktop: side shots sit just inside the edges. Phones: half off, to leave room for the text.
-      const inset = W >= 768 ? tw / 2 : 0;
-      x0 = inset;
-      w = W - inset * 2;
-      y0 = 0; // top and bottom shots are cut in half by the panel edge
-      h = H;
-      r = Math.min(w, h) * 0.42;
-      P = 2 * (w - 2 * r) + 2 * (h - 2 * r) + 2 * Math.PI * r;
-      count = Math.max(4, Math.min(items.length, Math.floor(P / (tw * SPACING))));
+      rx = W >= 768 ? W / 2 - tw / 2 : W / 2;
+      ry = H / 2; // top and bottom shots are cut in half by the panel edge
+      build();
+      count = Math.floor(P / (tw * SPACING));
+      count = Math.max(4, Math.min(items.length - (items.length % 2), count - (count % 2)));
       items.forEach((el, i) => (el.hidden = i >= count));
     };
 
@@ -93,8 +99,8 @@ const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i)
     const draw = () => {
       const gap = P / count;
       for (let i = 0; i < count; i++) {
-        const [cx, cy] = along(t * SPEED + i * gap, x0, y0, w, h, r);
-        items[i].style.transform = `translate3d(${cx - tw / 2}px, ${cy - th / 2}px, 0)`;
+        const [x, y] = along(t * SPEED + i * gap);
+        items[i].style.transform = `translate3d(${x - tw / 2}px, ${y - th / 2}px, 0)`;
       }
     };
 
