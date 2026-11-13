@@ -112,7 +112,11 @@ put them together.
 |---|---|---|
 | Top bar | `.site-header`, `.bar-group`, `.bar-logo`, `.segmented`, `.bar-search`, `.btn--bar.btn--accent` | fixed, transparent strip of separate dark pills: brand · Sites/Categories · search · Submit |
 | Brand pill | `.bar-logo`, `.bar-logo__more` | globe + "Atlas°"; on hover unrolls to "Atlas.ehroz.pro°" |
-| Search panel | `.search-panel`, `.search-hit`, `.search-panel__chip` | opens under the search pill; categories when empty, sites when typing (on pages without a grid) |
+| Search pill | `.bar-search__field`, `.bar-search__badge` | a button; shows the current query and a blue count of active filters |
+| Finder | `.finder` (a `<dialog>`), `.finder__field`, `.finder__facet`, `.finder__option`, `.finder__hit`, `.finder__foot` | search & filter: white-ringed field, facets left (Category / Pricing / Platform), options with counts right, Clear all + Done; typing lists matching sites |
+| Menu | `.bar-menu`, `.menu`, `.menu__item`, `.menu__sep`, `.menu__note` | opens from the round button at the right end of the bar |
+| Wall | `.wall`, `.wall__row`, `.wall__item`, `.wall__label` | every screenshot edge to edge in brick-offset rows; page uses `<Base flush bare>` |
+| About / plans | `.page-stage`, `.edge-shots`, `.t-headline`, `.plans`, `.plan`, `.plan--raised`, `.plan__*` | big headline, screenshots peeking from the edges, three joined columns, middle one raised |
 | Button | `.btn`, `.btn--solid`, `.btn--ghost`, `.btn--sm`, `.btn--lg` | at most one `--solid` per screen |
 | Link in text | `.link` | grey underline, ink on hover |
 | Back link | `.back` | `← Category` above a page title |
@@ -161,10 +165,11 @@ component-scoped `<style>` blocks for things that could be reused.
 - The bar is `position: fixed` and transparent; only the pills catch clicks.
   `main` is padded by `--header-h`, so new pages need nothing extra.
 - Everything in the bar is `--bar-h` (44px) tall and uses `--c-chrome`.
-- Search lives only in the bar. On pages that render `Gallery`
-  (home, category pages) typing filters the grid through the
-  `atlas:query` event; on other pages it opens the panel with up to 8 hits.
-  Enter opens the highlighted hit, or the home grid with `?q=`.
+- Search lives only in the bar: the pill opens the finder dialog.
+  State is `{ q, category[], pricing[], platform[] }`, mirrored in the URL
+  (`?q=&category=&pricing=&platform=`). On pages that render `Gallery`
+  the header fires `atlas:filter` with matching ids and the grid updates
+  live; elsewhere Done opens the home grid with the same params.
 - Don't add a second search field to a page.
 
 ---
@@ -196,6 +201,8 @@ interfaces tend to do and this site doesn't.
 - [ ] No gradients, glows, glassmorphism or blurred colored blobs.
 - [ ] No purple/indigo accent; the blue accent appears on one button only.
 - [ ] No row of three "feature cards" with an icon, title and two lines.
+      (The About page's three plan columns are the one exception — they
+      copy deck.gallery's pricing layout and every number is real.)
 - [ ] No emoji or sparkles (✨) in UI text, headings or buttons.
 - [ ] No eyebrow label above a heading ("FEATURES", "WHY ATLAS").
 - [ ] No badges like "New" or "Popular" on every card.

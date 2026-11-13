@@ -22,7 +22,7 @@ const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
 ---
-<section id="sites" aria-label="Sites">
+<section id="sites" aria-label="Sites" data-scope-category={current}>
   <div class={filters ? 'toolbar' : 'visually-hidden'}>
     {filters && <CategoryChips categories={categories} current={current} lang={lang} />}
     <span class="toolbar__count t-tabular" data-count aria-live="polite"
@@ -38,95 +38,51 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
   </div>
 
   <div class="empty" data-empty hidden>
-    <p class="empty__title" data-empty-title data-template={t('results.empty.title')}></p>
+    <p class="empty__title">{t('results.empty.title')}</p>
     <p>{t('results.empty.body')}</p>
     <button class="btn btn--sm mt-2" type="button" data-search-reset>{t('results.empty.reset')}</button>
   </div>
 </section>
 
 <script>
-  /* Filters the grid. The query comes from the search pill in the top bar
-     (Header.astro), which fires an `atlas:query` event on every keystroke.
-     - every word of the query must appear somewhere in the card's text
-     - cards whose name starts with the query move to the front
-     - the query is mirrored in ?q= so results can be shared */
+  /* Shows only the cards the finder says match. Header.astro fires
+     `atlas:filter` with { ids, q } and keeps the last one on window,
+     in case it ran before this script. Cards whose name starts with the
+     query move to the front. */
   const grid = document.querySelector<HTMLElement>('[data-cards]');
   const empty = document.querySelector<HTMLElement>('[data-empty]');
-  const emptyTitle = document.querySelector<HTMLElement>('[data-empty-title]');
   const count = document.querySelector<HTMLElement>('[data-count]');
-  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
 
   if (grid) {
     const original = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
     const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim();
 
-    const setCount = (n: number) => {
-      if (!count) return;
-      const tpl = n === 1 ? count.dataset.one : count.dataset.other;
-      count.textContent = (tpl ?? '{count}').replace('{count}', String(n));
-    };
-
-    let lifted = false;
-    const apply = (raw: string) => {
-      const q = normalize(raw);
-      const words = q.split(/\s+/).filter(Boolean);
-      let shown = 0;
+    const apply = ({ ids, q }: { ids: Set<string>; q: string }) => {
+      const nq = normalize(q);
       const lead: HTMLElement[] = [];
       const rest: HTMLElement[] = [];
-
       for (const card of original) {
-        const match = words.every((w) => normalize(card.dataset.search ?? '').includes(w));
+        const match = ids.has(card.dataset.id!);
         card.hidden = !match;
-        if (!match) continue;
-        shown++;
-        (q && card.dataset.name?.startsWith(q) ? lead : rest).push(card);
+        if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
       }
       grid.append(...lead, ...rest, ...original.filter((c) => c.hidden));
-
-      setCount(shown);
-      if (empty && emptyTitle) {
+      const shown = lead.length + rest.length;
+      if (count) {
+        const tpl = shown === 1 ? count.dataset.one : count.dataset.other;
+        count.textContent = (tpl ?? '{count}').replace('{count}', String(shown));
+      }
+      if (empty) {
         empty.hidden = shown > 0;
         grid.hidden = shown === 0;
-        emptyTitle.textContent = (emptyTitle.dataset.template ?? '').replace('{query}', raw.trim());
-      }
-
-      try {
-        const url = new URL(location.href);
-        q ? url.searchParams.set('q', raw.trim()) : url.searchParams.delete('q');
-        history.replaceState(history.state, '', url);
-      } catch {
-        /* sandboxed frames may refuse history changes; filtering still works */
-      }
-
-      // First keystroke: bring the results up if they're below the fold.
-      if (q && !lifted) {
-        lifted = true;
-        const sites = document.getElementById('sites');
-        if (sites && sites.getBoundingClientRect().top > innerHeight * 0.6) {
-          sites.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
       }
     };
 
-    document.addEventListener('atlas:query', (e) => apply((e as CustomEvent<string>).detail));
-
+    const last = (window as any).__atlasFilter;
+    if (last) apply(last);
+    document.addEventListener('atlas:filter', (e) => apply((e as CustomEvent).detail));
     document.querySelector('[data-search-reset]')?.addEventListener('click', () => {
-      if (!input) return;
-      input.value = '';
-      apply('');
-      input.focus();
-    });
-
-    // Keep chip links carrying the current query between categories.
-    document.querySelectorAll<HTMLAnchorElement>('.chip').forEach((chip) => {
-      chip.addEventListener('click', () => {
-        const q = input?.value.trim();
-        if (!q) return;
-        const url = new URL(chip.href);
-        url.searchParams.set('q', q);
-        url.hash = 'sites';
-        chip.href = url.href;
-      });
+      document.dispatchEvent(new Event('atlas:reset'));
     });
   }
 </script>

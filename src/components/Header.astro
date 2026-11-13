@@ -1,10 +1,13 @@
 ---
 /**
- * Floating top bar: brand · Sites|Categories · search · Submit.
- * The search works on every page:
- *  - on pages with a grid (home, category) it filters the grid in place;
- *  - elsewhere it opens a panel with matching sites to jump to.
- * The search index is embedded as JSON (name, category, summary, text).
+ * Floating top bar: brand · Sites|Wall · search & filter · Submit · menu.
+ *
+ * The search pill opens the finder dialog (search field + facets).
+ * State: { q, category[], pricing[], platform[] }, mirrored in the URL.
+ * - On pages with a grid (home, category) results filter in place: the
+ *   header fires `atlas:filter` with the matching ids; Gallery listens.
+ * - Elsewhere, Done opens the home grid with the same URL params, and
+ *   typed queries list matching sites to jump to directly.
  */
 import { getTools, getCategories, searchText } from '~/lib/data';
 import { useTranslations, loc, defaultLang, type Lang } from '~/i18n';
@@ -16,17 +19,45 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
-const index = tools.map((tool) => ({
-  id: tool.id,
-  name: tool.data.name,
-  category: names.get(tool.data.category),
-  summary: loc(tool.data.summary, lang),
-  text: searchText(tool, names.get(tool.data.category)!),
-}));
-const cats = categories.map((c) => ({ id: c.id, name: loc(c.data.name, lang) }));
+const count = <T,>(list: T[], fn: (x: T) => boolean) => list.filter(fn).length;
 
-const section =
-  path === '/' || path.startsWith('/tool/') ? 'sites' : path.startsWith('/categor') ? 'categories' : null;
+const platforms = [...new Set(tools.flatMap((x) => x.data.platforms))].sort(
+  (a, b) => count(tools, (x) => x.data.platforms.includes(b)) - count(tools, (x) => x.data.platforms.includes(a)),
+);
+
+const index = {
+  tools: tools.map((tool) => ({
+    id: tool.id,
+    name: tool.data.name,
+    category: tool.data.category,
+    categoryName: names.get(tool.data.category),
+    pricing: tool.data.pricing,
+    open: tool.data.openSource,
+    platforms: tool.data.platforms,
+    summary: loc(tool.data.summary, lang),
+    text: searchText(tool, names.get(tool.data.category)!),
+  })),
+  facets: {
+    category: categories.map((c) => ({ id: c.id, label: loc(c.data.name, lang), count: count(tools, (x) => x.data.category === c.id) })),
+    pricing: [
+      ...(['free', 'freemium', 'paid'] as const).map((p) => ({ id: p, label: t(`pricing.${p}`), count: count(tools, (x) => x.data.pricing === p) })),
+      { id: 'open', label: t('pricing.openSource'), count: count(tools, (x) => x.data.openSource) },
+    ],
+    platform: platforms.map((p) => ({ id: p, label: p, count: count(tools, (x) => x.data.platforms.includes(p)) })),
+  },
+  strings: {
+    category: t('search.facet.category'),
+    pricing: t('search.facet.pricing'),
+    platform: t('search.facet.platform'),
+    sites: t('search.sites'),
+    none: t('search.none'),
+    placeholder: t('search.placeholder'),
+    filtersOne: t('search.filters.one'),
+    filtersOther: t('search.filters.other'),
+  },
+};
+
+const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/tool/') || path.startsWith('/categor') ? 'sites' : null;
 ---
 <header class="site-header">
   <div class="site-header__inner">
@@ -42,209 +73,332 @@ const section =
       </a>
       <nav class="segmented" aria-label={t('nav.sections')}>
         <a class="segmented__item" href="/" aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
-        <a class="segmented__item" href="/categories" aria-current={section === 'categories' ? 'page' : undefined}>{t('nav.categories')}</a>
+        <a class="segmented__item" href="/wall" aria-current={section === 'wall' ? 'page' : undefined}>{t('nav.wall')}</a>
       </nav>
     </div>
 
-    <div class="bar-search" data-bar-search>
-      <form class="bar-search__field" role="search" onsubmit="return false">
+    <div class="bar-search">
+      <button class="bar-search__field" type="button" aria-haspopup="dialog" aria-controls="finder" data-finder-open>
         <svg class="bar-search__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
           <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
         </svg>
-        <label class="visually-hidden" for="site-search">{t('search.label')}</label>
-        <input
-          class="bar-search__input"
-          id="site-search"
-          type="search"
-          placeholder={t('search.placeholder')}
-          autocomplete="off"
-          spellcheck="false"
-          enterkeyhint="search"
-          role="combobox"
-          aria-expanded="false"
-          aria-controls="search-panel"
-          aria-autocomplete="list"
-          data-search-input
-        />
+        <span class="bar-search__label" data-finder-label>{t('search.placeholder')}</span>
+        <span class="bar-search__badge" data-finder-badge hidden></span>
         <kbd class="kbd" aria-hidden="true">/</kbd>
-        <button class="bar-search__clear" type="button" aria-label={t('search.clear')} data-search-clear>✕</button>
-      </form>
-      <div class="search-panel" id="search-panel" role="listbox" aria-label={t('search.label')} hidden data-search-panel></div>
+      </button>
     </div>
 
     <div class="bar-group bar-group--end">
       <a class="btn btn--bar btn--chrome" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
-      <a class="bar-icon" href="/about" aria-label={t('nav.about')} title={t('nav.about')} aria-current={path === '/about' ? 'page' : undefined}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.1"/>
-        </svg>
-      </a>
+      <div class="bar-menu">
+        <button class="bar-icon" type="button" aria-label={t('nav.menu')} aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="M5 8.5h14M5 15.5h14"/>
+          </svg>
+        </button>
+        <nav class="menu" id="site-menu" aria-label={t('nav.menu')} hidden data-menu>
+          <a class="menu__item" href="/about" aria-current={path === '/about' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
+            {t('nav.about')}
+          </a>
+          <a class="menu__item" href="/categories" aria-current={path === '/categories' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+            {t('nav.categories')}
+          </a>
+          <a class="menu__item" href="/wall" aria-current={path === '/wall' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="7" height="5" rx="1"/><rect x="13.5" y="5" width="7" height="5" rx="1"/><rect x="7.5" y="14" width="9" height="5" rx="1"/></svg>
+            {t('nav.wall')}
+          </a>
+          <a class="menu__item" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            {t('nav.submit')}
+          </a>
+          <hr class="menu__sep" />
+          <p class="menu__note"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
+        </nav>
+      </div>
     </div>
   </div>
 </header>
 
-<script is:inline type="application/json" id="search-index" set:html={JSON.stringify({
-  tools: index,
-  categories: cats,
-  strings: {
-    categories: t('search.panel.categories'),
-    sites: t('search.panel.sites'),
-    none: t('search.panel.none'),
-    all: t('search.panel.all'),
-  },
-}).replace(/</g, '\\u003c')} />
+<dialog class="finder" id="finder" aria-label={t('search.label')} data-finder>
+  <form class="finder__field" role="search" method="dialog" onsubmit="return false">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
+    </svg>
+    <label class="visually-hidden" for="finder-input">{t('search.label')}</label>
+    <input class="finder__input" id="finder-input" type="search" placeholder={t('search.input')}
+      autocomplete="off" spellcheck="false" enterkeyhint="search" data-finder-input />
+  </form>
+  <div class="finder__body">
+    <div class="finder__facets" role="tablist" aria-label="Filters">
+      <button class="finder__facet" type="button" role="tab" aria-selected="true" data-facet="category">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 15.5h3"/><circle cx="9" cy="9" r="1.2"/></svg>
+        {t('search.facet.category')}<span class="finder__facet-count" data-facet-count="category"></span>
+      </button>
+      <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="pricing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5V5h7.5L20 13.5 13.5 20 4 12.5Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>
+        {t('search.facet.pricing')}<span class="finder__facet-count" data-facet-count="pricing"></span>
+      </button>
+      <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="platform">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="11" rx="1.8"/><path d="M9 19.5h6M12 16v3.5"/></svg>
+        {t('search.facet.platform')}<span class="finder__facet-count" data-facet-count="platform"></span>
+      </button>
+    </div>
+    <div class="finder__pane" role="tabpanel" data-finder-pane></div>
+  </div>
+  <div class="finder__foot">
+    <button class="finder__clear" type="button" data-finder-clear hidden>{t('search.clearAll')}</button>
+    <button class="finder__done" type="button" data-finder-done>{t('search.done')}</button>
+  </div>
+</dialog>
+
+<script is:inline type="application/json" id="search-index" set:html={JSON.stringify(index).replace(/</g, '\\u003c')} />
 
 <script>
-  type Hit = { id: string; name: string; category: string; summary: string; text: string };
-  type Index = { tools: Hit[]; categories: { id: string; name: string }[]; strings: Record<string, string> };
+  type Tool = {
+    id: string; name: string; category: string; categoryName: string; pricing: string;
+    open: boolean; platforms: string[]; summary: string; text: string;
+  };
+  type Option = { id: string; label: string; count: number };
+  type FacetKey = 'category' | 'pricing' | 'platform';
+  type Index = { tools: Tool[]; facets: Record<FacetKey, Option[]>; strings: Record<string, string> };
+  type State = { q: string } & Record<FacetKey, Set<string>>;
 
-  const input = document.querySelector<HTMLInputElement>('[data-search-input]')!;
-  const panel = document.querySelector<HTMLElement>('[data-search-panel]')!;
-  const box = document.querySelector<HTMLElement>('[data-bar-search]')!;
   const data: Index = JSON.parse(document.getElementById('search-index')!.textContent!);
-  const hasGrid = () => !!document.querySelector('[data-cards]');
+  const S = data.strings;
+  const FACETS: FacetKey[] = ['category', 'pricing', 'platform'];
 
-  /* Build page URLs from the logo's href, so links work both on the real
-     site ("/") and in a static copy served from a sub-folder ("../index.html"). */
+  const dialog = document.querySelector<HTMLDialogElement>('[data-finder]')!;
+  const input = document.querySelector<HTMLInputElement>('[data-finder-input]')!;
+  const pane = document.querySelector<HTMLElement>('[data-finder-pane]')!;
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-finder-clear]')!;
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-finder-open]')!;
+  const label = document.querySelector<HTMLElement>('[data-finder-label]')!;
+  const badge = document.querySelector<HTMLElement>('[data-finder-badge]')!;
+
+  /* URLs are built from the logo's href so links work on the real site
+     ("/") and in a static copy served from a sub-folder ("../index.html"). */
   const home = document.querySelector<HTMLAnchorElement>('[data-home]')!.getAttribute('href')!;
   const fileMode = home.endsWith('index.html');
   const base = fileMode ? home.replace(/index\.html$/, '') : '/';
   const pageUrl = (p: string, query = '') =>
     base + (p ? p + (fileMode ? '/index.html' : '') : fileMode ? 'index.html' : '') + query;
 
+  const grid = () => document.querySelector<HTMLElement>('[data-cards]');
+  const scope = document.querySelector<HTMLElement>('[data-scope-category]')?.dataset.scopeCategory;
+
   const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+  const CHECK = '<svg class="finder__check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
 
-  function match(q: string) {
-    const words = normalize(q).split(/\s+/).filter(Boolean);
-    const nq = normalize(q);
-    return data.tools
-      .filter((t) => words.every((w) => normalize(t.text).includes(w)))
-      .sort((a, b) => Number(normalize(b.name).startsWith(nq)) - Number(normalize(a.name).startsWith(nq)));
+  // ---- state ---------------------------------------------------------
+  const state: State = { q: '', category: new Set(), pricing: new Set(), platform: new Set() };
+  const params = new URLSearchParams(location.search);
+  state.q = params.get('q') ?? '';
+  for (const f of FACETS) (params.get(f) ?? '').split(',').filter(Boolean).forEach((v) => state[f].add(v));
+  if (scope && !state.category.size) state.category.add(scope);
+
+  let facet: FacetKey = 'category';
+  const filterCount = () =>
+    FACETS.reduce((n, f) => n + state[f].size, 0) - (scope && state.category.size === 1 && state.category.has(scope) ? 1 : 0);
+
+  function matches(tool: Tool) {
+    const words = normalize(state.q).split(/\s+/).filter(Boolean);
+    const hay = normalize(tool.text);
+    if (!words.every((w) => hay.includes(w))) return false;
+    if (state.category.size && !state.category.has(tool.category)) return false;
+    if (state.pricing.size && !(state.pricing.has(tool.pricing) || (state.pricing.has('open') && tool.open))) return false;
+    if (state.platform.size && !tool.platforms.some((p) => state.platform.has(p))) return false;
+    return true;
   }
 
-  let active = -1;
-  const options = () => Array.from(panel.querySelectorAll<HTMLAnchorElement>('[role="option"]'));
-  const setActive = (i: number) => {
-    const list = options();
-    active = list.length ? (i + list.length) % list.length : -1;
-    list.forEach((el, n) => el.setAttribute('aria-selected', String(n === active)));
-    list[active]?.scrollIntoView({ block: 'nearest' });
-  };
+  // Filtering in place works when the page has a grid and, on a category
+  // page, the category selection is still just that category.
+  const inPlace = () =>
+    !!grid() && (!scope || (state.category.size === 1 && state.category.has(scope)));
 
-  function open() {
-    panel.hidden = false;
-    input.setAttribute('aria-expanded', 'true');
-  }
-  function close() {
-    panel.hidden = true;
-    input.setAttribute('aria-expanded', 'false');
-    active = -1;
-  }
-
-  function render() {
-    const q = input.value.trim();
-    const s = data.strings;
-    let html = '';
-    // Empty field: offer categories as quick filters.
-    if (!q) {
-      html += `<div class="search-panel__label">${esc(s.categories)}</div><div class="search-panel__chips">`;
-      html += data.categories
-        .map((c) => `<a class="search-panel__chip" href="${pageUrl('category/' + c.id)}">${esc(c.name)}</a>`)
-        .join('');
-      html += '</div>';
-    } else if (!hasGrid()) {
-      // Typed query on a page without a grid: show hits to jump to.
-      const hits = match(q);
-      if (!hits.length) {
-        html += `<p class="search-panel__empty">${esc(s.none.replace('{query}', q))}</p>`;
-      } else {
-        html += `<div class="search-panel__label">${esc(s.sites)}</div>`;
-        html += hits
-          .slice(0, 8)
-          .map(
-            (h) => `<a class="search-hit" role="option" aria-selected="false" href="${pageUrl('tool/' + h.id)}">
-              <span class="search-hit__name">${esc(h.name)}</span>
-              <span class="search-hit__category">${esc(h.category)}</span>
-              <span class="search-hit__summary">${esc(h.summary)}</span></a>`,
-          )
-          .join('');
-        html += `<a class="search-panel__all" role="option" aria-selected="false" href="${pageUrl('', '?q=' + encodeURIComponent(q) + '#sites')}">${esc(s.all.replace('{query}', q))} →</a>`;
-      }
-    } else {
-      // Grid pages filter in place; no panel needed while typing.
-      close();
-      return;
-    }
-    panel.innerHTML = html;
-    active = -1;
-    open();
+  function queryString() {
+    const p = new URLSearchParams();
+    if (state.q.trim()) p.set('q', state.q.trim());
+    for (const f of FACETS) if (state[f].size && !(f === 'category' && scope && inPlace())) p.set(f, [...state[f]].join(','));
+    const s = p.toString();
+    return s ? '?' + s : '';
   }
 
   function emit() {
-    document.dispatchEvent(new CustomEvent('atlas:query', { detail: input.value }));
+    const ids = new Set(data.tools.filter(matches).map((x) => x.id));
+    const detail = { ids, q: state.q };
+    (window as any).__atlasFilter = detail;
+    document.dispatchEvent(new CustomEvent('atlas:filter', { detail }));
+    try {
+      history.replaceState(history.state, '', location.pathname + queryString() + location.hash);
+    } catch {
+      /* sandboxed frames may refuse history changes */
+    }
   }
 
-  input.addEventListener('focus', render);
+  // ---- rendering -----------------------------------------------------
+  function renderBar() {
+    const n = filterCount();
+    label.textContent = state.q.trim() || S.placeholder;
+    openBtn.classList.toggle('is-active', !!state.q.trim() || n > 0);
+    badge.hidden = n === 0;
+    badge.textContent = String(n);
+    badge.title = (n === 1 ? S.filtersOne : S.filtersOther).replace('{count}', String(n));
+    clearBtn.hidden = !state.q.trim() && n === 0;
+    for (const f of FACETS) {
+      const el = document.querySelector<HTMLElement>(`[data-facet-count="${f}"]`)!;
+      el.textContent = state[f].size ? String(state[f].size) : '';
+    }
+  }
+
+  let active = -1;
+  function renderPane() {
+    document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.facet === facet)));
+    if (state.q.trim()) {
+      const hits = data.tools.filter(matches);
+      pane.innerHTML = hits.length
+        ? `<div class="finder__label">${esc(S.sites)} · ${hits.length}</div>` +
+          hits
+            .slice(0, 30)
+            .map(
+              (h) => `<a class="finder__hit" href="${pageUrl('tool/' + h.id)}" aria-selected="false">
+                <span class="finder__hit-name">${esc(h.name)}</span>
+                <span class="finder__hit-meta">${esc(h.categoryName)}</span>
+                <span class="finder__hit-summary">${esc(h.summary)}</span></a>`,
+            )
+            .join('')
+        : `<p class="finder__empty">${esc(S.none)}</p>`;
+      active = -1;
+      return;
+    }
+    pane.innerHTML =
+      `<div class="finder__label">${esc(S[facet])}</div>` +
+      data.facets[facet]
+        .map(
+          (o) => `<button class="finder__option" type="button" aria-pressed="${state[facet].has(o.id)}" data-option="${esc(o.id)}">
+            ${CHECK}<span>${esc(o.label)}</span><span class="finder__count">${o.count}</span></button>`,
+        )
+        .join('');
+  }
+
+  function update() {
+    renderBar();
+    renderPane();
+    if (inPlace()) emit();
+  }
+
+  // ---- events --------------------------------------------------------
+  function open() {
+    input.value = state.q;
+    renderPane();
+    if (!dialog.open) dialog.showModal();
+    input.focus();
+    input.select();
+  }
+  function done() {
+    dialog.close();
+    if (inPlace()) {
+      emit();
+      if (state.q.trim() || filterCount()) document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (state.q.trim() || filterCount()) {
+      location.href = pageUrl('', queryString() + '#sites');
+    }
+  }
+
+  openBtn.addEventListener('click', open);
+  document.querySelector('[data-finder-done]')!.addEventListener('click', done);
+  clearBtn.addEventListener('click', () => {
+    state.q = '';
+    input.value = '';
+    for (const f of FACETS) state[f].clear();
+    if (scope) state.category.add(scope);
+    update();
+    input.focus();
+  });
+  document.addEventListener('atlas:reset', () => clearBtn.click());
+
   input.addEventListener('input', () => {
-    render();
-    emit();
+    state.q = input.value;
+    update();
   });
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-      if (panel.hidden) return;
+    const hits = Array.from(pane.querySelectorAll<HTMLAnchorElement>('.finder__hit'));
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && hits.length) {
       e.preventDefault();
-      setActive(active + (e.key === 'ArrowDown' ? 1 : -1));
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length;
+      hits.forEach((h, i) => h.setAttribute('aria-selected', String(i === active)));
+      hits[active].scrollIntoView({ block: 'nearest' });
     } else if (e.key === 'Enter') {
-      const chosen = options()[active];
-      if (chosen) location.href = chosen.href;
-      else if (hasGrid()) {
-        close();
-        document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (input.value.trim()) location.href = pageUrl('', '?q=' + encodeURIComponent(input.value.trim()) + '#sites');
-    } else if (e.key === 'Escape') {
-      if (input.value) {
-        input.value = '';
-        emit();
-        render();
-      } else {
-        close();
-        input.blur();
-      }
+      e.preventDefault();
+      if (hits[active]) location.href = hits[active].href;
+      else done();
     }
   });
 
-  document.querySelector('[data-search-clear]')?.addEventListener('click', () => {
-    input.value = '';
-    emit();
-    input.focus();
-    render();
+  document.querySelectorAll<HTMLButtonElement>('[data-facet]').forEach((b) =>
+    b.addEventListener('click', () => {
+      facet = b.dataset.facet as FacetKey;
+      if (state.q.trim()) {
+        // show the options of the facet the user picked, keep the query
+        const q = state.q;
+        state.q = '';
+        renderPane();
+        state.q = q;
+      } else renderPane();
+    }),
+  );
+  pane.addEventListener('click', (e) => {
+    const opt = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-option]');
+    if (!opt) return;
+    const set = state[facet];
+    const id = opt.dataset.option!;
+    set.has(id) ? set.delete(id) : set.add(id);
+    renderBar();
+    opt.setAttribute('aria-pressed', String(set.has(id)));
+    if (inPlace()) emit();
+  });
+  // click on the dimmed backdrop closes like Done
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) done();
+  });
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    done();
   });
 
-  document.addEventListener('pointerdown', (e) => {
-    if (!box.contains(e.target as Node)) close();
-  });
-  box.addEventListener('focusout', (e) => {
-    if (!box.contains(e.relatedTarget as Node)) close();
-  });
-
-  // "/" focuses search from anywhere
+  // "/" opens search from anywhere
   document.addEventListener('keydown', (e) => {
     const el = e.target as HTMLElement;
     const typing = el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
-    if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+    if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey && !dialog.open) {
       e.preventDefault();
-      input.focus();
-      input.select();
+      open();
     }
   });
 
-  // Carry ?q= from the URL into the field (e.g. after "All results for…")
-  const initial = new URLSearchParams(location.search).get('q');
-  if (initial) {
-    input.value = initial;
-    queueMicrotask(emit);
-  }
+  // ---- menu ----------------------------------------------------------
+  const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+  const setMenu = (show: boolean) => {
+    menu.hidden = !show;
+    menuBtn.setAttribute('aria-expanded', String(show));
+  };
+  menuBtn.addEventListener('click', () => setMenu(menu.hidden));
+  document.addEventListener('pointerdown', (e) => {
+    if (!menu.hidden && !menu.parentElement!.contains(e.target as Node)) setMenu(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) {
+      setMenu(false);
+      menuBtn.focus();
+    }
+  });
+
+  // ---- initial -------------------------------------------------------
+  renderBar();
+  if (inPlace() && (state.q || filterCount())) emit();
 </script>

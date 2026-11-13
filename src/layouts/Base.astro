@@ -9,9 +9,13 @@ interface Props {
   description?: string;
   lang?: Lang;
   image?: string;
+  /** content starts under the floating bar instead of below it (Wall) */
+  flush?: boolean;
+  /** hide the footer (pages that are a single full-bleed view) */
+  bare?: boolean;
 }
 
-const { title, description, lang = defaultLang, image } = Astro.props;
+const { title, description, lang = defaultLang, image, flush = false, bare = false } = Astro.props;
 const t = useTranslations(lang);
 const fullTitle = title ? `${title} · ${t('site.name')}` : t('site.title');
 const desc = description ?? t('site.description');
@@ -41,9 +45,9 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
   <body>
     <a class="skip-link" href="#main">{t('nav.skip')}</a>
     <Header lang={lang} />
-    <main id="main">
+    <main id="main" class:list={{ 'main--flush': flush }}>
       <slot />
     </main>
-    <Footer lang={lang} />
+    {!bare && <Footer lang={lang} />}
   </body>
 </html>

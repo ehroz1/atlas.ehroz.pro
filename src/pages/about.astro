@@ -1,56 +1,109 @@
 ---
+/**
+ * About, laid out like deck.gallery's pricing page: big headline,
+ * screenshots peeking in from the edges, three joined columns.
+ * Every number here is computed from the data.
+ */
+import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import { getTools, getCategories } from '~/lib/data';
-import { loc } from '~/i18n';
+import { shotFor } from '~/lib/shots';
+import { formatDate } from '~/i18n';
 
 const [tools, categories] = await Promise.all([getTools(), getCategories()]);
-const counts = new Map<string, number>();
-for (const tool of tools) counts.set(tool.data.category, (counts.get(tool.data.category) ?? 0) + 1);
+const free = tools.filter((x) => x.data.pricing !== 'paid').length;
+const latest = new Date(Math.max(...tools.map((x) => x.data.added.getTime())));
+
+const withShots = tools.filter((x) => shotFor(x.id));
+const edges = [
+  { x: '-2%', y: '2%' }, { x: '-6%', y: '30%' }, { x: '-3%', y: '58%' }, { x: '-1%', y: '82%' },
+  { x: '88%', y: '14%' }, { x: '91%', y: '42%' }, { x: '87%', y: '68%' }, { x: '84%', y: '92%' },
+].map((e, i) => ({ ...e, tool: withShots[(i * 3) % withShots.length] }));
+
+const icon = {
+  check: 'M4.5 10.5 8 14l7.5-8',
+  x: 'M5.5 5.5l9 9M14.5 5.5l-9 9',
+  search: 'M8.6 14.6a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm4.6-1.4 4.3 4.3',
+  grid: 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z',
+  wall: 'M2.5 4h7v5h-7zM10.5 4h7v5h-7zM6.5 11h7v5h-7z',
+  key: 'M3 6h14v9H3zM6 12h8M6 9h.01M9 9h.01M12 9h.01M15 9h.01',
+  plus: 'M10 4v12M4 10h12',
+};
 ---
 <Base title="About" description="What Atlas is, how sites get in, and what we leave out.">
-  <div class="container">
-    <div class="section" style="padding-bottom: 0">
-      <div class="prose">
-        <h1 class="t-statement">About Atlas</h1>
-        <p>
-          Atlas is a list of websites and tools we keep coming back to. The kind you bookmark,
-          forget the name of, and then spend ten minutes trying to find again. It started as a
-          personal notes file and grew into something worth sharing.
-        </p>
-        <p>
-          It is for people who make things: designers, developers, video and audio people,
-          writers, and anyone who likes a well-built tool.
-        </p>
+  <div class="page-stage">
+    <div class="edge-shots" aria-hidden="true">
+      {edges.map(({ x, y, tool }) => (
+        <div class="edge-shots__item" style={`--x:${x};--y:${y}`}>
+          <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="16vw" format="webp" quality={72} />
+        </div>
+      ))}
+    </div>
 
-        <h2>How a site gets in</h2>
-        <p>Every entry is opened, used for a while and written up by hand. We look for three things:</p>
-        <ul>
-          <li>It does one job clearly better than the obvious alternative.</li>
-          <li>You can understand what it does within a minute of landing on it.</li>
-          <li>It respects your time: no dark patterns, no forced sign-up just to look around.</li>
-        </ul>
+    <div class="container">
+      <div style="padding-block: clamp(var(--s-12), 7vw, var(--s-20)) clamp(var(--s-12), 6vw, var(--s-16))">
+        <h1 class="t-headline">Useful sites, hand-picked<br />to help you make things</h1>
+        <p class="t-center t-muted mt-4" style="font-size: var(--fs-17)">Updated {formatDate(latest)}</p>
+      </div>
 
-        <h2>What we leave out</h2>
-        <p>
-          Paid placements, affiliate rankings and “top 100 AI tools” lists. If a tool is on
-          Atlas, it is because someone here found it useful, not because it paid to be here.
-          Outbound links carry a plain <code>ref</code> tag so sites know where visitors came from;
-          that's all.
-        </p>
+      <div class="plans">
+        <article class="plan">
+          <h2 class="plan__name">Hand-picked</h2>
+          <p class="plan__sub">How a site gets in</p>
+          <hr class="plan__rule" />
+          <p class="plan__figure">{tools.length}</p>
+          <p class="plan__caption">sites so far</p>
+          <hr class="plan__rule" />
+          <ul class="plan__list">
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Used for a while before it's listed</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Does one job better than the obvious pick</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Clear within a minute of landing on it</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>No forced sign-up just to look around</li>
+          </ul>
+          <div class="plan__foot">
+            <a class="btn btn--chrome" href="/">Browse sites</a>
+            <span class="plan__note">{free} of them have a free plan</span>
+          </div>
+        </article>
 
-        <h2>What's inside</h2>
-        <p>{tools.length} sites so far, in {categories.length} categories:</p>
-        <ul>
-          {categories.map((c) => (
-            <li><a href={`/category/${c.id}`}>{loc(c.data.name)}</a> <span class="t-muted">{counts.get(c.id) ?? 0}</span></li>
-          ))}
-        </ul>
+        <article class="plan plan--raised">
+          <span class="plan__flag">Free</span>
+          <h2 class="plan__name">Open</h2>
+          <p class="plan__sub">Nothing to sign up for</p>
+          <hr class="plan__rule" />
+          <p class="plan__figure">$0</p>
+          <p class="plan__caption">no account, no paywall</p>
+          <hr class="plan__rule" />
+          <ul class="plan__list">
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.search} /></svg>Search &amp; filters</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.grid} /></svg>{categories.length} categories</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.wall} /></svg>Wall of every screenshot</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.key} /></svg>Press / to search anywhere</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.plus} /></svg>Anyone can suggest a site</li>
+          </ul>
+          <div class="plan__foot">
+            <a class="btn btn--accent" href="/submit">Submit a site</a>
+            <span class="plan__note">Takes about a minute</span>
+          </div>
+        </article>
 
-        <h2>Suggest something</h2>
-        <p>
-          Found a site that belongs here? <a href="/submit">Send it over</a>. Made it yourself?
-          Send it anyway, just say so.
-        </p>
+        <article class="plan">
+          <h2 class="plan__name">Honest</h2>
+          <p class="plan__sub">What we leave out</p>
+          <hr class="plan__rule" />
+          <p class="plan__figure">0</p>
+          <p class="plan__caption">sponsored placements</p>
+          <hr class="plan__rule" />
+          <ul class="plan__list">
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>Paid rankings</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>Affiliate lists</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>“Top 100 AI tools”</li>
+          </ul>
+          <div class="plan__foot">
+            <a class="btn btn--chrome" href="/categories">See categories</a>
+            <span class="plan__note">Outbound links carry only a ref tag</span>
+          </div>
+        </article>
       </div>
     </div>
   </div>

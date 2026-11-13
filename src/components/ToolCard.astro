@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
-import { domainOf, searchText, type Tool } from '~/lib/data';
+import { domainOf, type Tool } from '~/lib/data';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
 
 interface Props {
@@ -24,7 +24,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   class="card"
   href={`/tool/${tool.id}`}
   data-card
-  data-search={searchText(tool, categoryName)}
+  data-id={tool.id}
   data-name={d.name.toLowerCase()}
 >
   <div class="card__media">

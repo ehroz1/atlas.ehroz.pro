@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import { getTools } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
+
+const tools = (await getTools()).filter((x) => shotFor(x.id));
+// Brick rows of 6; the list repeats so the wall fills at least 6 rows.
+const PER_ROW = 6;
+const rowsCount = Math.max(6, Math.ceil(tools.length / PER_ROW));
+const rows = Array.from({ length: rowsCount }, (_, r) =>
+  Array.from({ length: PER_ROW }, (_, i) => tools[(r * PER_ROW + i) % tools.length]),
+);
+---
+<Base title="Wall" description="Every site in Atlas as one wall of screenshots." flush bare>
+  <h1 class="visually-hidden">All sites</h1>
+  <div class="wall">
+    {rows.map((row, r) => (
+      <div class="wall__row">
+        {row.map((tool, i) => (
+          <a class="wall__item" href={`/tool/${tool.id}`} aria-label={tool.data.name} tabindex={r * PER_ROW + i >= tools.length ? -1 : undefined}>
+            <Image src={shotFor(tool.id)!} alt="" widths={[480, 720]} sizes="(min-width: 48rem) 21vw, 45vw" format="webp" quality={74} loading={r < 2 ? 'eager' : 'lazy'} />
+            <span class="wall__label">{tool.data.name}</span>
+          </a>
+        ))}
+      </div>
+    ))}
+  </div>
+</Base>
