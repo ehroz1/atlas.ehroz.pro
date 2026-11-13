@@ -1,13 +1,13 @@
 [
-  { "id": "ai", "order": 1, "name": { "en": "AI" }, "description": { "en": "Assistants, generators and models you can actually use day to day." } },
-  { "id": "design", "order": 2, "name": { "en": "Design" }, "description": { "en": "Interface design, color, layout and everything around the canvas." } },
-  { "id": "development", "order": 3, "name": { "en": "Development" }, "description": { "en": "Code, hosting, databases and the small utilities that save an afternoon." } },
-  { "id": "productivity", "order": 4, "name": { "en": "Productivity" }, "description": { "en": "Notes, planning and tools that keep work moving." } },
-  { "id": "video-audio", "order": 5, "name": { "en": "Video & Audio" }, "description": { "en": "Editing, voice and sound for people who publish." } },
-  { "id": "3d-motion", "order": 6, "name": { "en": "3D & Motion" }, "description": { "en": "Three-dimensional scenes and interactive animation for the web." } },
-  { "id": "typography", "order": 7, "name": { "en": "Type" }, "description": { "en": "Free and well-made fonts, plus places to find them." } },
-  { "id": "inspiration", "order": 8, "name": { "en": "Inspiration" }, "description": { "en": "Galleries and archives worth scrolling before you start." } },
-  { "id": "assets", "order": 9, "name": { "en": "Stock & Assets" }, "description": { "en": "Free photos, video, music, textures, mockups and public-domain archives." } },
-  { "id": "utilities", "order": 10, "name": { "en": "Utilities" }, "description": { "en": "Converters, cleaners and small tools for one-off jobs." } },
-  { "id": "learning", "order": 11, "name": { "en": "Learning" }, "description": { "en": "Docs, courses and tutorials that explain things properly." } }
+  { "id": "ai", "order": 1, "updated": "2026-11-13", "name": { "en": "AI", "ru": "Нейросети" }, "description": { "en": "Assistants, generators and models you can actually use day to day.", "ru": "Ассистенты, генераторы и модели, которыми действительно можно пользоваться каждый день." } },
+  { "id": "design", "order": 2, "updated": "2026-11-13", "name": { "en": "Design", "ru": "Дизайн" }, "description": { "en": "Interface design, color, layout and everything around the canvas.", "ru": "Дизайн интерфейсов, цвет, вёрстка и всё, что вокруг холста." } },
+  { "id": "development", "order": 3, "updated": "2026-11-13", "name": { "en": "Development", "ru": "Разработка" }, "description": { "en": "Code, hosting, databases and the small utilities that save an afternoon.", "ru": "Код, хостинг, базы данных и мелкие утилиты, которые экономят полдня." } },
+  { "id": "productivity", "order": 4, "updated": "2026-11-13", "name": { "en": "Productivity", "ru": "Продуктивность" }, "description": { "en": "Notes, planning and tools that keep work moving.", "ru": "Заметки, планирование и инструменты, с которыми работа движется." } },
+  { "id": "video-audio", "order": 5, "updated": "2026-11-13", "name": { "en": "Video & Audio", "ru": "Видео и звук" }, "description": { "en": "Editing, voice and sound for people who publish.", "ru": "Монтаж, голос и звук для тех, кто публикует." } },
+  { "id": "3d-motion", "order": 6, "updated": "2026-11-13", "name": { "en": "3D & Motion", "ru": "3D и анимация" }, "description": { "en": "Three-dimensional scenes and interactive animation for the web.", "ru": "Трёхмерные сцены и интерактивная анимация для веба." } },
+  { "id": "typography", "order": 7, "updated": "2026-11-13", "name": { "en": "Type", "ru": "Шрифты" }, "description": { "en": "Free and well-made fonts, plus places to find them.", "ru": "Бесплатные и хорошо сделанные шрифты и места, где их искать." } },
+  { "id": "inspiration", "order": 8, "updated": "2026-11-13", "name": { "en": "Inspiration", "ru": "Вдохновение" }, "description": { "en": "Galleries and archives worth scrolling before you start.", "ru": "Галереи и архивы, которые стоит пролистать перед началом работы." } },
+  { "id": "assets", "order": 9, "updated": "2026-11-13", "name": { "en": "Stock & Assets", "ru": "Стоки и материалы" }, "description": { "en": "Free photos, video, music, textures, mockups and public-domain archives.", "ru": "Бесплатные фото, видео, музыка, текстуры, мокапы и архивы общественного достояния." } },
+  { "id": "utilities", "order": 10, "updated": "2026-11-13", "name": { "en": "Utilities", "ru": "Утилиты" }, "description": { "en": "Converters, cleaners and small tools for one-off jobs.", "ru": "Конвертеры, чистильщики и небольшие инструменты для разовых задач." } },
+  { "id": "learning", "order": 11, "updated": "2026-11-13", "name": { "en": "Learning", "ru": "Обучение" }, "description": { "en": "Docs, courses and tutorials that explain things properly.", "ru": "Документация, курсы и уроки, которые объясняют как следует." } }
 ]

@@ -19,12 +19,15 @@
       "chat"
     ],
     "added": "2026-11-01",
+    "updated": "2026-11-13",
     "featured": true,
     "summary": {
-      "en": "An AI assistant for writing, research and code."
+      "en": "An AI assistant for writing, research and code.",
+      "ru": "ИИ-ассистент для текстов, исследований и кода."
     },
     "description": {
-      "en": "Chat-based assistant from Anthropic. Good at long documents, careful writing and programming help; can read files you upload and build small interactive pages."
+      "en": "Chat-based assistant from Anthropic. Good at long documents, careful writing and programming help; can read files you upload and build small interactive pages.",
+      "ru": "Чат-ассистент от Anthropic. Хорош в длинных документах, аккуратных текстах и помощи с программированием; читает загруженные файлы и собирает небольшие интерактивные страницы."
     }
   },
   {
@@ -45,11 +48,14 @@
       "citations"
     ],
     "added": "2026-11-01",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Search that answers with sources you can check."
+      "en": "Search that answers with sources you can check.",
+      "ru": "Поиск, который отвечает со ссылками на источники."
     },
     "description": {
-      "en": "Ask a question, get a written answer with numbered links to where each claim came from. Handy when you want a starting point rather than ten blue links."
+      "en": "Ask a question, get a written answer with numbered links to where each claim came from. Handy when you want a starting point rather than ten blue links.",
+      "ru": "Задаёте вопрос и получаете связный ответ с пронумерованными ссылками на то, откуда взято каждое утверждение. Удобно, когда нужна отправная точка, а не десять синих ссылок."
     }
   },
   {
@@ -69,11 +75,14 @@
       "vs code"
     ],
     "added": "2026-11-02",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A code editor built around AI edits and agents."
+      "en": "A code editor built around AI edits and agents.",
+      "ru": "Редактор кода, построенный вокруг ИИ-правок и агентов."
     },
     "description": {
-      "en": "A fork of VS Code with AI completion, chat over your codebase and agents that make multi-file changes. Your existing extensions and keybindings carry over."
+      "en": "A fork of VS Code with AI completion, chat over your codebase and agents that make multi-file changes. Your existing extensions and keybindings carry over.",
+      "ru": "Форк VS Code с ИИ-автодополнением, чатом по вашему коду и агентами, которые меняют сразу несколько файлов. Ваши расширения и сочетания клавиш переезжают вместе с вами."
     }
   },
   {
@@ -92,11 +101,14 @@
       "dubbing"
     ],
     "added": "2026-11-02",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Natural-sounding text to speech and voice dubbing."
+      "en": "Natural-sounding text to speech and voice dubbing.",
+      "ru": "Естественная озвучка текста и дубляж голоса."
     },
     "description": {
-      "en": "Generate narration in many languages, clone a voice with consent, or dub a video while keeping the speaker's tone. Has an API for apps."
+      "en": "Generate narration in many languages, clone a voice with consent, or dub a video while keeping the speaker's tone. Has an API for apps.",
+      "ru": "Создаёт озвучку на многих языках, клонирует голос с согласия владельца и дублирует видео, сохраняя интонацию говорящего. Есть API для приложений."
     }
   },
   {
@@ -113,11 +125,14 @@
       "illustration"
     ],
     "added": "2026-11-03",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Image generation with a strong eye for style."
+      "en": "Image generation with a strong eye for style.",
+      "ru": "Генерация изображений с сильным чувством стиля."
     },
     "description": {
-      "en": "Turns text prompts into images. Known for painterly, cinematic results and a large public gallery to learn prompts from. Subscription only."
+      "en": "Turns text prompts into images. Known for painterly, cinematic results and a large public gallery to learn prompts from. Subscription only.",
+      "ru": "Превращает текстовые запросы в картинки. Известна живописными, кинематографичными результатами и большой открытой галереей, по которой можно учиться писать запросы. Только по подписке."
     }
   },
   {
@@ -137,12 +152,15 @@
       "collaboration"
     ],
     "added": "2026-11-01",
+    "updated": "2026-11-13",
     "featured": true,
     "summary": {
-      "en": "The shared canvas most product teams design in."
+      "en": "The shared canvas most product teams design in.",
+      "ru": "Общий холст, на котором рисует большинство продуктовых команд."
     },
     "description": {
-      "en": "Interface design, prototyping and design systems in the browser, with real-time collaboration. FigJam covers whiteboarding; Dev Mode covers handoff."
+      "en": "Interface design, prototyping and design systems in the browser, with real-time collaboration. FigJam covers whiteboarding; Dev Mode covers handoff.",
+      "ru": "Дизайн интерфейсов, прототипы и дизайн-системы в браузере с совместной работой в реальном времени. FigJam — для досок, Dev Mode — для передачи в разработку."
     }
   },
   {
@@ -161,11 +179,14 @@
       "cms"
     ],
     "added": "2026-11-03",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Design a website on a canvas and publish it as is."
+      "en": "Design a website on a canvas and publish it as is.",
+      "ru": "Рисуете сайт на холсте и публикуете как есть."
     },
     "description": {
-      "en": "A visual site builder that feels like a design tool. Layouts, animation and a CMS, then one click to a fast hosted site on your own domain."
+      "en": "A visual site builder that feels like a design tool. Layouts, animation and a CMS, then one click to a fast hosted site on your own domain.",
+      "ru": "Визуальный конструктор сайтов, похожий на дизайн-редактор. Вёрстка, анимации и CMS, а потом один клик — и быстрый сайт на вашем домене."
     }
   },
   {
@@ -183,11 +204,14 @@
       "palettes"
     ],
     "added": "2026-11-04",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Press space, get a color palette. Lock what you like."
+      "en": "Press space, get a color palette. Lock what you like.",
+      "ru": "Нажмите пробел — получите палитру. Закрепите то, что нравится."
     },
     "description": {
-      "en": "Quick palette generator: hit the spacebar to shuffle, lock the colors you want to keep, export to CSS or images. Also checks contrast."
+      "en": "Quick palette generator: hit the spacebar to shuffle, lock the colors you want to keep, export to CSS or images. Also checks contrast.",
+      "ru": "Быстрый генератор палитр: пробел перемешивает цвета, нужные можно закрепить и выгрузить в CSS или картинкой. Ещё проверяет контраст."
     }
   },
   {
@@ -206,11 +230,14 @@
       "sketch"
     ],
     "added": "2026-11-04",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A whiteboard with a hand-drawn look, right in the tab."
+      "en": "A whiteboard with a hand-drawn look, right in the tab.",
+      "ru": "Доска с «нарисованными от руки» схемами прямо во вкладке."
     },
     "description": {
-      "en": "Sketch diagrams and flows that look drawn by hand. No account needed, shareable links, end-to-end encrypted collaboration. Open source."
+      "en": "Sketch diagrams and flows that look drawn by hand. No account needed, shareable links, end-to-end encrypted collaboration. Open source.",
+      "ru": "Рисуйте схемы и потоки, которые выглядят как набросок от руки. Без аккаунта, со ссылками для доступа и сквозным шифрованием при совместной работе. Открытый код."
     }
   },
   {
@@ -230,11 +257,14 @@
       "interactive"
     ],
     "added": "2026-11-05",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "3D design in the browser, exportable to the web."
+      "en": "3D design in the browser, exportable to the web.",
+      "ru": "3D-дизайн в браузере с экспортом для веба."
     },
     "description": {
-      "en": "Model, light and animate 3D scenes without leaving the browser, then embed them on a site or export to code. Friendly for people new to 3D."
+      "en": "Model, light and animate 3D scenes without leaving the browser, then embed them on a site or export to code. Friendly for people new to 3D.",
+      "ru": "Моделируйте, освещайте и анимируйте 3D-сцены прямо в браузере, а потом встраивайте их на сайт или выгружайте в код. Подходит тем, кто только начинает в 3D."
     }
   },
   {
@@ -254,11 +284,14 @@
       "runtime"
     ],
     "added": "2026-11-05",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Interactive animations that run in apps and sites."
+      "en": "Interactive animations that run in apps and sites.",
+      "ru": "Интерактивные анимации для приложений и сайтов."
     },
     "description": {
-      "en": "Design animations with state machines so they react to input, then ship them with small runtimes for web, iOS, Android, Flutter and game engines."
+      "en": "Design animations with state machines so they react to input, then ship them with small runtimes for web, iOS, Android, Flutter and game engines.",
+      "ru": "Анимации с машинами состояний, которые реагируют на действия пользователя, и лёгкие рантаймы для веба, iOS, Android, Flutter и игровых движков."
     }
   },
   {
@@ -279,11 +312,14 @@
       "open source"
     ],
     "added": "2026-11-01",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Where code lives, gets reviewed and ships."
+      "en": "Where code lives, gets reviewed and ships.",
+      "ru": "Здесь живёт код: его проверяют и выпускают."
     },
     "description": {
-      "en": "Git hosting with pull requests, issues, Actions for CI/CD and Pages for static sites. Most open-source projects are here."
+      "en": "Git hosting with pull requests, issues, Actions for CI/CD and Pages for static sites. Most open-source projects are here.",
+      "ru": "Git-хостинг с пул-реквестами, задачами, Actions для CI/CD и Pages для статических сайтов. Большинство открытых проектов находятся здесь."
     }
   },
   {
@@ -302,11 +338,14 @@
       "frontend"
     ],
     "added": "2026-11-06",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Push to git, get a deployed frontend with previews."
+      "en": "Push to git, get a deployed frontend with previews.",
+      "ru": "Пушите в git — получаете задеплоенный фронтенд с превью."
     },
     "description": {
-      "en": "Hosting for frontend frameworks. Each pull request gets its own preview URL; serverless functions and edge caching are built in."
+      "en": "Hosting for frontend frameworks. Each pull request gets its own preview URL; serverless functions and edge caching are built in.",
+      "ru": "Хостинг для фронтенд-фреймворков. У каждого пул-реквеста свой адрес превью; серверные функции и кеширование на edge встроены."
     }
   },
   {
@@ -326,11 +365,14 @@
       "backend"
     ],
     "added": "2026-11-06",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A Postgres database with auth and storage attached."
+      "en": "A Postgres database with auth and storage attached.",
+      "ru": "База Postgres с авторизацией и хранилищем в комплекте."
     },
     "description": {
-      "en": "Managed Postgres plus authentication, file storage, realtime subscriptions and edge functions. Open source, so you can self-host it too."
+      "en": "Managed Postgres plus authentication, file storage, realtime subscriptions and edge functions. Open source, so you can self-host it too.",
+      "ru": "Управляемый Postgres плюс авторизация, хранилище файлов, подписки в реальном времени и edge-функции. Открытый код, так что можно развернуть у себя."
     }
   },
   {
@@ -348,11 +390,14 @@
       "utility"
     ],
     "added": "2026-11-07",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Write a regular expression and see why it matches."
+      "en": "Write a regular expression and see why it matches.",
+      "ru": "Пишете регулярное выражение и видите, почему оно совпадает."
     },
     "description": {
-      "en": "Test regex against sample text with a plain-English explanation of every token. Supports PCRE, JavaScript, Python, Go and more."
+      "en": "Test regex against sample text with a plain-English explanation of every token. Supports PCRE, JavaScript, Python, Go and more.",
+      "ru": "Проверка регулярок на примере текста с объяснением каждого токена простыми словами. Поддерживает PCRE, JavaScript, Python, Go и другие."
     }
   },
   {
@@ -370,11 +415,14 @@
       "html"
     ],
     "added": "2026-11-07",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Which browsers support a web feature, at a glance."
+      "en": "Which browsers support a web feature, at a glance.",
+      "ru": "Какие браузеры поддерживают веб-функцию — с одного взгляда."
     },
     "description": {
-      "en": "Support tables for HTML, CSS and JavaScript features across desktop and mobile browsers, with usage percentages and known issues."
+      "en": "Support tables for HTML, CSS and JavaScript features across desktop and mobile browsers, with usage percentages and known issues.",
+      "ru": "Таблицы поддержки HTML, CSS и JavaScript в настольных и мобильных браузерах, с долей использования и известными проблемами."
     }
   },
   {
@@ -393,11 +441,14 @@
       "extensions"
     ],
     "added": "2026-11-08",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A launcher that replaces a dozen small utilities."
+      "en": "A launcher that replaces a dozen small utilities.",
+      "ru": "Лаунчер, который заменяет десяток мелких утилит."
     },
     "description": {
-      "en": "Open apps, search files, manage windows, keep clipboard history and run community extensions from one keyboard shortcut."
+      "en": "Open apps, search files, manage windows, keep clipboard history and run community extensions from one keyboard shortcut.",
+      "ru": "Открывает приложения, ищет файлы, управляет окнами, хранит историю буфера обмена и запускает расширения сообщества по одному сочетанию клавиш."
     }
   },
   {
@@ -418,11 +469,14 @@
       "teams"
     ],
     "added": "2026-11-08",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Issue tracking that is fast enough to enjoy."
+      "en": "Issue tracking that is fast enough to enjoy.",
+      "ru": "Трекер задач, быстрый настолько, что им приятно пользоваться."
     },
     "description": {
-      "en": "Plan and track product work with issues, cycles and projects. Keyboard-first, quick to load, integrates with GitHub and Slack."
+      "en": "Plan and track product work with issues, cycles and projects. Keyboard-first, quick to load, integrates with GitHub and Slack.",
+      "ru": "Планируйте и отслеживайте продуктовую работу: задачи, циклы и проекты. Управление с клавиатуры, мгновенная загрузка, интеграции с GitHub и Slack."
     }
   },
   {
@@ -444,11 +498,14 @@
       "databases"
     ],
     "added": "2026-11-09",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Notes, docs and simple databases in one workspace."
+      "en": "Notes, docs and simple databases in one workspace.",
+      "ru": "Заметки, документы и простые базы данных в одном месте."
     },
     "description": {
-      "en": "Pages made of blocks that can hold text, tables, boards and calendars. Works as a personal notebook or a team wiki."
+      "en": "Pages made of blocks that can hold text, tables, boards and calendars. Works as a personal notebook or a team wiki.",
+      "ru": "Страницы из блоков, в которых могут быть текст, таблицы, доски и календари. Подходит и как личный блокнот, и как командная вики."
     }
   },
   {
@@ -468,11 +525,14 @@
       "transcription"
     ],
     "added": "2026-11-09",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Edit video and podcasts by editing the transcript."
+      "en": "Edit video and podcasts by editing the transcript.",
+      "ru": "Монтаж видео и подкастов через правку расшифровки."
     },
     "description": {
-      "en": "Delete a sentence in the text and it disappears from the recording. Also removes filler words, records screens and adds captions."
+      "en": "Delete a sentence in the text and it disappears from the recording. Also removes filler words, records screens and adds captions.",
+      "ru": "Удаляете фразу в тексте — и она исчезает из записи. Ещё убирает слова-паразиты, записывает экран и добавляет субтитры."
     }
   },
   {
@@ -492,11 +552,14 @@
       "audio"
     ],
     "added": "2026-11-10",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Professional editing and color grading, free to use."
+      "en": "Professional editing and color grading, free to use.",
+      "ru": "Профессиональный монтаж и цветокоррекция бесплатно."
     },
     "description": {
-      "en": "Editing, color, visual effects and audio post in one application. The free version covers most needs; Studio adds extra effects and hardware support."
+      "en": "Editing, color, visual effects and audio post in one application. The free version covers most needs; Studio adds extra effects and hardware support.",
+      "ru": "Монтаж, цвет, визуальные эффекты и звук в одной программе. Бесплатной версии хватает почти на всё; Studio добавляет эффекты и поддержку оборудования."
     }
   },
   {
@@ -514,11 +577,14 @@
       "open license"
     ],
     "added": "2026-11-10",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Over a thousand open-license font families."
+      "en": "Over a thousand open-license font families.",
+      "ru": "Больше тысячи семейств шрифтов с открытой лицензией."
     },
     "description": {
-      "en": "Browse, compare and download fonts licensed for commercial use, or load them straight into a site. Filters for language support and variable axes."
+      "en": "Browse, compare and download fonts licensed for commercial use, or load them straight into a site. Filters for language support and variable axes.",
+      "ru": "Смотрите, сравнивайте и скачивайте шрифты для коммерческого использования или подключайте их прямо на сайт. Есть фильтры по языкам и вариативным осям."
     }
   },
   {
@@ -535,11 +601,14 @@
       "free for commercial use"
     ],
     "added": "2026-11-11",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Quality typefaces from a foundry, free for any use."
+      "en": "Quality typefaces from a foundry, free for any use.",
+      "ru": "Качественные шрифты от студии, бесплатно для любых целей."
     },
     "description": {
-      "en": "A collection of fonts by the Indian Type Foundry that you can use in personal and commercial work at no cost. Fewer families, higher bar."
+      "en": "A collection of fonts by the Indian Type Foundry that you can use in personal and commercial work at no cost. Fewer families, higher bar.",
+      "ru": "Коллекция шрифтов Indian Type Foundry, которые можно бесплатно использовать в личных и коммерческих работах. Семейств меньше, планка выше."
     }
   },
   {
@@ -556,11 +625,14 @@
       "gallery"
     ],
     "added": "2026-11-11",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A gallery of standout web design, shown in motion."
+      "en": "A gallery of standout web design, shown in motion.",
+      "ru": "Галерея выдающегося веб-дизайна в движении."
     },
     "description": {
-      "en": "Curated websites shown as short video previews, so you see the animation and not just a still. Filter by type and style."
+      "en": "Curated websites shown as short video previews, so you see the animation and not just a still. Filter by type and style.",
+      "ru": "Отобранные сайты в виде коротких видео, так что видна анимация, а не только статичный кадр. Фильтры по типу и стилю."
     }
   },
   {
@@ -578,11 +650,14 @@
       "screens"
     ],
     "added": "2026-11-12",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Screens and flows from real apps, searchable."
+      "en": "Screens and flows from real apps, searchable.",
+      "ru": "Экраны и сценарии из настоящих приложений с поиском."
     },
     "description": {
-      "en": "A large library of screenshots from shipped iOS, Android and web apps. Search by pattern, like onboarding or paywall, to see how others solved it."
+      "en": "A large library of screenshots from shipped iOS, Android and web apps. Search by pattern, like onboarding or paywall, to see how others solved it.",
+      "ru": "Большая библиотека скриншотов из вышедших приложений для iOS, Android и веба. Ищите по паттерну, например онбординг или пейволл, и смотрите, как это решили другие."
     }
   },
   {
@@ -602,11 +677,14 @@
       "javascript"
     ],
     "added": "2026-11-12",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "The reference for HTML, CSS and JavaScript."
+      "en": "The reference for HTML, CSS and JavaScript.",
+      "ru": "Справочник по HTML, CSS и JavaScript."
     },
     "description": {
-      "en": "Accurate, example-heavy documentation for web platform APIs, with guides for beginners and compatibility tables on every page."
+      "en": "Accurate, example-heavy documentation for web platform APIs, with guides for beginners and compatibility tables on every page.",
+      "ru": "Точная документация по API веб-платформы с множеством примеров, руководствами для новичков и таблицами совместимости на каждой странице."
     }
   },
   {
@@ -624,11 +702,14 @@
       "webgl"
     ],
     "added": "2026-11-12",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Creative front-end tutorials and experiments."
+      "en": "Creative front-end tutorials and experiments.",
+      "ru": "Творческие уроки и эксперименты по фронтенду."
     },
     "description": {
-      "en": "Step-by-step articles on animation, WebGL and layout techniques, each with a live demo and source code you can take apart."
+      "en": "Step-by-step articles on animation, WebGL and layout techniques, each with a live demo and source code you can take apart.",
+      "ru": "Пошаговые статьи об анимации, WebGL и приёмах вёрстки, у каждой живое демо и исходный код, который можно разобрать."
     }
   },
   {
@@ -647,11 +728,14 @@
       "beginners"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A free full-stack curriculum, built by its community."
+      "en": "A free full-stack curriculum, built by its community.",
+      "ru": "Бесплатная программа по фулстеку от сообщества."
     },
     "description": {
-      "en": "A structured path from zero to building full-stack apps with JavaScript or Ruby. Projects over videos, with an active Discord for help."
+      "en": "A structured path from zero to building full-stack apps with JavaScript or Ruby. Projects over videos, with an active Discord for help.",
+      "ru": "Структурированный путь от нуля до фулстек-приложений на JavaScript или Ruby. Больше проектов, чем видео, и живой Discord, где помогут."
     }
   },
   {
@@ -670,11 +754,14 @@
       "video"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "One search across the free stock libraries."
+      "en": "One search across the free stock libraries.",
+      "ru": "Один поиск по бесплатным фотобанкам."
     },
     "description": {
-      "en": "Searches Pixabay, Pexels, Unsplash, Wikimedia Commons and other free libraries at once, for photos, icons and video. No account needed."
+      "en": "Searches Pixabay, Pexels, Unsplash, Wikimedia Commons and other free libraries at once, for photos, icons and video. No account needed.",
+      "ru": "Ищет сразу по Pixabay, Pexels, Unsplash, Wikimedia Commons и другим бесплатным библиотекам: фото, иконки и видео. Без аккаунта."
     },
     "own": true
   },
@@ -693,11 +780,14 @@
       "speech to text"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Turn audio and video into text in the browser."
+      "en": "Turn audio and video into text in the browser.",
+      "ru": "Расшифровка аудио и видео в текст прямо в браузере."
     },
     "description": {
-      "en": "Upload a recording and get a transcript. Works with Russian, English and Kazakh, and runs on free speech APIs, so it costs nothing."
+      "en": "Upload a recording and get a transcript. Works with Russian, English and Kazakh, and runs on free speech APIs, so it costs nothing.",
+      "ru": "Загрузите запись и получите расшифровку. Понимает русский, английский и казахский и работает на бесплатных API распознавания речи, поэтому ничего не стоит."
     },
     "own": true
   },
@@ -718,11 +808,14 @@
       "image generation"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A chat assistant with looser content limits."
+      "en": "A chat assistant with looser content limits.",
+      "ru": "Чат-ассистент с менее строгими ограничениями."
     },
     "description": {
-      "en": "xAI's assistant. Answers more bluntly than most rivals, can search the live web and X, and generates images."
+      "en": "xAI's assistant. Answers more bluntly than most rivals, can search the live web and X, and generates images.",
+      "ru": "Ассистент от xAI. Отвечает прямее большинства конкурентов, ищет в интернете и в X в реальном времени и генерирует изображения."
     }
   },
   {
@@ -745,11 +838,14 @@
       "spreadsheets"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "The all-rounder: chat, images, files and tables."
+      "en": "The all-rounder: chat, images, files and tables.",
+      "ru": "Универсал: чат, картинки, файлы и таблицы."
     },
     "description": {
-      "en": "OpenAI's assistant. Writes, codes, reads PDFs and spreadsheets, builds charts and generates images in the same conversation."
+      "en": "OpenAI's assistant. Writes, codes, reads PDFs and spreadsheets, builds charts and generates images in the same conversation.",
+      "ru": "Ассистент от OpenAI. Пишет тексты и код, читает PDF и таблицы, строит графики и генерирует изображения в одном диалоге."
     }
   },
   {
@@ -770,11 +866,14 @@
       "microsoft"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Microsoft's free AI chat, tied into Windows and Edge."
+      "en": "Microsoft's free AI chat, tied into Windows and Edge.",
+      "ru": "Бесплатный ИИ-чат Microsoft, встроенный в Windows и Edge."
     },
     "description": {
-      "en": "A chat assistant with web search, image generation and voice. Handy if you already live in Windows, Edge or Office."
+      "en": "A chat assistant with web search, image generation and voice. Handy if you already live in Windows, Edge or Office.",
+      "ru": "Чат-ассистент с поиском в интернете, генерацией картинок и голосом. Удобен, если вы и так работаете в Windows, Edge или Office."
     }
   },
   {
@@ -796,11 +895,14 @@
       "open weights"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A free chat assistant with strong reasoning."
+      "en": "A free chat assistant with strong reasoning.",
+      "ru": "Бесплатный чат-ассистент с сильными рассуждениями."
     },
     "description": {
-      "en": "Chinese lab whose chat is free to use and shows its reasoning steps. Open model weights are published for people who want to run it themselves."
+      "en": "Chinese lab whose chat is free to use and shows its reasoning steps. Open model weights are published for people who want to run it themselves.",
+      "ru": "Чат китайской лаборатории, бесплатный и показывающий ход рассуждений. Веса моделей открыты для тех, кто хочет запускать их сам."
     }
   },
   {
@@ -819,11 +921,14 @@
       "api"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Try Gemini models, including photo edits that keep faces intact."
+      "en": "Try Gemini models, including photo edits that keep faces intact.",
+      "ru": "Модели Gemini, включая правку фото без искажения лиц."
     },
     "description": {
-      "en": "Google's playground for Gemini. Good for editing a photo with a text instruction without warping the faces, and for testing prompts before using the API."
+      "en": "Google's playground for Gemini. Good for editing a photo with a text instruction without warping the faces, and for testing prompts before using the API.",
+      "ru": "Песочница Google для Gemini. Хороша для правки фото по текстовой инструкции без искажения лиц и для проверки запросов перед работой через API."
     }
   },
   {
@@ -842,11 +947,14 @@
       "real-time"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Image, video and upscaling tools in one place."
+      "en": "Image, video and upscaling tools in one place.",
+      "ru": "Генерация картинок и видео и апскейл в одном месте."
     },
     "description": {
-      "en": "Generates images and video, upscales and enhances them, and has a real-time mode that redraws as you sketch. Several models are available under one login."
+      "en": "Generates images and video, upscales and enhances them, and has a real-time mode that redraws as you sketch. Several models are available under one login.",
+      "ru": "Создаёт изображения и видео, увеличивает и улучшает их, а в режиме реального времени перерисовывает картинку прямо по наброску. Несколько моделей под одним аккаунтом."
     }
   },
   {
@@ -864,11 +972,14 @@
       "video"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Adobe's image and video generator, trained on licensed work."
+      "en": "Adobe's image and video generator, trained on licensed work.",
+      "ru": "Генератор изображений и видео Adobe, обученный на лицензионных работах."
     },
     "description": {
-      "en": "Text-to-image, generative fill and video from Adobe. Its models are trained on licensed content, which makes the results safer to use commercially."
+      "en": "Text-to-image, generative fill and video from Adobe. Its models are trained on licensed content, which makes the results safer to use commercially.",
+      "ru": "Картинки по тексту, генеративная заливка и видео от Adobe. Модели обучены на лицензионном контенте, поэтому результат безопаснее использовать в коммерции."
     }
   },
   {
@@ -888,11 +999,14 @@
       "photo editing"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Extend a photo past its edges, remove backgrounds."
+      "en": "Extend a photo past its edges, remove backgrounds.",
+      "ru": "Достраивает фото за его края и удаляет фон."
     },
     "description": {
-      "en": "Photo editor with an Uncrop tool that generates new image beyond the original frame, plus background removal and product shots."
+      "en": "Photo editor with an Uncrop tool that generates new image beyond the original frame, plus background removal and product shots.",
+      "ru": "Фоторедактор с инструментом Uncrop, который дорисовывает изображение за пределами кадра, а ещё удаляет фон и делает предметные снимки."
     }
   },
   {
@@ -911,11 +1025,14 @@
       "camera moves"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Video and image generation with camera-move presets."
+      "en": "Video and image generation with camera-move presets.",
+      "ru": "Генерация видео и картинок с готовыми движениями камеры."
     },
     "description": {
-      "en": "A hub for several video and image models with ready-made camera movements and effects, so a still can become a shot in one click."
+      "en": "A hub for several video and image models with ready-made camera movements and effects, so a still can become a shot in one click.",
+      "ru": "Площадка с несколькими моделями видео и изображений, готовыми движениями камеры и эффектами: статичный кадр превращается в сцену одним кликом."
     }
   },
   {
@@ -932,11 +1049,14 @@
       "image to video"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Video generation from text or a still image."
+      "en": "Video generation from text or a still image.",
+      "ru": "Генерация видео по тексту или фотографии."
     },
     "description": {
-      "en": "Kuaishou's video model. Known for natural motion and for animating a single photo. Free credits renew daily."
+      "en": "Kuaishou's video model. Known for natural motion and for animating a single photo. Free credits renew daily.",
+      "ru": "Видеомодель Kuaishou. Известна естественным движением и умением оживить одну фотографию. Бесплатные кредиты обновляются каждый день."
     }
   },
   {
@@ -954,11 +1074,14 @@
       "effects"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Short AI video clips with playful effects."
+      "en": "Short AI video clips with playful effects.",
+      "ru": "Короткие ИИ-ролики с забавными эффектами."
     },
     "description": {
-      "en": "Turns text or images into short clips, and has effects that melt, inflate or crush the object in the frame. Quick to learn."
+      "en": "Turns text or images into short clips, and has effects that melt, inflate or crush the object in the frame. Quick to learn.",
+      "ru": "Превращает текст или картинки в короткие клипы, а эффекты плавят, надувают или сминают объект в кадре. Осваивается быстро."
     }
   },
   {
@@ -976,11 +1099,14 @@
       "research"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "An agent that builds slides and research from a prompt."
+      "en": "An agent that builds slides and research from a prompt.",
+      "ru": "Агент, который по запросу собирает слайды и исследования."
     },
     "description": {
-      "en": "Describe the topic and it searches, writes and lays out a presentation or a report. Useful for a first draft you then rework."
+      "en": "Describe the topic and it searches, writes and lays out a presentation or a report. Useful for a first draft you then rework.",
+      "ru": "Опишите тему — он сам найдёт информацию, напишет и сверстает презентацию или отчёт. Полезно для черновика, который вы потом доработаете."
     }
   },
   {
@@ -998,11 +1124,14 @@
       "agent"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Describe an app and get a working site."
+      "en": "Describe an app and get a working site.",
+      "ru": "Опишите приложение — получите работающий сайт."
     },
     "description": {
-      "en": "Generates a full web app from a chat, with a database and login, and syncs the code to GitHub so you can keep going by hand."
+      "en": "Generates a full web app from a chat, with a database and login, and syncs the code to GitHub so you can keep going by hand.",
+      "ru": "Собирает веб-приложение целиком из чата, с базой данных и входом, и синхронизирует код с GitHub, чтобы дальше можно было дорабатывать вручную."
     }
   },
   {
@@ -1020,11 +1149,14 @@
       "anthropic"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Ready-to-copy prompts for common jobs."
+      "en": "Ready-to-copy prompts for common jobs.",
+      "ru": "Готовые промпты для типовых задач."
     },
     "description": {
-      "en": "Anthropic's collection of tested prompts: summarising, rewriting, coding, data cleanup and more, each with the system prompt shown."
+      "en": "Anthropic's collection of tested prompts: summarising, rewriting, coding, data cleanup and more, each with the system prompt shown.",
+      "ru": "Коллекция проверенных промптов от Anthropic: пересказ, переписывание, код, чистка данных и многое другое, у каждого показан системный промпт."
     }
   },
   {
@@ -1043,11 +1175,14 @@
       "image generation"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Prompts for image models, with the pictures they made."
+      "en": "Prompts for image models, with the pictures they made.",
+      "ru": "Промпты для моделей изображений вместе с результатами."
     },
     "description": {
-      "en": "A searchable archive of image prompts for Midjourney, Stable Diffusion and others, each shown next to its result. Good for learning wording."
+      "en": "A searchable archive of image prompts for Midjourney, Stable Diffusion and others, each shown next to its result. Good for learning wording.",
+      "ru": "Архив запросов для Midjourney, Stable Diffusion и других моделей с поиском; каждый показан рядом с получившейся картинкой. Хорошо, чтобы учиться формулировкам."
     }
   },
   {
@@ -1065,11 +1200,14 @@
       "image generation"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Tested styles for image models, with editable templates."
+      "en": "Tested styles for image models, with editable templates.",
+      "ru": "Проверенные стили для моделей изображений с шаблонами."
     },
     "description": {
-      "en": "Collections of visual styles for GPT Image, Midjourney, Recraft and others. Each has a working prompt with variables you can change."
+      "en": "Collections of visual styles for GPT Image, Midjourney, Recraft and others. Each has a working prompt with variables you can change.",
+      "ru": "Подборки визуальных стилей для GPT Image, Midjourney, Recraft и других. У каждого рабочий промпт с переменными, которые можно менять."
     }
   },
   {
@@ -1089,11 +1227,14 @@
       "translation"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Fix and polish your writing, in several languages."
+      "en": "Fix and polish your writing, in several languages.",
+      "ru": "Исправляет и шлифует текст на нескольких языках."
     },
     "description": {
-      "en": "A writing assistant from the DeepL translation team. Suggests clearer wording and corrects grammar, and lets you pick a tone."
+      "en": "A writing assistant from the DeepL translation team. Suggests clearer wording and corrects grammar, and lets you pick a tone.",
+      "ru": "Помощник для письма от команды переводчика DeepL. Предлагает более ясные формулировки, исправляет грамматику и позволяет выбрать тон."
     }
   },
   {
@@ -1113,11 +1254,14 @@
       "offline"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Translate text, pages and photos in over 100 languages."
+      "en": "Translate text, pages and photos in over 100 languages.",
+      "ru": "Перевод текста, страниц и фото на более чем 100 языков."
     },
     "description": {
-      "en": "The default translator. Handles text, whole documents, speech and camera input, and can download languages for offline use."
+      "en": "The default translator. Handles text, whole documents, speech and camera input, and can download languages for offline use.",
+      "ru": "Переводчик по умолчанию. Работает с текстом, документами целиком, речью и камерой, а языки можно скачать для работы без интернета."
     }
   },
   {
@@ -1135,11 +1279,14 @@
       "mind maps"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Turn a paragraph into a diagram or infographic."
+      "en": "Turn a paragraph into a diagram or infographic.",
+      "ru": "Превращает абзац текста в схему или инфографику."
     },
     "description": {
-      "en": "Paste text and it proposes visuals: flows, mind maps, comparisons. Everything stays editable and exports as an image or SVG."
+      "en": "Paste text and it proposes visuals: flows, mind maps, comparisons. Everything stays editable and exports as an image or SVG.",
+      "ru": "Вставьте текст — и он предложит визуализации: схемы, интеллект-карты, сравнения. Всё остаётся редактируемым и выгружается картинкой или SVG."
     }
   },
   {
@@ -1157,11 +1304,14 @@
       "free"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free high-resolution photos with a simple licence."
+      "en": "Free high-resolution photos with a simple licence.",
+      "ru": "Бесплатные фото в высоком разрешении с простой лицензией."
     },
     "description": {
-      "en": "A large library of photographs from working photographers, free to use without credit. Strong on landscapes, people and workspaces."
+      "en": "A large library of photographs from working photographers, free to use without credit. Strong on landscapes, people and workspaces.",
+      "ru": "Большая библиотека снимков от практикующих фотографов, можно использовать бесплатно и без указания автора. Сильна в пейзажах, людях и рабочих местах."
     }
   },
   {
@@ -1179,11 +1329,14 @@
       "stock"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free stock photos and video clips."
+      "en": "Free stock photos and video clips.",
+      "ru": "Бесплатные стоковые фото и видео."
     },
     "description": {
-      "en": "Photographs and short video clips under a permissive licence. The video section is one of the better free ones."
+      "en": "Photographs and short video clips under a permissive licence. The video section is one of the better free ones.",
+      "ru": "Фотографии и короткие видео под свободной лицензией. Раздел видео — один из лучших среди бесплатных."
     }
   },
   {
@@ -1202,11 +1355,14 @@
       "video"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Photos, vectors, illustrations and video, all free."
+      "en": "Photos, vectors, illustrations and video, all free.",
+      "ru": "Фото, векторы, иллюстрации и видео — всё бесплатно."
     },
     "description": {
-      "en": "A long-running library with more than photos: vectors, illustrations, music and sound effects are there as well."
+      "en": "A long-running library with more than photos: vectors, illustrations, music and sound effects are there as well.",
+      "ru": "Давно работающая библиотека, где есть не только фото: векторы, иллюстрации, музыка и звуковые эффекты тоже."
     }
   },
   {
@@ -1225,11 +1381,14 @@
       "ai"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Vectors, photos, templates and an AI generator."
+      "en": "Vectors, photos, templates and an AI generator.",
+      "ru": "Векторы, фото, шаблоны и ИИ-генератор."
     },
     "description": {
-      "en": "A huge catalogue of vectors, PSDs and mockups. The free tier requires attribution; a subscription removes that and unlocks the AI tools."
+      "en": "A huge catalogue of vectors, PSDs and mockups. The free tier requires attribution; a subscription removes that and unlocks the AI tools.",
+      "ru": "Огромный каталог векторов, PSD и мокапов. На бесплатном тарифе нужно указывать автора; подписка снимает это требование и открывает ИИ-инструменты."
     }
   },
   {
@@ -1249,11 +1408,14 @@
       "photos"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Icons in many styles, plus illustrations and photos."
+      "en": "Icons in many styles, plus illustrations and photos.",
+      "ru": "Иконки во множестве стилей, а ещё иллюстрации и фото."
     },
     "description": {
-      "en": "A big icon set in dozens of consistent styles, with a desktop app for dropping icons straight into designs."
+      "en": "A big icon set in dozens of consistent styles, with a desktop app for dropping icons straight into designs.",
+      "ru": "Большой набор иконок в десятках единых стилей и приложение для компьютера, из которого иконки можно сразу перетаскивать в макеты."
     }
   },
   {
@@ -1271,11 +1433,14 @@
       "sound effects"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free video clips, music and sound effects."
+      "en": "Free video clips, music and sound effects.",
+      "ru": "Бесплатные видео, музыка и звуковые эффекты."
     },
     "description": {
-      "en": "Envato's free library. Clips and tracks are cleared for commercial use without attribution, so it works for client videos."
+      "en": "Envato's free library. Clips and tracks are cleared for commercial use without attribution, so it works for client videos.",
+      "ru": "Бесплатная библиотека Envato. Ролики и треки разрешены для коммерческого использования без указания автора, так что подходят для клиентских видео."
     }
   },
   {
@@ -1293,11 +1458,14 @@
       "builder"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Assemble a character illustration from parts."
+      "en": "Assemble a character illustration from parts.",
+      "ru": "Соберите иллюстрацию персонажа из частей."
     },
     "description": {
-      "en": "Pick pose, clothes, hair and skin tone, then export a flat illustration as PNG or SVG."
+      "en": "Pick pose, clothes, hair and skin tone, then export a flat illustration as PNG or SVG.",
+      "ru": "Выберите позу, одежду, причёску и цвет кожи и выгрузите плоскую иллюстрацию в PNG или SVG."
     }
   },
   {
@@ -1315,11 +1483,14 @@
       "customisable"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Illustration packs you can recolour and mix."
+      "en": "Illustration packs you can recolour and mix.",
+      "ru": "Наборы иллюстраций, которые можно перекрашивать и комбинировать."
     },
     "description": {
-      "en": "Collections by independent artists with a built-in editor for changing colours and swapping parts. Exports to PNG and SVG."
+      "en": "Collections by independent artists with a built-in editor for changing colours and swapping parts. Exports to PNG and SVG.",
+      "ru": "Коллекции независимых художников со встроенным редактором для смены цветов и замены деталей. Выгрузка в PNG и SVG."
     }
   },
   {
@@ -1338,11 +1509,14 @@
       "overlays"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free textures for art and design."
+      "en": "Free textures for art and design.",
+      "ru": "Бесплатные текстуры для искусства и дизайна."
     },
     "description": {
-      "en": "Hand-made textures: paper, concrete, grain, scratches. Mostly seamless and large enough for print."
+      "en": "Hand-made textures: paper, concrete, grain, scratches. Mostly seamless and large enough for print.",
+      "ru": "Текстуры, сделанные вручную: бумага, бетон, зерно, царапины. В основном бесшовные и достаточно большие для печати."
     }
   },
   {
@@ -1360,11 +1534,14 @@
       "branding"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free mockups for showing off a design."
+      "en": "Free mockups for showing off a design.",
+      "ru": "Бесплатные мокапы, чтобы показать дизайн."
     },
     "description": {
-      "en": "A catalogue of free PSD mockups for posters, packaging, devices and stationery, collected from designers."
+      "en": "A catalogue of free PSD mockups for posters, packaging, devices and stationery, collected from designers.",
+      "ru": "Каталог бесплатных PSD-мокапов для постеров, упаковки, устройств и канцелярии, собранных у дизайнеров."
     }
   },
   {
@@ -1382,11 +1559,14 @@
       "sound effects"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Licensed music and footage, on subscription."
+      "en": "Licensed music and footage, on subscription.",
+      "ru": "Лицензионная музыка и видео по подписке."
     },
     "description": {
-      "en": "Royalty-free music, sound effects and stock footage under one licence. Paid, but the catalogue is curated and the licence is clear."
+      "en": "Royalty-free music, sound effects and stock footage under one licence. Paid, but the catalogue is curated and the licence is clear.",
+      "ru": "Музыка, звуковые эффекты и стоковое видео без отчислений под одной лицензией. Платно, зато каталог отобран, а лицензия понятна."
     }
   },
   {
@@ -1404,11 +1584,14 @@
       "film"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free music by Moby for non-commercial projects."
+      "en": "Free music by Moby for non-commercial projects.",
+      "ru": "Бесплатная музыка Моби для некоммерческих проектов."
     },
     "description": {
-      "en": "The musician offers his tracks for student films, indie projects and non-profits. Read the licence before using it commercially."
+      "en": "The musician offers his tracks for student films, indie projects and non-profits. Read the licence before using it commercially.",
+      "ru": "Музыкант отдаёт свои треки для студенческих фильмов, независимых проектов и некоммерческих организаций. Перед коммерческим использованием прочитайте лицензию."
     }
   },
   {
@@ -1427,11 +1610,14 @@
       "product photos"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Remove the background of a photo in a click."
+      "en": "Remove the background of a photo in a click.",
+      "ru": "Удаление фона с фото в один клик."
     },
     "description": {
-      "en": "Cuts out the subject cleanly, including hair, then lets you place it on a new background or a plain colour."
+      "en": "Cuts out the subject cleanly, including hair, then lets you place it on a new background or a plain colour.",
+      "ru": "Аккуратно вырезает объект, включая волосы, и позволяет поставить его на новый фон или однотонную заливку."
     }
   },
   {
@@ -1450,11 +1636,14 @@
       "demo"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A free background remover that runs in a Space."
+      "en": "A free background remover that runs in a Space.",
+      "ru": "Бесплатное удаление фона в Space на Hugging Face."
     },
     "description": {
-      "en": "A community demo on Hugging Face using an open model. No sign-up, and you can download the transparent PNG."
+      "en": "A community demo on Hugging Face using an open model. No sign-up, and you can download the transparent PNG.",
+      "ru": "Демо от сообщества на Hugging Face на открытой модели. Без регистрации, прозрачный PNG можно скачать."
     }
   },
   {
@@ -1473,11 +1662,14 @@
       "effects"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Turn an image into halftone dots, lines or stipple."
+      "en": "Turn an image into halftone dots, lines or stipple.",
+      "ru": "Превращает изображение в растр из точек, линий или пунктира."
     },
     "description": {
-      "en": "Adjust the grid and see the result live, then export clean SVG. Also renders halftone video to MP4."
+      "en": "Adjust the grid and see the result live, then export clean SVG. Also renders halftone video to MP4.",
+      "ru": "Настраивайте сетку и сразу смотрите на результат, затем выгружайте чистый SVG. Умеет делать полутоновое видео в MP4."
     }
   },
   {
@@ -1495,11 +1687,14 @@
       "clip-path"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Pick a shape, copy the clip-path."
+      "en": "Pick a shape, copy the clip-path.",
+      "ru": "Выберите форму и скопируйте clip-path."
     },
     "description": {
-      "en": "Drag points to get a CSS or SVG clip-path, with a gallery of ready shapes for cards, images and dividers."
+      "en": "Drag points to get a CSS or SVG clip-path, with a gallery of ready shapes for cards, images and dividers.",
+      "ru": "Перетаскивайте точки, чтобы получить clip-path для CSS или SVG; есть галерея готовых форм для карточек, картинок и разделителей."
     }
   },
   {
@@ -1517,11 +1712,14 @@
       "png"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Turn a PNG or JPG into a colour SVG."
+      "en": "Turn a PNG or JPG into a colour SVG.",
+      "ru": "Превращает PNG или JPG в цветной SVG."
     },
     "description": {
-      "en": "Vectorises a raster image while keeping colours and transparency. Runs without an account."
+      "en": "Vectorises a raster image while keeping colours and transparency. Runs without an account.",
+      "ru": "Векторизует растровое изображение с сохранением цветов и прозрачности. Работает без аккаунта."
     }
   },
   {
@@ -1539,11 +1737,14 @@
       "poster"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Make poster type from letters that bend and stretch."
+      "en": "Make poster type from letters that bend and stretch.",
+      "ru": "Постерная типографика из букв, которые гнутся и тянутся."
     },
     "description": {
-      "en": "Type a word and warp it into an odd typographic shape you can export. Good for quick posters and covers."
+      "en": "Type a word and warp it into an odd typographic shape you can export. Good for quick posters and covers.",
+      "ru": "Наберите слово и деформируйте его в необычную типографическую форму для экспорта. Хорошо для быстрых постеров и обложек."
     }
   },
   {
@@ -1561,11 +1762,14 @@
       "png"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Generate soft mesh gradients and export them."
+      "en": "Generate soft mesh gradients and export them.",
+      "ru": "Мягкие mesh-градиенты с экспортом."
     },
     "description": {
-      "en": "Drag colour points on a grid and the gradient follows. Download as PNG for backgrounds and covers."
+      "en": "Drag colour points on a grid and the gradient follows. Download as PNG for backgrounds and covers.",
+      "ru": "Двигайте цветовые точки на сетке — градиент следует за ними. Скачивайте PNG для фонов и обложек."
     }
   },
   {
@@ -1583,11 +1787,14 @@
       "graphics"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Interactive tools for generative graphics."
+      "en": "Interactive tools for generative graphics.",
+      "ru": "Интерактивные инструменты для генеративной графики."
     },
     "description": {
-      "en": "A small studio's set of browser tools for making procedural patterns and graphics, with outputs you can export."
+      "en": "A small studio's set of browser tools for making procedural patterns and graphics, with outputs you can export.",
+      "ru": "Набор браузерных инструментов небольшой студии для процедурных узоров и графики с возможностью экспорта."
     }
   },
   {
@@ -1605,11 +1812,14 @@
       "photoshop alternative"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A Photoshop-style editor that opens PSD files in the tab."
+      "en": "A Photoshop-style editor that opens PSD files in the tab.",
+      "ru": "Редактор в духе Photoshop, который открывает PSD во вкладке."
     },
     "description": {
-      "en": "Layers, masks, filters and PSD, Sketch and Figma file support, with no install. Free with ads."
+      "en": "Layers, masks, filters and PSD, Sketch and Figma file support, with no install. Free with ads.",
+      "ru": "Слои, маски, фильтры и поддержка файлов PSD, Sketch и Figma без установки. Бесплатно, с рекламой."
     }
   },
   {
@@ -1631,11 +1841,14 @@
       "open source"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Enlarge photos on your own computer, free."
+      "en": "Enlarge photos on your own computer, free.",
+      "ru": "Увеличение фото на вашем компьютере, бесплатно."
     },
     "description": {
-      "en": "Open-source desktop app that upscales images with AI models locally, so nothing is uploaded anywhere."
+      "en": "Open-source desktop app that upscales images with AI models locally, so nothing is uploaded anywhere.",
+      "ru": "Приложение с открытым кодом, которое увеличивает изображения ИИ-моделями локально, ничего никуда не загружая."
     }
   },
   {
@@ -1654,11 +1867,14 @@
       "loudness"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Automatic clean-up for speech recordings."
+      "en": "Automatic clean-up for speech recordings.",
+      "ru": "Автоматическая чистка записей речи."
     },
     "description": {
-      "en": "Levels loudness, cuts background noise and balances voices in a podcast or video. Two free hours a month."
+      "en": "Levels loudness, cuts background noise and balances voices in a podcast or video. Two free hours a month.",
+      "ru": "Выравнивает громкость, убирает фоновый шум и балансирует голоса в подкасте или видео. Два бесплатных часа в месяц."
     }
   },
   {
@@ -1676,11 +1892,14 @@
       "speech"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Make a noisy voice recording sound like a studio."
+      "en": "Make a noisy voice recording sound like a studio.",
+      "ru": "Шумная запись голоса звучит как из студии."
     },
     "description": {
-      "en": "Upload speech and get a cleaned version back. Removes echo and background noise; the free tier has a length limit."
+      "en": "Upload speech and get a cleaned version back. Removes echo and background noise; the free tier has a length limit.",
+      "ru": "Загрузите речь и получите очищенную версию. Убирает эхо и фоновый шум; у бесплатного тарифа есть ограничение по длине."
     }
   },
   {
@@ -1698,11 +1917,14 @@
       "speech to text"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Fast transcripts of audio and video in many languages."
+      "en": "Fast transcripts of audio and video in many languages.",
+      "ru": "Быстрая расшифровка аудио и видео на многих языках."
     },
     "description": {
-      "en": "Drop in a recording and get an editable transcript with timestamps. Free plan covers a few short files a day."
+      "en": "Drop in a recording and get an editable transcript with timestamps. Free plan covers a few short files a day.",
+      "ru": "Загрузите запись и получите редактируемую расшифровку с таймкодами. Бесплатный план — несколько коротких файлов в день."
     }
   },
   {
@@ -1720,11 +1942,14 @@
       "private"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Shrink a video without uploading it."
+      "en": "Shrink a video without uploading it.",
+      "ru": "Сжимает видео без загрузки на сервер."
     },
     "description": {
-      "en": "Compresses in the browser, so the file stays on your machine. You can compare the result with the original before saving."
+      "en": "Compresses in the browser, so the file stays on your machine. You can compare the result with the original before saving.",
+      "ru": "Сжатие идёт в браузере, так что файл остаётся на вашем компьютере. Результат можно сравнить с оригиналом перед сохранением."
     }
   },
   {
@@ -1745,11 +1970,14 @@
       "internet speed"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Check your internet speed in one click."
+      "en": "Check your internet speed in one click.",
+      "ru": "Проверка скорости интернета в один клик."
     },
     "description": {
-      "en": "Ookla's test for download, upload and latency. The standard way to settle an argument with a provider."
+      "en": "Ookla's test for download, upload and latency. The standard way to settle an argument with a provider.",
+      "ru": "Тест Ookla для скорости загрузки, отдачи и задержки. Стандартный способ разрешить спор с провайдером."
     }
   },
   {
@@ -1767,11 +1995,14 @@
       "documents"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Convert almost any file format online."
+      "en": "Convert almost any file format online.",
+      "ru": "Конвертирует почти любые форматы файлов онлайн."
     },
     "description": {
-      "en": "Documents, images, audio, video and archives. Free for small files; larger ones need a plan."
+      "en": "Documents, images, audio, video and archives. Free for small files; larger ones need a plan.",
+      "ru": "Документы, изображения, аудио, видео и архивы. Бесплатно для небольших файлов, для больших нужен тариф."
     }
   },
   {
@@ -1794,11 +2025,14 @@
       "compress"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Merge, split, compress and convert PDFs."
+      "en": "Merge, split, compress and convert PDFs.",
+      "ru": "Объединение, разделение, сжатие и конвертация PDF."
     },
     "description": {
-      "en": "A tidy set of PDF tools, including PDF to JPG. Covers most one-off jobs without installing anything."
+      "en": "A tidy set of PDF tools, including PDF to JPG. Covers most one-off jobs without installing anything.",
+      "ru": "Аккуратный набор инструментов для PDF, в том числе PDF в JPG. Покрывает большинство разовых задач без установки программ."
     }
   },
   {
@@ -1820,11 +2054,14 @@
       "convert"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Resize, crop, compress and convert images."
+      "en": "Resize, crop, compress and convert images.",
+      "ru": "Изменение размера, обрезка, сжатие и конвертация картинок."
     },
     "description": {
-      "en": "Same team as iLovePDF, for pictures: batch resize, compress, convert formats, add watermarks."
+      "en": "Same team as iLovePDF, for pictures: batch resize, compress, convert formats, add watermarks.",
+      "ru": "Та же команда, что и iLovePDF, только для изображений: пакетное изменение размера, сжатие, смена формата, водяные знаки."
     }
   },
   {
@@ -1842,11 +2079,14 @@
       "vector"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "QR codes with your colours and logo."
+      "en": "QR codes with your colours and logo.",
+      "ru": "QR-коды с вашими цветами и логотипом."
     },
     "description": {
-      "en": "Customise colours, shapes and add a logo, then export as PNG, SVG or PDF. The codes do not expire."
+      "en": "Customise colours, shapes and add a logo, then export as PNG, SVG or PDF. The codes do not expire.",
+      "ru": "Настройте цвета и формы, добавьте логотип и выгрузите в PNG, SVG или PDF. Коды не перестают работать."
     }
   },
   {
@@ -1865,11 +2105,14 @@
       "pinterest alternative"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A quieter Pinterest for designers."
+      "en": "A quieter Pinterest for designers.",
+      "ru": "Более спокойный Pinterest для дизайнеров."
     },
     "description": {
-      "en": "Save images, links and video into collections. The feed leans toward art and design, with far fewer ads."
+      "en": "Save images, links and video into collections. The feed leans toward art and design, with far fewer ads.",
+      "ru": "Сохраняйте картинки, ссылки и видео в коллекции. Лента тяготеет к искусству и дизайну, а рекламы намного меньше."
     }
   },
   {
@@ -1886,11 +2129,14 @@
       "references"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Find images that look like the one you have."
+      "en": "Find images that look like the one you have.",
+      "ru": "Находит картинки, похожие на вашу."
     },
     "description": {
-      "en": "Visual search: start from a picture and get others with the same mood, colours or composition."
+      "en": "Visual search: start from a picture and get others with the same mood, colours or composition.",
+      "ru": "Визуальный поиск: начните с картинки и получите другие с тем же настроением, цветами или композицией."
     }
   },
   {
@@ -1908,11 +2154,14 @@
       "community"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Designers share their work in progress and finished."
+      "en": "Designers share their work in progress and finished.",
+      "ru": "Дизайнеры показывают работы в процессе и готовые."
     },
     "description": {
-      "en": "Shots from illustrators, brand and UI designers. A good place to see what's current and to find people to hire."
+      "en": "Shots from illustrators, brand and UI designers. A good place to see what's current and to find people to hire.",
+      "ru": "Работы иллюстраторов, бренд- и UI-дизайнеров. Хорошее место, чтобы увидеть актуальное и найти людей в команду."
     }
   },
   {
@@ -1930,11 +2179,14 @@
       "community"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Logo designs and critique from other designers."
+      "en": "Logo designs and critique from other designers.",
+      "ru": "Логотипы и разборы от других дизайнеров."
     },
     "description": {
-      "en": "A gallery of logos with feedback from the community, useful for seeing how others solve a brief."
+      "en": "A gallery of logos with feedback from the community, useful for seeing how others solve a brief.",
+      "ru": "Галерея логотипов с отзывами сообщества: полезно посмотреть, как другие решают похожую задачу."
     }
   },
   {
@@ -1953,11 +2205,14 @@
       "screens"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Searchable screenshots of real websites and apps."
+      "en": "Searchable screenshots of real websites and apps.",
+      "ru": "Скриншоты настоящих сайтов и приложений с поиском."
     },
     "description": {
-      "en": "Tens of thousands of web and iOS screens, filterable by pattern and category. Handy at the start of an interface project."
+      "en": "Tens of thousands of web and iOS screens, filterable by pattern and category. Handy at the start of an interface project.",
+      "ru": "Десятки тысяч экранов веба и iOS с фильтрами по паттернам и категориям. Удобно в начале работы над интерфейсом."
     }
   },
   {
@@ -1974,11 +2229,14 @@
       "branding"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A catalogue of well-made logos."
+      "en": "A catalogue of well-made logos.",
+      "ru": "Каталог хорошо сделанных логотипов."
     },
     "description": {
-      "en": "Browse by industry, style, typography and colour. Around a thousand carefully chosen marks."
+      "en": "Browse by industry, style, typography and colour. Around a thousand carefully chosen marks.",
+      "ru": "Смотрите по отрасли, стилю, типографике и цвету. Около тысячи тщательно отобранных знаков."
     }
   },
   {
@@ -1996,11 +2254,14 @@
       "symbols"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A collection of the world's logos and symbols."
+      "en": "A collection of the world's logos and symbols.",
+      "ru": "Собрание логотипов и символов со всего мира."
     },
     "description": {
-      "en": "Sorted by name, style and designer. More historical range than most logo galleries."
+      "en": "Sorted by name, style and designer. More historical range than most logo galleries.",
+      "ru": "Сортировка по названию, стилю и дизайнеру. Исторический охват шире, чем у большинства галерей логотипов."
     }
   },
   {
@@ -2018,11 +2279,14 @@
       "archive"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "An archive of brand guideline documents."
+      "en": "An archive of brand guideline documents.",
+      "ru": "Архив брендбуков."
     },
     "description": {
-      "en": "PDF brand books from companies of all sizes. Shows how identity systems are actually documented."
+      "en": "PDF brand books from companies of all sizes. Shows how identity systems are actually documented.",
+      "ru": "PDF-брендбуки компаний любого размера. Показывает, как на самом деле документируют фирменный стиль."
     }
   },
   {
@@ -2040,11 +2304,14 @@
       "design studio"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Work from one of the best-known design studios."
+      "en": "Work from one of the best-known design studios.",
+      "ru": "Работы одной из самых известных дизайн-студий."
     },
     "description": {
-      "en": "Identities, packaging, books and environments by the partners at Pentagram. Case studies are detailed."
+      "en": "Identities, packaging, books and environments by the partners at Pentagram. Case studies are detailed.",
+      "ru": "Айдентика, упаковка, книги и пространства от партнёров Pentagram. Подробные кейсы."
     }
   },
   {
@@ -2062,11 +2329,14 @@
       "gallery"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A gallery of dark-themed websites."
+      "en": "A gallery of dark-themed websites.",
+      "ru": "Галерея сайтов в тёмной теме."
     },
     "description": {
-      "en": "Hand-picked sites with dark interfaces, a useful reference for contrast, accents and imagery on black."
+      "en": "Hand-picked sites with dark interfaces, a useful reference for contrast, accents and imagery on black.",
+      "ru": "Отобранные вручную сайты с тёмными интерфейсами: полезный ориентир по контрасту, акцентам и изображениям на чёрном."
     }
   },
   {
@@ -2084,11 +2354,14 @@
       "photoshop"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Photoshop brushes, patterns and textures."
+      "en": "Photoshop brushes, patterns and textures.",
+      "ru": "Кисти, паттерны и текстуры для Photoshop."
     },
     "description": {
-      "en": "A large library of brushes, patterns, gradients and actions for Photoshop and compatible editors. Some need an account."
+      "en": "A large library of brushes, patterns, gradients and actions for Photoshop and compatible editors. Some need an account.",
+      "ru": "Большая библиотека кистей, узоров, градиентов и экшенов для Photoshop и совместимых редакторов. Для некоторых нужен аккаунт."
     }
   },
   {
@@ -2106,11 +2379,14 @@
       "design resources"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Free icon and image collections."
+      "en": "Free icon and image collections.",
+      "ru": "Бесплатные наборы иконок и изображений."
     },
     "description": {
-      "en": "Free packs of icons and pictures for sites, apps and presentations, in Russian."
+      "en": "Free packs of icons and pictures for sites, apps and presentations, in Russian.",
+      "ru": "Бесплатные паки иконок и картинок для сайтов, приложений и презентаций, на русском языке."
     }
   },
   {
@@ -2128,11 +2404,14 @@
       "culture"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A digital catalogue of Uzbek ornament."
+      "en": "A digital catalogue of Uzbek ornament.",
+      "ru": "Цифровой каталог узбекского орнамента."
     },
     "description": {
-      "en": "Scanned and catalogued traditional patterns, searchable by type. A good source for pattern and decorative work."
+      "en": "Scanned and catalogued traditional patterns, searchable by type. A good source for pattern and decorative work.",
+      "ru": "Отсканированные и систематизированные традиционные узоры с поиском по типу. Хороший источник для орнаментальной и декоративной работы."
     }
   },
   {
@@ -2150,11 +2429,14 @@
       "free"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Over 1,700 free fonts with Cyrillic."
+      "en": "Over 1,700 free fonts with Cyrillic.",
+      "ru": "Больше 1700 бесплатных шрифтов с кириллицей."
     },
     "description": {
-      "en": "A library of Cyrillic typefaces with the author and licence listed for each, so you can check commercial use."
+      "en": "A library of Cyrillic typefaces with the author and licence listed for each, so you can check commercial use.",
+      "ru": "Библиотека кириллических шрифтов, где у каждого указаны автор и лицензия, так что можно проверить коммерческое использование."
     }
   },
   {
@@ -2172,11 +2454,14 @@
       "old images"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Old prints and photographs with no copyright."
+      "en": "Old prints and photographs with no copyright.",
+      "ru": "Старые гравюры и фотографии без авторских прав."
     },
     "description": {
-      "en": "Hand-picked out-of-copyright works, free to reuse. New images are added weekly."
+      "en": "Hand-picked out-of-copyright works, free to reuse. New images are added weekly.",
+      "ru": "Отобранные вручную работы, перешедшие в общественное достояние, которые можно свободно использовать. Новые изображения добавляются каждую неделю."
     }
   },
   {
@@ -2194,11 +2479,14 @@
       "museums"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Visual search over 100,000 copyright-free images."
+      "en": "Visual search over 100,000 copyright-free images.",
+      "ru": "Визуальный поиск по 100 000 изображений без авторских прав."
     },
     "description": {
-      "en": "From the Cosmos team. Pulls from the Met, New York Public Library and other collections into one search."
+      "en": "From the Cosmos team. Pulls from the Met, New York Public Library and other collections into one search.",
+      "ru": "От команды Cosmos. Собирает в одном поиске фонды Метрополитен-музея, Нью-Йоркской публичной библиотеки и других коллекций."
     }
   },
   {
@@ -2216,11 +2504,14 @@
       "open licence"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "The media library behind Wikipedia."
+      "en": "The media library behind Wikipedia.",
+      "ru": "Медиатека, на которой стоит Википедия."
     },
     "description": {
-      "en": "Tens of millions of images, audio and video files, each with its licence stated. Check the licence per file."
+      "en": "Tens of millions of images, audio and video files, each with its licence stated. Check the licence per file.",
+      "ru": "Десятки миллионов изображений, аудио и видео, у каждого файла указана лицензия. Проверяйте лицензию для каждого файла."
     }
   },
   {
@@ -2238,11 +2529,14 @@
       "open access"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "High-resolution images from the Getty collection."
+      "en": "High-resolution images from the Getty collection.",
+      "ru": "Изображения высокого разрешения из коллекции Getty."
     },
     "description": {
-      "en": "Artworks from the Getty museum, free to download and use for any purpose."
+      "en": "Artworks from the Getty museum, free to download and use for any purpose.",
+      "ru": "Произведения из музея Getty, которые можно бесплатно скачать и использовать для любых целей."
     }
   },
   {
@@ -2260,11 +2554,14 @@
       "open access"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Millions of images from the Smithsonian, in CC0."
+      "en": "Millions of images from the Smithsonian, in CC0.",
+      "ru": "Миллионы изображений Смитсоновского института в CC0."
     },
     "description": {
-      "en": "Artworks, specimens and historical objects from the Smithsonian, free to use without permission."
+      "en": "Artworks, specimens and historical objects from the Smithsonian, free to use without permission.",
+      "ru": "Произведения искусства, образцы и исторические предметы из Смитсоновского института, можно использовать без разрешения."
     }
   },
   {
@@ -2282,11 +2579,14 @@
       "open access"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Public-domain artworks from the Met."
+      "en": "Public-domain artworks from the Met.",
+      "ru": "Работы из Метрополитен-музея в общественном достоянии."
     },
     "description": {
-      "en": "Hundreds of thousands of images of works in the Met collection, free to use. Available through the museum's online collection."
+      "en": "Hundreds of thousands of images of works in the Met collection, free to use. Available through the museum's online collection.",
+      "ru": "Сотни тысяч изображений произведений из коллекции Метрополитен-музея, свободные для использования. Доступны через онлайн-коллекцию музея."
     }
   },
   {
@@ -2304,11 +2604,14 @@
       "open access"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Open-access images from the National Gallery of Art."
+      "en": "Open-access images from the National Gallery of Art.",
+      "ru": "Изображения в открытом доступе из Национальной галереи искусства."
     },
     "description": {
-      "en": "Paintings, prints and photographs from the Washington museum, downloadable in high resolution."
+      "en": "Paintings, prints and photographs from the Washington museum, downloadable in high resolution.",
+      "ru": "Живопись, гравюры и фотографии из музея в Вашингтоне, которые можно скачать в высоком разрешении."
     }
   },
   {
@@ -2326,11 +2629,14 @@
       "open access"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "CC0 images from the Art Institute of Chicago."
+      "en": "CC0 images from the Art Institute of Chicago.",
+      "ru": "Изображения CC0 из Чикагского института искусств."
     },
     "description": {
-      "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data."
+      "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data.",
+      "ru": "Работы из чикагского музея в общественном достоянии, с большими файлами и полными данными каталога."
     }
   },
   {
@@ -2350,11 +2656,14 @@
       "all-in-one"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Many AI models for photo, video and audio in one app."
+      "en": "Many AI models for photo, video and audio in one app.",
+      "ru": "Множество ИИ-моделей для фото, видео и звука в одном приложении."
     },
     "description": {
-      "en": "One account for image, video, music and voice-over models, plus utilities like background removal and lip-sync. Works in the browser and in Telegram, and is paid with credits."
+      "en": "One account for image, video, music and voice-over models, plus utilities like background removal and lip-sync. Works in the browser and in Telegram, and is paid with credits.",
+      "ru": "Один аккаунт для моделей изображений, видео, музыки и озвучки, плюс утилиты вроде удаления фона и липсинка. Работает в браузере и в Telegram, оплата кредитами."
     }
   },
   {
@@ -2372,11 +2681,14 @@
       "free"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "500+ free fonts with Cyrillic, filterable by licence."
+      "en": "500+ free fonts with Cyrillic, filterable by licence.",
+      "ru": "500+ бесплатных шрифтов с кириллицей и фильтром по лицензии."
     },
     "description": {
-      "en": "A catalogue of Cyrillic typefaces from the Uprock studio. Filter by category, style, purpose and licence, and preview each font with your own text."
+      "en": "A catalogue of Cyrillic typefaces from the Uprock studio. Filter by category, style, purpose and licence, and preview each font with your own text.",
+      "ru": "Каталог кириллических шрифтов от студии Uprock. Фильтры по категории, стилю, назначению и лицензии, а каждый шрифт можно посмотреть на своём тексте."
     }
   },
   {
@@ -2396,11 +2708,14 @@
       "privacy"
     ],
     "added": "2026-11-13",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "A throwaway email address for sign-ups."
+      "en": "A throwaway email address for sign-ups.",
+      "ru": "Одноразовая почта для регистраций."
     },
     "description": {
-      "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while."
+      "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while.",
+      "ru": "Сразу выдаёт почтовый ящик без регистрации, чтобы подтвердить аккаунт, не отдавая свой настоящий адрес. Письма через какое-то время исчезают."
     }
   },
   {
@@ -2421,11 +2736,14 @@
       "astana"
     ],
     "added": "2026-11-14",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Small apps for Mac, Windows and the web by one maker."
+      "en": "Small apps for Mac, Windows and the web by one maker.",
+      "ru": "Небольшие приложения для Mac, Windows и веба от одного автора."
     },
     "description": {
-      "en": "A workshop of converters, image, video and speech tools, Mac utilities and browser extensions, all built and used daily by the author, with new ones added regularly."
+      "en": "A workshop of converters, image, video and speech tools, Mac utilities and browser extensions, all built and used daily by the author, with new ones added regularly.",
+      "ru": "Мастерская конвертеров, инструментов для изображений, видео и речи, утилит для Mac и расширений для браузера. Автор сам каждый день ими пользуется и регулярно добавляет новые."
     },
     "own": true
   },
@@ -2447,11 +2765,14 @@
       "menu bar"
     ],
     "added": "2026-11-14",
+    "updated": "2026-11-13",
     "summary": {
-      "en": "Warm falling snow on your Mac or Windows desktop."
+      "en": "Warm falling snow on your Mac or Windows desktop.",
+      "ru": "Тёплый снегопад на рабочем столе Mac и Windows."
     },
     "description": {
-      "en": "Snow falls over your screen, settles on windows and the Dock, grows icicles, and scatters when you blow into the microphone. It hides itself during calls."
+      "en": "Snow falls over your screen, settles on windows and the Dock, grows icicles, and scatters when you blow into the microphone. It hides itself during calls.",
+      "ru": "Снег падает поверх экрана, оседает на окнах и Dock, отращивает сосульки и разлетается, если подуть в микрофон. Во время звонков прячется сам."
     },
     "own": true
   }
