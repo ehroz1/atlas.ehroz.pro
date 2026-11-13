@@ -10,7 +10,9 @@ import { u, pagePath } from '~/lib/url';
  * - Elsewhere, Done opens the home grid with the same URL params, and
  *   typed queries list matching sites to jump to directly.
  */
-import { getTools, getCategories, searchText } from '~/lib/data';
+import { getImage } from 'astro:assets';
+import { getTools, getCategories, searchText, domainOf } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
 import { useTranslations, loc, defaultLang, type Lang } from '~/i18n';
 
 interface Props { lang?: Lang }
@@ -26,6 +28,13 @@ const platforms = [...new Set(tools.flatMap((x) => x.data.platforms))].sort(
   (a, b) => count(tools, (x) => x.data.platforms.includes(b)) - count(tools, (x) => x.data.platforms.includes(a)),
 );
 
+// small thumbnails for search results
+const thumbs = new Map<string, string>();
+for (const tool of tools) {
+  const shot = shotFor(tool.id);
+  if (shot) thumbs.set(tool.id, (await getImage({ src: shot, width: 240, format: 'webp', quality: 70 })).src);
+}
+
 const index = {
   tools: tools.map((tool) => ({
     id: tool.id,
@@ -37,6 +46,8 @@ const index = {
     platforms: tool.data.platforms,
     summary: loc(tool.data.summary, lang),
     text: searchText(tool, names.get(tool.data.category)!),
+    thumb: thumbs.get(tool.id) ?? '',
+    domain: domainOf(tool.data.url),
   })),
   facets: {
     category: categories.map((c) => ({ id: c.id, label: loc(c.data.name, lang), count: count(tools, (x) => x.data.category === c.id) })),
@@ -53,6 +64,9 @@ const index = {
     sites: t('search.sites'),
     none: t('search.none'),
     placeholder: t('search.placeholder'),
+    tabSites: t('search.sites'),
+    tabCategories: t('nav.categories'),
+    noCategories: t('search.noCategories'),
     filtersOne: t('search.filters.one'),
     filtersOther: t('search.filters.other'),
   },
@@ -132,6 +146,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     <label class="visually-hidden" for="finder-input">{t('search.label')}</label>
     <input class="finder__input" id="finder-input" type="search" placeholder={t('search.input')}
       autocomplete="off" spellcheck="false" enterkeyhint="search" data-finder-input />
+    <button class="finder__x" type="button" aria-label={t('search.clear')} data-finder-x hidden>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
   </form>
   <div class="finder__body">
     <div class="finder__facets" role="tablist" aria-label="Filters">
@@ -161,7 +178,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
 <script>
   type Tool = {
     id: string; name: string; category: string; categoryName: string; pricing: string;
-    open: boolean; platforms: string[]; summary: string; text: string;
+    open: boolean; platforms: string[]; summary: string; text: string; thumb: string; domain: string;
   };
   type Option = { id: string; label: string; count: number };
   type FacetKey = 'category' | 'pricing' | 'platform';
@@ -257,22 +274,43 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   }
 
   let active = -1;
+  let resultTab: 'sites' | 'categories' = 'sites';
+  const xBtn = document.querySelector<HTMLButtonElement>('[data-finder-x]')!;
   function renderPane() {
     document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.facet === facet)));
+    dialog.classList.toggle('is-searching', !!state.q.trim());
+    xBtn.hidden = !input.value;
     if (state.q.trim()) {
+      // Typing: tabs with counts, then results with thumbnails.
       const hits = data.tools.filter(matches);
-      pane.innerHTML = hits.length
-        ? `<div class="finder__label">${esc(S.sites)} · ${hits.length}</div>` +
-          hits
-            .slice(0, 30)
-            .map(
-              (h) => `<a class="finder__hit" href="${pageUrl('tool/' + h.id)}" aria-selected="false">
-                <span class="finder__hit-name">${esc(h.name)}</span>
-                <span class="finder__hit-meta">${esc(h.categoryName)}</span>
-                <span class="finder__hit-summary">${esc(h.summary)}</span></a>`,
-            )
-            .join('')
-        : `<p class="finder__empty">${esc(S.none)}</p>`;
+      const words = normalize(state.q).split(/\s+/).filter(Boolean);
+      const cats = data.facets.category.filter((c) => words.every((w) => normalize(c.label).includes(w)));
+      const tab = (id: 'sites' | 'categories', label: string, n: number) =>
+        `<button class="finder__tab" type="button" role="tab" aria-selected="${resultTab === id}" data-tab="${id}">${esc(label)}<span class="finder__tab-count">${n}</span></button>`;
+      let list = '';
+      if (resultTab === 'sites') {
+        list = hits.length
+          ? hits
+              .slice(0, 40)
+              .map(
+                (h) => `<a class="finder__result" href="${pageUrl('tool/' + h.id)}" aria-selected="false">
+                  <span class="finder__thumb">${h.thumb ? `<img src="${h.thumb}" alt="" loading="lazy" decoding="async">` : `<span>${esc(h.domain)}</span>`}</span>
+                  <span class="finder__result-text"><span class="finder__result-name">${esc(h.name)}</span>
+                  <span class="finder__result-meta">${esc(h.categoryName)} · ${esc(h.summary)}</span></span></a>`,
+              )
+              .join('')
+          : `<p class="finder__empty">${esc(S.none)}</p>`;
+      } else {
+        list = cats.length
+          ? cats
+              .map(
+                (c) => `<a class="finder__result finder__result--cat" href="${pageUrl('category/' + c.id)}" aria-selected="false">
+                  <span class="finder__result-name">${esc(c.label)}</span><span class="finder__count">${c.count}</span></a>`,
+              )
+              .join('')
+          : `<p class="finder__empty">${esc(S.noCategories)}</p>`;
+      }
+      pane.innerHTML = `<div class="finder__tabs" role="tablist">${tab('sites', S.tabSites, hits.length)}${tab('categories', S.tabCategories, cats.length)}</div>${list}`;
       active = -1;
       return;
     }
@@ -301,6 +339,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     input.select();
   }
   function done() {
+    flush();
     dialog.close();
     if (inPlace()) {
       emit();
@@ -322,12 +361,38 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   });
   document.addEventListener('atlas:reset', () => clearBtn.click());
 
-  input.addEventListener('input', () => {
+  // Wait until the person stops typing before showing results.
+  const DEBOUNCE = 300;
+  let pending: number | undefined;
+  const flush = () => {
+    clearTimeout(pending);
+    pending = undefined;
+    if (state.q === input.value) return;
     state.q = input.value;
+    resultTab = 'sites';
     update();
+  };
+  input.addEventListener('input', () => {
+    xBtn.hidden = !input.value;
+    clearTimeout(pending);
+    // clearing the field shows the filters again straight away
+    if (!input.value) return flush();
+    pending = window.setTimeout(flush, DEBOUNCE);
+  });
+  xBtn.addEventListener('click', () => {
+    input.value = '';
+    flush();
+    input.focus();
+  });
+  pane.addEventListener('click', (e) => {
+    const tab = (e.target as HTMLElement).closest<HTMLElement>('[data-tab]');
+    if (!tab) return;
+    resultTab = tab.dataset.tab as 'sites' | 'categories';
+    renderPane();
   });
   input.addEventListener('keydown', (e) => {
-    const hits = Array.from(pane.querySelectorAll<HTMLAnchorElement>('.finder__hit'));
+    if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') flush();
+    const hits = Array.from(pane.querySelectorAll<HTMLAnchorElement>('.finder__result'));
     if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && hits.length) {
       e.preventDefault();
       active = (active + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length;

@@ -36,6 +36,7 @@ export const en = {
   'search.facet.platform': 'Platform',
   'search.sites': 'Sites',
   'search.none': 'Nothing matches. Try fewer words or clear the filters.',
+  'search.noCategories': 'No category with that name.',
   'search.clearAll': 'Clear all',
   'search.done': 'Done',
   'search.filters.one': '{count} filter',

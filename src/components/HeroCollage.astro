@@ -1,13 +1,15 @@
 ---
 import { u } from '~/lib/url';
 /**
- * Home hero: one chain of screenshots running round a single, even
- * ellipse, like a train, with the statement and blue button in the middle.
+ * Home hero: 14 screenshots on one ellipse, turning slowly
+ * counter-clockwise, with the statement and blue button in the middle
+ * (matches deck.gallery's ring).
  *
- * The ellipse touches the panel's top and bottom edges (those shots are
- * half cut off) and its sides. Shots are spaced by equal arc length, and
- * their number is always even, so the ring is mirror-symmetric at every
- * moment. They move clockwise. With reduced motion
+ * Shots sit at equal angles (360° / 14), not equal distances: on a wide
+ * ellipse that bunches them into overlapping stacks at the sides and
+ * spreads them along the top and bottom, which is the look we want. The
+ * ellipse runs through the panel's top and bottom edges and slightly past
+ * its sides, so those shots are cut off by the panel. With reduced motion
  * they are placed on the same track and stay still; without JavaScript
  * only the statement shows.
  */
@@ -20,15 +22,16 @@ interface Props { tools: Tool[]; categoryCount: number; lang?: Lang }
 const { tools, categoryCount, lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
-const MAX = 24; // more than any screen needs; extra ones are hidden by the script
+const COUNT = 14; // as in the reference ring
 const withShots = tools.filter((tool) => shotFor(tool.id));
-const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i) => withShots[i % withShots.length]);
+// spread the picks across the list so neighbours differ
+const items = Array.from({ length: COUNT }, (_, i) => withShots[Math.floor((i * withShots.length) / COUNT) % withShots.length]);
 ---
 <section class="hero-panel" aria-labelledby="hero-title" data-hero>
   <div class="collage" aria-hidden="true">
     {items.map((tool) => (
       <div class="collage__item">
-        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 15vw, 22vw" format="webp" quality={72} loading="eager" />
+        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 15vw, 26vw" format="webp" quality={72} loading="eager" />
       </div>
     ))}
   </div>
@@ -45,40 +48,10 @@ const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i)
 
   if (panel) {
     const items = Array.from(panel.querySelectorAll<HTMLElement>('.collage__item'));
-    const SPEED = 28; // px per second along the track
-    const SPACING = 1.12; // distance between shots, in shot widths
+    const TURN = 80; // seconds per full turn
+    const N = items.length;
 
-    // Ellipse with an arc-length table, so equal steps along the line are
-    // equal distances on screen (plain angle steps bunch up at the ends).
-    const SAMPLES = 1024;
-    let cx = 0, cy = 0, rx = 0, ry = 0, tw = 0, th = 0, P = 0, count = 0;
-    const lens = new Float64Array(SAMPLES + 1);
-    const build = () => {
-      let prevX = rx, prevY = 0;
-      lens[0] = 0;
-      for (let i = 1; i <= SAMPLES; i++) {
-        const a = (i / SAMPLES) * Math.PI * 2;
-        const x = rx * Math.cos(a), y = ry * Math.sin(a);
-        lens[i] = lens[i - 1] + Math.hypot(x - prevX, y - prevY);
-        prevX = x;
-        prevY = y;
-      }
-      P = lens[SAMPLES];
-    };
-    /** Point at distance s along the ellipse, clockwise from the right-hand side. */
-    const along = (s: number): [number, number] => {
-      s = ((s % P) + P) % P;
-      let lo = 0, hi = SAMPLES;
-      while (lo < hi) {
-        const mid = (lo + hi) >> 1;
-        lens[mid] < s ? (lo = mid + 1) : (hi = mid);
-      }
-      const i = Math.max(1, lo);
-      const f = (s - lens[i - 1]) / (lens[i] - lens[i - 1] || 1);
-      const a = ((i - 1 + f) / SAMPLES) * Math.PI * 2;
-      return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
-    };
-
+    let cx = 0, cy = 0, rx = 0, ry = 0, tw = 0, th = 0;
     const measure = () => {
       const W = panel.clientWidth;
       const H = panel.clientHeight;
@@ -86,20 +59,18 @@ const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i)
       th = items[0].offsetHeight;
       cx = W / 2;
       cy = H / 2;
-      // Desktop: side shots sit just inside the edges. Phones: half off, to leave room for the text.
-      rx = W >= 768 ? W / 2 - tw / 2 : W / 2;
-      ry = H / 2; // top and bottom shots are cut in half by the panel edge
-      build();
-      count = Math.floor(P / (tw * SPACING));
-      count = Math.max(4, Math.min(items.length - (items.length % 2), count - (count % 2)));
-      items.forEach((el, i) => (el.hidden = i >= count));
+      // Side stacks poke a little past the edges; top/bottom shots are cut by them.
+      rx = W >= 768 ? W / 2 - tw * 0.35 : W / 2 + tw * 0.1;
+      ry = H / 2 - th * 0.12;
     };
 
     let t = 0;
     const draw = () => {
-      const gap = P / count;
-      for (let i = 0; i < count; i++) {
-        const [x, y] = along(t * SPEED + i * gap);
+      const turn = -(t / TURN) * Math.PI * 2; // negative = counter-clockwise on screen
+      for (let i = 0; i < N; i++) {
+        const a = turn + (i / N) * Math.PI * 2;
+        const x = cx + rx * Math.cos(a);
+        const y = cy + ry * Math.sin(a);
         items[i].style.transform = `translate3d(${x - tw / 2}px, ${y - th / 2}px, 0)`;
       }
     };
