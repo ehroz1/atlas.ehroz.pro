@@ -1,0 +1,11 @@
+[
+  { "id": "ai", "order": 1, "name": { "en": "AI" }, "description": { "en": "Assistants, generators and models you can actually use day to day." } },
+  { "id": "design", "order": 2, "name": { "en": "Design" }, "description": { "en": "Interface design, color, layout and everything around the canvas." } },
+  { "id": "development", "order": 3, "name": { "en": "Development" }, "description": { "en": "Code, hosting, databases and the small utilities that save an afternoon." } },
+  { "id": "productivity", "order": 4, "name": { "en": "Productivity" }, "description": { "en": "Notes, planning and tools that keep work moving." } },
+  { "id": "video-audio", "order": 5, "name": { "en": "Video & Audio" }, "description": { "en": "Editing, voice and sound for people who publish." } },
+  { "id": "3d-motion", "order": 6, "name": { "en": "3D & Motion" }, "description": { "en": "Three-dimensional scenes and interactive animation for the web." } },
+  { "id": "typography", "order": 7, "name": { "en": "Type" }, "description": { "en": "Free and well-made fonts, plus places to find them." } },
+  { "id": "inspiration", "order": 8, "name": { "en": "Inspiration" }, "description": { "en": "Galleries and archives worth scrolling before you start." } },
+  { "id": "learning", "order": 9, "name": { "en": "Learning" }, "description": { "en": "Docs, courses and tutorials that explain things properly." } }
+]

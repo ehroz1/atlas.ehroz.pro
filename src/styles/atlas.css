@@ -1,0 +1,801 @@
+/* ==========================================================================
+   ATLAS — design system
+   --------------------------------------------------------------------------
+   One file, imported once in src/layouts/Base.astro. Every page and
+   component uses these tokens and classes; nothing should hard-code a
+   color, size or radius. Read docs/DESIGN.md before adding new UI.
+
+   Contents
+     0.  Fonts (Medeo)
+     1.  Tokens: color
+     2.  Tokens: typography
+     3.  Tokens: space, size, layout
+     4.  Tokens: radius, border, elevation, motion, z-index
+     5.  Reset & base elements
+     6.  Layout primitives  (.container .stack .cluster .split .grid)
+     7.  Typography classes (.t-*)
+     8.  Header & footer
+     9.  Buttons & links    (.btn .link .back)
+     10. Chips              (.chip .chips)
+     11. Search field       (.search .kbd)
+     12. Hero               (.hero)
+     13. Tiles & cards      (.tile .card .cards)
+     14. Tool page          (.tool-head .meta .tags)
+     15. Prose              (.prose)
+     16. Forms              (.field .input .textarea .select)
+     17. Feedback states    (.empty .notice)
+     18. Utilities
+     19. Motion preferences & print
+   ========================================================================== */
+
+
+/* 0. FONTS ---------------------------------------------------------------- */
+/* Medeo Sans is variable on two axes: wght 100–900 and opsz 14–32.
+   font-optical-sizing:auto lets the browser pick opsz from font-size,
+   so headings automatically get the tighter display cut. */
+
+@font-face {
+  font-family: "Medeo Sans";
+  src: url("/fonts/MedeoSansVariable.woff2") format("woff2-variations"),
+       url("/fonts/MedeoSansVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Medeo Sans";
+  src: url("/fonts/MedeoSansVariable-Italic.woff2") format("woff2-variations"),
+       url("/fonts/MedeoSansVariable-Italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Medeo Mono";
+  src: url("/fonts/MedeoMonoVariable.woff2") format("woff2-variations"),
+       url("/fonts/MedeoMonoVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Medeo Serif";
+  src: url("/fonts/MedeoSerif-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+:root {
+  /* 1. COLOR ---------------------------------------------------------------
+     A near-monochrome palette. The page is white, content is ink, and
+     surfaces are separated by one flat grey — not by shadows or borders.
+     Color appears only in two places: the hero drawing (--c-ink-blue)
+     and hover/“new” highlights (--c-signal). Never add a third accent.   */
+
+  /* raw scale — do not use directly in components */
+  --gray-0:   #ffffff;
+  --gray-25:  #fafafa;
+  --gray-50:  #f5f5f5;   /* tile surface */
+  --gray-100: #efefef;   /* tile hover, input fill */
+  --gray-150: #e8e8e8;   /* hairlines */
+  --gray-200: #dedede;   /* chip border */
+  --gray-300: #c9c9c9;
+  --gray-400: #a3a3a3;
+  --gray-500: #8a8a8a;   /* muted text */
+  --gray-600: #6b6b6b;   /* secondary text */
+  --gray-800: #2b2b2b;
+  --gray-900: #141414;   /* ink */
+
+  --blue-600: #2f5bea;
+  --red-500:  #e5534b;
+  --green-600:#2f8a4e;
+
+  /* semantic — use these */
+  --c-bg:            var(--gray-0);
+  --c-surface:       var(--gray-50);
+  --c-surface-hover: var(--gray-100);
+  --c-fill:          var(--gray-100);     /* inputs, pressed states */
+  --c-line:          var(--gray-150);
+  --c-line-strong:   var(--gray-200);
+  --c-line-active:   var(--gray-800);
+
+  --c-text:          var(--gray-900);
+  --c-text-2:        var(--gray-600);
+  --c-text-3:        var(--gray-500);
+  --c-text-disabled: var(--gray-400);
+  --c-text-invert:   var(--gray-0);
+
+  --c-ink-blue:      var(--blue-600);     /* illustrations only */
+  --c-signal:        var(--red-500);      /* hover on chips, "new" marks */
+  --c-success:       var(--green-600);
+
+  --c-focus:         var(--blue-600);
+  --c-selection:     #dfe7fd;
+  --c-shot-shadow:   rgb(0 0 0 / 0.06);
+
+
+  /* 2. TYPOGRAPHY ----------------------------------------------------------
+     One family (Medeo Sans), few sizes, two weights in everyday use:
+     400 for reading, 500 for names and headings. 600+ is reserved for
+     very large display text. Mono is for keys, counts and code.         */
+
+  --font-sans:  "Medeo Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:  "Medeo Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: "Medeo Serif", ui-serif, Georgia, serif;
+
+  /* size scale — 1.2 ratio around a 15px body */
+  --fs-11: 0.6875rem;   /* 11px  micro labels (rare) */
+  --fs-13: 0.8125rem;   /* 13px  meta, captions */
+  --fs-14: 0.875rem;    /* 14px  secondary UI */
+  --fs-15: 0.9375rem;   /* 15px  body, UI default */
+  --fs-17: 1.0625rem;   /* 17px  lead paragraph */
+  --fs-20: 1.25rem;     /* 20px  section title */
+  --fs-24: 1.5rem;      /* 24px  page subtitle */
+  --fs-hero: clamp(1.375rem, 1.05rem + 1.1vw, 1.75rem);   /* 22→28px statement */
+  --fs-display: clamp(2rem, 1.4rem + 2.4vw, 3rem);        /* 32→48px tool name */
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+
+  --lh-tight: 1.2;
+  --lh-snug:  1.3;
+  --lh-body:  1.5;
+  --lh-prose: 1.65;
+
+  --ls-tight: -0.02em;   /* large text */
+  --ls-snug:  -0.01em;   /* hero / headings */
+  --ls-normal: 0;
+
+
+  /* 3. SPACE, SIZE, LAYOUT -------------------------------------------------
+     4px base. Generous vertical rhythm between page sections, tight
+     gaps inside the grid — that contrast is what makes the layout calm. */
+
+  --s-1:  0.25rem;  /*  4 */
+  --s-2:  0.5rem;   /*  8 */
+  --s-3:  0.75rem;  /* 12 */
+  --s-4:  1rem;     /* 16 */
+  --s-5:  1.25rem;  /* 20 */
+  --s-6:  1.5rem;   /* 24 */
+  --s-8:  2rem;     /* 32 */
+  --s-10: 2.5rem;   /* 40 */
+  --s-12: 3rem;     /* 48 */
+  --s-16: 4rem;     /* 64 */
+  --s-20: 5rem;     /* 80 */
+  --s-24: 6rem;     /* 96 */
+  --s-32: 8rem;     /* 128 */
+
+  --section-gap: clamp(var(--s-16), 10vw, var(--s-32));  /* hero ↔ grid */
+
+  --container:        60rem;    /* 960px main column */
+  --container-narrow: 36rem;    /* 576px text pages, forms */
+  --gutter:           clamp(1rem, 4vw, 1.5rem);
+  --header-h:         4.5rem;
+
+  --grid-gap:    0.5rem;        /* gap between tiles — deliberately tight */
+  --grid-gap-y:  var(--s-8);    /* tile + caption to next row */
+
+  --control-h-sm: 1.875rem;     /* 30px chips, small pills */
+  --control-h:    2.25rem;      /* 36px buttons, search */
+  --control-h-lg: 2.75rem;      /* 44px form inputs on touch */
+
+
+  /* 4. RADIUS, BORDER, ELEVATION, MOTION, Z ---------------------------------- */
+
+  --r-xs:   3px;      /* screenshots inside tiles */
+  --r-sm:   6px;      /* kbd, small tags */
+  --r-md:   10px;     /* inputs in forms */
+  --r-tile: 2px;      /* tiles stay nearly square — like paper, not like apps */
+  --r-pill: 999px;    /* chips, buttons, search */
+
+  --border: 1px solid var(--c-line);
+  --border-strong: 1px solid var(--c-line-strong);
+
+  /* Only one shadow exists: the soft lift under a screenshot.
+     Cards, buttons and the header are flat. */
+  --shadow-shot: 0 1px 2px var(--c-shot-shadow), 0 8px 24px -8px rgb(0 0 0 / 0.12);
+
+  --ease:      cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast:  120ms;
+  --dur:       200ms;
+  --dur-slow:  400ms;
+
+  --z-header: 10;
+  --z-overlay: 50;
+
+  color-scheme: light;
+}
+
+
+/* 5. RESET & BASE --------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: var(--s-6);
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-body);
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+main { flex: 1; }
+
+img, svg, video, canvas, picture { display: block; max-width: 100%; }
+img { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, h4 { font-weight: var(--fw-medium); line-height: var(--lh-tight); text-wrap: balance; }
+p { text-wrap: pretty; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+code, kbd, samp { font-family: var(--font-mono); font-size: 0.92em; }
+hr { border: 0; border-top: var(--border); }
+[hidden] { display: none !important; }
+
+::selection { background: var(--c-selection); }
+
+:focus-visible {
+  outline: 2px solid var(--c-focus);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+
+/* 6. LAYOUT PRIMITIVES ---------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--narrow { max-width: calc(var(--container-narrow) + var(--gutter) * 2); }
+
+/* vertical flow with a configurable gap: <div class="stack" style="--gap: var(--s-6)"> */
+.stack { display: flex; flex-direction: column; gap: var(--gap, var(--s-4)); }
+
+/* horizontal wrap of inline things */
+.cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap, var(--s-2)); }
+
+/* two ends of a row */
+.split { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+
+.section { padding-block: var(--section-gap); }
+.section--tight { padding-block: var(--s-12); }
+
+
+/* 7. TYPOGRAPHY CLASSES --------------------------------------------------- */
+
+.t-display {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-medium);
+  line-height: 1.05;
+  letter-spacing: var(--ls-tight);
+}
+.t-statement {               /* the hero sentence */
+  font-size: var(--fs-hero);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-snug);
+}
+.t-title { font-size: var(--fs-20); font-weight: var(--fw-medium); letter-spacing: var(--ls-snug); }
+.t-lead  { font-size: var(--fs-17); line-height: var(--lh-body); color: var(--c-text); }
+.t-body  { font-size: var(--fs-15); }
+.t-small { font-size: var(--fs-14); }
+.t-meta  { font-size: var(--fs-13); color: var(--c-text-3); }
+.t-mono  { font-family: var(--font-mono); font-size: var(--fs-13); letter-spacing: 0; }
+.t-muted { color: var(--c-text-3); }
+.t-secondary { color: var(--c-text-2); }
+.t-medium { font-weight: var(--fw-medium); }
+.t-center { text-align: center; }
+.t-tabular { font-variant-numeric: tabular-nums; }
+
+
+/* 8. HEADER & FOOTER ------------------------------------------------------- */
+
+.site-header {
+  position: relative;
+  z-index: var(--z-header);
+}
+.site-header__inner {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+.site-header__nav { display: flex; align-items: center; gap: var(--s-2); }
+
+.logo {
+  font-size: var(--fs-15);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-snug);
+  white-space: nowrap;
+}
+.logo sup {
+  font-size: 0.6em;
+  font-weight: var(--fw-regular);
+  vertical-align: 0.55em;
+  margin-left: 1px;
+}
+
+.site-footer {
+  margin-top: var(--section-gap);
+  padding-block: var(--s-8) var(--s-10);
+  border-top: var(--border);
+  font-size: var(--fs-14);
+  color: var(--c-text-3);
+}
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-8);
+}
+.site-footer a { color: var(--c-text-2); transition: color var(--dur-fast) var(--ease); }
+.site-footer a:hover { color: var(--c-text); }
+
+
+/* 9. BUTTONS & LINKS -------------------------------------------------------
+   .btn             outlined pill (default action: “Submit a site”)
+   .btn--solid      ink pill (one primary action per screen, at most)
+   .btn--ghost      text only, pill-shaped hover (nav links)
+   .btn--sm         chip height
+   Icons are optional; arrows are text glyphs (↗ ← →), not icon fonts.    */
+
+.btn {
+  --_h: var(--control-h);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: var(--_h);
+  padding-inline: calc(var(--_h) * 0.42);
+  border: var(--border-strong);
+  border-radius: var(--r-pill);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-regular);
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+.btn:hover { border-color: var(--c-line-active); }
+.btn:active { background: var(--c-fill); }
+
+.btn--solid { background: var(--c-text); border-color: var(--c-text); color: var(--c-text-invert); }
+.btn--solid:hover { background: var(--gray-800); border-color: var(--gray-800); }
+.btn--solid:active { background: var(--gray-900); }
+
+.btn--ghost { border-color: transparent; background: transparent; }
+.btn--ghost:hover { border-color: transparent; background: var(--c-fill); }
+
+.btn--sm { --_h: var(--control-h-sm); font-size: var(--fs-14); }
+.btn--lg { --_h: var(--control-h-lg); }
+.btn[disabled], .btn[aria-disabled="true"] { color: var(--c-text-disabled); pointer-events: none; }
+
+.btn__arrow { font-size: 0.9em; transition: transform var(--dur) var(--ease); }
+.btn:hover .btn__arrow { transform: translate(1px, -1px); }
+
+/* inline text link: ink with a quiet underline that firms up on hover */
+.link {
+  color: var(--c-text);
+  text-decoration: underline;
+  text-decoration-color: var(--c-line-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+.link:hover { text-decoration-color: currentColor; }
+
+/* “← All sites” */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: var(--fs-14);
+  color: var(--c-text-3);
+  transition: color var(--dur-fast) var(--ease);
+}
+.back:hover { color: var(--c-text); }
+
+
+/* 10. CHIPS -----------------------------------------------------------------
+   Category filters. Plain pills with a light border; the current one gets
+   an ink border. On hover the label turns --c-signal — the one spot of
+   color in the interface.                                                */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  height: var(--control-h-sm);
+  padding-inline: 0.8rem;
+  border: var(--border);
+  border-radius: var(--r-pill);
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: var(--fs-15);
+  line-height: 1;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.chip:hover { color: var(--c-signal); }
+.chip[aria-current="page"],
+.chip[aria-pressed="true"] { border-color: var(--c-line-active); color: var(--c-text); }
+.chip__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* On narrow screens chips scroll sideways instead of wrapping into 4 rows */
+@media (max-width: 40rem) {
+  .chips--scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+  .chips--scroll::-webkit-scrollbar { display: none; }
+}
+
+
+/* 11. SEARCH ----------------------------------------------------------------
+   A filled pill, same shape as the newsletter field on deck.gallery.
+   The kbd hint on the right disappears while typing.                     */
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 24rem;
+  height: var(--control-h);
+  padding-inline: var(--s-4) var(--s-2);
+  border-radius: var(--r-pill);
+  background: var(--c-fill);
+  transition: background-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.search:hover { background: #e9e9e9; }
+.search:focus-within { background: var(--c-bg); box-shadow: inset 0 0 0 1px var(--c-line-active); }
+.search__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: var(--fs-15);
+}
+.search__input::placeholder { color: var(--c-text-3); opacity: 1; }
+.search__input::-webkit-search-cancel-button { display: none; }
+.search__clear {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--r-pill);
+  color: var(--c-text-3);
+  font-size: var(--fs-14);
+}
+.search__clear:hover { background: var(--c-fill); color: var(--c-text); }
+.search:has(.search__input:placeholder-shown) .search__clear { display: none; }
+.search:has(.search__input:not(:placeholder-shown)) .kbd { display: none; }
+.search:focus-within .kbd { display: none; }
+
+.kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.375rem;
+  height: 1.375rem;
+  padding-inline: 0.3rem;
+  border: var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--c-bg);
+  color: var(--c-text-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  line-height: 1;
+}
+
+
+/* 12. HERO --------------------------------------------------------------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: clamp(var(--s-16), 12vw, 10rem) 0;
+}
+.hero__drawing {
+  width: 9.5rem;
+  height: auto;
+  margin-bottom: var(--s-3);
+  color: var(--c-ink-blue);
+}
+.hero__statement { max-width: 36rem; }
+.hero__search { width: 100%; display: flex; justify-content: center; margin-top: var(--s-6); }
+.hero__aside { margin-top: var(--s-4); font-size: var(--fs-14); color: var(--c-text-3); }
+.hero__aside a { color: var(--c-text); }
+.hero__aside a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+
+
+/* 13. TILES & CARDS ---------------------------------------------------------
+   .tile  – the grey square that frames a screenshot. Screenshot sits in the
+            middle at ~80% width with the only shadow in the system.
+   .card  – tile + caption (name, category, one-line summary). The whole
+            card is a single link.
+   .cards – the grid. Two columns from 40rem up; tight horizontal gap,
+            larger vertical gap so captions breathe.                     */
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--grid-gap-y) var(--grid-gap);
+}
+@media (min-width: 40rem) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 7 / 5;
+  padding: 10% 10%;
+  overflow: hidden;
+  border-radius: var(--r-tile);
+  background: var(--c-surface);
+  transition: background-color var(--dur) var(--ease);
+}
+.tile__shot {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: var(--r-xs);
+  box-shadow: var(--shadow-shot);
+  background: var(--c-bg);
+  transition: transform var(--dur-slow) var(--ease);
+}
+/* fallback when a tool has no screenshot yet: the domain set large */
+.tile__fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-xs);
+  background: var(--c-bg);
+  box-shadow: var(--shadow-shot);
+  font-size: clamp(var(--fs-20), 3vw, 2rem);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-tight);
+  color: var(--c-text);
+}
+.tile--large { aspect-ratio: 3 / 2; padding: 7% 8%; }
+
+.card { display: flex; flex-direction: column; gap: var(--s-3); color: inherit; }
+.card:hover .tile { background: var(--c-surface-hover); }
+.card:hover .tile__shot { transform: translateY(-4px); }
+.card:focus-visible { outline-offset: 4px; }
+.card__caption { display: flex; flex-direction: column; gap: 2px; padding-inline: 1px; }
+.card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+.card__name { font-size: var(--fs-15); font-weight: var(--fw-medium); }
+.card__category { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
+.card__summary {
+  font-size: var(--fs-14);
+  color: var(--c-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* toolbar above the grid: chips on the left, result count on the right */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-8);
+}
+.toolbar__count { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
+@media (max-width: 40rem) {
+  .toolbar { flex-direction: column; align-items: stretch; }
+}
+
+
+/* 14. TOOL PAGE ------------------------------------------------------------ */
+
+.tool-head {
+  display: grid;
+  gap: var(--s-8);
+  padding-block: var(--s-12) var(--s-10);
+}
+@media (min-width: 48rem) {
+  .tool-head { grid-template-columns: minmax(0, 1fr) 18rem; align-items: start; gap: var(--s-12); }
+}
+.tool-head__title { display: flex; flex-direction: column; gap: var(--s-4); }
+.tool-head__actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-2); }
+
+/* definition list of facts: Category / Pricing / Platforms / Added */
+.meta { display: grid; gap: var(--s-3); font-size: var(--fs-14); }
+.meta__row {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: var(--s-3);
+  padding-bottom: var(--s-3);
+  border-bottom: var(--border);
+}
+.meta__row:last-child { border-bottom: 0; padding-bottom: 0; }
+.meta dt { color: var(--c-text-3); }
+.meta dd { color: var(--c-text); margin: 0; }
+.meta a:hover { color: var(--c-signal); }
+
+.tags { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); }
+.tag {
+  font-size: var(--fs-14);
+  color: var(--c-text-2);
+}
+.tag::before { content: "#"; color: var(--c-text-disabled); margin-right: 1px; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+
+
+/* 15. PROSE --------------------------------------------------------------
+   Long text (About, guidelines). Narrow measure, no decorative headings. */
+
+.prose { max-width: 34rem; font-size: var(--fs-17); line-height: var(--lh-prose); color: var(--c-text); }
+.prose > * + * { margin-top: 1em; }
+.prose h2 { font-size: var(--fs-20); margin-top: 2.2em; letter-spacing: var(--ls-snug); }
+.prose h3 { font-size: var(--fs-17); margin-top: 1.8em; }
+.prose h2 + *, .prose h3 + * { margin-top: 0.5em; }
+.prose a { text-decoration: underline; text-decoration-color: var(--c-line-strong); text-underline-offset: 0.2em; }
+.prose a:hover { text-decoration-color: currentColor; }
+.prose ul, .prose ol { padding-left: 1.2em; }
+.prose li + li { margin-top: 0.35em; }
+.prose li::marker { color: var(--c-text-3); }
+.prose code { padding: 0.1em 0.35em; border-radius: var(--r-sm); background: var(--c-fill); }
+.prose blockquote { padding-left: var(--s-4); border-left: 2px solid var(--c-line-strong); color: var(--c-text-2); }
+
+
+/* 16. FORMS ---------------------------------------------------------------- */
+
+.form { display: grid; gap: var(--s-6); }
+.field { display: grid; gap: var(--s-2); }
+.field__label { font-size: var(--fs-14); font-weight: var(--fw-medium); }
+.field__hint  { font-size: var(--fs-13); color: var(--c-text-3); }
+.field__error { font-size: var(--fs-13); color: var(--c-signal); }
+.checkbox { width: 1rem; height: 1rem; accent-color: var(--c-text); }
+
+.input, .textarea, .select {
+  width: 100%;
+  min-height: var(--control-h-lg);
+  padding: 0.6rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: var(--c-fill);
+  font-size: var(--fs-15);
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.input::placeholder, .textarea::placeholder { color: var(--c-text-3); opacity: 1; }
+.input:hover, .textarea:hover, .select:hover { background: #e9e9e9; }
+.input:focus, .textarea:focus, .select:focus { outline: none; background: var(--c-bg); border-color: var(--c-line-active); }
+.input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--c-signal); }
+.textarea { min-height: 7.5rem; resize: vertical; line-height: var(--lh-body); }
+.select {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a8a' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+
+/* 17. FEEDBACK STATES --------------------------------------------------- */
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding-block: var(--s-20);
+  text-align: center;
+  color: var(--c-text-2);
+}
+.empty__title { font-size: var(--fs-17); color: var(--c-text); font-weight: var(--fw-medium); }
+
+.notice {
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  font-size: var(--fs-14);
+  color: var(--c-text-2);
+}
+.notice--success { color: var(--c-success); }
+
+
+/* 18. UTILITIES ----------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: absolute;
+  left: var(--s-4);
+  top: var(--s-2);
+  z-index: var(--z-overlay);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  background: var(--c-text);
+  color: var(--c-text-invert);
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+.mt-2 { margin-top: var(--s-2); }   .mt-4 { margin-top: var(--s-4); }
+.mt-6 { margin-top: var(--s-6); }   .mt-8 { margin-top: var(--s-8); }
+.mt-12 { margin-top: var(--s-12); } .mt-16 { margin-top: var(--s-16); }
+.w-full { width: 100%; }
+
+
+/* 19. MOTION PREFERENCES & PRINT ------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .site-header__nav, .search, .chips, .site-footer { display: none; }
+  .tile { background: none; }
+}

@@ -1,0 +1,89 @@
+---
+import Base from '~/layouts/Base.astro';
+import { getCategories } from '~/lib/data';
+import { loc } from '~/i18n';
+
+const categories = await getCategories();
+/* Set PUBLIC_SUBMIT_ENDPOINT in .env to any form backend that accepts
+   a POST (Formspree, Basin, a Cloudflare Worker…). Until then the form
+   explains that submissions aren't open yet. */
+const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
+---
+<Base title="Submit a site" description="Suggest a website or tool for Atlas.">
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">Submit a site</h1>
+        <p class="t-secondary">
+          Tell us what it is and why it's good. We read everything and add the ones that
+          fit <a class="link" href="/about">the criteria</a>. Skip the marketing copy, one honest
+          sentence is better.
+        </p>
+      </div>
+
+      <form class="form mt-12" method="post" action={endpoint ?? '#'} data-submit-form data-endpoint={endpoint ?? ''}>
+        <div class="field">
+          <label class="field__label" for="url">Link</label>
+          <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="name">Name</label>
+          <input class="input" id="name" name="name" type="text" placeholder="What is it called?" required />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="category">Category</label>
+          <select class="select" id="category" name="category">
+            {categories.map((c) => <option value={c.id}>{loc(c.data.name)}</option>)}
+            <option value="other">Not sure</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="why">Why is it useful?</label>
+          <textarea class="textarea" id="why" name="why" placeholder="I use it for…" required></textarea>
+          <span class="field__hint">A sentence or two is plenty.</span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="email">Your email <span class="t-muted" style="font-weight: 400">(optional)</span></label>
+          <input class="input" id="email" name="email" type="email" placeholder="So we can say thanks" autocomplete="email" />
+        </div>
+
+        <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
+          <input class="checkbox" type="checkbox" name="maker" value="yes" />
+          I made this
+        </label>
+
+        <div class="cluster" style="--gap: var(--s-4)">
+          <button class="btn btn--solid btn--lg" type="submit">Send</button>
+          <span class="t-meta" data-submit-status aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-submit-form]');
+  const status = document.querySelector<HTMLElement>('[data-submit-status]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!status) return;
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      status.textContent = 'Submissions open soon. The form isn’t connected yet.';
+      return;
+    }
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(String(res.status));
+      form.reset();
+      status.textContent = 'Thanks, got it.';
+    } catch {
+      status.textContent = 'Couldn’t send. Try again in a minute.';
+    }
+  });
+</script>

@@ -1,0 +1,25 @@
+---
+import type { Category } from '~/lib/data';
+import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
+
+interface Props {
+  categories: Category[];
+  /** id of the current category, or undefined for “All” */
+  current?: string;
+  lang?: Lang;
+}
+const { categories, current, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+---
+<nav aria-label={t('filter.label')}>
+  <ul class="chips chips--scroll" role="list">
+    <li><a class="chip" href="/" aria-current={!current ? 'page' : undefined}>{t('filter.all')}</a></li>
+    {categories.map((c) => (
+      <li>
+        <a class="chip" href={`/category/${c.id}`} aria-current={current === c.id ? 'page' : undefined}>
+          {loc(c.data.name, lang)}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

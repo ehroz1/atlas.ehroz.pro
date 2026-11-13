@@ -1,0 +1,147 @@
+---
+/**
+ * Toolbar (category chips + count) and the card grid, with client-side
+ * search. Works without JavaScript: the grid is plain HTML and chips are
+ * links. The script only hides cards that don't match the search box.
+ */
+import ToolCard from './ToolCard.astro';
+import CategoryChips from './CategoryChips.astro';
+import type { Tool, Category } from '~/lib/data';
+import { loc, useTranslations, plural, defaultLang, type Lang } from '~/i18n';
+
+interface Props {
+  tools: Tool[];
+  categories: Category[];
+  current?: string;
+  lang?: Lang;
+}
+const { tools, categories, current, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
+---
+<section id="sites" aria-label="Sites">
+  <div class="toolbar">
+    <CategoryChips categories={categories} current={current} lang={lang} />
+    <span class="toolbar__count t-tabular" data-count aria-live="polite"
+      data-one={t('results.count.one')} data-other={t('results.count.other')}>
+      {countText(tools.length)}
+    </span>
+  </div>
+
+  <div class="cards" data-cards>
+    {tools.map((tool, i) => (
+      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} eager={i < 2} hideCategory={!!current} />
+    ))}
+  </div>
+
+  <div class="empty" data-empty hidden>
+    <p class="empty__title" data-empty-title data-template={t('results.empty.title')}></p>
+    <p>{t('results.empty.body')}</p>
+    <button class="btn btn--sm mt-2" type="button" data-search-reset>{t('results.empty.reset')}</button>
+  </div>
+</section>
+
+<script>
+  /* Client-side search.
+     - every word of the query must appear somewhere in the card's text
+     - cards whose name starts with the query are moved to the front
+     - the query is mirrored in ?q= so results can be shared
+     - "/" focuses the field, Esc clears it */
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const grid = document.querySelector<HTMLElement>('[data-cards]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const emptyTitle = document.querySelector<HTMLElement>('[data-empty-title]');
+  const count = document.querySelector<HTMLElement>('[data-count]');
+
+  if (input && grid) {
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
+    const original = cards.slice();
+    const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
+
+    const setCount = (n: number) => {
+      if (!count) return;
+      const tpl = n === 1 ? count.dataset.one : count.dataset.other;
+      count.textContent = (tpl ?? '{count}').replace('{count}', String(n));
+    };
+
+    const apply = (raw: string) => {
+      const q = normalize(raw);
+      const words = q.split(/\s+/).filter(Boolean);
+      let shown = 0;
+      const lead: HTMLElement[] = [];
+      const rest: HTMLElement[] = [];
+
+      for (const card of original) {
+        const hay = normalize(card.dataset.search ?? '');
+        const match = words.every((w) => hay.includes(w));
+        card.hidden = !match;
+        if (!match) continue;
+        shown++;
+        (q && card.dataset.name?.startsWith(q) ? lead : rest).push(card);
+      }
+      grid.append(...lead, ...rest, ...original.filter((c) => c.hidden));
+
+      setCount(shown);
+      if (empty && emptyTitle) {
+        empty.hidden = shown > 0;
+        grid.hidden = shown === 0;
+        emptyTitle.textContent = (emptyTitle.dataset.template ?? '').replace('{query}', raw.trim());
+      }
+
+      const url = new URL(location.href);
+      q ? url.searchParams.set('q', raw.trim()) : url.searchParams.delete('q');
+      history.replaceState(history.state, '', url);
+    };
+
+    const reset = () => {
+      input.value = '';
+      apply('');
+      input.focus();
+    };
+
+    const initial = new URLSearchParams(location.search).get('q');
+    if (initial) {
+      input.value = initial;
+      apply(initial);
+    }
+
+    // On the first keystroke, bring the field to the top of the screen so
+    // results are visible below it instead of hidden under the hero.
+    let lifted = false;
+    input.addEventListener('input', () => {
+      apply(input.value);
+      if (lifted || !input.value.trim()) return;
+      lifted = true;
+      const top = input.getBoundingClientRect().top + scrollY - 24;
+      if (grid.getBoundingClientRect().top > innerHeight * 0.6) scrollTo({ top, behavior: 'smooth' });
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') reset();
+      if (e.key === 'Enter') document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.querySelector('[data-search-clear]')?.addEventListener('click', reset);
+    document.querySelector('[data-search-reset]')?.addEventListener('click', reset);
+
+    document.addEventListener('keydown', (e) => {
+      const el = e.target as HTMLElement;
+      const typing = el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+      if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        input.focus();
+        input.select();
+      }
+    });
+
+    // Keep chip links carrying the current query between categories.
+    document.querySelectorAll<HTMLAnchorElement>('.chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const q = input.value.trim();
+        if (!q) return;
+        const url = new URL(chip.href);
+        url.searchParams.set('q', q);
+        chip.href = url.href;
+      });
+    });
+  }
+</script>

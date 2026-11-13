@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import { shotFor } from '~/lib/shots';
+import { domainOf, searchText, type Tool } from '~/lib/data';
+import { loc, defaultLang, type Lang } from '~/i18n';
+
+interface Props {
+  tool: Tool;
+  categoryName: string;
+  lang?: Lang;
+  /** first row of the grid loads eagerly */
+  eager?: boolean;
+  /** hide the category label, e.g. on a category page */
+  hideCategory?: boolean;
+}
+
+const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false } = Astro.props;
+const shot = shotFor(tool.id);
+const d = tool.data;
+---
+<a
+  class="card"
+  href={`/tool/${tool.id}`}
+  data-card
+  data-search={searchText(tool, categoryName)}
+  data-name={d.name.toLowerCase()}
+>
+  <div class="tile">
+    {shot ? (
+      <Image
+        class="tile__shot"
+        src={shot}
+        alt=""
+        widths={[480, 720, 960]}
+        sizes="(min-width: 64rem) 380px, (min-width: 40rem) 40vw, 80vw"
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+        format="webp"
+        quality={78}
+      />
+    ) : (
+      <div class="tile__fallback" aria-hidden="true">{domainOf(d.url)}</div>
+    )}
+  </div>
+  <div class="card__caption">
+    <div class="card__row">
+      <span class="card__name">{d.name}</span>
+      {!hideCategory && <span class="card__category">{categoryName}</span>}
+    </div>
+    <p class="card__summary">{loc(d.summary, lang)}</p>
+  </div>
+</a>

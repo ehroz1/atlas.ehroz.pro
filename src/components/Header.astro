@@ -1,0 +1,16 @@
+---
+import { useTranslations, defaultLang, type Lang } from '~/i18n';
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const path = Astro.url.pathname.replace(/\/$/, '');
+---
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="logo" href="/" aria-label={`${t('site.name')} — home`}>Atlas<sup>°</sup></a>
+    <nav class="site-header__nav" aria-label="Main">
+      <a class="btn btn--ghost" href="/about" aria-current={path === '/about' ? 'page' : undefined}>{t('nav.about')}</a>
+      <a class="btn" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>{t('nav.submit')}</a>
+    </nav>
+  </div>
+</header>

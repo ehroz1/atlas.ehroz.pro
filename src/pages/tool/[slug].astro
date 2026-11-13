@@ -1,0 +1,120 @@
+---
+import { Image } from 'astro:assets';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
+import { useTranslations, loc, formatDate } from '~/i18n';
+
+export async function getStaticPaths() {
+  const tools = await getTools();
+  return tools.map((tool) => ({ params: { slug: tool.id }, props: { tool } }));
+}
+
+interface Props { tool: Tool }
+const { tool } = Astro.props;
+const d = tool.data;
+const t = useTranslations('en');
+
+const [all, categories] = await Promise.all([getTools(), getCategories()]);
+const category = categories.find((c) => c.id === d.category)!;
+const categoryName = loc(category.data.name);
+const related = all.filter((x) => x.data.category === d.category && x.id !== tool.id).slice(0, 4);
+const shot = shotFor(tool.id);
+const domain = domainOf(d.url);
+const outbound = new URL(d.url);
+outbound.searchParams.set('ref', 'atlas.ehroz.pro');
+
+const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+---
+<Base title={d.name} description={`${d.name} — ${loc(d.summary)}`}>
+  <div class="container">
+    <div style="padding-top: var(--s-8)">
+      <a class="back" href={`/category/${category.id}`}>← {categoryName}</a>
+    </div>
+
+    <header class="tool-head">
+      <div class="tool-head__title">
+        <h1 class="t-display">{d.name}</h1>
+        <p class="t-lead" style="max-width: 34rem">{loc(d.description)}</p>
+        <div class="tool-head__actions">
+          <a class="btn btn--solid" href={outbound.href} target="_blank" rel="noopener">
+            {t('tool.visit', { domain })} <span class="btn__arrow" aria-hidden="true">↗</span>
+          </a>
+          <button class="btn" type="button" data-copy data-label-done={t('tool.copied')}>{t('tool.copy')}</button>
+        </div>
+      </div>
+
+      <dl class="meta">
+        <div class="meta__row">
+          <dt>{t('tool.category')}</dt>
+          <dd><a href={`/category/${category.id}`}>{categoryName}</a></dd>
+        </div>
+        <div class="meta__row">
+          <dt>{t('tool.pricing')}</dt>
+          <dd>{pricing}</dd>
+        </div>
+        {d.platforms.length > 0 && (
+          <div class="meta__row">
+            <dt>{t('tool.platforms')}</dt>
+            <dd>{d.platforms.join(', ')}</dd>
+          </div>
+        )}
+        <div class="meta__row">
+          <dt>{t('tool.tags')}</dt>
+          <dd class="tags">
+            {d.tags.map((tag) => <a class="tag" href={`/?q=${encodeURIComponent(tag)}#sites`}>{tag}</a>)}
+          </dd>
+        </div>
+        <div class="meta__row">
+          <dt>{t('tool.added')}</dt>
+          <dd>{formatDate(d.added)}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <a class="tile tile--large" href={outbound.href} target="_blank" rel="noopener" aria-label={t('tool.visit', { domain })}>
+      {shot ? (
+        <Image
+          class="tile__shot"
+          src={shot}
+          alt={`${d.name} homepage`}
+          widths={[720, 1080, 1440]}
+          sizes="(min-width: 64rem) 820px, 90vw"
+          loading="eager"
+          fetchpriority="high"
+          format="webp"
+          quality={82}
+        />
+      ) : (
+        <div class="tile__fallback">{domain}</div>
+      )}
+    </a>
+
+    {related.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0">
+        <div class="section-head">
+          <h2 class="t-title">{t('tool.more', { category: categoryName })}</h2>
+          <a class="link t-small" href={`/category/${category.id}`}>{t('tool.seeAll')}</a>
+        </div>
+        <div class="cards">
+          {related.map((r) => <ToolCard tool={r} categoryName={categoryName} hideCategory />)}
+        </div>
+      </section>
+    )}
+  </div>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  btn?.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(location.href);
+      btn.textContent = btn.dataset.labelDone ?? 'Copied';
+      setTimeout(() => (btn.textContent = label), 1600);
+    } catch {
+      /* clipboard blocked — nothing to do */
+    }
+  });
+</script>
