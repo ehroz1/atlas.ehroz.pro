@@ -5,6 +5,7 @@ import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
 import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
+import { alternativesOf, similarTo } from '~/lib/related';
 import { getPage } from '~/lib/routes';
 import { software } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
@@ -19,7 +20,9 @@ const t = useTranslations(lang);
 const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage(`tool/${tool.id}`)]);
 const category = categories.find((c) => c.id === d.category)!;
 const categoryName = loc(category.data.name, lang);
-const related = all.filter((x) => x.data.category === d.category && x.id !== tool.id).slice(0, 4);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const alternatives = alternativesOf(tool, all);
+const similar = similarTo(tool, all, new Set(alternatives.map((x) => x.id)));
 const shot = shotFor(tool.id);
 const domain = domainOf(d.url);
 const outbound = new URL(d.url);
@@ -34,6 +37,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
   crumbs={[{ name: categoryName, path: `/category/${category.id}` }, { name: d.name, path: entry.path }]}
   nodes={[software(url, tool, lang, categoryName)]}
   pageExtra={{ mainEntity: { '@id': url + '#software' }, about: { '@id': url + '#software' } }}
+  toolId={tool.id}
 >
   <div class="container">
     <header class="tool-head" style="padding-top: var(--s-6)">
@@ -94,14 +98,25 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       )}
     </a>
 
-    {related.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0">
+    {alternatives.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
         <div class="section-head">
-          <h2 class="t-title">{t('tool.more', { category: categoryName })}</h2>
-          <a class="link t-small" href={u(`/category/${category.id}`, lang)}>{t('tool.seeAll')}</a>
+          <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
         </div>
         <div class="cards">
-          {related.map((r) => <ToolCard tool={r} categoryName={categoryName} hideCategory lang={lang} />)}
+          {alternatives.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
+        </div>
+      </section>
+    )}
+
+    {similar.length > 0 && (
+      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="similar">
+        <div class="section-head">
+          <h2 class="t-title" id="similar">{t('tool.similar')}</h2>
+          <a class="link t-small" href={u(`/category/${category.id}`, lang)}>{t('tool.more', { category: categoryName })}</a>
+        </div>
+        <div class="cards">
+          {similar.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
         </div>
       </section>
     )}

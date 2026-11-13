@@ -182,7 +182,17 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   </div>
   <div class="finder__foot">
     <button class="finder__clear" type="button" data-finder-clear hidden>{t('search.clearAll')}</button>
-    <button class="finder__done" type="button" data-finder-done>{t('search.done')}</button>
+    <div class="finder__foot-end">
+      <button class="finder__lucky" type="button" title={t('search.luckyHint')} data-finder-lucky>
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="13" height="13" rx="3"/>
+          <circle cx="7.4" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.6" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
+          <circle cx="12.6" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="7.4" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="finder__lucky-text">{t('search.lucky')}</span>
+      </button>
+      <button class="finder__done" type="button" data-finder-done>{t('search.done')}</button>
+    </div>
   </div>
 </dialog>
 
@@ -206,6 +216,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   const input = document.querySelector<HTMLInputElement>('[data-finder-input]')!;
   const pane = document.querySelector<HTMLElement>('[data-finder-pane]')!;
   const clearBtn = document.querySelector<HTMLButtonElement>('[data-finder-clear]')!;
+  const luckyBtn = document.querySelector<HTMLButtonElement>('[data-finder-lucky]')!;
   const openBtn = document.querySelector<HTMLButtonElement>('[data-finder-open]')!;
   const label = document.querySelector<HTMLElement>('[data-finder-label]')!;
   const badge = document.querySelector<HTMLElement>('[data-finder-badge]')!;
@@ -282,6 +293,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     const tpl = cat === 'one' ? S.filtersOne : cat === 'few' ? S.filtersFew : cat === 'many' ? S.filtersMany : S.filtersOther;
     badge.title = tpl.replace('{count}', String(n));
     clearBtn.hidden = !state.q.trim() && n === 0;
+    luckyBtn.disabled = !data.tools.some(matches);
     for (const f of FACETS) {
       const el = document.querySelector<HTMLElement>(`[data-facet-count="${f}"]`)!;
       el.textContent = state[f].size ? String(state[f].size) : '';
@@ -376,6 +388,20 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     input.focus();
   });
   document.addEventListener('atlas:reset', () => clearBtn.click());
+
+  // Feeling lucky: a random site among what the query and filters match
+  // (everything when nothing is set). Sites not opened yet come first.
+  luckyBtn.addEventListener('click', () => {
+    flush();
+    const pool = data.tools.filter(matches);
+    if (!pool.length) return;
+    const seen: Set<string> = (window as any).__atlasSeen ?? new Set();
+    const here = document.body.dataset.tool;
+    const fresh = pool.filter((x) => !seen.has(x.id) && x.id !== here);
+    const from = fresh.length ? fresh : pool.filter((x) => x.id !== here).length ? pool.filter((x) => x.id !== here) : pool;
+    const pick = from[Math.floor(Math.random() * from.length)];
+    location.href = pageUrl('tool/' + pick.id);
+  });
 
   // Wait until the person stops typing before showing results.
   const DEBOUNCE = 300;

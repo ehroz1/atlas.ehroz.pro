@@ -31,6 +31,7 @@ const links = [
     <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label={t('nav.other')}>
       {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
       <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
+      <a href={u('/rss.xml')} type="application/rss+xml">{t('footer.rss')}</a>
       {counters && <a href="#" data-consent-reset role="button">{t('footer.cookies')}</a>}
     </nav>
   </div>

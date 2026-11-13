@@ -126,6 +126,9 @@ put them together.
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |
+| Card marks | `.card__badge--new`, `.card__badge--seen`, `.card.is-seen` | left corner: white "New" on the `NEW_MAX` newest sites only (`src/lib/related.ts`), or dark "Viewed" plus a greyed name for sites opened before in this browser (script at the end of `Base.astro`, `localStorage` `atlas:seen`) |
+| Feeling lucky | `.finder__lucky`, `.finder__foot-end` | quiet pill left of Done; opens a random site from the current query/filters, unseen ones first; icon only on phones |
+| Alternatives / Similar | `.section-head` + `.cards` on the tool page | alternatives come from `src/data/alternatives.json`; similar sites are scored by shared tags, category and pricing |
 | Tile | `.tile`, `.tile__shot` | large framed screenshot on the tool page |
 | No screenshot | `.shot-fallback` | the domain set large |
 | Grid | `.cards`, `.toolbar` | 1 → 2 → 3 columns; chips + count above on category pages |
@@ -205,7 +208,8 @@ interfaces tend to do and this site doesn't.
       copy deck.gallery's pricing layout and every number is real.)
 - [ ] No emoji or sparkles (✨) in UI text, headings or buttons.
 - [ ] No eyebrow label above a heading ("FEATURES", "WHY ATLAS").
-- [ ] No badges like "New" or "Popular" on every card.
+- [ ] No badges like "New" or "Popular" on every card. ("New" is capped
+      at `NEW_MAX` sites, see `src/lib/related.ts`.)
 - [ ] Copy has no "unlock / supercharge / seamless / elevate / game-changer"
       and doesn't stack em dashes. One sentence, said plainly.
 - [ ] Cards aren't wrapped in borders *and* shadows *and* rounded 16px corners.

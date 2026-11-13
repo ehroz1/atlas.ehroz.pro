@@ -43,6 +43,8 @@ export const en = {
   'search.noCategories': 'No category with that name.',
   'search.clearAll': 'Clear all',
   'search.done': 'Done',
+  'search.lucky': 'Feeling lucky',
+  'search.luckyHint': 'Open a random site from the current results',
   'search.filters.one': '{count} filter',
   'search.filters.few': '{count} filters',
   'search.filters.many': '{count} filters',
@@ -66,6 +68,9 @@ export const en = {
   'pricing.paid': 'Paid',
   'pricing.openSource': 'Open source',
 
+  'card.new': 'New',
+  'card.seen': 'Viewed',
+
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Open {domain}',
   'tool.category': 'Category',
@@ -74,6 +79,8 @@ export const en = {
   'tool.tags': 'Tags',
   'tool.added': 'Added',
   'tool.more': 'More in {category}',
+  'tool.alternatives': 'Alternatives to {name}',
+  'tool.similar': 'Similar sites',
   'tool.seeAll': 'See all',
   'tool.copy': 'Copy link',
   'tool.copied': 'Copied',
@@ -168,6 +175,8 @@ export const en = {
   'footer.note': 'Curated by hand. No sponsored placements.',
   'footer.updated': 'Updated {date}',
   'footer.cookies': 'Cookie settings',
+  'footer.rss': 'RSS',
+  'rss.title': '{brand} — new sites',
 
   'consent.text': 'We’d like to count visits with Google Analytics and Yandex Metrica. They set cookies. Nothing loads until you allow it.',
   'consent.allow': 'Allow',

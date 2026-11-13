@@ -42,6 +42,8 @@ export const ru: Record<UIKey, string> = {
   'search.noCategories': 'Нет категории с таким названием.',
   'search.clearAll': 'Сбросить всё',
   'search.done': 'Готово',
+  'search.lucky': 'Мне повезёт',
+  'search.luckyHint': 'Открыть случайный сайт из найденных',
   'search.filters.one': '{count} фильтр',
   'search.filters.few': '{count} фильтра',
   'search.filters.many': '{count} фильтров',
@@ -65,6 +67,9 @@ export const ru: Record<UIKey, string> = {
   'pricing.paid': 'Платно',
   'pricing.openSource': 'Открытый код',
 
+  'card.new': 'Новое',
+  'card.seen': 'Смотрели',
+
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Открыть {domain}',
   'tool.category': 'Категория',
@@ -73,6 +78,8 @@ export const ru: Record<UIKey, string> = {
   'tool.tags': 'Теги',
   'tool.added': 'Добавлен',
   'tool.more': 'Ещё в разделе «{category}»',
+  'tool.alternatives': 'Альтернативы {name}',
+  'tool.similar': 'Похожие сайты',
   'tool.seeAll': 'Смотреть все',
   'tool.copy': 'Скопировать ссылку',
   'tool.copied': 'Скопировано',
@@ -167,6 +174,8 @@ export const ru: Record<UIKey, string> = {
   'footer.note': 'Собрано вручную. Без платных размещений.',
   'footer.updated': 'Обновлено {date}',
   'footer.cookies': 'Настройки cookies',
+  'footer.rss': 'RSS',
+  'rss.title': '{brand} — новые сайты',
 
   'consent.text': 'Мы хотим считать посещения через Яндекс Метрику и Google Analytics. Они ставят cookies. Пока вы не разрешите, ничего не загружается.',
   'consent.allow': 'Разрешить',
