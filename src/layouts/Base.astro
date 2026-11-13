@@ -29,6 +29,8 @@ interface Props {
   description?: string;
   /** visible breadcrumbs, the last item is the current page */
   crumbs?: { name: string; path: string }[];
+  /** container class for the breadcrumbs, to line up with the page */
+  crumbsContainer?: string;
   /** extra schema.org nodes (ItemList, SoftwareApplication…) */
   nodes?: Record<string, unknown>[];
   /** extra fields on the WebPage node (mainEntity, about…) */
@@ -40,7 +42,7 @@ interface Props {
   bare?: boolean;
 }
 
-const { lang = defaultLang, entry, crumbs, nodes = [], pageExtra, flush = false, bare = false } = Astro.props;
+const { lang = defaultLang, entry, crumbs, crumbsContainer = 'container', nodes = [], pageExtra, flush = false, bare = false } = Astro.props;
 const noindex = Astro.props.noindex || !entry;
 const t = useTranslations(lang);
 
@@ -121,7 +123,7 @@ const jsonLd =
     <Header lang={lang} switchHref={switchHref} />
     <main id="main" class:list={{ 'main--flush': flush }}>
       {crumbItems && (
-        <div class="container container--wide">
+        <div class={crumbsContainer}>
           <Breadcrumbs items={crumbItems} label={t('nav.breadcrumbs')} />
         </div>
       )}

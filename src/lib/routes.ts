@@ -113,7 +113,7 @@ async function build(): Promise<PageEntry[]> {
       updated: toolUpdated(tool),
       title: per((l) => {
         const t = T[l]('tool.title', { name: d.name, summary: loc(d.summary, l).replace(/\.$/, '') });
-        return fitTitle(brand(t), t, brand(d.name));
+        return fitTitle(brand(t), t);
       }),
       description: per((l) => fitDescription(loc(d.description, l), loc(d.summary, l))),
       heading: per(() => d.name),

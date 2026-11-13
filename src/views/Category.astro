@@ -21,6 +21,7 @@ const others = categories.filter((c) => c.id !== category.id);
   lang={lang}
   entry={entry}
   crumbs={[{ name: t('nav.categories'), path: '/categories' }, { name, path: entry.path }]}
+  crumbsContainer="container container--wide"
   nodes={[itemList(url, name, tools, lang)]}
   pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
 >

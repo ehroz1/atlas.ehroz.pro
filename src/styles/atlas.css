@@ -897,6 +897,7 @@ hr { border: 0; border-top: var(--border); }
   position: relative;
   display: grid;
   place-items: center;
+  width: 100%;          /* definite width: min-height must not widen it via aspect-ratio */
   min-height: 26rem;
   aspect-ratio: 3.1 / 1;
   overflow: hidden;
@@ -1263,7 +1264,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
   padding: 2px var(--s-2);
   border-radius: var(--r-sm);
   background: rgb(18 104 255 / 0.18);
-  color: var(--c-accent-hover);
+  color: var(--blue-400);
   font-size: var(--fs-13);
 }
 .plan__name { font-size: var(--fs-20); font-weight: var(--fw-medium); line-height: var(--lh-tight); }

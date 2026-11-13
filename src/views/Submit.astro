@@ -16,7 +16,7 @@ const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SIT
 const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
 const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject') };
 ---
-<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]}>
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
     <div class="section" style="padding-bottom: 0">
       <div class="stack" style="--gap: var(--s-3)">

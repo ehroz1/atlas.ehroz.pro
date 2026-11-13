@@ -17,7 +17,7 @@ const rows = [
   { label: t('contact.site'), href: AUTHOR.url, text: AUTHOR.url.replace(/^https:\/\/|\/$/g, ''), track: 'site' },
 ];
 ---
-<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.contact'), path: '/contact' }]} pageExtra={{ mainEntity: { '@id': AUTHOR.id } }}>
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.contact'), path: '/contact' }]} crumbsContainer="container container--narrow" pageExtra={{ mainEntity: { '@id': AUTHOR.id } }}>
   <div class="container container--narrow">
     <div class="section" style="padding-bottom: 0">
       <div class="stack" style="--gap: var(--s-3)">

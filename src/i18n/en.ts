@@ -27,7 +27,7 @@ export const en = {
   'lang.switchLabel': 'Читать по-русски',
 
   'hero.title': 'Browse {count} hand-picked sites',
-  'hero.sub': 'Useful websites and tools for makers, developers and the curious, sorted into {categories} categories.',
+  'hero.sub': 'Useful websites and tools for makers, developers and the curious.',
   'hero.cta': 'Submit a site',
 
   'search.label': 'Search sites and tools',

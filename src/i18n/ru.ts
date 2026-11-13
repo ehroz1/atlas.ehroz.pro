@@ -16,7 +16,7 @@ export const ru: Record<UIKey, string> = {
   'nav.about': 'О проекте',
   'nav.contact': 'Контакты',
   'nav.submit': 'Предложить сайт',
-  'nav.submitShort': 'Предложить',
+  'nav.submitShort': 'Добавить',
   'nav.skip': 'Перейти к содержимому',
   'nav.breadcrumbs': 'Хлебные крошки',
   'nav.footer': 'Подвал',
@@ -26,11 +26,11 @@ export const ru: Record<UIKey, string> = {
   'lang.switchLabel': 'Read in English',
 
   'hero.title': '{count} сайтов, отобранных вручную',
-  'hero.sub': 'Полезные сайты и инструменты для дизайнеров, разработчиков и любопытных, в {categories} категориях.',
+  'hero.sub': 'Полезные сайты и инструменты для дизайнеров, разработчиков и любопытных.',
   'hero.cta': 'Предложить сайт',
 
   'search.label': 'Поиск по сайтам и инструментам',
-  'search.placeholder': 'Поиск и фильтры',
+  'search.placeholder': 'Поиск',
   'search.clear': 'Очистить поиск',
   'search.input': 'Поиск',
   'search.filters': 'Фильтры',
