@@ -1232,5 +1232,41 @@
     "added": "2026-11-13",
     "summary": { "en": "CC0 images from the Art Institute of Chicago." },
     "description": { "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data." }
+  },
+  {
+    "id": "headai",
+    "name": "Head AI",
+    "url": "https://headai.bot/?ref=WEE",
+    "category": "ai",
+    "pricing": "freemium",
+    "platforms": ["Web", "Telegram"],
+    "tags": ["image generation", "video generation", "audio", "all-in-one"],
+    "added": "2026-11-13",
+    "summary": { "en": "Many AI models for photo, video and audio in one app." },
+    "description": { "en": "One account for image, video, music and voice-over models, plus utilities like background removal and lip-sync. Works in the browser and in Telegram, and is paid with credits." }
+  },
+  {
+    "id": "uprock-fonts",
+    "name": "Uprock Fonts",
+    "url": "https://www.fonts.uprock.ru",
+    "category": "typography",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["cyrillic", "fonts", "free"],
+    "added": "2026-11-13",
+    "summary": { "en": "500+ free fonts with Cyrillic, filterable by licence." },
+    "description": { "en": "A catalogue of Cyrillic typefaces from the Uprock studio. Filter by category, style, purpose and licence, and preview each font with your own text." }
+  },
+  {
+    "id": "temp-mail",
+    "name": "Temp Mail",
+    "url": "https://temp-mail.org",
+    "category": "utilities",
+    "pricing": "freemium",
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["email", "disposable", "privacy"],
+    "added": "2026-11-13",
+    "summary": { "en": "A throwaway email address for sign-ups." },
+    "description": { "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while." }
   }
 ]
