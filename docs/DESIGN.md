@@ -20,8 +20,9 @@ screenshots floating in them. When in doubt, do less.
 3. **Space between sections, density inside them.** Big vertical gaps between
    the hero and the grid (`--section-gap`), a tight 8px gap between tiles
    (`--grid-gap`). That contrast is what makes the page feel calm.
-4. **Flat.** Exactly one shadow exists (`--shadow-shot`, under screenshots).
-   Cards, buttons, the header and inputs have no shadows.
+4. **Flat.** Two shadows exist: `--shadow-shot` under screenshots and
+   `--shadow-float` under the search panel. Cards, buttons, the bar pills and
+   inputs have none.
 5. **Words are plain.** Write like you'd explain the site to a friend. No
    "supercharge", "unlock", "seamless", "revolutionary", "AI-powered" as an
    adjective, and no exclamation marks.
@@ -46,11 +47,15 @@ Use semantic tokens (`--c-text`, `--c-surface`), never the raw scale
 | `--c-text` | `#141414` | main text |
 | `--c-text-2` | `#6b6b6b` | summaries, secondary text |
 | `--c-text-3` | `#8a8a8a` | meta, counts, labels |
+| `--c-chrome` | `#161616` | top-bar pills, search panel |
+| `--c-chrome-hover` / `--c-chrome-active` | `#222` / `#2e2e2e` | pill hover, current segment, highlighted result |
+| `--c-chrome-muted` | `#a8a8a8` | secondary text inside the bar |
+| `--c-accent` | `#1268ff` | **the one primary button in the bar** ("Submit a site") |
 | `--c-ink-blue` | `#2f5bea` | **illustrations only** |
 | `--c-signal` | `#e5534b` | chip hover, errors |
 
-There are only two accents and each has one job. Don't add a third, don't use
-blue for links or buttons, and don't use gradients.
+Three accents, one job each. Don't add a fourth, don't use blue for links or
+other buttons, and don't use gradients.
 
 ### Type
 
@@ -106,13 +111,16 @@ put them together.
 
 | Component | Classes | Notes |
 |---|---|---|
-| Header | `.site-header`, `.logo` | logo left, "About" + outlined pill right |
+| Top bar | `.site-header`, `.bar-group`, `.bar-logo`, `.segmented`, `.bar-search`, `.btn--bar.btn--accent` | fixed, transparent strip of separate dark pills: brand · Sites/Categories · search · Submit |
+| Brand pill | `.bar-logo`, `.bar-logo__more` | globe + "Atlas°"; on hover unrolls to "Atlas.ehroz.pro°" |
+| Search panel | `.search-panel`, `.search-hit`, `.search-panel__chip` | opens under the search pill; categories when empty, sites when typing (on pages without a grid) |
 | Button | `.btn`, `.btn--solid`, `.btn--ghost`, `.btn--sm`, `.btn--lg` | at most one `--solid` per screen |
 | Link in text | `.link` | grey underline, ink on hover |
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
-| Search | `.search`, `.search__input`, `.kbd` | filled pill; `/` focuses it |
-| Hero | `.hero`, `.hero__drawing`, `.hero__statement` | drawing → sentence → search → small aside |
+| Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
+| Hero | `.hero`, `.hero__drawing`, `.hero__statement` | drawing → sentence → small aside |
+| Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Tile | `.tile`, `.tile__shot`, `.tile__fallback`, `.tile--large` | grey frame, shot at ~80% width |
 | Card | `.card`, `.card__name`, `.card__category`, `.card__summary` | whole card is one link |
 | Grid | `.cards`, `.toolbar` | chips + count above, cards below |
@@ -147,6 +155,19 @@ component-scoped `<style>` blocks for things that could be reused.
 
 ---
 
+### The top bar and search
+
+- The bar is `position: fixed` and transparent; only the pills catch clicks.
+  `main` is padded by `--header-h`, so new pages need nothing extra.
+- Everything in the bar is `--bar-h` (44px) tall and uses `--c-chrome`.
+- Search lives only in the bar. On pages that render `Gallery`
+  (home, category pages) typing filters the grid through the
+  `atlas:query` event; on other pages it opens the panel with up to 8 hits.
+  Enter opens the highlighted hit, or the home grid with `?q=`.
+- Don't add a second search field to a page.
+
+---
+
 ## 4. Motion
 
 Short and functional: `--dur-fast` (120ms) for color, `--dur` (200ms) for
@@ -172,7 +193,7 @@ Run through this before shipping a new page. Each item is something generated
 interfaces tend to do and this site doesn't.
 
 - [ ] No gradients, glows, glassmorphism or blurred colored blobs.
-- [ ] No purple/indigo accent; no accent color on buttons at all.
+- [ ] No purple/indigo accent; the blue accent appears on one button only.
 - [ ] No row of three "feature cards" with an icon, title and two lines.
 - [ ] No emoji or sparkles (✨) in UI text, headings or buttons.
 - [ ] No eyebrow label above a heading ("FEATURES", "WHY ATLAS").

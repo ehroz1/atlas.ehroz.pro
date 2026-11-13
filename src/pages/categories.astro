@@ -1,0 +1,44 @@
+---
+import Base from '~/layouts/Base.astro';
+import { getTools, getCategories } from '~/lib/data';
+import { useTranslations, loc, plural } from '~/i18n';
+
+const t = useTranslations('en');
+const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+const byCategory = new Map<string, string[]>();
+for (const tool of tools) {
+  const list = byCategory.get(tool.data.category) ?? [];
+  list.push(tool.data.name);
+  byCategory.set(tool.data.category, list);
+}
+---
+<Base title={t('categories.title')} description={t('categories.lead')}>
+  <div class="container">
+    <section class="hero" style="padding-top: clamp(var(--s-12), 8vw, var(--s-24))">
+      <h1 class="t-statement">{t('categories.title')}</h1>
+      <p class="t-secondary mt-2">{t('categories.lead')}</p>
+    </section>
+
+    <div class="section" style="padding-bottom: 0; padding-top: var(--s-12)">
+    <ul class="category-list" role="list">
+      {categories.map((c) => {
+        const names = byCategory.get(c.id) ?? [];
+        return (
+          <li>
+            <a class="category-row" href={`/category/${c.id}`}>
+              <span class="category-row__name">{loc(c.data.name)}</span>
+              <span class="category-row__text">
+                {loc(c.data.description)}
+                <span class="category-row__examples">{names.slice(0, 4).join(', ')}{names.length > 4 ? '…' : ''}</span>
+              </span>
+              <span class="category-row__count t-tabular">
+                {t(`results.count.${plural('en', names.length)}`, { count: names.length })}
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+    </div>
+  </div>
+</Base>

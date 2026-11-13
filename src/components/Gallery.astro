@@ -43,21 +43,20 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
 </section>
 
 <script>
-  /* Client-side search.
+  /* Filters the grid. The query comes from the search pill in the top bar
+     (Header.astro), which fires an `atlas:query` event on every keystroke.
      - every word of the query must appear somewhere in the card's text
-     - cards whose name starts with the query are moved to the front
-     - the query is mirrored in ?q= so results can be shared
-     - "/" focuses the field, Esc clears it */
-  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+     - cards whose name starts with the query move to the front
+     - the query is mirrored in ?q= so results can be shared */
   const grid = document.querySelector<HTMLElement>('[data-cards]');
   const empty = document.querySelector<HTMLElement>('[data-empty]');
   const emptyTitle = document.querySelector<HTMLElement>('[data-empty-title]');
   const count = document.querySelector<HTMLElement>('[data-count]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
 
-  if (input && grid) {
-    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
-    const original = cards.slice();
-    const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
+  if (grid) {
+    const original = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
+    const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim();
 
     const setCount = (n: number) => {
       if (!count) return;
@@ -65,6 +64,7 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       count.textContent = (tpl ?? '{count}').replace('{count}', String(n));
     };
 
+    let lifted = false;
     const apply = (raw: string) => {
       const q = normalize(raw);
       const words = q.split(/\s+/).filter(Boolean);
@@ -73,8 +73,7 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       const rest: HTMLElement[] = [];
 
       for (const card of original) {
-        const hay = normalize(card.dataset.search ?? '');
-        const match = words.every((w) => hay.includes(w));
+        const match = words.every((w) => normalize(card.dataset.search ?? '').includes(w));
         card.hidden = !match;
         if (!match) continue;
         shown++;
@@ -94,56 +93,36 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         q ? url.searchParams.set('q', raw.trim()) : url.searchParams.delete('q');
         history.replaceState(history.state, '', url);
       } catch {
-        /* sandboxed frames may refuse history changes; search still works */
+        /* sandboxed frames may refuse history changes; filtering still works */
+      }
+
+      // First keystroke: bring the results up if they're below the fold.
+      if (q && !lifted) {
+        lifted = true;
+        const sites = document.getElementById('sites');
+        if (sites && sites.getBoundingClientRect().top > innerHeight * 0.6) {
+          sites.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     };
 
-    const reset = () => {
+    document.addEventListener('atlas:query', (e) => apply((e as CustomEvent<string>).detail));
+
+    document.querySelector('[data-search-reset]')?.addEventListener('click', () => {
+      if (!input) return;
       input.value = '';
       apply('');
       input.focus();
-    };
-
-    const initial = new URLSearchParams(location.search).get('q');
-    if (initial) {
-      input.value = initial;
-      apply(initial);
-    }
-
-    // On the first keystroke, bring the field to the top of the screen so
-    // results are visible below it instead of hidden under the hero.
-    let lifted = false;
-    input.addEventListener('input', () => {
-      apply(input.value);
-      if (lifted || !input.value.trim()) return;
-      lifted = true;
-      const top = input.getBoundingClientRect().top + scrollY - 24;
-      if (grid.getBoundingClientRect().top > innerHeight * 0.6) scrollTo({ top, behavior: 'smooth' });
-    });
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') reset();
-      if (e.key === 'Enter') document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-    document.querySelector('[data-search-clear]')?.addEventListener('click', reset);
-    document.querySelector('[data-search-reset]')?.addEventListener('click', reset);
-
-    document.addEventListener('keydown', (e) => {
-      const el = e.target as HTMLElement;
-      const typing = el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
-      if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        input.focus();
-        input.select();
-      }
     });
 
     // Keep chip links carrying the current query between categories.
     document.querySelectorAll<HTMLAnchorElement>('.chip').forEach((chip) => {
       chip.addEventListener('click', () => {
-        const q = input.value.trim();
+        const q = input?.value.trim();
         if (!q) return;
         const url = new URL(chip.href);
         url.searchParams.set('q', q);
+        url.hash = 'sites';
         chip.href = url.href;
       });
     });

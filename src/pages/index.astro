@@ -1,7 +1,6 @@
 ---
 import Base from '~/layouts/Base.astro';
 import HeroDrawing from '~/components/HeroDrawing.astro';
-import SearchField from '~/components/SearchField.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
 import { useTranslations } from '~/i18n';
@@ -14,9 +13,6 @@ const [tools, categories] = await Promise.all([getTools(), getCategories()]);
     <section class="hero">
       <HeroDrawing class="hero__drawing" />
       <h1 class="t-statement hero__statement">{t('hero.statement')}</h1>
-      <div class="hero__search">
-        <SearchField placeholder={t('search.placeholder', { count: tools.length })} />
-      </div>
       <p class="hero__aside">{t('hero.aside')} <a href="/submit">{t('hero.asideLink')}</a></p>
     </section>
 

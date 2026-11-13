@@ -9,8 +9,13 @@ export const en = {
   'site.description':
     'A hand-picked index of useful websites and tools for makers, developers and anyone curious. Search it or browse by category.',
 
+  'nav.home': 'Atlas home',
+  'nav.sites': 'Sites',
+  'nav.categories': 'Categories',
+  'nav.sections': 'Sections',
   'nav.about': 'About',
   'nav.submit': 'Submit a site',
+  'nav.submitShort': 'Submit',
   'nav.skip': 'Skip to content',
 
   'hero.statement': 'A hand-picked index of useful websites and tools for makers, developers and the curious.',
@@ -18,9 +23,12 @@ export const en = {
   'hero.asideLink': 'Send it over',
 
   'search.label': 'Search sites and tools',
-  'search.placeholder': 'Search {count} sites…',
-  'search.placeholderIn': 'Search in {category}…',
+  'search.placeholder': 'Search & filter',
   'search.clear': 'Clear search',
+  'search.panel.categories': 'Categories',
+  'search.panel.sites': 'Sites',
+  'search.panel.none': 'Nothing matches “{query}”.',
+  'search.panel.all': 'All results for “{query}”',
 
   'filter.all': 'All',
   'filter.label': 'Categories',
@@ -49,6 +57,8 @@ export const en = {
   'tool.copied': 'Copied',
 
   'category.title': '{category} tools and websites',
+  'categories.title': 'Categories',
+  'categories.lead': 'Every site in Atlas sits in one of these.',
 
   'footer.note': 'Curated by hand. No sponsored placements.',
   'footer.updated': 'Updated {date}',

@@ -1,6 +1,5 @@
 ---
 import Base from '~/layouts/Base.astro';
-import SearchField from '~/components/SearchField.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories, type Category } from '~/lib/data';
 import { useTranslations, loc } from '~/i18n';
@@ -22,9 +21,6 @@ const name = loc(category.data.name);
     <section class="hero" style="padding-top: clamp(var(--s-12), 8vw, var(--s-24))">
       <h1 class="t-statement">{name}</h1>
       <p class="t-secondary mt-2" style="max-width: 28rem">{loc(category.data.description)}</p>
-      <div class="hero__search">
-        <SearchField placeholder={t('search.placeholderIn', { category: name })} />
-      </div>
     </section>
 
     <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">

@@ -1,16 +1,245 @@
 ---
-import { useTranslations, defaultLang, type Lang } from '~/i18n';
+/**
+ * Floating top bar: brand · Sites|Categories · search · Submit.
+ * The search works on every page:
+ *  - on pages with a grid (home, category) it filters the grid in place;
+ *  - elsewhere it opens a panel with matching sites to jump to.
+ * The search index is embedded as JSON (name, category, summary, text).
+ */
+import { getTools, getCategories, searchText } from '~/lib/data';
+import { useTranslations, loc, defaultLang, type Lang } from '~/i18n';
+
 interface Props { lang?: Lang }
 const { lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
-const path = Astro.url.pathname.replace(/\/$/, '');
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const index = tools.map((tool) => ({
+  id: tool.id,
+  name: tool.data.name,
+  category: names.get(tool.data.category),
+  summary: loc(tool.data.summary, lang),
+  text: searchText(tool, names.get(tool.data.category)!),
+}));
+const cats = categories.map((c) => ({ id: c.id, name: loc(c.data.name, lang) }));
+
+const section =
+  path === '/' || path.startsWith('/tool/') ? 'sites' : path.startsWith('/categor') ? 'categories' : null;
 ---
 <header class="site-header">
-  <div class="container site-header__inner">
-    <a class="logo" href="/" aria-label={`${t('site.name')} — home`}>Atlas<sup>°</sup></a>
-    <nav class="site-header__nav" aria-label="Main">
-      <a class="btn btn--ghost" href="/about" aria-current={path === '/about' ? 'page' : undefined}>{t('nav.about')}</a>
-      <a class="btn" href="/submit" aria-current={path === '/submit' ? 'page' : undefined}>{t('nav.submit')}</a>
-    </nav>
+  <div class="site-header__inner">
+    <div class="bar-group">
+      <a class="bar-logo" href="/" aria-label={t('nav.home')} data-home>
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M18.6 3.6c6 1.2 9.9 6.6 9.4 12.7-.5 6.6-6 11.6-12.7 11.3C8.7 27.3 3.8 21.7 4.1 15.1 4.5 8.7 9.8 3.7 16.2 3.5c.8 0 1.6 0 2.4.1"/>
+          <path d="M13.2 4.4c-2.8 4-3.7 9.1-2.4 13.9 1 3.7 3.2 6.9 6 9.1"/>
+          <path d="M4.8 14.2c4 2 8.9 3.1 13.9 2.6 3.4-.3 6.5-1.2 9.2-2.7"/>
+          <path d="M18.4 7.6c1.6-.5 3.3.1 3.9 1.3.5 1-.3 1.8 0 2.7.3.8 1.4 1.1 1.3 2-.1.8-1.4 1-2.4.6-1-.4-1.4-1.4-2.4-1.6-.9-.2-1.9.1-2.4-.6-.7-1.1-.1-3.6 2-4.4Z"/>
+        </svg>
+        <span class="bar-logo__word">Atlas<span class="bar-logo__more" aria-hidden="true">.ehroz.pro</span><sup>°</sup></span>
+      </a>
+      <nav class="segmented" aria-label={t('nav.sections')}>
+        <a class="segmented__item" href="/" aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
+        <a class="segmented__item" href="/categories" aria-current={section === 'categories' ? 'page' : undefined}>{t('nav.categories')}</a>
+      </nav>
+    </div>
+
+    <div class="bar-search" data-bar-search>
+      <form class="bar-search__field" role="search" onsubmit="return false">
+        <svg class="bar-search__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
+        </svg>
+        <label class="visually-hidden" for="site-search">{t('search.label')}</label>
+        <input
+          class="bar-search__input"
+          id="site-search"
+          type="search"
+          placeholder={t('search.placeholder')}
+          autocomplete="off"
+          spellcheck="false"
+          enterkeyhint="search"
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="search-panel"
+          aria-autocomplete="list"
+          data-search-input
+        />
+        <kbd class="kbd" aria-hidden="true">/</kbd>
+        <button class="bar-search__clear" type="button" aria-label={t('search.clear')} data-search-clear>✕</button>
+      </form>
+      <div class="search-panel" id="search-panel" role="listbox" aria-label={t('search.label')} hidden data-search-panel></div>
+    </div>
+
+    <div class="bar-group bar-group--end">
+      <a class="btn btn--bar btn--accent" href="/submit">
+        <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
+      </a>
+    </div>
   </div>
 </header>
+
+<script is:inline type="application/json" id="search-index" set:html={JSON.stringify({
+  tools: index,
+  categories: cats,
+  strings: {
+    categories: t('search.panel.categories'),
+    sites: t('search.panel.sites'),
+    none: t('search.panel.none'),
+    all: t('search.panel.all'),
+  },
+}).replace(/</g, '\\u003c')} />
+
+<script>
+  type Hit = { id: string; name: string; category: string; summary: string; text: string };
+  type Index = { tools: Hit[]; categories: { id: string; name: string }[]; strings: Record<string, string> };
+
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]')!;
+  const panel = document.querySelector<HTMLElement>('[data-search-panel]')!;
+  const box = document.querySelector<HTMLElement>('[data-bar-search]')!;
+  const data: Index = JSON.parse(document.getElementById('search-index')!.textContent!);
+  const hasGrid = () => !!document.querySelector('[data-cards]');
+
+  /* Build page URLs from the logo's href, so links work both on the real
+     site ("/") and in a static copy served from a sub-folder ("../index.html"). */
+  const home = document.querySelector<HTMLAnchorElement>('[data-home]')!.getAttribute('href')!;
+  const fileMode = home.endsWith('index.html');
+  const base = fileMode ? home.replace(/index\.html$/, '') : '/';
+  const pageUrl = (p: string, query = '') =>
+    base + (p ? p + (fileMode ? '/index.html' : '') : fileMode ? 'index.html' : '') + query;
+
+  const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  function match(q: string) {
+    const words = normalize(q).split(/\s+/).filter(Boolean);
+    const nq = normalize(q);
+    return data.tools
+      .filter((t) => words.every((w) => normalize(t.text).includes(w)))
+      .sort((a, b) => Number(normalize(b.name).startsWith(nq)) - Number(normalize(a.name).startsWith(nq)));
+  }
+
+  let active = -1;
+  const options = () => Array.from(panel.querySelectorAll<HTMLAnchorElement>('[role="option"]'));
+  const setActive = (i: number) => {
+    const list = options();
+    active = list.length ? (i + list.length) % list.length : -1;
+    list.forEach((el, n) => el.setAttribute('aria-selected', String(n === active)));
+    list[active]?.scrollIntoView({ block: 'nearest' });
+  };
+
+  function open() {
+    panel.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+  }
+  function close() {
+    panel.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    active = -1;
+  }
+
+  function render() {
+    const q = input.value.trim();
+    const s = data.strings;
+    let html = '';
+    // Empty field: offer categories as quick filters.
+    if (!q) {
+      html += `<div class="search-panel__label">${esc(s.categories)}</div><div class="search-panel__chips">`;
+      html += data.categories
+        .map((c) => `<a class="search-panel__chip" href="${pageUrl('category/' + c.id)}">${esc(c.name)}</a>`)
+        .join('');
+      html += '</div>';
+    } else if (!hasGrid()) {
+      // Typed query on a page without a grid: show hits to jump to.
+      const hits = match(q);
+      if (!hits.length) {
+        html += `<p class="search-panel__empty">${esc(s.none.replace('{query}', q))}</p>`;
+      } else {
+        html += `<div class="search-panel__label">${esc(s.sites)}</div>`;
+        html += hits
+          .slice(0, 8)
+          .map(
+            (h) => `<a class="search-hit" role="option" aria-selected="false" href="${pageUrl('tool/' + h.id)}">
+              <span class="search-hit__name">${esc(h.name)}</span>
+              <span class="search-hit__category">${esc(h.category)}</span>
+              <span class="search-hit__summary">${esc(h.summary)}</span></a>`,
+          )
+          .join('');
+        html += `<a class="search-panel__all" role="option" aria-selected="false" href="${pageUrl('', '?q=' + encodeURIComponent(q) + '#sites')}">${esc(s.all.replace('{query}', q))} →</a>`;
+      }
+    } else {
+      // Grid pages filter in place; no panel needed while typing.
+      close();
+      return;
+    }
+    panel.innerHTML = html;
+    active = -1;
+    open();
+  }
+
+  function emit() {
+    document.dispatchEvent(new CustomEvent('atlas:query', { detail: input.value }));
+  }
+
+  input.addEventListener('focus', render);
+  input.addEventListener('input', () => {
+    render();
+    emit();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (panel.hidden) return;
+      e.preventDefault();
+      setActive(active + (e.key === 'ArrowDown' ? 1 : -1));
+    } else if (e.key === 'Enter') {
+      const chosen = options()[active];
+      if (chosen) location.href = chosen.href;
+      else if (hasGrid()) {
+        close();
+        document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (input.value.trim()) location.href = pageUrl('', '?q=' + encodeURIComponent(input.value.trim()) + '#sites');
+    } else if (e.key === 'Escape') {
+      if (input.value) {
+        input.value = '';
+        emit();
+        render();
+      } else {
+        close();
+        input.blur();
+      }
+    }
+  });
+
+  document.querySelector('[data-search-clear]')?.addEventListener('click', () => {
+    input.value = '';
+    emit();
+    input.focus();
+    render();
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (!box.contains(e.target as Node)) close();
+  });
+  box.addEventListener('focusout', (e) => {
+    if (!box.contains(e.relatedTarget as Node)) close();
+  });
+
+  // "/" focuses search from anywhere
+  document.addEventListener('keydown', (e) => {
+    const el = e.target as HTMLElement;
+    const typing = el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
+    if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      input.focus();
+      input.select();
+    }
+  });
+
+  // Carry ?q= from the URL into the field (e.g. after "All results for…")
+  const initial = new URLSearchParams(location.search).get('q');
+  if (initial) {
+    input.value = initial;
+    queueMicrotask(emit);
+  }
+</script>

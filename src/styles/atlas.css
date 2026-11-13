@@ -14,10 +14,10 @@
      5.  Reset & base elements
      6.  Layout primitives  (.container .stack .cluster .split .grid)
      7.  Typography classes (.t-*)
-     8.  Header & footer
+     8.  Top bar (floating header), search panel & footer
      9.  Buttons & links    (.btn .link .back)
      10. Chips              (.chip .chips)
-     11. Search field       (.search .kbd)
+     11. Keyboard hint      (.kbd)
      12. Hero               (.hero)
      13. Tiles & cards      (.tile .card .cards)
      14. Tool page          (.tool-head .meta .tags)
@@ -71,8 +71,10 @@
   /* 1. COLOR ---------------------------------------------------------------
      A near-monochrome palette. The page is white, content is ink, and
      surfaces are separated by one flat grey — not by shadows or borders.
-     Color appears only in two places: the hero drawing (--c-ink-blue)
-     and hover/“new” highlights (--c-signal). Never add a third accent.   */
+     The top bar is the one dark element: floating ink pills (“chrome”)
+     over the page. Color appears in three places only: the bar's primary
+     button (--c-accent), the hero drawing (--c-ink-blue) and hover
+     highlights (--c-signal). Never add a fourth.                         */
 
   /* raw scale — do not use directly in components */
   --gray-0:   #ffffff;
@@ -89,6 +91,14 @@
   --gray-900: #141414;   /* ink */
 
   --blue-600: #2f5bea;
+  --blue-500: #1268ff;   /* bar primary button */
+  --blue-450: #2a78ff;
+
+  --ink-950:  #161616;   /* bar pills */
+  --ink-900:  #222222;   /* bar pill hover, panel rows */
+  --ink-850:  #2e2e2e;   /* active segment */
+  --ink-700:  #4a4a4a;
+  --ink-400:  #a8a8a8;   /* bar placeholder & muted text */
   --red-500:  #e5534b;
   --green-600:#2f8a4e;
 
@@ -108,6 +118,16 @@
   --c-text-invert:   var(--gray-0);
 
   --c-ink-blue:      var(--blue-600);     /* illustrations only */
+  --c-accent:        var(--blue-500);     /* one primary button in the bar */
+  --c-accent-hover:  var(--blue-450);
+
+  /* chrome = the dark floating top bar and its search panel */
+  --c-chrome:        var(--ink-950);
+  --c-chrome-hover:  var(--ink-900);
+  --c-chrome-active: var(--ink-850);
+  --c-chrome-line:   var(--ink-700);
+  --c-chrome-text:   #ffffff;
+  --c-chrome-muted:  var(--ink-400);
   --c-signal:        var(--red-500);      /* hover on chips, "new" marks */
   --c-success:       var(--green-600);
 
@@ -173,7 +193,9 @@
   --container:        60rem;    /* 960px main column */
   --container-narrow: 36rem;    /* 576px text pages, forms */
   --gutter:           clamp(1rem, 4vw, 1.5rem);
-  --header-h:         4.5rem;
+  --bar-h:            2.75rem;  /* 44px pill height in the top bar */
+  --bar-top:          max(var(--s-4), env(safe-area-inset-top, 0px));
+  --header-h:         calc(var(--bar-h) + var(--s-4) * 2);  /* space reserved under the bar */
 
   --grid-gap:    0.5rem;        /* gap between tiles — deliberately tight */
   --grid-gap-y:  var(--s-8);    /* tile + caption to next row */
@@ -190,6 +212,7 @@
   --r-md:   10px;     /* inputs in forms */
   --r-tile: 2px;      /* tiles stay nearly square — like paper, not like apps */
   --r-pill: 999px;    /* chips, buttons, search */
+  --r-panel: 22px;    /* search panel under the bar */
 
   --border: 1px solid var(--c-line);
   --border-strong: 1px solid var(--c-line-strong);
@@ -197,13 +220,15 @@
   /* Only one shadow exists: the soft lift under a screenshot.
      Cards, buttons and the header are flat. */
   --shadow-shot: 0 1px 2px var(--c-shot-shadow), 0 8px 24px -8px rgb(0 0 0 / 0.12);
+  /* …plus one for things that float above the page: the search panel. */
+  --shadow-float: 0 16px 48px -12px rgb(0 0 0 / 0.35);
 
   --ease:      cubic-bezier(0.2, 0, 0, 1);
   --dur-fast:  120ms;
   --dur:       200ms;
   --dur-slow:  400ms;
 
-  --z-header: 10;
+  --z-header: 30;
   --z-overlay: 50;
 
   color-scheme: light;
@@ -218,7 +243,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: var(--s-6);
+  scroll-padding-top: calc(var(--header-h) + var(--s-4));
 }
 
 body {
@@ -238,7 +263,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-main { flex: 1; }
+main { flex: 1; padding-top: var(--header-h); }
 
 img, svg, video, canvas, picture { display: block; max-width: 100%; }
 img { height: auto; }
@@ -311,32 +336,216 @@ hr { border: 0; border-top: var(--border); }
 .t-tabular { font-variant-numeric: tabular-nums; }
 
 
-/* 8. HEADER & FOOTER ------------------------------------------------------- */
+/* 8. TOP BAR, SEARCH PANEL & FOOTER --------------------------------------- */
+
+/* The top bar floats: a fixed, transparent strip holding separate dark
+   pills. Layout is three columns: brand + sections | search | actions.
+   Pills are --bar-h tall, ink (--c-chrome), white text, no borders.     */
 
 .site-header {
-  position: relative;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: var(--z-header);
+  padding-top: var(--bar-top);
+  pointer-events: none;            /* the strip itself never blocks clicks */
 }
 .site-header__inner {
-  height: var(--header-h);
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem) minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: var(--s-4);
+  gap: var(--s-2);
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
-.site-header__nav { display: flex; align-items: center; gap: var(--s-2); }
+.site-header__inner > * { pointer-events: auto; }
+.bar-group { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
+.bar-group--end { justify-content: flex-end; }
 
-.logo {
+/* brand pill: globe + “Atlas°”. On hover/focus the word unrolls to
+   “Atlas.ehroz.pro°” — the full address of the site. */
+.bar-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex: none;
+  height: var(--bar-h);
+  padding-inline: 9px 1.1rem;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome);
+  color: var(--c-chrome-text);
   font-size: var(--fs-15);
   font-weight: var(--fw-medium);
   letter-spacing: var(--ls-snug);
   white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease);
 }
-.logo sup {
-  font-size: 0.6em;
-  font-weight: var(--fw-regular);
-  vertical-align: 0.55em;
-  margin-left: 1px;
+.bar-logo:hover { background: var(--c-chrome-hover); }
+.bar-logo svg { flex: none; width: 26px; height: 26px; }
+.bar-logo__word { display: inline-flex; align-items: baseline; }
+.bar-logo__word sup { font-size: 0.6em; font-weight: var(--fw-regular); align-self: flex-start; margin-top: 0.15em; margin-left: 1px; }
+.bar-logo__more {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: var(--c-chrome-muted);
+  transition: max-width var(--dur-slow) var(--ease), opacity var(--dur) var(--ease);
+}
+.bar-logo:hover .bar-logo__more,
+.bar-logo:focus-visible .bar-logo__more { max-width: 6.5em; opacity: 1; }
+
+/* segmented control: Sites | Categories */
+.segmented {
+  display: flex;
+  align-items: center;
+  height: var(--bar-h);
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome);
+}
+.segmented__item {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: 1.1rem;
+  border-radius: var(--r-pill);
+  color: var(--c-chrome-text);
+  font-size: var(--fs-15);
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.segmented__item:hover { background: var(--c-chrome-hover); }
+.segmented__item[aria-current="page"] { background: var(--c-chrome-active); }
+
+/* the search pill */
+.bar-search { position: relative; min-width: 0; }
+.bar-search__field {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  height: var(--bar-h);
+  padding-inline: 1.1rem 0.6rem;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome);
+  color: var(--c-chrome-text);
+  transition: background-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+.bar-search__field:hover { background: var(--c-chrome-hover); }
+.bar-search__field:focus-within { background: var(--c-chrome-hover); box-shadow: inset 0 0 0 1px var(--c-chrome-line); }
+.bar-search__icon { flex: none; width: 18px; height: 18px; }
+.bar-search__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  outline: none;
+  color: inherit;
+  font-size: var(--fs-15);
+}
+.bar-search__input::placeholder { color: var(--c-chrome-text); opacity: 1; }
+.bar-search__input:focus::placeholder { color: var(--c-chrome-muted); }
+.bar-search__input::-webkit-search-cancel-button { display: none; }
+.bar-search__clear {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--r-pill);
+  color: var(--c-chrome-muted);
+  font-size: var(--fs-14);
+}
+.bar-search__clear:hover { background: var(--c-chrome-active); color: var(--c-chrome-text); }
+.bar-search__field:has(.bar-search__input:placeholder-shown) .bar-search__clear { display: none; }
+.bar-search__field:has(.bar-search__input:not(:placeholder-shown)) .kbd,
+.bar-search__field:focus-within .kbd { display: none; }
+.bar-search .kbd { background: transparent; border-color: var(--c-chrome-line); color: var(--c-chrome-muted); }
+
+/* the panel that opens under the search pill */
+.search-panel {
+  position: absolute;
+  top: calc(100% + var(--s-2));
+  left: 0;
+  right: 0;
+  display: grid;
+  gap: var(--s-1);
+  max-height: min(70vh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-2);
+  border-radius: var(--r-panel);
+  background: var(--c-chrome);
+  color: var(--c-chrome-text);
+  box-shadow: var(--shadow-float);
+}
+.search-panel__label {
+  padding: var(--s-2) var(--s-3) var(--s-1);
+  font-size: var(--fs-13);
+  color: var(--c-chrome-muted);
+}
+.search-panel__chips { display: flex; flex-wrap: wrap; gap: var(--s-1); padding: 0 var(--s-2) var(--s-2); }
+.search-panel__chip {
+  display: inline-flex;
+  align-items: center;
+  height: var(--control-h-sm);
+  padding-inline: 0.8rem;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome-hover);
+  font-size: var(--fs-14);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.search-panel__chip:hover { background: var(--c-chrome-active); }
+.search-hit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border-radius: calc(var(--r-panel) - var(--s-2));
+}
+.search-hit:hover, .search-hit[aria-selected="true"] { background: var(--c-chrome-active); }
+.search-hit__name { font-size: var(--fs-15); }
+.search-hit__category { font-size: var(--fs-13); color: var(--c-chrome-muted); }
+.search-hit__summary {
+  grid-column: 1 / -1;
+  font-size: var(--fs-13);
+  color: var(--c-chrome-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-panel__empty { padding: var(--s-3); font-size: var(--fs-14); color: var(--c-chrome-muted); }
+.search-panel__all {
+  padding: var(--s-2) var(--s-3);
+  border-radius: calc(var(--r-panel) - var(--s-2));
+  font-size: var(--fs-14);
+  color: var(--c-chrome-muted);
+}
+.search-panel__all:hover, .search-panel__all[aria-selected="true"] { background: var(--c-chrome-active); color: var(--c-chrome-text); }
+
+/* bar buttons reuse .btn with these modifiers */
+.btn.btn--bar { --_h: var(--bar-h); padding-inline: 1.4rem; font-size: var(--fs-15); }
+.btn.btn--accent { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
+.btn.btn--accent:hover { background: var(--c-accent-hover); border-color: var(--c-accent-hover); }
+.btn.btn--accent:active { background: var(--c-accent); }
+
+.only-wide { display: inline; }
+.only-narrow { display: none; }
+
+@media (max-width: 52rem) {
+  .site-header__inner { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .segmented { display: none; }
+}
+@media (max-width: 34rem) {
+  .btn.btn--bar { padding-inline: 1rem; }
+  .bar-logo { width: var(--bar-h); padding: 0; justify-content: center; }
+  .bar-logo__word { display: none; }
+  .only-wide { display: none; }
+  .only-narrow { display: inline; }
+  .bar-search .kbd { display: none; }
 }
 
 .site-footer {
@@ -472,48 +681,7 @@ hr { border: 0; border-top: var(--border); }
 }
 
 
-/* 11. SEARCH ----------------------------------------------------------------
-   A filled pill, same shape as the newsletter field on deck.gallery.
-   The kbd hint on the right disappears while typing.                     */
-
-.search {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 24rem;
-  height: var(--control-h);
-  padding-inline: var(--s-4) var(--s-2);
-  border-radius: var(--r-pill);
-  background: var(--c-fill);
-  transition: background-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
-}
-.search:hover { background: #e9e9e9; }
-.search:focus-within { background: var(--c-bg); box-shadow: inset 0 0 0 1px var(--c-line-active); }
-.search__input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  border: 0;
-  background: transparent;
-  outline: none;
-  font-size: var(--fs-15);
-}
-.search__input::placeholder { color: var(--c-text-3); opacity: 1; }
-.search__input::-webkit-search-cancel-button { display: none; }
-.search__clear {
-  display: inline-grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: var(--r-pill);
-  color: var(--c-text-3);
-  font-size: var(--fs-14);
-}
-.search__clear:hover { background: var(--c-fill); color: var(--c-text); }
-.search:has(.search__input:placeholder-shown) .search__clear { display: none; }
-.search:has(.search__input:not(:placeholder-shown)) .kbd { display: none; }
-.search:focus-within .kbd { display: none; }
+/* 11. KEYBOARD HINT -------------------------------------------------------- */
 
 .kbd {
   display: inline-grid;
@@ -547,8 +715,7 @@ hr { border: 0; border-top: var(--border); }
   color: var(--c-ink-blue);
 }
 .hero__statement { max-width: 36rem; }
-.hero__search { width: 100%; display: flex; justify-content: center; margin-top: var(--s-6); }
-.hero__aside { margin-top: var(--s-4); font-size: var(--fs-14); color: var(--c-text-3); }
+.hero__aside { margin-top: var(--s-5); font-size: var(--fs-14); color: var(--c-text-3); }
 .hero__aside a { color: var(--c-text); }
 .hero__aside a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 
@@ -634,6 +801,7 @@ hr { border: 0; border-top: var(--border); }
   margin-bottom: var(--s-8);
 }
 .toolbar__count { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
+.toolbar > * { min-width: 0; max-width: 100%; }
 @media (max-width: 40rem) {
   .toolbar { flex-direction: column; align-items: stretch; }
 }
@@ -679,6 +847,29 @@ hr { border: 0; border-top: var(--border); }
   justify-content: space-between;
   gap: var(--s-4);
   margin-bottom: var(--s-6);
+}
+
+
+/* category index: one row per category, hairline between rows */
+.category-list { display: grid; }
+.category-row {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-8);
+  padding-block: var(--s-5);
+  border-top: var(--border);
+  transition: color var(--dur-fast) var(--ease);
+}
+.category-list li:last-child .category-row { border-bottom: var(--border); }
+.category-row__name { font-size: var(--fs-20); font-weight: var(--fw-medium); letter-spacing: var(--ls-snug); }
+.category-row:hover .category-row__name { color: var(--c-signal); }
+.category-row__text { display: grid; gap: 2px; color: var(--c-text-2); font-size: var(--fs-15); }
+.category-row__examples { font-size: var(--fs-14); color: var(--c-text-3); }
+.category-row__count { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
+@media (max-width: 40rem) {
+  .category-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .category-row__text { grid-column: 1 / -1; grid-row: 2; }
 }
 
 
@@ -796,6 +987,7 @@ hr { border: 0; border-top: var(--border); }
 }
 
 @media print {
-  .site-header__nav, .search, .chips, .site-footer { display: none; }
+  .site-header, .chips, .site-footer { display: none; }
+  main { padding-top: 0; }
   .tile { background: none; }
 }
