@@ -113,16 +113,16 @@ put them together.
 | Top bar | `.site-header`, `.bar-group`, `.bar-logo`, `.segmented`, `.bar-search`, `.btn--bar.btn--accent` | fixed, transparent strip of separate dark pills: brand · Sites/Categories · search · Submit |
 | Brand pill | `.bar-logo`, `.bar-logo__more` | globe + "Atlas°"; on hover unrolls to "Atlas.ehroz.pro°" |
 | Search pill | `.bar-search__field`, `.bar-search__badge` | a button; shows the current query and a blue count of active filters |
-| Finder | `.finder` (a `<dialog>`), `.finder__field`, `.finder__facet`, `.finder__option`, `.finder__hit`, `.finder__foot` | search & filter: white-ringed field, facets left (Category / Pricing / Platform), options with counts right, Clear all + Done; typing lists matching sites |
+| Finder | `.finder` (a `<dialog>`), `.finder__field`, `.finder__facet`, `.finder__option`, `.finder__hit`, `.finder__foot` | search & filter: white-ringed field, facets left (Category / Pricing / Platform), options with counts right, Clear all + Done; typing (debounced 300 ms) hides the facets and shows tabs Sites N / Categories N with thumbnail results; × clears |
 | Menu | `.bar-menu`, `.menu`, `.menu__item`, `.menu__sep`, `.menu__note` | opens from the round button at the right end of the bar |
 | Wall | `.wall`, `.wall__plane`, `.wall__row`, `.wall__item`, `.wall__label`, `.wall__hint` | endless plane of screenshots moved by a script (no native scroll, no scrollbars, no axis-locking): wheel/trackpad, drag with inertia, swipe, arrows; the block is tiled 3×3 and drawn modulo one block; page uses `<Base flush bare>` |
-| About / plans | `.page-stage`, `.edge-shots`, `.t-headline`, `.plans`, `.plan`, `.plan--raised`, `.plan__*` | big headline, screenshots peeking from the edges, three joined columns, middle one raised |
+| About / plans | `.page-stage`, `.edge-shots` (clipped to the frame column; left column rides up, right rides down), `.t-headline`, `.plans`, `.plan`, `.plan--raised`, `.plan__*` | big headline, screenshots peeking from the edges, three joined columns, middle one raised |
 | Button | `.btn`, `.btn--solid`, `.btn--ghost`, `.btn--sm`, `.btn--lg` | at most one `--solid` per screen |
 | Link in text | `.link` | grey underline, ink on hover |
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Home hero | `.hero-panel`, `.is-live`, `.collage`, `.collage__item`, `.hero-panel__title/__sub/__cta` | rounded panel; one chain of screenshots runs clockwise round a single even ellipse (touching the top/bottom edges and the sides), spaced by equal arc length, always an even count so it stays mirror-symmetric; still with reduced motion. Logic in `HeroCollage.astro` |
+| Home hero | `.hero-panel`, `.is-live`, `.collage`, `.collage__item`, `.hero-panel__title/__sub/__cta` | rounded panel; 14 screenshots on one ellipse at equal angles (stacks at the sides, spread top/bottom), turning counter-clockwise; still with reduced motion. Logic in `HeroCollage.astro` |
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |
