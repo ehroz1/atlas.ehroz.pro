@@ -32,10 +32,24 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
   </div>
 
   <div class="cards" data-cards>
-    {tools.map((tool, i) => (
-      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} eager={i < 3} hideCategory={!!current} />
+    {tools.map((tool) => (
+      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
     ))}
   </div>
+  {/* Shuffle the cards for every visit. Inline and synchronous, so it runs
+      before the first paint and nobody sees the original order flash by.
+      (All card images are lazy: whichever cards land on top load first.) */}
+  <script is:inline>
+    (function () {
+      var grid = document.currentScript.previousElementSibling;
+      var cards = Array.prototype.slice.call(grid.children);
+      for (var i = cards.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
+      }
+      cards.forEach(function (c) { grid.appendChild(c); });
+    })();
+  </script>
 
   <div class="empty" data-empty hidden>
     <p class="empty__title">{t('results.empty.title')}</p>
