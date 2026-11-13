@@ -37,6 +37,9 @@ const sitemap = [...sitemapXml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => (
 }));
 if (!sitemap.length) err('sitemap-0.xml', 'no <url> entries');
 if (!/<loc>.*sitemap-0\.xml<\/loc>/.test(sitemapIndex)) err('sitemap-index.xml', 'does not list sitemap-0.xml');
+const robotsTxt = read('robots.txt');
+// previews / github.io builds close robots.txt and put noindex on every page
+const NONPROD = /User-agent: \*\s*\nDisallow: \/\s*$/m.test(robotsTxt);
 const first = new URL(sitemap[0].loc);
 const ORIGIN = first.origin;
 // base = path of the default-language home page (the first entry)
@@ -81,7 +84,9 @@ for (const file of files) {
     doc,
     html,
     is404: /\/404(\.html)?$/.test(url),
-    noindex: /noindex/.test(robots),
+    // on a non-production build every page is noindex on purpose; check the rest as if indexable
+    noindex: /\/404(\.html)?$/.test(url) || (!NONPROD && /noindex/.test(robots)),
+    robotsMeta: robots,
     title: doc.querySelector('title')?.text.trim() ?? '',
     description: meta('meta[name="description"]'),
     canonical: doc.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? null,
@@ -95,8 +100,9 @@ const descs = new Map();
 for (const p of pages.values()) {
   const { doc, url } = p;
 
+  if (NONPROD && !/noindex/.test(p.robotsMeta)) err(url, 'non-production build but the page is indexable');
   if (p.is404) {
-    if (!p.noindex) err(url, '404 page must be noindex');
+    if (!/noindex/.test(p.robotsMeta)) err(url, '404 page must be noindex');
     if (p.canonical) err(url, '404 page must not have a canonical');
   }
 
@@ -257,13 +263,13 @@ for (const p of pages.values()) {
 }
 
 // ---- robots / llms -----------------------------------------------------
-const robots = read('robots.txt');
-if (!/Sitemap: /.test(robots)) warn('robots.txt', 'no Sitemap line (expected on non-production builds)');
+if (NONPROD) warn('robots.txt', 'non-production build: robots.txt closes the site and every page is noindex');
+else if (!/^Sitemap: /m.test(robotsTxt)) err('robots.txt', 'no Sitemap line');
 for (const f of ['llms.txt', 'llms-full.txt']) if (!fs.existsSync(path.join(DIST, f))) err(f, 'missing');
 
 // ---- report ------------------------------------------------------------
 const indexable = [...pages.values()].filter((p) => !p.noindex).length;
-console.log(`check:seo — ${pages.size} HTML pages (${indexable} indexable), ${sitemap.length} sitemap URLs, origin ${ORIGIN}${BASE}`);
+console.log(`check:seo — ${pages.size} HTML pages (${indexable} indexable${NONPROD ? ' if this were production' : ''}), ${sitemap.length} sitemap URLs, origin ${ORIGIN}${BASE}`);
 if (warnings.length) {
   console.log(`\n${warnings.length} warning(s):`);
   for (const w of warnings.slice(0, 50)) console.log('  ⚠ ' + w);
