@@ -5,10 +5,9 @@ import { getCategories } from '~/lib/data';
 import { loc } from '~/i18n';
 
 const categories = await getCategories();
-/* Set PUBLIC_SUBMIT_ENDPOINT in .env to any form backend that accepts
-   a POST (Formspree, Basin, a Cloudflare Worker…). Until then the form
-   explains that submissions aren't open yet. */
-const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
+/* Submissions open the visitor's mail app with a prefilled letter.
+   Set PUBLIC_SUBMIT_EMAIL in .env to the receiving address. */
+const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? 'hello@ehroz.pro';
 ---
 <Base title="Submit a site" description="Suggest a website or tool for Atlas.">
   <div class="container container--narrow">
@@ -22,7 +21,7 @@ const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
         </p>
       </div>
 
-      <form class="form mt-12" method="post" action={endpoint ?? '#'} data-submit-form data-endpoint={endpoint ?? ''}>
+      <form class="form mt-12" data-submit-form data-email={email}>
         <div class="field">
           <label class="field__label" for="url">Link</label>
           <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
@@ -52,6 +51,12 @@ const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
           <input class="input" id="email" name="email" type="email" placeholder="So we can say thanks" autocomplete="email" />
         </div>
 
+        <div class="field">
+          <label class="field__label" for="photos">Photos <span class="t-muted" style="font-weight: 400">(optional)</span></label>
+          <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
+          <span class="field__hint">On phones they attach automatically. On a computer, attach them in the email that opens.</span>
+        </div>
+
         <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
           <input class="checkbox" type="checkbox" name="maker" value="yes" />
           I made this
@@ -72,19 +77,34 @@ const endpoint = import.meta.env.PUBLIC_SUBMIT_ENDPOINT as string | undefined;
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
-    const endpoint = form.dataset.endpoint;
-    if (!endpoint) {
-      status.textContent = 'Submissions open soon. The form isn’t connected yet.';
-      return;
+    const d = new FormData(form);
+    const g = (k: string) => String(d.get(k) ?? '').trim();
+    const body = [
+      `Link: ${g('url')}`,
+      `Name: ${g('name')}`,
+      `Category: ${form.querySelector<HTMLSelectElement>('#category')?.selectedOptions[0]?.text ?? ''}`,
+      '',
+      g('why'),
+      '',
+      g('email') ? `From: ${g('email')}` : '',
+      d.get('maker') ? 'I made this.' : '',
+    ].filter((l, i, a) => l || (i && a[i - 1])).join('\n');
+    const subject = `Atlas submission: ${g('name')}`;
+    const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
+
+    // Phones: the share sheet can carry real attachments into the mail app.
+    if (files.length && navigator.canShare?.({ files })) {
+      try {
+        await navigator.share({ files, title: subject, text: `${subject}\n\n${body}` });
+        status.textContent = 'Thanks, got it.';
+        return;
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+      }
     }
-    status.textContent = 'Sending…';
-    try {
-      const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-      if (!res.ok) throw new Error(String(res.status));
-      form.reset();
-      status.textContent = 'Thanks, got it.';
-    } catch {
-      status.textContent = 'Couldn’t send. Try again in a minute.';
-    }
+    location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    status.textContent = files.length
+      ? 'Mail app opened. Attach your photos to the email and send.'
+      : 'Mail app opened. Just hit send.';
   });
 </script>
