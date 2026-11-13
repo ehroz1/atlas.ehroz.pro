@@ -1,4 +1,4 @@
-/** Small helpers shared by rss.xml, sitemap.xml and robots.txt. */
+/** Small helpers for rss.xml and related.ts. */
 import { u } from './url';
 import rawTools from '~/data/tools.json';
 import type { Tool } from './data';

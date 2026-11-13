@@ -1,15 +1,16 @@
-/** RSS 2.0 feed of the newest sites, at /rss.xml. */
+/** RSS 2.0 feed of the newest sites, at /rss.xml, in the default language. */
 import type { APIRoute } from 'astro';
 import { getTools, getCategories, domainOf } from '~/lib/data';
 import { abs, xml, byNewest } from '~/lib/feed';
-import { useTranslations, loc } from '~/i18n';
+import { useTranslations, loc, defaultLang, langTag } from '~/i18n';
 
 const LIMIT = 50;
 
 export const GET: APIRoute = async ({ site }) => {
-  const t = useTranslations('en');
+  const lang = defaultLang;
+  const t = useTranslations(lang);
   const [tools, categories] = await Promise.all([getTools(), getCategories()]);
-  const names = new Map(categories.map((c) => [c.id, loc(c.data.name)]));
+  const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
   const items = [...tools].sort(byNewest).slice(0, LIMIT);
   const home = abs(site, '/');
 
@@ -19,15 +20,15 @@ export const GET: APIRoute = async ({ site }) => {
 <title>${xml(t('rss.title'))}</title>
 <link>${home}</link>
 <description>${xml(t('site.description'))}</description>
-<language>en</language>
+<language>${langTag[lang]}</language>
 <lastBuildDate>${(items[0]?.data.added ?? new Date()).toUTCString()}</lastBuildDate>
 <atom:link href="${abs(site, '/rss.xml')}" rel="self" type="application/rss+xml"/>
 ${items
   .map((x) => {
     const link = abs(site, `/tool/${x.id}/`);
-    const desc = `${loc(x.data.description)} (${domainOf(x.data.url)})`;
+    const desc = `${loc(x.data.description, lang)} (${domainOf(x.data.url)})`;
     return `<item>
-<title>${xml(x.data.name)} — ${xml(loc(x.data.summary))}</title>
+<title>${xml(x.data.name)} — ${xml(loc(x.data.summary, lang))}</title>
 <link>${link}</link>
 <guid isPermaLink="true">${link}</guid>
 <pubDate>${x.data.added.toUTCString()}</pubDate>

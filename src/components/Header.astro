@@ -13,10 +13,12 @@ import { u, pagePath } from '~/lib/url';
 import { getImage } from 'astro:assets';
 import { getTools, getCategories, searchText, domainOf } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
-import { useTranslations, loc, defaultLang, type Lang } from '~/i18n';
+import { SITE } from '~/site.config';
+import { useTranslations, loc, defaultLang, langs, languages, type Lang } from '~/i18n';
 
-interface Props { lang?: Lang }
-const { lang = defaultLang } = Astro.props;
+interface Props { lang?: Lang; switchHref: string }
+const { lang = defaultLang, switchHref } = Astro.props;
+const other = langs.find((l) => l !== lang)!;
 const t = useTranslations(lang);
 const path = pagePath(Astro.url.pathname);
 
@@ -45,7 +47,7 @@ const index = {
     open: tool.data.openSource,
     platforms: tool.data.platforms,
     summary: loc(tool.data.summary, lang),
-    text: searchText(tool, names.get(tool.data.category)!),
+    text: searchText(tool, names.get(tool.data.category)!, lang),
     thumb: thumbs.get(tool.id) ?? '',
     domain: domainOf(tool.data.url),
   })),
@@ -68,7 +70,10 @@ const index = {
     tabCategories: t('nav.categories'),
     noCategories: t('search.noCategories'),
     filtersOne: t('search.filters.one'),
+    filtersFew: t('search.filters.few'),
+    filtersMany: t('search.filters.many'),
     filtersOther: t('search.filters.other'),
+    lang,
   },
 };
 
@@ -77,18 +82,18 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
 <header class="site-header">
   <div class="site-header__inner">
     <div class="bar-group">
-      <a class="bar-logo" href={u('/')} aria-label={t('nav.home')} data-home>
+      <a class="bar-logo" href={u('/', lang)} aria-label={t('nav.home')} data-home>
         <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
           <path d="M18.6 3.6c6 1.2 9.9 6.6 9.4 12.7-.5 6.6-6 11.6-12.7 11.3C8.7 27.3 3.8 21.7 4.1 15.1 4.5 8.7 9.8 3.7 16.2 3.5c.8 0 1.6 0 2.4.1"/>
           <path d="M13.2 4.4c-2.8 4-3.7 9.1-2.4 13.9 1 3.7 3.2 6.9 6 9.1"/>
           <path d="M4.8 14.2c4 2 8.9 3.1 13.9 2.6 3.4-.3 6.5-1.2 9.2-2.7"/>
           <path d="M18.4 7.6c1.6-.5 3.3.1 3.9 1.3.5 1-.3 1.8 0 2.7.3.8 1.4 1.1 1.3 2-.1.8-1.4 1-2.4.6-1-.4-1.4-1.4-2.4-1.6-.9-.2-1.9.1-2.4-.6-.7-1.1-.1-3.6 2-4.4Z"/>
         </svg>
-        <span class="bar-logo__word">Atlas<span class="bar-logo__more" aria-hidden="true">.ehroz.pro</span><sup>°</sup></span>
+        <span class="bar-logo__word">{SITE.name}<span class="bar-logo__more" aria-hidden="true">{SITE.host.slice(SITE.name.length)}</span><sup>°</sup></span>
       </a>
       <nav class="segmented" aria-label={t('nav.sections')}>
-        <a class="segmented__item" href={u('/')} aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
-        <a class="segmented__item" href={u('/wall')} aria-current={section === 'wall' ? 'page' : undefined}>{t('nav.wall')}</a>
+        <a class="segmented__item" href={u('/', lang)} aria-current={section === 'sites' ? 'page' : undefined}>{t('nav.sites')}</a>
+        <a class="segmented__item" href={u('/wall', lang)} aria-current={section === 'wall' ? 'page' : undefined}>{t('nav.wall')}</a>
       </nav>
     </div>
 
@@ -104,7 +109,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     </div>
 
     <div class="bar-group bar-group--end">
-      <a class="btn btn--bar btn--chrome" href={u('/submit')} aria-current={path === '/submit' ? 'page' : undefined}>
+      <a class="btn btn--bar btn--chrome" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
       <div class="bar-menu">
@@ -114,21 +119,29 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
           </svg>
         </button>
         <nav class="menu" id="site-menu" aria-label={t('nav.menu')} hidden data-menu>
-          <a class="menu__item" href={u('/about')} aria-current={path === '/about' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/about', lang)} aria-current={path === '/about' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
             {t('nav.about')}
           </a>
-          <a class="menu__item" href={u('/categories')} aria-current={path === '/categories' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/contact', lang)} aria-current={path === '/contact' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
+            {t('nav.contact')}
+          </a>
+          <a class="menu__item" href={u('/categories', lang)} aria-current={path === '/categories' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
             {t('nav.categories')}
           </a>
-          <a class="menu__item" href={u('/wall')} aria-current={path === '/wall' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/wall', lang)} aria-current={path === '/wall' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="7" height="5" rx="1"/><rect x="13.5" y="5" width="7" height="5" rx="1"/><rect x="7.5" y="14" width="9" height="5" rx="1"/></svg>
             {t('nav.wall')}
           </a>
-          <a class="menu__item" href={u('/submit')} aria-current={path === '/submit' ? 'page' : undefined}>
+          <a class="menu__item" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             {t('nav.submit')}
+          </a>
+          <a class="menu__item" href={switchHref} hreflang={other} lang={other} data-lang-switch>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
+            {languages[other]}
           </a>
           <hr class="menu__sep" />
           <p class="menu__note"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
@@ -139,7 +152,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
 </header>
 
 <dialog class="finder" id="finder" aria-label={t('search.label')} data-finder>
-  <form class="finder__field" role="search" method="dialog" onsubmit="return false">
+  <form class="finder__field" role="search" method="dialog" data-finder-form>
     <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
       <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
     </svg>
@@ -151,7 +164,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     </button>
   </form>
   <div class="finder__body">
-    <div class="finder__facets" role="tablist" aria-label="Filters">
+    <div class="finder__facets" role="tablist" aria-label={t('search.filters')}>
       <button class="finder__facet" type="button" role="tab" aria-selected="true" data-facet="category">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 15.5h3"/><circle cx="9" cy="9" r="1.2"/></svg>
         {t('search.facet.category')}<span class="finder__facet-count" data-facet-count="category"></span>
@@ -214,7 +227,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   const fileMode = home.endsWith('index.html');
   const base = fileMode ? home.replace(/index\.html$/, '') : home.endsWith('/') ? home : home + '/';
   const pageUrl = (p: string, query = '') =>
-    base + (p ? p + (fileMode ? '/index.html' : '') : fileMode ? 'index.html' : '') + query;
+    base + (p ? p + (fileMode ? '/index.html' : '/') : fileMode ? 'index.html' : '') + query;
 
   const grid = () => document.querySelector<HTMLElement>('[data-cards]');
   const scope = document.querySelector<HTMLElement>('[data-scope-category]')?.dataset.scopeCategory;
@@ -276,7 +289,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     openBtn.classList.toggle('is-active', !!state.q.trim() || n > 0);
     badge.hidden = n === 0;
     badge.textContent = String(n);
-    badge.title = (n === 1 ? S.filtersOne : S.filtersOther).replace('{count}', String(n));
+    const cat = new Intl.PluralRules(S.lang).select(n);
+    const tpl = cat === 'one' ? S.filtersOne : cat === 'few' ? S.filtersFew : cat === 'many' ? S.filtersMany : S.filtersOther;
+    badge.title = tpl.replace('{count}', String(n));
     clearBtn.hidden = !state.q.trim() && n === 0;
     luckyBtn.disabled = !data.tools.some(matches);
     for (const f of FACETS) {
@@ -362,6 +377,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   }
 
   openBtn.addEventListener('click', open);
+  document.querySelector('[data-finder-form]')!.addEventListener('submit', (e) => e.preventDefault());
   document.querySelector('[data-finder-done]')!.addEventListener('click', done);
   clearBtn.addEventListener('click', () => {
     state.q = '';
@@ -397,7 +413,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     state.q = input.value;
     resultTab = 'sites';
     update();
+    const q = state.q.trim();
+    if (q.length >= 2 && q !== lastTracked) {
+      lastTracked = q;
+      (window as any).atlasTrack?.('search', { search_term: q.slice(0, 100) });
+    }
   };
+  let lastTracked = '';
   input.addEventListener('input', () => {
     xBtn.hidden = !input.value;
     clearTimeout(pending);

@@ -8,13 +8,20 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "shots": "node scripts/screenshots.mjs"
+    "shots": "node scripts/screenshots.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:a11y": "node scripts/a11y.mjs",
+    "monitor:seo": "node scripts/monitor-seo.mjs"
   },
   "dependencies": {
-    "astro": "^7.4.11",
+    "@resvg/resvg-js": "^2.6.2",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^7.4.12",
+    "satori": "^0.63.2",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "satori": "^0.18.3"
+    "axe-core": "^4.14.0",
+    "node-html-parser": "^9.0.7"
   }
 }

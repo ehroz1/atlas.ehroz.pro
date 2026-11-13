@@ -9,6 +9,8 @@ const categories = defineCollection({
   loader: file('src/data/categories.json'),
   schema: z.object({
     order: z.number(),
+    /** date the category text last changed (sitemap lastmod) */
+    updated: z.coerce.date(),
     name: localized,
     description: localized,
   }),
@@ -25,6 +27,8 @@ const tools = defineCollection({
     platforms: z.array(z.string()).default([]),
     tags: z.array(z.string()).default([]),
     added: z.coerce.date(),
+    /** date the page text last changed (sitemap lastmod, og:updated_time); defaults to `added` */
+    updated: z.coerce.date().optional(),
     featured: z.boolean().default(false),
     /** the owner's own sites: placed near the top of the home grid, see Gallery.astro */
     own: z.boolean().default(false),

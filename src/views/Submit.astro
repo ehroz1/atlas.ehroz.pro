@@ -1,0 +1,115 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getCategories } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { SITE } from '~/site.config';
+import { loc, useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [categories, entry] = await Promise.all([getCategories(), getPage('submit')]);
+/* Submissions open the visitor's mail app with a prefilled letter.
+   PUBLIC_SUBMIT_EMAIL in .env overrides the receiving address. */
+const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
+const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
+const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject') };
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('submit.h1')}</h1>
+        <p class="t-secondary">
+          {leadBefore}<a class="link" href={u('/about', lang)}>{t('submit.criteria')}</a>{leadAfter}
+        </p>
+      </div>
+
+      <form class="form mt-12" data-submit-form data-email={email} data-msg={JSON.stringify(msg)}>
+        <div class="field">
+          <label class="field__label" for="url">{t('submit.url')}</label>
+          <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="name">{t('submit.name')}</label>
+          <input class="input" id="name" name="name" type="text" placeholder={t('submit.namePh')} required />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="category">{t('submit.category')}</label>
+          <select class="select" id="category" name="category">
+            {categories.map((c) => <option value={c.id}>{loc(c.data.name, lang)}</option>)}
+            <option value="other">{t('submit.notSure')}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="why">{t('submit.why')}</label>
+          <textarea class="textarea" id="why" name="why" placeholder={t('submit.whyPh')} required></textarea>
+          <span class="field__hint">{t('submit.whyHint')}</span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="email">{t('submit.email')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <input class="input" id="email" name="email" type="email" placeholder={t('submit.emailPh')} autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="photos">{t('submit.photos')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
+          <span class="field__hint">{t('submit.photosHint')}</span>
+        </div>
+
+        <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
+          <input class="checkbox" type="checkbox" name="maker" value="yes" />
+          {t('submit.maker')}
+        </label>
+
+        <div class="cluster" style="--gap: var(--s-4)">
+          <button class="btn btn--solid btn--lg" type="submit">{t('submit.send')}</button>
+          <span class="t-meta" data-submit-status aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-submit-form]');
+  const status = document.querySelector<HTMLElement>('[data-submit-status]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!status) return;
+    const msg = JSON.parse(form.dataset.msg ?? '{}');
+    const d = new FormData(form);
+    const g = (k: string) => String(d.get(k) ?? '').trim();
+    const body = [
+      `Link: ${g('url')}`,
+      `Name: ${g('name')}`,
+      `Category: ${form.querySelector<HTMLSelectElement>('#category')?.selectedOptions[0]?.text ?? ''}`,
+      '',
+      g('why'),
+      '',
+      g('email') ? `From: ${g('email')}` : '',
+      d.get('maker') ? 'I made this.' : '',
+    ].filter((l, i, a) => l || (i && a[i - 1])).join('\n');
+    const subject = `${msg.subject}: ${g('name')}`;
+    (window as any).atlasTrack?.('contact_click', { method: 'submit_form' });
+    const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
+
+    // Phones: the share sheet can carry real attachments into the mail app.
+    if (files.length && navigator.canShare?.({ files })) {
+      try {
+        await navigator.share({ files, title: subject, text: `${subject}\n\n${body}` });
+        status.textContent = msg.thanks;
+        return;
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return;
+      }
+    }
+    location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    status.textContent = files.length ? msg.openedPhotos : msg.opened;
+  });
+</script>

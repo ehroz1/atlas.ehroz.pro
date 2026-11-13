@@ -1,0 +1,22 @@
+# Weekly check of the live site: robots, sitemap, statuses, noindex,
+# canonical, redirects, number of pages, broken outbound links.
+name: SEO monitor
+
+on:
+  schedule:
+    - cron: '41 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/monitor-seo.mjs

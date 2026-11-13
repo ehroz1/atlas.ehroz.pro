@@ -24,11 +24,12 @@ const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
 ---
-<section id="sites" aria-label="Sites" data-scope-category={current}>
+<section id="sites" aria-label={t('results.label')} data-scope-category={current}>
   <div class={filters ? 'toolbar' : 'visually-hidden'}>
     {filters && <CategoryChips categories={categories} current={current} lang={lang} />}
     <span class="toolbar__count t-tabular" data-count aria-live="polite"
-      data-one={t('results.count.one')} data-other={t('results.count.other')}>
+      data-lang={lang} data-one={t('results.count.one')} data-few={t('results.count.few')}
+      data-many={t('results.count.many')} data-other={t('results.count.other')}>
       {countText(tools.length)}
     </span>
   </div>
@@ -117,7 +118,8 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       grid.append(...lead, ...rest, ...original.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
       if (count) {
-        const tpl = shown === 1 ? count.dataset.one : count.dataset.other;
+        const cat = new Intl.PluralRules(count.dataset.lang).select(shown);
+        const tpl = (count.dataset as Record<string, string | undefined>)[cat] ?? count.dataset.other;
         count.textContent = (tpl ?? '{count}').replace('{count}', String(shown));
       }
       if (empty) {
