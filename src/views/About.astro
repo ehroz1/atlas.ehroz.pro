@@ -10,11 +10,16 @@ import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import { getTools, getCategories } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
-import { formatDate } from '~/i18n';
+import { getPage } from '~/lib/routes';
+import { AUTHOR } from '~/site.config';
+import { formatDate, useTranslations, type Lang } from '~/i18n';
 
-const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('about')]);
 const free = tools.filter((x) => x.data.pricing !== 'paid').length;
-const latest = new Date(Math.max(...tools.map((x) => x.data.added.getTime())));
+const [authorBefore, authorAfter] = t('about.author.body', { name: AUTHOR.name, city: AUTHOR.city[lang], site: '\u0000' }).split('\u0000');
 
 const withShots = tools.filter((x) => shotFor(x.id));
 // Two columns of shots riding up (left) and down (right) along the frame
@@ -35,7 +40,7 @@ const icon = {
   plus: 'M10 4v12M4 10h12',
 };
 ---
-<Base title="About" description="What Atlas is, how sites get in, and what we leave out.">
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.about'), path: '/about' }]} pageExtra={{ about: { '@id': AUTHOR.id } }}>
   <div class="page-stage">
     <div class="edge-shots" aria-hidden="true" data-edge-shots>
       {left.map(({ tool, dx }) => (
@@ -52,69 +57,78 @@ const icon = {
 
     <div class="container">
       <div style="padding-block: clamp(var(--s-8), 4vw, var(--s-12)) clamp(var(--s-10), 4.5vw, var(--s-12))">
-        <h1 class="t-headline">Useful sites, hand-picked<br />to help you make things</h1>
-        <p class="t-center t-muted mt-6" style="font-size: var(--fs-15)">Updated {formatDate(latest)}</p>
+        <h1 class="t-headline" set:html={t('about.h1')} />
+        <p class="t-center t-secondary mt-6" style="max-width: 36rem; margin-inline: auto">{t('about.lead')}</p>
+        <p class="t-center t-muted mt-4" style="font-size: var(--fs-15)">{t('about.updated', { date: formatDate(entry.updated, lang) })}</p>
       </div>
 
       <div class="plans">
         <article class="plan">
-          <h2 class="plan__name">Hand-picked</h2>
-          <p class="plan__sub">How a site gets in</p>
+          <h2 class="plan__name">{t('about.plan1.name')}</h2>
+          <p class="plan__sub">{t('about.plan1.sub')}</p>
           <hr class="plan__rule" />
           <p class="plan__figure">{tools.length}</p>
-          <p class="plan__caption">sites so far</p>
+          <p class="plan__caption">{t('about.plan1.caption')}</p>
           <hr class="plan__rule" />
           <ul class="plan__list">
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Used for a while before it's listed</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Does one job better than the obvious pick</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>Clear within a minute of landing on it</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>No forced sign-up just to look around</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>{t('about.plan1.li1')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>{t('about.plan1.li2')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>{t('about.plan1.li3')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.check} /></svg>{t('about.plan1.li4')}</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--chrome" href={u('/')}>Browse sites</a>
-            <span class="plan__note">{free} of them have a free plan</span>
+            <a class="btn btn--chrome" href={u('/', lang)}>{t('about.plan1.cta')}</a>
+            <span class="plan__note">{t('about.plan1.note', { count: free })}</span>
           </div>
         </article>
 
         <article class="plan plan--raised">
-          <span class="plan__flag">Free</span>
-          <h2 class="plan__name">Open</h2>
-          <p class="plan__sub">Nothing to sign up for</p>
+          <span class="plan__flag">{t('about.plan2.flag')}</span>
+          <h2 class="plan__name">{t('about.plan2.name')}</h2>
+          <p class="plan__sub">{t('about.plan2.sub')}</p>
           <hr class="plan__rule" />
-          <p class="plan__figure">$0</p>
-          <p class="plan__caption">no account, no paywall</p>
+          <p class="plan__figure">{t('about.plan2.figure')}</p>
+          <p class="plan__caption">{t('about.plan2.caption')}</p>
           <hr class="plan__rule" />
           <ul class="plan__list">
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.search} /></svg>Search &amp; filters</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.grid} /></svg>{categories.length} categories</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.wall} /></svg>Wall of every screenshot</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.key} /></svg>Press / to search anywhere</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.plus} /></svg>Anyone can suggest a site</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.search} /></svg>{t('about.plan2.li1')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.grid} /></svg>{t('about.plan2.li2', { count: categories.length })}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.wall} /></svg>{t('about.plan2.li3')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.key} /></svg>{t('about.plan2.li4')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.plus} /></svg>{t('about.plan2.li5')}</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--accent" href={u('/submit')}>Submit a site</a>
-            <span class="plan__note">Takes about a minute</span>
+            <a class="btn btn--accent" href={u('/submit', lang)}>{t('about.plan2.cta')}</a>
+            <span class="plan__note">{t('about.plan2.note')}</span>
           </div>
         </article>
 
         <article class="plan">
-          <h2 class="plan__name">Honest</h2>
-          <p class="plan__sub">What we leave out</p>
+          <h2 class="plan__name">{t('about.plan3.name')}</h2>
+          <p class="plan__sub">{t('about.plan3.sub')}</p>
           <hr class="plan__rule" />
           <p class="plan__figure">0</p>
-          <p class="plan__caption">sponsored placements</p>
+          <p class="plan__caption">{t('about.plan3.caption')}</p>
           <hr class="plan__rule" />
           <ul class="plan__list">
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>Paid rankings</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>Affiliate lists</li>
-            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>“Top 100 AI tools”</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>{t('about.plan3.li1')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>{t('about.plan3.li2')}</li>
+            <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icon.x} /></svg>{t('about.plan3.li3')}</li>
           </ul>
           <div class="plan__foot">
-            <a class="btn btn--chrome" href={u('/categories')}>See categories</a>
-            <span class="plan__note">Outbound links carry only a ref tag</span>
+            <a class="btn btn--chrome" href={u('/categories', lang)}>{t('about.plan3.cta')}</a>
+            <span class="plan__note">{t('about.plan3.note')}</span>
           </div>
         </article>
       </div>
+
+      <section class="about-author" aria-labelledby="author">
+        <h2 class="t-title" id="author">{t('about.author.title')}</h2>
+        <p class="t-secondary mt-2">
+          {authorBefore}<a class="link" href={AUTHOR.url}>ehroz.pro</a>{authorAfter}
+        </p>
+        <p class="mt-4"><a class="btn btn--sm" href={u('/contact', lang)}>{t('about.author.contact')}</a></p>
+      </section>
     </div>
   </div>
 </Base>

@@ -2,68 +2,73 @@
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import { getCategories } from '~/lib/data';
-import { loc } from '~/i18n';
+import { getPage } from '~/lib/routes';
+import { SITE } from '~/site.config';
+import { loc, useTranslations, type Lang } from '~/i18n';
 
-const categories = await getCategories();
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [categories, entry] = await Promise.all([getCategories(), getPage('submit')]);
 /* Submissions open the visitor's mail app with a prefilled letter.
-   Set PUBLIC_SUBMIT_EMAIL in .env to the receiving address. */
-const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? 'admin@picta.cc';
+   PUBLIC_SUBMIT_EMAIL in .env overrides the receiving address. */
+const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
+const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
+const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject') };
 ---
-<Base title="Submit a site" description="Suggest a website or tool for Atlas.">
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]}>
   <div class="container container--narrow">
     <div class="section" style="padding-bottom: 0">
       <div class="stack" style="--gap: var(--s-3)">
-        <h1 class="t-statement">Submit a site</h1>
+        <h1 class="t-statement">{t('submit.h1')}</h1>
         <p class="t-secondary">
-          Tell us what it is and why it's good. We read everything and add the ones that
-          fit <a class="link" href={u('/about')}>the criteria</a>. Skip the marketing copy, one honest
-          sentence is better.
+          {leadBefore}<a class="link" href={u('/about', lang)}>{t('submit.criteria')}</a>{leadAfter}
         </p>
       </div>
 
-      <form class="form mt-12" data-submit-form data-email={email}>
+      <form class="form mt-12" data-submit-form data-email={email} data-msg={JSON.stringify(msg)}>
         <div class="field">
-          <label class="field__label" for="url">Link</label>
+          <label class="field__label" for="url">{t('submit.url')}</label>
           <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
         </div>
 
         <div class="field">
-          <label class="field__label" for="name">Name</label>
-          <input class="input" id="name" name="name" type="text" placeholder="What is it called?" required />
+          <label class="field__label" for="name">{t('submit.name')}</label>
+          <input class="input" id="name" name="name" type="text" placeholder={t('submit.namePh')} required />
         </div>
 
         <div class="field">
-          <label class="field__label" for="category">Category</label>
+          <label class="field__label" for="category">{t('submit.category')}</label>
           <select class="select" id="category" name="category">
-            {categories.map((c) => <option value={c.id}>{loc(c.data.name)}</option>)}
-            <option value="other">Not sure</option>
+            {categories.map((c) => <option value={c.id}>{loc(c.data.name, lang)}</option>)}
+            <option value="other">{t('submit.notSure')}</option>
           </select>
         </div>
 
         <div class="field">
-          <label class="field__label" for="why">Why is it useful?</label>
-          <textarea class="textarea" id="why" name="why" placeholder="I use it for…" required></textarea>
-          <span class="field__hint">A sentence or two is plenty.</span>
+          <label class="field__label" for="why">{t('submit.why')}</label>
+          <textarea class="textarea" id="why" name="why" placeholder={t('submit.whyPh')} required></textarea>
+          <span class="field__hint">{t('submit.whyHint')}</span>
         </div>
 
         <div class="field">
-          <label class="field__label" for="email">Your email <span class="t-muted" style="font-weight: 400">(optional)</span></label>
-          <input class="input" id="email" name="email" type="email" placeholder="So we can say thanks" autocomplete="email" />
+          <label class="field__label" for="email">{t('submit.email')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <input class="input" id="email" name="email" type="email" placeholder={t('submit.emailPh')} autocomplete="email" />
         </div>
 
         <div class="field">
-          <label class="field__label" for="photos">Photos <span class="t-muted" style="font-weight: 400">(optional)</span></label>
+          <label class="field__label" for="photos">{t('submit.photos')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
           <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
-          <span class="field__hint">On phones they attach automatically. On a computer, attach them in the email that opens.</span>
+          <span class="field__hint">{t('submit.photosHint')}</span>
         </div>
 
         <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
           <input class="checkbox" type="checkbox" name="maker" value="yes" />
-          I made this
+          {t('submit.maker')}
         </label>
 
         <div class="cluster" style="--gap: var(--s-4)">
-          <button class="btn btn--solid btn--lg" type="submit">Send</button>
+          <button class="btn btn--solid btn--lg" type="submit">{t('submit.send')}</button>
           <span class="t-meta" data-submit-status aria-live="polite"></span>
         </div>
       </form>
@@ -77,6 +82,7 @@ const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? 'ad
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
+    const msg = JSON.parse(form.dataset.msg ?? '{}');
     const d = new FormData(form);
     const g = (k: string) => String(d.get(k) ?? '').trim();
     const body = [
@@ -89,22 +95,21 @@ const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? 'ad
       g('email') ? `From: ${g('email')}` : '',
       d.get('maker') ? 'I made this.' : '',
     ].filter((l, i, a) => l || (i && a[i - 1])).join('\n');
-    const subject = `Atlas submission: ${g('name')}`;
+    const subject = `${msg.subject}: ${g('name')}`;
+    (window as any).atlasTrack?.('contact_click', { method: 'submit_form' });
     const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
 
     // Phones: the share sheet can carry real attachments into the mail app.
     if (files.length && navigator.canShare?.({ files })) {
       try {
         await navigator.share({ files, title: subject, text: `${subject}\n\n${body}` });
-        status.textContent = 'Thanks, got it.';
+        status.textContent = msg.thanks;
         return;
       } catch (err) {
         if ((err as Error).name === 'AbortError') return;
       }
     }
     location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    status.textContent = files.length
-      ? 'Mail app opened. Attach your photos to the email and send.'
-      : 'Mail app opened. Just hit send.';
+    status.textContent = files.length ? msg.openedPhotos : msg.opened;
   });
 </script>

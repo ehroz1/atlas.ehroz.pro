@@ -3,14 +3,21 @@ import Base from '~/layouts/Base.astro';
 import HeroCollage from '~/components/HeroCollage.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { itemList } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import type { Lang } from '~/i18n';
 
-const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('home')]);
+const url = absUrl('/', lang);
 ---
-<Base>
+<Base lang={lang} entry={entry} nodes={[itemList(url, entry.heading[lang], tools, lang)]} pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}>
   <div class="container container--wide">
-    <HeroCollage tools={tools} categoryCount={categories.length} />
+    <HeroCollage tools={tools} categoryCount={categories.length} lang={lang} />
     <div style="padding-top: var(--grid-gap)">
-      <Gallery tools={tools} categories={categories} filters={false} promote />
+      <Gallery tools={tools} categories={categories} filters={false} promote lang={lang} />
     </div>
   </div>
 </Base>

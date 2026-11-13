@@ -1,24 +1,37 @@
 ---
 import { u } from '~/lib/url';
-import { getTools, getCategories } from '~/lib/data';
-import { useTranslations, defaultLang, formatDate, type Lang } from '~/i18n';
-interface Props { lang?: Lang }
-const { lang = defaultLang } = Astro.props;
+import { getTools, getCategories, toolUpdated, latest } from '~/lib/data';
+import { useTranslations, defaultLang, formatDate, langs, languages, type Lang } from '~/i18n';
+import { analytics } from '~/analytics.config';
+import { IS_PROD } from '~/lib/env';
+import { SITE } from '~/site.config';
+interface Props { lang?: Lang; switchHref: string }
+const { lang = defaultLang, switchHref } = Astro.props;
 const t = useTranslations(lang);
-const tools = await getTools();
-const latest = new Date(Math.max(...tools.map((x) => x.data.added.getTime())));
-const year = new Date().getFullYear();
+const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
+const year = updated.getUTCFullYear();
+const other = langs.find((l) => l !== lang)!;
+const counters = IS_PROD && !!(analytics.ga4 || analytics.metrika);
+const links = [
+  ['/', t('nav.sites')],
+  ['/categories', t('nav.categories')],
+  ['/wall', t('nav.wall')],
+  ['/about', t('nav.about')],
+  ['/contact', t('nav.contact')],
+  ['/submit', t('nav.submit')],
+] as const;
 ---
 <footer class="site-footer">
   <div class="container container--wide site-footer__inner">
     <div class="stack" style="--gap: var(--s-1)">
-      <span>© {year} Atlas · {t('footer.note')}</span>
-      <span>{t('footer.updated', { date: formatDate(latest, lang) })}</span>
+      <span>© {year} {SITE.name} · {t('footer.note')}</span>
+      <span>{t('footer.updated', { date: formatDate(updated, lang) })}</span>
     </div>
-    <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label="Footer">
-      <a href={u('/')}>{t('filter.all')}</a>
-      <a href={u('/about')}>{t('nav.about')}</a>
-      <a href={u('/submit')}>{t('nav.submit')}</a>
+    <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label={t('nav.other')}>
+      {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
+      <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
+      {counters && <a href="#" data-consent-reset role="button">{t('footer.cookies')}</a>}
     </nav>
   </div>
 </footer>

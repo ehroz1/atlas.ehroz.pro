@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { loc, type Lang } from '~/i18n';
 
 export type Tool = CollectionEntry<'tools'>;
 export type Category = CollectionEntry<'categories'>;
@@ -29,10 +30,19 @@ export function domainOf(url: string) {
   return new URL(url).hostname.replace(/^www\./, '');
 }
 
-/** Lower-cased text the client-side search looks through. */
-export function searchText(tool: Tool, categoryName: string) {
+/** Lower-cased text the client-side search looks through (both languages, so either finds it). */
+export function searchText(tool: Tool, categoryName: string, lang: Lang) {
   const d = tool.data;
-  return [d.name, domainOf(d.url), categoryName, d.summary.en, d.description.en, ...d.tags, ...d.platforms, d.pricing]
+  return [d.name, domainOf(d.url), categoryName, loc(d.summary, lang), loc(d.description, lang), d.summary.en, ...d.tags, ...d.platforms, d.pricing]
     .join(' ')
     .toLowerCase();
+}
+
+/** Date the tool's page text last changed. */
+export function toolUpdated(tool: Tool): Date {
+  return tool.data.updated ?? tool.data.added;
+}
+
+export function latest(dates: Date[]): Date {
+  return new Date(Math.max(...dates.map((d) => d.getTime())));
 }

@@ -1,0 +1,45 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { AUTHOR, SITE } from '~/site.config';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('contact');
+const github = AUTHOR.sameAs.find((x) => x.includes('github.com'))!;
+const rows = [
+  { label: t('contact.telegram'), href: AUTHOR.telegram.url, text: AUTHOR.telegram.handle, track: 'telegram' },
+  { label: t('contact.email'), href: `mailto:${AUTHOR.email}`, text: AUTHOR.email, track: 'email' },
+  { label: t('contact.github'), href: github, text: github.replace('https://', ''), track: 'github' },
+  { label: t('contact.site'), href: AUTHOR.url, text: AUTHOR.url.replace(/^https:\/\/|\/$/g, ''), track: 'site' },
+];
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.contact'), path: '/contact' }]} pageExtra={{ mainEntity: { '@id': AUTHOR.id } }}>
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('contact.h1')}</h1>
+        <p class="t-secondary">{t('contact.lead', { name: AUTHOR.name })}</p>
+      </div>
+
+      <dl class="meta mt-12">
+        {rows.map((r) => (
+          <div class="meta__row">
+            <dt>{r.label}</dt>
+            <dd><a class="link" href={r.href} data-track-contact={r.track} rel={r.href.startsWith('http') ? 'me noopener' : undefined}>{r.text}</a></dd>
+          </div>
+        ))}
+      </dl>
+
+      <section class="mt-12 stack" style="--gap: var(--s-2)" aria-labelledby="suggest">
+        <h2 class="t-title" id="suggest">{t('contact.submit.title')}</h2>
+        <p class="t-secondary">{t('contact.submit.body')}</p>
+        <p class="mt-2"><a class="btn btn--solid" href={u('/submit', lang)}>{t('nav.submit')}</a></p>
+        <p class="t-meta mt-2">{SITE.submitEmail}</p>
+      </section>
+    </div>
+  </div>
+</Base>

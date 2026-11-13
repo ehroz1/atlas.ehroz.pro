@@ -23,7 +23,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
 ---
 <a
   class="card"
-  href={u(`/tool/${tool.id}`)}
+  href={u(`/tool/${tool.id}`, lang)}
   data-card
   data-id={tool.id}
   data-own={d.own ? '' : undefined}

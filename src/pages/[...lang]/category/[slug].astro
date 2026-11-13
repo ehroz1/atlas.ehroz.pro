@@ -1,0 +1,13 @@
+---
+import View from '~/views/Category.astro';
+import { getCategories, type Category } from '~/lib/data';
+import { langParams, type Lang } from '~/i18n';
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return langParams().flatMap(({ params, props }) =>
+    categories.map((category) => ({ params: { ...params, slug: category.id }, props: { ...props, category } })),
+  );
+}
+const { lang, category } = Astro.props as { lang: Lang; category: Category };
+---
+<View lang={lang} category={category} />

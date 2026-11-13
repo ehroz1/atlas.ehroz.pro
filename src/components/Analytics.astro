@@ -1,0 +1,147 @@
+---
+/**
+ * 1. Vercel Web Analytics: no cookies, no consent needed. Only in Vercel
+ *    production builds, and it drops events from any host but the domain.
+ * 2. GA4 and Yandex Metrica: only if their IDs are set in
+ *    src/analytics.config.ts, only on the production domain, and only after
+ *    the visitor presses "Allow". With both IDs empty nothing here renders:
+ *    no counter, no cookie, no banner.
+ * Events go through window.atlasTrack(name, params). Before consent they
+ * wait in a queue; after "Decline" they are dropped.
+ */
+import VercelAnalytics from '@vercel/analytics/astro';
+import { analytics } from '~/analytics.config';
+import { SITE } from '~/site.config';
+import { IS_PROD, VERCEL_ANALYTICS } from '~/lib/env';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const cfg = { ga4: analytics.ga4, metrika: analytics.metrika, webvisor: !!analytics.webvisor };
+const counters = IS_PROD && !!(cfg.ga4 || cfg.metrika);
+const host = SITE.host;
+---
+{VERCEL_ANALYTICS && (
+  <>
+    <script is:inline define:vars={{ host }}>
+      window.webAnalyticsBeforeSend = function (e) { return location.hostname === host ? e : null; };
+    </script>
+    <VercelAnalytics />
+  </>
+)}
+
+{counters && (
+  <>
+    <div class="consent" role="region" aria-label={t('consent.label')} data-consent hidden>
+      <p class="consent__text">{t('consent.text')}</p>
+      <div class="consent__actions">
+        <button class="btn btn--sm" type="button" data-consent-deny>{t('consent.deny')}</button>
+        <button class="btn btn--sm btn--solid" type="button" data-consent-allow>{t('consent.allow')}</button>
+      </div>
+    </div>
+    <script is:inline define:vars={{ cfg }}>
+      (function () {
+        var KEY = 'atlas:consent';
+        var queue = [];
+        var loaded = false;
+        var get = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+        var set = function (v) { try { v ? localStorage.setItem(KEY, v) : localStorage.removeItem(KEY); } catch (e) {} };
+        var send = function (name, params) {
+          params = params || {};
+          try {
+            if (cfg.ga4 && window.gtag) window.gtag('event', name, params);
+            if (cfg.metrika && window.ym) window.ym(Number(cfg.metrika), 'reachGoal', name, params);
+          } catch (e) {}
+        };
+        window.atlasTrack = function (name, params) {
+          if (loaded) send(name, params);
+          else if (get() !== 'denied' && queue.length < 50) queue.push([name, params]);
+        };
+        var load = function () {
+          if (loaded) return;
+          loaded = true;
+          if (cfg.ga4) {
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = function () { window.dataLayer.push(arguments); };
+            window.gtag('js', new Date());
+            window.gtag('config', cfg.ga4);
+            var g = document.createElement('script');
+            g.async = true;
+            g.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(cfg.ga4);
+            document.head.appendChild(g);
+          }
+          if (cfg.metrika) {
+            var id = Number(cfg.metrika);
+            window.ym = window.ym || function () { (window.ym.a = window.ym.a || []).push(arguments); };
+            window.ym.l = Date.now();
+            var m = document.createElement('script');
+            m.async = true;
+            m.src = 'https://mc.yandex.ru/metrika/tag.js?id=' + id;
+            document.head.appendChild(m);
+            window.ym(id, 'init', {
+              ssr: true, webvisor: cfg.webvisor, clickmap: true, referrer: document.referrer,
+              url: location.href, accurateTrackBounce: true, trackLinks: true,
+            });
+          }
+          queue.splice(0).forEach(function (e) { send(e[0], e[1]); });
+        };
+        var banner = document.querySelector('[data-consent]');
+        var show = function (on) { if (banner) banner.hidden = !on; };
+        var state = get();
+        if (state === 'granted') load();
+        else if (state !== 'denied') show(true);
+        document.addEventListener('click', function (e) {
+          var el = e.target.closest && e.target.closest('[data-consent-allow],[data-consent-deny],[data-consent-reset]');
+          if (!el) return;
+          if (el.hasAttribute('data-consent-allow')) { set('granted'); show(false); load(); }
+          else if (el.hasAttribute('data-consent-deny')) { set('denied'); queue = []; show(false); }
+          else {
+            e.preventDefault();
+            set(null);
+            // counters already running can't be unloaded: reload without them
+            if (loaded) location.reload(); else show(true);
+          }
+        });
+      })();
+    </script>
+    <script is:inline>
+      (function () {
+        var track = function (n, p) { if (window.atlasTrack) window.atlasTrack(n, p); };
+        // clicks: outbound, contact, language, internal
+        document.addEventListener('click', function (e) {
+          var a = e.target.closest && e.target.closest('a[href]');
+          if (!a) return;
+          var href = a.getAttribute('href') || '';
+          if (/^(mailto:|tel:)/.test(href) || a.hasAttribute('data-track-contact')) {
+            return track('contact_click', { method: href.split(':')[0] === 'mailto' ? 'email' : (a.dataset.trackContact || 'link') });
+          }
+          if (a.hasAttribute('data-lang-switch')) return track('language_switch', { to: a.getAttribute('hreflang') });
+          var url;
+          try { url = new URL(a.href, location.href); } catch (err) { return; }
+          if (url.host && url.host !== location.host) {
+            track('outbound_click', { link_url: url.origin + url.pathname, link_domain: url.hostname, tool: a.dataset.trackTool || '' });
+          } else if (url.pathname !== location.pathname) {
+            track('internal_click', { link_url: url.pathname });
+          }
+        });
+        // scroll depth, once per mark
+        var marks = [25, 50, 75, 90];
+        var sent = {};
+        var onScroll = function () {
+          var h = document.documentElement;
+          var max = h.scrollHeight - h.clientHeight;
+          if (max <= 0) return;
+          var pct = (h.scrollTop / max) * 100;
+          marks.forEach(function (m) { if (pct >= m && !sent[m]) { sent[m] = 1; track('scroll_depth', { percent: m }); } });
+        };
+        addEventListener('scroll', onScroll, { passive: true });
+        // js errors, at most 5 per page
+        var errors = 0;
+        addEventListener('error', function (e) {
+          if (errors++ < 5) track('js_error', { message: String(e.message || '').slice(0, 150), source: String(e.filename || '').slice(-80) });
+        });
+      })();
+    </script>
+  </>
+)}
