@@ -11,6 +11,13 @@
     "shots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
-    "astro": "^7.4.11"
+    "@resvg/resvg-js": "^2.6.2",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^7.4.11",
+    "satori": "^0.63.2"
+  },
+  "devDependencies": {
+    "axe-core": "^4.14.0",
+    "node-html-parser": "^9.0.7"
   }
 }
