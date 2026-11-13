@@ -115,7 +115,7 @@ put them together.
 | Search pill | `.bar-search__field`, `.bar-search__badge` | a button; shows the current query and a blue count of active filters |
 | Finder | `.finder` (a `<dialog>`), `.finder__field`, `.finder__facet`, `.finder__option`, `.finder__hit`, `.finder__foot` | search & filter: white-ringed field, facets left (Category / Pricing / Platform), options with counts right, Clear all + Done; typing lists matching sites |
 | Menu | `.bar-menu`, `.menu`, `.menu__item`, `.menu__sep`, `.menu__note` | opens from the round button at the right end of the bar |
-| Wall | `.wall`, `.wall__plane`, `.wall__row`, `.wall__item`, `.wall__label`, `.wall__hint` | endless plane of screenshots, scrolls on both axes (wheel, drag, swipe, arrows); the block is tiled 3×3 and wraps; page uses `<Base flush bare>` |
+| Wall | `.wall`, `.wall__plane`, `.wall__row`, `.wall__item`, `.wall__label`, `.wall__hint` | endless plane of screenshots moved by a script (no native scroll, no scrollbars, no axis-locking): wheel/trackpad, drag with inertia, swipe, arrows; the block is tiled 3×3 and drawn modulo one block; page uses `<Base flush bare>` |
 | About / plans | `.page-stage`, `.edge-shots`, `.t-headline`, `.plans`, `.plan`, `.plan--raised`, `.plan__*` | big headline, screenshots peeking from the edges, three joined columns, middle one raised |
 | Button | `.btn`, `.btn--solid`, `.btn--ghost`, `.btn--sm`, `.btn--lg` | at most one `--solid` per screen |
 | Link in text | `.link` | grey underline, ink on hover |

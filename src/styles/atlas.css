@@ -1033,25 +1033,35 @@ hr { border: 0; border-top: var(--border); }
 }
 
 
-/* WALL — every screenshot on an endless plane that scrolls on both axes
-   (wheel, trackpad, drag, swipe, arrow keys). The bar floats over it.
-   Rows are brick-offset; hover shows the site's name. The tiling and
-   wrap-around live in src/pages/wall.astro. */
+/* WALL — every screenshot on an endless plane, moved freely on both axes
+   (wheel, trackpad, drag, swipe, arrow keys). Nothing scrolls natively:
+   the page is locked and a script moves .wall__plane with transform, so
+   there are no scrollbars and no axis-locking. The bar floats over it.
+   Rows are brick-offset; hover shows the site's name. Logic lives in
+   src/pages/wall.astro. */
+html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-behavior: none; }
 .wall {
   --wall-w: clamp(15rem, 20.5vw, 26rem);
   --wall-gap: clamp(0.75rem, 1.6vw, 1.5rem);
   position: fixed;
   inset: 0;
-  overflow: auto;
-  overscroll-behavior: none;
-  scrollbar-width: none;
+  overflow: hidden;
+  touch-action: none;
   cursor: grab;
   outline: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.wall::-webkit-scrollbar { display: none; }
 .wall.is-dragging { cursor: grabbing; }
 .wall.is-dragging .wall__item { pointer-events: none; }
-.wall__plane { display: grid; gap: var(--wall-gap); width: max-content; padding: var(--wall-gap); }
+.wall__plane {
+  display: grid;
+  gap: var(--wall-gap);
+  width: max-content;
+  padding: var(--wall-gap);
+  will-change: transform;
+  backface-visibility: hidden;
+}
 .wall__row { display: flex; gap: var(--wall-gap); }
 .wall__row:nth-child(even) { margin-left: calc((var(--wall-w) + var(--wall-gap)) / 2); }
 .wall__item {

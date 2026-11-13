@@ -1,11 +1,14 @@
 ---
 /**
- * Wall: every screenshot on one endless plane you can move in any
- * direction — wheel/trackpad, drag with the mouse, swipe, arrow keys.
+ * Wall: every screenshot on one endless plane you can move freely in any
+ * direction — wheel/trackpad, drag (mouse or finger), arrow keys.
  *
- * The server renders one block of ROWS × COLS tiles (brick-offset rows).
- * The script tiles that block 3 × 3 and, whenever the view drifts out of
- * the middle copy, jumps back by exactly one block, so it never ends.
+ * No native scrolling: the page doesn't scroll at all, so there are no
+ * scrollbars and no axis-locking. A small "camera" script moves the plane
+ * with transform, easing towards a target and coasting after a drag.
+ * The server renders one block of ROWS × COLS tiles (brick-offset rows);
+ * the script tiles it 3 × 3 and shows position modulo one block, so the
+ * wall never ends and never jumps.
  */
 import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
@@ -22,7 +25,7 @@ const seen = new Set<string>();
 ---
 <Base title="Wall" description="Every site in Atlas on one endless wall of screenshots." flush bare>
   <h1 class="visually-hidden">All sites</h1>
-  <div class="wall" tabindex="0" aria-label="Wall of sites. Scroll, drag or use the arrow keys to move." data-wall data-cols={COLS} data-rows={ROWS}>
+  <div class="wall" tabindex="0" aria-label="Wall of sites. Drag, scroll or use the arrow keys to move." data-wall data-cols={COLS} data-rows={ROWS}>
     <div class="wall__plane" data-wall-plane>
       {Array.from({ length: ROWS }, (_, r) => (
         <div class="wall__row">
@@ -35,7 +38,7 @@ const seen = new Set<string>();
                 aria-label={first ? tool.data.name : undefined}
                 aria-hidden={first ? undefined : 'true'}
                 tabindex={first ? undefined : -1}>
-                <Image src={shotFor(tool.id)!} alt="" draggable="false" widths={[480, 720]} sizes="(min-width: 48rem) 21vw, 45vw" format="webp" quality={74} loading={r < 4 ? 'eager' : 'lazy'} />
+                <Image src={shotFor(tool.id)!} alt="" draggable="false" widths={[480, 720]} sizes="(min-width: 48rem) 21vw, 45vw" format="webp" quality={74} loading="eager" />
                 <span class="wall__label">{tool.data.name}</span>
               </a>
             );
@@ -53,6 +56,8 @@ const seen = new Set<string>();
   const hint = document.querySelector<HTMLElement>('[data-wall-hint]');
   const COLS = Number(wall.dataset.cols);
   const ROWS = Number(wall.dataset.rows);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.add('is-wall');
 
   // 1. Tile the block 3 × 3: triple every row, then triple the rows.
   const baseRows = Array.from(plane.children) as HTMLElement[];
@@ -68,14 +73,12 @@ const seen = new Set<string>();
     const items = Array.from(row.children);
     for (let k = 0; k < 2; k++) items.forEach((it) => row.append(hide(it.cloneNode(true) as HTMLElement)));
   }
-  const before = baseRows.map((r) => hide(r.cloneNode(true) as HTMLElement));
-  const after = baseRows.map((r) => hide(r.cloneNode(true) as HTMLElement));
-  plane.prepend(...before);
-  plane.append(...after);
+  plane.prepend(...baseRows.map((r) => hide(r.cloneNode(true) as HTMLElement)));
+  plane.append(...baseRows.map((r) => hide(r.cloneNode(true) as HTMLElement)));
 
-  // 2. Measure one block and start in the middle copy.
-  let blockW = 0;
-  let blockH = 0;
+  // 2. Block size = distance from a tile to its copy one block away.
+  let blockW = 1;
+  let blockH = 1;
   const measure = () => {
     const rows = plane.children as HTMLCollectionOf<HTMLElement>;
     const first = rows[0].children as HTMLCollectionOf<HTMLElement>;
@@ -83,61 +86,114 @@ const seen = new Set<string>();
     blockH = rows[ROWS].offsetTop - rows[0].offsetTop;
   };
   measure();
-  wall.scrollLeft = blockW + blockW / 2 - wall.clientWidth / 2;
-  wall.scrollTop = blockH + blockH / 2 - wall.clientHeight / 2;
 
-  // 3. Wrap around so it never ends.
-  const wrap = () => {
-    if (wall.scrollLeft < blockW * 0.5) wall.scrollLeft += blockW;
-    else if (wall.scrollLeft > blockW * 1.5) wall.scrollLeft -= blockW;
-    if (wall.scrollTop < blockH * 0.5) wall.scrollTop += blockH;
-    else if (wall.scrollTop > blockH * 1.5) wall.scrollTop -= blockH;
+  // 3. Camera. (x, y) is unbounded; what's drawn is (x, y) modulo a block,
+  //    offset into the middle copy, so the view never runs out of tiles.
+  const mod = (n: number, m: number) => ((n % m) + m) % m;
+  let x = blockW / 2 - innerWidth / 2;
+  let y = blockH / 2 - innerHeight / 2;
+  let tx = x;
+  let ty = y;
+  let vx = 0; // coasting velocity after a drag, px/s
+  let vy = 0;
+  let dragging = false;
+  let last = performance.now();
+  let running = false;
+
+  const draw = () => {
+    plane.style.transform = `translate3d(${-(blockW + mod(x, blockW))}px, ${-(blockH + mod(y, blockH))}px, 0)`;
   };
-  let moved = false;
-  wall.addEventListener('scroll', () => {
-    wrap();
-    if (!moved && hint) {
-      moved = true;
-      hint.classList.add('is-hidden');
+  const frame = (now: number) => {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!dragging && (vx || vy)) {
+      tx += vx * dt;
+      ty += vy * dt;
+      const decay = Math.exp(-dt * 5); // friction
+      vx *= decay;
+      vy *= decay;
+      if (Math.hypot(vx, vy) < 8) vx = vy = 0;
     }
-  }, { passive: true });
-  addEventListener('resize', () => {
-    const fx = (wall.scrollLeft % blockW) / blockW;
-    const fy = (wall.scrollTop % blockH) / blockH;
-    measure();
-    wall.scrollLeft = blockW + fx * blockW;
-    wall.scrollTop = blockH + fy * blockH;
-  });
+    const k = reduced || dragging ? 1 : 1 - Math.exp(-dt * 14); // ease toward target
+    x += (tx - x) * k;
+    y += (ty - y) * k;
+    draw();
+    if (Math.abs(tx - x) > 0.3 || Math.abs(ty - y) > 0.3 || vx || vy || dragging) requestAnimationFrame(frame);
+    else running = false;
+  };
+  const kick = () => {
+    if (hint && !hint.classList.contains('is-hidden')) hint.classList.add('is-hidden');
+    if (running) return;
+    running = true;
+    last = performance.now();
+    requestAnimationFrame(frame);
+  };
+  draw();
 
-  // 4. Drag to pan with the mouse (touch already pans natively).
-  let drag: { x: number; y: number; left: number; top: number; active: boolean } | null = null;
+  // 4. Wheel / trackpad — both axes at once, no rails.
+  const blocked = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.finder, .menu') || !!document.querySelector('dialog[open]');
+  addEventListener('wheel', (e) => {
+    if (e.ctrlKey || blocked(e.target)) return; // leave pinch-zoom alone
+    e.preventDefault();
+    const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? innerHeight : 1;
+    tx += e.deltaX * unit;
+    ty += e.deltaY * unit;
+    vx = vy = 0;
+    kick();
+  }, { passive: false });
+
+  // 5. Drag with mouse, pen or finger; coast after release.
+  let start: { px: number; py: number; x: number; y: number; moved: boolean } | null = null;
+  const samples: { t: number; px: number; py: number }[] = [];
   let suppressClick = false;
   wall.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    drag = { x: e.clientX, y: e.clientY, left: wall.scrollLeft, top: wall.scrollTop, active: false };
+    if (e.button !== 0) return;
+    suppressClick = false; // a new gesture: forget the last drag
+    // grabbing a coasting wall stops it where it is
+    tx = x;
+    ty = y;
+    start = { px: e.clientX, py: e.clientY, x: tx, y: ty, moved: false };
+    samples.length = 0;
+    samples.push({ t: performance.now(), px: e.clientX, py: e.clientY });
+    vx = vy = 0;
   });
   addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    const dx = e.clientX - drag.x;
-    const dy = e.clientY - drag.y;
-    if (!drag.active && Math.hypot(dx, dy) > 4) {
-      drag.active = true;
+    if (!start) return;
+    const dx = e.clientX - start.px;
+    const dy = e.clientY - start.py;
+    if (!start.moved && Math.hypot(dx, dy) > 5) {
+      start.moved = true;
+      dragging = true;
       wall.classList.add('is-dragging');
+      try { wall.setPointerCapture(e.pointerId); } catch {}
     }
-    if (drag.active) {
-      wall.scrollLeft = drag.left - dx;
-      wall.scrollTop = drag.top - dy;
-      // keep the anchor valid after a wrap jump
-      drag.left = wall.scrollLeft + dx;
-      drag.top = wall.scrollTop + dy;
-    }
+    if (!start.moved) return;
+    tx = start.x - dx;
+    ty = start.y - dy;
+    const now = performance.now();
+    samples.push({ t: now, px: e.clientX, py: e.clientY });
+    while (samples.length > 2 && now - samples[0].t > 100) samples.shift();
+    kick();
   });
-  addEventListener('pointerup', () => {
-    if (drag?.active) suppressClick = true;
-    drag = null;
+  const end = () => {
+    if (!start) return;
+    if (start.moved) {
+      suppressClick = true;
+      const a = samples[0];
+      const b = samples[samples.length - 1];
+      const dt = (b.t - a.t) / 1000;
+      if (!reduced && dt > 0 && performance.now() - b.t < 80) {
+        vx = -(b.px - a.px) / dt;
+        vy = -(b.py - a.py) / dt;
+      }
+    }
+    start = null;
+    dragging = false;
     wall.classList.remove('is-dragging');
-  });
-  // a drag that ends on a tile shouldn't open it
+    kick();
+  };
+  addEventListener('pointerup', end);
+  addEventListener('pointercancel', end);
   wall.addEventListener('click', (e) => {
     if (suppressClick) {
       e.preventDefault();
@@ -146,6 +202,42 @@ const seen = new Set<string>();
     }
   }, true);
 
-  // 5. Arrow keys / space work on the focused scroller.
-  wall.focus({ preventScroll: true });
+  // 6. Keyboard: arrows nudge, Page/Space jump a screen.
+  addEventListener('keydown', (e) => {
+    const el = e.target as HTMLElement;
+    if (blocked(el) || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+    const step = 180;
+    const page = innerHeight * 0.8;
+    const moves: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step],
+      PageUp: [0, -page], PageDown: [0, page], ' ': [0, e.shiftKey ? -page : page],
+    };
+    const m = moves[e.key];
+    if (!m) return;
+    e.preventDefault();
+    vx = vy = 0;
+    tx += m[0];
+    ty += m[1];
+    kick();
+  });
+
+  // 7. Keep the same spot when the window or layout changes size.
+  addEventListener('resize', () => {
+    const fx = mod(x, blockW) / blockW;
+    const fy = mod(y, blockH) / blockH;
+    measure();
+    x = tx = fx * blockW;
+    y = ty = fy * blockH;
+    draw();
+  });
+
+  // Tabbing to a tile brings it into view.
+  wall.addEventListener('focusin', (e) => {
+    const a = (e.target as HTMLElement).closest('a');
+    if (!a) return;
+    const r = a.getBoundingClientRect();
+    if (r.left < 0 || r.right > innerWidth) tx += r.left - (innerWidth - r.width) / 2;
+    if (r.top < 0 || r.bottom > innerHeight) ty += r.top - (innerHeight - r.height) / 2;
+    kick();
+  });
 </script>
