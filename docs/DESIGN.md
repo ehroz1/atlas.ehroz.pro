@@ -42,7 +42,7 @@ Use semantic tokens (`--c-text`, `--c-surface`), never the raw scale
 | `--c-bg` | `#0d0d0d` | page, hero panel |
 | `--c-surface` | `#141414` | screenshot placeholders, tool-page frame |
 | `--c-fill` / `--c-fill-hover` | `#1c1c1c` / `#242424` | inputs |
-| `--c-line` / `--c-line-strong` | `#2c2c2c` / `#3a3a3a` | hairlines, chip outlines, hero panel border |
+| `--c-line` / `--c-line-strong` | `#222` / `#2a2a2a` | hairlines, page frame, chip outlines, hero panel border |
 | `--c-line-active` | `#ededed` | current chip, focused input |
 | `--c-text` | `#fff` | main text |
 | `--c-text-2` | `#b0b0b0` | summaries, secondary text |
@@ -98,7 +98,7 @@ and gap. Common pairs:
 
 - Main column: `--container` 960px + gutters. Text pages and forms:
   `.container--narrow` (576px).
-- Gallery pages use `.container--wide` (nearly edge to edge, like the bar).
+- A page frame (two full-height hairlines, `body::before`) sits `--frame-inset` from the window edges; content keeps `--frame-pad` inside it. Gallery pages use `.container--wide` (max `--container-wide`, 92rem).
   The grid is 1 column on phones, 2 from 640px, 3 from 1024px.
 
 ---
@@ -122,7 +122,7 @@ put them together.
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Home hero | `.hero-panel`, `.collage`, `.collage--live`, `.collage__item` (`--x`/`--y`), `.hero-panel__title/__sub/__cta` | rounded panel; screenshots circle slowly around the text on two rounded-rect loops (outer half off the edges, inner slower and counter-wise); two belts on phones; static `--x/--y` layout without JS or with reduced motion. Logic in `HeroCollage.astro` |
+| Home hero | `.hero-panel`, `.is-live`, `.collage`, `.collage__item`, `.hero-panel__title/__sub/__cta` | rounded panel; one chain of screenshots runs clockwise along a single rounded-rect track (through the top/bottom edges, along the sides), evenly spaced; still with reduced motion. Logic in `HeroCollage.astro` |
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |

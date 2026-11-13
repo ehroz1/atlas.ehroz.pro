@@ -1,15 +1,15 @@
 ---
 import { u } from '~/lib/url';
 /**
- * Home hero: screenshots circling slowly around the edges of a rounded
- * panel, a short statement and one blue button in the middle.
+ * Home hero: one chain of screenshots running round the panel along a
+ * single rounded-rectangle track, like a train, with the statement and
+ * blue button in the middle.
  *
- * Two loops (rounded rectangles): the outer one runs half off the panel's
- * edges, the inner one a little further in and slower, so the shots slide
- * past each other. The `--x/--y` slots are the static layout used without
- * JavaScript and with reduced motion. On narrow screens the loop would
- * cross the text, so the outer shots run as two belts instead (top row
- * left, bottom row right) and the inner ones are hidden.
+ * The track runs through the panel's top and bottom edges (those shots
+ * are half cut off) and along its sides. The script spaces as many shots
+ * as fit the track evenly and moves them clockwise. With reduced motion
+ * they are placed on the same track and stay still; without JavaScript
+ * only the statement shows.
  */
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
@@ -20,20 +20,15 @@ interface Props { tools: Tool[]; categoryCount: number; lang?: Lang }
 const { tools, categoryCount, lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
-const slots = [
-  { x: 11.2, y: -9 }, { x: 29.9, y: -13 }, { x: 48.1, y: -16 }, { x: 66.7, y: -6 },
-  { x: 80.4, y: 9.8, mid: true }, { x: 0.2, y: 17.4, mid: true }, { x: -6, y: 40.5, mid: true },
-  { x: 86.3, y: 32, mid: true }, { x: 3.2, y: 62.9 }, { x: 16.8, y: 80 }, { x: 35.4, y: 88.4 },
-  { x: 55.2, y: 86.5 }, { x: 72.3, y: 74.7 }, { x: 83.5, y: 55.2, mid: true },
-];
+const MAX = 24; // more than any screen needs; extra ones are hidden by the script
 const withShots = tools.filter((tool) => shotFor(tool.id));
-const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.length] })).filter((x) => x.tool);
+const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i) => withShots[i % withShots.length]);
 ---
 <section class="hero-panel" aria-labelledby="hero-title" data-hero>
   <div class="collage" aria-hidden="true">
-    {items.map(({ x, y, mid, tool }) => (
-      <div class:list={['collage__item', { 'collage__item--mid': mid }]} style={`--x:${x}%;--y:${y}%`} data-loop={mid ? 'inner' : 'outer'}>
-        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 17vw, 34vw" format="webp" quality={72} loading="eager" />
+    {items.map((tool) => (
+      <div class="collage__item">
+        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 15vw, 22vw" format="webp" quality={72} loading="eager" />
       </div>
     ))}
   </div>
@@ -49,13 +44,12 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   if (panel) {
-    const collage = panel.querySelector<HTMLElement>('.collage')!;
-    const outer = Array.from(panel.querySelectorAll<HTMLElement>('[data-loop="outer"]'));
-    const inner = Array.from(panel.querySelectorAll<HTMLElement>('[data-loop="inner"]'));
+    const items = Array.from(panel.querySelectorAll<HTMLElement>('.collage__item'));
+    const SPEED = 28; // px per second along the track
+    const SPACING = 1.12; // distance between shots, in shot widths
 
-    /** Point at distance s along a rounded rectangle (x0,y0,w,h,r), clockwise from top-left. */
-    function along(s: number, x0: number, y0: number, w: number, h: number, r: number) {
-      r = Math.max(0, Math.min(r, w / 2, h / 2));
+    /** Point at distance s along a rounded rectangle, clockwise from the top-left. */
+    function along(s: number, x0: number, y0: number, w: number, h: number, r: number): [number, number] {
       const sw = w - 2 * r, sh = h - 2 * r, arc = (Math.PI * r) / 2;
       const P = 2 * (sw + sh) + 4 * arc;
       s = ((s % P) + P) % P;
@@ -76,48 +70,31 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
       return segs[0][1](0);
     }
 
-    let W = 0, H = 0, tw = 0, th = 0;
+    // Track geometry, recomputed on resize.
+    let tw = 0, th = 0, x0 = 0, y0 = 0, w = 0, h = 0, r = 0, P = 0, count = 0;
     const measure = () => {
-      W = panel.clientWidth;
-      H = panel.clientHeight;
-      const probe = outer[0] ?? inner[0];
-      tw = probe?.offsetWidth ?? 0;
-      th = probe?.offsetHeight ?? 0;
+      const W = panel.clientWidth;
+      const H = panel.clientHeight;
+      tw = items[0].offsetWidth;
+      th = items[0].offsetHeight;
+      // Desktop: side shots sit just inside the edges. Phones: half off, to leave room for the text.
+      const inset = W >= 768 ? tw / 2 : 0;
+      x0 = inset;
+      w = W - inset * 2;
+      y0 = 0; // top and bottom shots are cut in half by the panel edge
+      h = H;
+      r = Math.min(w, h) * 0.42;
+      P = 2 * (w - 2 * r) + 2 * (h - 2 * r) + 2 * Math.PI * r;
+      count = Math.max(4, Math.min(items.length, Math.floor(P / (tw * SPACING))));
+      items.forEach((el, i) => (el.hidden = i >= count));
     };
-
-    // Loop geometry (tile centres). Outer: half a tile beyond the edges.
-    // Inner: tucked in so tiles stay clear of the text block.
-    const loops = () => [
-      { items: outer, x0: tw * 0.2, y0: th * 0.05, w: W - tw * 0.4, h: H - th * 0.1, speed: 26 },
-      { items: inner, x0: tw * 0.75, y0: th * 0.62, w: W - tw * 1.5, h: H - th * 1.24, speed: -17 },
-    ];
 
     let t = 0;
-    const drawBelts = () => {
-      const gap = 12;
-      const step = tw + gap;
-      const rows = [outer.filter((_, i) => i % 2 === 0), outer.filter((_, i) => i % 2 === 1)];
-      rows.forEach((items, r) => {
-        const len = Math.max(items.length * step, W + step);
-        const y = r === 0 ? gap : H - th - gap;
-        const dir = r === 0 ? -1 : 1;
-        items.forEach((el, i) => {
-          const xx = (((dir * t * 22 + i * step) % len) + len) % len - step;
-          el.style.transform = `translate3d(${xx}px, ${y}px, 0)`;
-        });
-      });
-    };
     const draw = () => {
-      if (W < 768) return drawBelts();
-      for (const { items, x0, y0, w, h, speed } of loops()) {
-        if (!items.length) continue;
-        const r = Math.min(w, h) * 0.35;
-        const sw = w - 2 * r, sh = h - 2 * r;
-        const P = 2 * (sw + sh) + 2 * Math.PI * r;
-        items.forEach((el, i) => {
-          const [cx, cy] = along(t * speed + (i / items.length) * P, x0, y0, w, h, r);
-          el.style.transform = `translate3d(${cx - tw / 2}px, ${cy - th / 2}px, 0)`;
-        });
+      const gap = P / count;
+      for (let i = 0; i < count; i++) {
+        const [cx, cy] = along(t * SPEED + i * gap, x0, y0, w, h, r);
+        items[i].style.transform = `translate3d(${cx - tw / 2}px, ${cy - th / 2}px, 0)`;
       }
     };
 
@@ -139,26 +116,16 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
     };
     const stop = () => { running = false; };
 
-    const setup = () => {
-      if (reduced.matches) {
-        stop();
-        collage.classList.remove('collage--live');
-        outer.concat(inner).forEach((el) => (el.style.transform = ''));
-        return;
-      }
-      collage.classList.add('collage--live');
-      measure();
-      draw();
-      start();
-    };
+    panel.classList.add('is-live');
+    measure();
+    draw();
+    start();
 
-    // Only animate while the hero is on screen.
     new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       visible ? start() : stop();
     }).observe(panel);
     new ResizeObserver(() => { measure(); draw(); }).observe(panel);
-    reduced.addEventListener('change', setup);
-    setup();
+    reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
   }
 </script>

@@ -79,7 +79,9 @@
   --gray-950: #141414;   /* tiles, hero panel */
   --gray-900: #1c1c1c;   /* pills, inputs */
   --gray-850: #242424;   /* pill hover */
-  --gray-800: #2c2c2c;   /* active segment, hairlines */
+  --gray-800: #2c2c2c;   /* active segment */
+  --gray-820: #222222;   /* hairlines */
+  --gray-750: #2a2a2a;   /* strong lines */
   --gray-700: #3a3a3a;   /* strong lines */
   --gray-500: #6f6f6f;   /* disabled */
   --gray-400: #8c8c8c;   /* muted text */
@@ -99,8 +101,8 @@
   --c-surface-hover: var(--gray-900);
   --c-fill:          var(--gray-900);     /* inputs, pressed states */
   --c-fill-hover:    var(--gray-850);
-  --c-line:          var(--gray-800);
-  --c-line-strong:   var(--gray-700);
+  --c-line:          var(--gray-820);
+  --c-line-strong:   var(--gray-750);
   --c-line-active:   var(--gray-100);
 
   --c-text:          var(--gray-0);
@@ -185,9 +187,14 @@
   --section-gap: clamp(var(--s-16), 10vw, var(--s-32));  /* hero ↔ grid */
 
   --container:        60rem;    /* 960px text-heavy pages */
-  --container-wide:   120rem;   /* gallery pages run nearly edge to edge */
+  --container-wide:   92rem;    /* gallery pages: wide, inside the frame */
+  /* the page frame: two hairlines that run the full height either side
+     of the content, like deck.gallery. --frame-inset is the gap between
+     the window edge and the line, --frame-pad between line and content. */
+  --frame-inset: clamp(0rem, 3vw, 4rem);
+  --frame-pad:   clamp(1rem, 1.7vw, 2rem);
   --container-narrow: 36rem;    /* 576px text pages, forms */
-  --gutter:           clamp(1rem, 2.2vw, 2rem);
+  --gutter:           calc(var(--frame-inset) + var(--frame-pad));
   --bar-h:            2.75rem;  /* 44px pill height in the top bar */
   --bar-top:          max(var(--s-4), env(safe-area-inset-top, 0px));
   --header-h:         calc(var(--bar-h) + var(--s-4) * 2);  /* space reserved under the bar */
@@ -259,6 +266,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* page frame: hairlines either side of the content column, full height */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 1;
+  width: min(100vw - 2 * var(--frame-inset), var(--container-wide) + 2 * var(--frame-pad));
+  transform: translateX(-50%);
+  border-inline: 1px solid var(--c-line);
+  pointer-events: none;
+}
+html.is-wall body::before { display: none; }
+@media (max-width: 40rem) { body::before { display: none; } }
 
 main { flex: 1; padding-top: var(--header-h); }
 main.main--flush { padding-top: 0; }   /* pages that run under the bar (Wall) */
@@ -815,7 +838,7 @@ hr { border: 0; border-top: var(--border); }
   display: grid;
   place-items: center;
   min-height: 26rem;
-  aspect-ratio: 2.8 / 1;
+  aspect-ratio: 3.1 / 1;
   overflow: hidden;
   border: var(--border);
   border-radius: var(--r-hero);
@@ -838,24 +861,26 @@ hr { border: 0; border-top: var(--border); }
 .hero-panel__cta { margin-top: var(--s-6); }
 
 .collage { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+/* every shot rides the same track; the script sets its transform */
 .collage__item {
   position: absolute;
-  left: var(--x);
-  top: var(--y);
-  width: 16.5%;
+  left: 0;
+  top: 0;
+  width: 15%;
   aspect-ratio: 5 / 3;
   overflow: hidden;
   border-radius: var(--r-sm);
   background: var(--c-surface);
   box-shadow: var(--shadow-shot);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .collage__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-/* moving version: the script places every item with transform */
-.collage--live .collage__item { left: 0; top: 0; will-change: transform; backface-visibility: hidden; }
+/* before the script runs (or without it) only the panel shows */
+.hero-panel:not(.is-live) .collage__item { visibility: hidden; }
 @media (max-width: 48rem) {
-  .hero-panel { aspect-ratio: auto; min-height: 27rem; }
-  .collage__item { width: 34%; }
-  .collage__item--mid { display: none; }
+  .hero-panel { aspect-ratio: auto; min-height: 26rem; }
+  .collage__item { width: 22%; }
 }
 
 
