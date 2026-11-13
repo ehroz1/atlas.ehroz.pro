@@ -1033,19 +1033,27 @@ hr { border: 0; border-top: var(--border); }
 }
 
 
-/* WALL — every screenshot, edge to edge, in brick-offset rows; the bar
-   floats over it. Hover shows the site's name. */
+/* WALL — every screenshot on an endless plane that scrolls on both axes
+   (wheel, trackpad, drag, swipe, arrow keys). The bar floats over it.
+   Rows are brick-offset; hover shows the site's name. The tiling and
+   wrap-around live in src/pages/wall.astro. */
 .wall {
-  --wall-w: 20.5vw;
-  --wall-gap: 1.6vw;
-  display: grid;
-  gap: var(--wall-gap);
-  padding-block: var(--wall-gap);
-  overflow: hidden;
+  --wall-w: clamp(15rem, 20.5vw, 26rem);
+  --wall-gap: clamp(0.75rem, 1.6vw, 1.5rem);
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  overscroll-behavior: none;
+  scrollbar-width: none;
+  cursor: grab;
+  outline: none;
 }
-.wall__row { display: flex; gap: var(--wall-gap); width: max-content; }
-.wall__row:nth-child(even) { transform: translateX(calc(var(--wall-w) * -0.69)); }
-.wall__row:nth-child(odd) { transform: translateX(calc(var(--wall-w) * -0.06)); }
+.wall::-webkit-scrollbar { display: none; }
+.wall.is-dragging { cursor: grabbing; }
+.wall.is-dragging .wall__item { pointer-events: none; }
+.wall__plane { display: grid; gap: var(--wall-gap); width: max-content; padding: var(--wall-gap); }
+.wall__row { display: flex; gap: var(--wall-gap); }
+.wall__row:nth-child(even) { margin-left: calc((var(--wall-w) + var(--wall-gap)) / 2); }
 .wall__item {
   position: relative;
   flex: none;
@@ -1053,8 +1061,10 @@ hr { border: 0; border-top: var(--border); }
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--c-surface);
+  -webkit-user-drag: none;
+  user-select: none;
 }
-.wall__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.wall__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; pointer-events: none; }
 .wall__label {
   position: absolute;
   left: var(--s-3);
@@ -1070,6 +1080,21 @@ hr { border: 0; border-top: var(--border); }
 }
 .wall__item:hover .wall__label, .wall__item:focus-visible .wall__label { opacity: 1; transform: none; }
 .wall__item:focus-visible { outline-offset: -3px; }
+.wall__hint {
+  position: fixed;
+  left: 50%;
+  bottom: max(var(--s-6), env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  background: var(--c-chrome);
+  color: var(--c-chrome-muted);
+  font-size: var(--fs-14);
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease);
+}
+.wall__hint.is-hidden { opacity: 0; }
 @media (max-width: 48rem) { .wall { --wall-w: 44vw; --wall-gap: 2.5vw; } }
 
 /* PLANS — the About page, laid out like deck.gallery's pricing page:
