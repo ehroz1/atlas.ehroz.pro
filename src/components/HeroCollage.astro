@@ -1,10 +1,15 @@
 ---
 import { u } from '~/lib/url';
 /**
- * Home hero: screenshots scattered around the edges of a rounded panel,
- * a short statement and one blue button in the middle.
- * Positions are percentages of the panel (left/top of each shot); items
- * marked `mid` sit beside the text and are hidden on narrow screens.
+ * Home hero: one chain of screenshots running round the panel along a
+ * single rounded-rectangle track, like a train, with the statement and
+ * blue button in the middle.
+ *
+ * The track runs through the panel's top and bottom edges (those shots
+ * are half cut off) and along its sides. The script spaces as many shots
+ * as fit the track evenly and moves them clockwise. With reduced motion
+ * they are placed on the same track and stay still; without JavaScript
+ * only the statement shows.
  */
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
@@ -15,20 +20,15 @@ interface Props { tools: Tool[]; categoryCount: number; lang?: Lang }
 const { tools, categoryCount, lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
-const slots = [
-  { x: 11.2, y: -9 }, { x: 29.9, y: -13 }, { x: 48.1, y: -16 }, { x: 66.7, y: -6 },
-  { x: 80.4, y: 9.8, mid: true }, { x: 0.2, y: 17.4, mid: true }, { x: -6, y: 40.5, mid: true },
-  { x: 86.3, y: 32, mid: true }, { x: 3.2, y: 62.9 }, { x: 16.8, y: 80 }, { x: 35.4, y: 88.4 },
-  { x: 55.2, y: 86.5 }, { x: 72.3, y: 74.7 }, { x: 83.5, y: 55.2, mid: true },
-];
+const MAX = 24; // more than any screen needs; extra ones are hidden by the script
 const withShots = tools.filter((tool) => shotFor(tool.id));
-const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.length] })).filter((x) => x.tool);
+const items = Array.from({ length: Math.min(MAX, withShots.length * 2) }, (_, i) => withShots[i % withShots.length]);
 ---
-<section class="hero-panel" aria-labelledby="hero-title">
+<section class="hero-panel" aria-labelledby="hero-title" data-hero>
   <div class="collage" aria-hidden="true">
-    {items.map(({ x, y, mid, tool }) => (
-      <div class:list={['collage__item', { 'collage__item--mid': mid }]} style={`--x:${x}%;--y:${y}%`}>
-        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 17vw, 34vw" format="webp" quality={72} loading="eager" />
+    {items.map((tool) => (
+      <div class="collage__item">
+        <Image src={shotFor(tool.id)!} alt="" widths={[320, 480]} sizes="(min-width: 48rem) 15vw, 22vw" format="webp" quality={72} loading="eager" />
       </div>
     ))}
   </div>
@@ -38,3 +38,94 @@ const items = slots.map((slot, i) => ({ ...slot, tool: withShots[i % withShots.l
     <a class="btn btn--accent hero-panel__cta" href={u('/submit')}>{t('hero.cta')}</a>
   </div>
 </section>
+
+<script>
+  const panel = document.querySelector<HTMLElement>('[data-hero]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (panel) {
+    const items = Array.from(panel.querySelectorAll<HTMLElement>('.collage__item'));
+    const SPEED = 28; // px per second along the track
+    const SPACING = 1.12; // distance between shots, in shot widths
+
+    /** Point at distance s along a rounded rectangle, clockwise from the top-left. */
+    function along(s: number, x0: number, y0: number, w: number, h: number, r: number): [number, number] {
+      const sw = w - 2 * r, sh = h - 2 * r, arc = (Math.PI * r) / 2;
+      const P = 2 * (sw + sh) + 4 * arc;
+      s = ((s % P) + P) % P;
+      const segs: [number, (d: number) => [number, number]][] = [
+        [sw, (d) => [x0 + r + d, y0]],
+        [arc, (d) => { const a = -Math.PI / 2 + d / r; return [x0 + w - r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
+        [sh, (d) => [x0 + w, y0 + r + d]],
+        [arc, (d) => { const a = d / r; return [x0 + w - r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
+        [sw, (d) => [x0 + w - r - d, y0 + h]],
+        [arc, (d) => { const a = Math.PI / 2 + d / r; return [x0 + r + r * Math.cos(a), y0 + h - r + r * Math.sin(a)]; }],
+        [sh, (d) => [x0, y0 + h - r - d]],
+        [arc, (d) => { const a = Math.PI + d / r; return [x0 + r + r * Math.cos(a), y0 + r + r * Math.sin(a)]; }],
+      ];
+      for (const [len, fn] of segs) {
+        if (s <= len) return fn(s);
+        s -= len;
+      }
+      return segs[0][1](0);
+    }
+
+    // Track geometry, recomputed on resize.
+    let tw = 0, th = 0, x0 = 0, y0 = 0, w = 0, h = 0, r = 0, P = 0, count = 0;
+    const measure = () => {
+      const W = panel.clientWidth;
+      const H = panel.clientHeight;
+      tw = items[0].offsetWidth;
+      th = items[0].offsetHeight;
+      // Desktop: side shots sit just inside the edges. Phones: half off, to leave room for the text.
+      const inset = W >= 768 ? tw / 2 : 0;
+      x0 = inset;
+      w = W - inset * 2;
+      y0 = 0; // top and bottom shots are cut in half by the panel edge
+      h = H;
+      r = Math.min(w, h) * 0.42;
+      P = 2 * (w - 2 * r) + 2 * (h - 2 * r) + 2 * Math.PI * r;
+      count = Math.max(4, Math.min(items.length, Math.floor(P / (tw * SPACING))));
+      items.forEach((el, i) => (el.hidden = i >= count));
+    };
+
+    let t = 0;
+    const draw = () => {
+      const gap = P / count;
+      for (let i = 0; i < count; i++) {
+        const [cx, cy] = along(t * SPEED + i * gap, x0, y0, w, h, r);
+        items[i].style.transform = `translate3d(${cx - tw / 2}px, ${cy - th / 2}px, 0)`;
+      }
+    };
+
+    let running = false;
+    let visible = true;
+    let last = 0;
+    const frame = (now: number) => {
+      if (!running) return;
+      t += Math.min(0.05, (now - last) / 1000);
+      last = now;
+      draw();
+      requestAnimationFrame(frame);
+    };
+    const start = () => {
+      if (running || !visible || reduced.matches) return;
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+    };
+    const stop = () => { running = false; };
+
+    panel.classList.add('is-live');
+    measure();
+    draw();
+    start();
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      visible ? start() : stop();
+    }).observe(panel);
+    new ResizeObserver(() => { measure(); draw(); }).observe(panel);
+    reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
+  }
+</script>
