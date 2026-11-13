@@ -32,9 +32,16 @@ export function splitPath(pathname: string): { lang: Lang; path: string } {
   let p = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname;
   p = withSlash(p || '/');
   for (const l of langs) {
-    if (l !== defaultLang && (p === `/${l}/` || p.startsWith(`/${l}/`))) return { lang: l, path: p.slice(l.length + 1) || '/' };
+    // the default language also answers at /<defaultLang>/… (alias)
+    if (p === `/${l}/` || p.startsWith(`/${l}/`)) return { lang: l, path: p.slice(l.length + 1) || '/' };
   }
   return { lang: defaultLang, path: p };
+}
+
+/** True for the /<defaultLang>/… alias of a root page. */
+export function isAliasPath(pathname: string) {
+  const p = withSlash(pathname.startsWith(BASE) ? pathname.slice(BASE.length) || '/' : pathname);
+  return p === `/${defaultLang}/` || p.startsWith(`/${defaultLang}/`);
 }
 
 /** Language-free path without trailing slash, for "is this the current page?" checks. */

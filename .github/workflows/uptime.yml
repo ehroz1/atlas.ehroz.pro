@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Home page answers 200
         run: |
-          for url in https://atlas.ehroz.pro/ https://atlas.ehroz.pro/en/ https://atlas.ehroz.pro/robots.txt; do
+          for url in https://atlas.ehroz.pro/ https://atlas.ehroz.pro/ru/ https://atlas.ehroz.pro/robots.txt; do
             ok=0
             for i in 1 2 3; do
               code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url")

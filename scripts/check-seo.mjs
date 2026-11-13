@@ -40,9 +40,9 @@ if (!/<loc>.*sitemap-0\.xml<\/loc>/.test(sitemapIndex)) err('sitemap-index.xml',
 const robotsTxt = read('robots.txt');
 // previews / github.io builds close robots.txt and put noindex on every page
 const NONPROD = /User-agent: \*\s*\nDisallow: \/\s*$/m.test(robotsTxt);
-const first = new URL(sitemap[0].loc);
+// base = path of the default-language home page (the shortest URL)
+const first = new URL(sitemap.map((x) => x.loc).sort((a, b) => a.length - b.length)[0]);
 const ORIGIN = first.origin;
-// base = path of the default-language home page (the first entry)
 const BASE = first.pathname.replace(/\/$/, '');
 
 /** site URL → file in dist (or null) */
@@ -87,11 +87,23 @@ for (const file of files) {
     // on a non-production build every page is noindex on purpose; check the rest as if indexable
     noindex: /\/404(\.html)?$/.test(url) || (!NONPROD && /noindex/.test(robots)),
     robotsMeta: robots,
+    canonicalRaw: doc.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? null,
     title: doc.querySelector('title')?.text.trim() ?? '',
     description: meta('meta[name="description"]'),
     canonical: doc.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? null,
     links: doc.querySelectorAll('a[href]').map((a) => a.getAttribute('href')),
   });
+}
+
+// /<defaultLang>/… aliases: same content as a root page, canonical → that page.
+// They are checked for structure, but not for sitemap, uniqueness, orphans or depth.
+for (const p of pages.values()) {
+  p.alias = !!p.canonicalRaw && !p.noindex && p.canonicalRaw !== ORIGIN + p.url;
+  if (p.alias) {
+    const target = pages.get(new URL(p.canonicalRaw).pathname);
+    if (!target) err(p.url, `alias canonical points to a missing page: ${p.canonicalRaw}`);
+    else if (target.title !== p.title) err(p.url, `alias differs from ${target.url}: title "${p.title}"`);
+  }
 }
 
 // ---- per-page checks ---------------------------------------------------
@@ -112,7 +124,7 @@ for (const p of pages.values()) {
   if (!p.description) err(url, 'no meta description');
   else if (p.description.length < 50 || p.description.length > 160)
     err(url, `description is ${p.description.length} chars (50–160): "${p.description}"`);
-  if (!p.noindex) {
+  if (!p.noindex && !p.alias) {
     titles.set(p.title, [...(titles.get(p.title) ?? []), url]);
     descs.set(p.description, [...(descs.get(p.description) ?? []), url]);
   }
@@ -132,7 +144,7 @@ for (const p of pages.values()) {
   const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content');
   if (ogImage && ogImage.startsWith(ORIGIN) && !fileFor(new URL(ogImage).pathname)) err(url, `og:image not built: ${ogImage}`);
 
-  if (!p.noindex) {
+  if (!p.noindex && !p.alias) {
     // canonical + hreflang
     const self = ORIGIN + url;
     if (!p.canonical) err(url, 'no canonical');
@@ -230,7 +242,7 @@ for (const { loc, lastmod } of sitemap) {
   if (!lastmod) err('sitemap', `no lastmod: ${loc}`);
   else if (!/^\d{4}-\d{2}-\d{2}/.test(lastmod)) err('sitemap', `bad lastmod ${lastmod}: ${loc}`);
 }
-for (const p of pages.values()) if (!p.noindex && !inSitemap.has(p.url)) err(p.url, 'indexable page missing from sitemap');
+for (const p of pages.values()) if (!p.noindex && !p.alias && !inSitemap.has(p.url)) err(p.url, 'indexable page missing from sitemap');
 
 // ---- orphans and click depth (BFS from each language's home) ----------
 const graph = new Map();
@@ -245,7 +257,7 @@ for (const p of pages.values()) {
   }
   graph.set(p.url, out);
 }
-const homes = [...pages.values()].filter((p) => !p.noindex && /^(\/[a-z]{2})?\/$/.test(p.url.slice(BASE.length) || '/')).map((p) => p.url);
+const homes = [...pages.values()].filter((p) => !p.noindex && !p.alias && /^(\/[a-z]{2})?\/$/.test(p.url.slice(BASE.length) || '/')).map((p) => p.url);
 const depth = new Map(homes.map((h) => [h, 0]));
 const queue = [...homes];
 while (queue.length) {
@@ -255,7 +267,7 @@ while (queue.length) {
 const linkedFrom = new Map();
 for (const [from, outs] of graph) for (const to of outs) if (to !== from) linkedFrom.set(to, (linkedFrom.get(to) ?? 0) + 1);
 for (const p of pages.values()) {
-  if (p.noindex) continue;
+  if (p.noindex || p.alias) continue;
   if (!homes.includes(p.url) && !linkedFrom.get(p.url)) err(p.url, 'orphan page: nothing links to it');
   const d = depth.get(p.url);
   if (d === undefined) err(p.url, 'not reachable from the home page');

@@ -1,0 +1,43 @@
+---
+/**
+ * Browser-language redirect, in <head> so it runs before the first paint.
+ * - Root pages (default language): a visitor whose browser prefers Russian
+ *   (or a language whose speakers usually read Russian) goes to /ru/…
+ * - A choice made by hand wins: clicking the language switch, or opening
+ *   an /en/… alias, is remembered in localStorage (atlas:lang) and the
+ *   redirect then follows it.
+ * - Crawlers are never redirected: every language has its own URL and hreflang.
+ */
+import { defaultLang, langs } from '~/i18n';
+
+interface Props { alias: boolean; base: string; /** root page: may redirect */ redirect: boolean }
+const { alias, base, redirect } = Astro.props;
+// browser language (primary subtag) → site language
+const map: Record<string, string> = { ru: 'ru', be: 'ru', kk: 'ru', ky: 'ru', tg: 'ru', uz: 'ru', en: 'en' };
+const cfg = { def: defaultLang, langs, map, alias, base, redirect };
+---
+<script is:inline define:vars={{ cfg }}>
+  (function () {
+    var KEY = 'atlas:lang';
+    var store = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[data-lang-switch][hreflang]');
+      if (a) store(a.getAttribute('hreflang'));
+    });
+    if (cfg.alias) return store(cfg.def);
+    if (!cfg.redirect) return;
+    if (/bot|crawl|spider|slurp|yandex|google|bing|baidu|duckduck|lighthouse|headless|preview/i.test(navigator.userAgent)) return;
+    var target = null;
+    try { target = localStorage.getItem(KEY); } catch (e) {}
+    if (!target) {
+      var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+      for (var i = 0; i < list.length; i++) {
+        var hit = cfg.map[String(list[i]).toLowerCase().split('-')[0]];
+        if (hit) { target = hit; break; }
+      }
+    }
+    if (!target || target === cfg.def || cfg.langs.indexOf(target) < 0) return;
+    var path = location.pathname.slice(cfg.base.length) || '/';
+    location.replace(cfg.base + '/' + target + path + location.search + location.hash);
+  })();
+</script>

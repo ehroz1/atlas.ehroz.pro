@@ -5,7 +5,8 @@
  * Open Graph / Twitter, one schema.org @graph, breadcrumbs, robots rules
  * (noindex off production), verification tags and analytics.
  */
-import { u, splitPath } from '~/lib/url';
+import { u, splitPath, isAliasPath } from '~/lib/url';
+import LangDetect from '~/components/LangDetect.astro';
 import '~/styles/atlas.css';
 import sansFont from '~/assets/fonts/MedeoSansVariable.woff2?url';
 import Header from '~/components/Header.astro';
@@ -50,6 +51,8 @@ const t = useTranslations(lang);
 
 const title = entry ? entry.title[lang] : fitTitle(`${Astro.props.title} · ${SITE.name}`);
 const description = entry ? entry.description[lang] : fitDescription(Astro.props.description ?? t('site.description'));
+// /en/… (alias of a root page): same content, canonical points to the root URL
+const alias = isAliasPath(Astro.url.pathname);
 const canonical = entry ? absUrl(entry.path, lang) : undefined;
 const alternates = entry ? langs.map((l) => ({ lang: l, href: absUrl(entry.path, l) })) : [];
 const ogImage = absUrl(`/${entry ? entry.og[lang] : `og/${lang}/home`}.png`, defaultLang);
@@ -84,6 +87,7 @@ const jsonLd =
 <html lang={lang} data-path={here}>
   <head>
     <meta charset="utf-8" />
+    {entry && <LangDetect alias={alias} redirect={lang === defaultLang && !alias} base={import.meta.env.BASE_URL.replace(/\/$/, '')} />}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />

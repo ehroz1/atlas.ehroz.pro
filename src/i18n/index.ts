@@ -4,12 +4,14 @@ import { SITE } from '~/site.config';
 
 /**
  * Languages. The default one lives at the site root, the others under
- * /<lang>/. To make English the root language, swap `defaultLang` — every
- * route, hreflang, sitemap entry and link follows from it.
+ * /<lang>/. The default language is also built under /<defaultLang>/ as an
+ * alias (canonical → root, not in the sitemap), so /en/ opens English too.
+ * Swap `defaultLang` and every route, hreflang, sitemap entry and link follows.
+ * The browser-language redirect lives in src/components/LangDetect.astro.
  */
-export const languages = { ru: 'Русский', en: 'English' } as const;
+export const languages = { en: 'English', ru: 'Русский' } as const;
 export type Lang = keyof typeof languages;
-export const defaultLang: Lang = 'ru';
+export const defaultLang: Lang = 'en';
 export const langs = Object.keys(languages) as Lang[];
 /** BCP 47 tags for schema.org inLanguage */
 export const langTag: Record<Lang, string> = { ru: 'ru-RU', en: 'en-US' };
@@ -43,7 +45,11 @@ export function formatDate(date: Date, lang: Lang = defaultLang) {
 
 /** getStaticPaths helper: `lang` param is undefined for the default language. */
 export function langParams() {
-  return langs.map((lang) => ({ params: { lang: lang === defaultLang ? undefined : lang }, props: { lang } }));
+  return [
+    ...langs.map((lang) => ({ params: { lang: lang === defaultLang ? undefined : lang }, props: { lang } })),
+    // alias: /<defaultLang>/… — same page as the root one
+    { params: { lang: defaultLang as string | undefined }, props: { lang: defaultLang } },
+  ];
 }
 
 export function langFromParam(param: string | undefined): Lang {
