@@ -3233,5 +3233,176 @@
       "en": "A small gallery maintained by one person. Each day features a site with a score, plus links and tags to browse by theme.",
       "ru": "Небольшая галерея, которую ведёт один человек. Каждый день выбирается сайт с оценкой, а ещё есть ссылки и теги для просмотра по темам."
     }
+  },
+  {
+    "id": "font-squirrel",
+    "name": "Font Squirrel",
+    "url": "https://www.fontsquirrel.com",
+    "category": "typography",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["fonts", "free", "commercial use", "webfont generator"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Hand-picked free fonts that are licensed for commercial use.",
+      "ru": "Отобранные бесплатные шрифты с лицензией на коммерческое использование."
+    },
+    "description": {
+      "en": "Every font is checked for its licence before it is listed. Also has a webfont generator and a tool that identifies a font from an image.",
+      "ru": "Лицензию каждого шрифта проверяют до публикации. Есть ещё генератор веб-шрифтов и определитель шрифта по картинке."
+    }
+  },
+  {
+    "id": "noun-project",
+    "name": "The Noun Project",
+    "url": "https://thenounproject.com",
+    "category": "assets",
+    "pricing": "freemium",
+    "platforms": ["Web", "macOS", "Figma"],
+    "tags": ["icons", "stock photos", "svg"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Millions of icons and photos made by independent artists.",
+      "ru": "Миллионы иконок и фото от независимых авторов."
+    },
+    "description": {
+      "en": "A huge library of SVG and PNG icons in every style imaginable, plus stock photos. Free downloads need attribution; a plan removes that and adds plugins.",
+      "ru": "Огромная библиотека SVG- и PNG-иконок на любой вкус плюс стоковые фото. Бесплатно нужно указывать автора, подписка снимает это и добавляет плагины."
+    }
+  },
+  {
+    "id": "behance",
+    "name": "Behance",
+    "url": "https://www.behance.net",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["portfolio", "creative", "case studies"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Adobe's portfolio platform for creatives and their case studies.",
+      "ru": "Портфолио-платформа Adobe: проекты и кейсы дизайнеров."
+    },
+    "description": {
+      "en": "Designers, illustrators and photographers publish full projects with process and mockups. Good for finding references in branding and for hiring people.",
+      "ru": "Дизайнеры, иллюстраторы и фотографы выкладывают целые проекты с процессом и мокапами. Удобно искать референсы по брендингу и людей для работы."
+    }
+  },
+  {
+    "id": "adobe-color",
+    "name": "Adobe Color",
+    "url": "https://color.adobe.com",
+    "category": "design",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["color palettes", "themes", "harmony"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Build a palette from colour rules, or browse trending ones.",
+      "ru": "Соберите палитру по правилам гармонии или посмотрите популярные."
+    },
+    "description": {
+      "en": "Pick a base colour and let the wheel suggest analogous, triadic or complementary schemes. Palettes sync to Adobe apps and can be extracted from an image.",
+      "ru": "Выбираете базовый цвет, а круг предлагает аналоговые, триадные или комплементарные схемы. Палитры синхронизируются с приложениями Adobe, их можно достать из картинки."
+    }
+  },
+  {
+    "id": "mockup-world",
+    "name": "Mockup World",
+    "url": "https://www.mockupworld.co",
+    "category": "assets",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["mockups", "psd", "free"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Free PSD mockups for devices, packaging, posters and more.",
+      "ru": "Бесплатные PSD-мокапы: устройства, упаковка, плакаты и многое другое."
+    },
+    "description": {
+      "en": "A curated collection of free mockups gathered from designers around the web, searchable by what you need to show.",
+      "ru": "Подборка бесплатных мокапов от дизайнеров со всего интернета с поиском по тому, что нужно показать."
+    }
+  },
+  {
+    "id": "originkit",
+    "name": "Originkit",
+    "url": "https://www.originkit.dev",
+    "category": "development",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["components", "animation", "framer", "react"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Free animated components you can copy into a site.",
+      "ru": "Бесплатные анимированные компоненты, которые можно скопировать на сайт."
+    },
+    "description": {
+      "en": "A library of image galleries, backgrounds, text effects and interactive elements. Copy the code, use them in Framer, or pull them in through MCP.",
+      "ru": "Библиотека галерей, фонов, текстовых эффектов и интерактивных элементов. Копируете код, используете во Framer или подключаете через MCP."
+    }
+  },
+  {
+    "id": "smoothui",
+    "name": "SmoothUI",
+    "url": "https://smoothui.dev",
+    "category": "development",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["react", "components", "motion", "tailwind"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Animated React components that drop into shadcn/ui.",
+      "ru": "Анимированные React-компоненты, которые встраиваются в shadcn/ui."
+    },
+    "description": {
+      "en": "More than two hundred components and blocks with Motion animations, styled with Tailwind. Install one with a single command and edit it freely.",
+      "ru": "Больше двухсот компонентов и блоков с анимацией на Motion и стилями на Tailwind. Ставится одной командой, дальше можно править как угодно."
+    }
+  },
+  {
+    "id": "color-review",
+    "name": "Color.review",
+    "url": "https://color.review",
+    "category": "design",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["accessibility", "contrast", "wcag", "color"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Find colour pairs with enough contrast for everyone.",
+      "ru": "Подбор цветовых пар с достаточным контрастом для всех."
+    },
+    "description": {
+      "en": "Move a point on the field and see the contrast ratio and WCAG levels for text and headlines update live. Every pair has a shareable link.",
+      "ru": "Двигаете точку на поле и сразу видите коэффициент контраста и уровни WCAG для текста и заголовков. У каждой пары есть ссылка, которой можно поделиться."
+    }
+  },
+  {
+    "id": "shots",
+    "name": "Shots",
+    "url": "https://shots.so",
+    "category": "design",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["mockups", "screenshots", "video", "animation"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Turn screenshots into polished mockups, videos and animations.",
+      "ru": "Превращает скриншоты в аккуратные мокапы, видео и анимации."
+    },
+    "description": {
+      "en": "Drop a screenshot into a device frame, adjust the angle and background, and export an image or a short animation for social media or a landing page.",
+      "ru": "Кладёте скриншот в рамку устройства, подбираете угол и фон и экспортируете картинку или короткую анимацию для соцсетей или лендинга."
+    }
   }
 ]
