@@ -3081,5 +3081,157 @@
       "en": "A catalogue of about forty typefaces that include every Kazakh letter, free for commercial use. Filter by weight, mood and use case, and preview your own text.",
       "ru": "Каталог примерно из сорока шрифтов, в которых есть все казахские буквы, бесплатно и для коммерческого использования. Фильтры по начертанию, характеру и задаче, предпросмотр своего текста."
     }
+  },
+  {
+    "id": "siteinspire",
+    "name": "Siteinspire",
+    "url": "https://www.siteinspire.com",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["web design", "gallery", "curated"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "A curated showcase of well-designed websites.",
+      "ru": "Отобранная витрина хорошо сделанных сайтов."
+    },
+    "description": {
+      "en": "One of the older web design galleries, filterable by type, style and subject. Sites are chosen by editors, so the quality stays steady.",
+      "ru": "Одна из старейших галерей веб-дизайна с фильтрами по типу, стилю и теме. Сайты отбирают редакторы, поэтому уровень стабильный."
+    }
+  },
+  {
+    "id": "fontsinuse",
+    "name": "Fonts In Use",
+    "url": "https://fontsinuse.com",
+    "category": "typography",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["typography", "archive", "type in use"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "An archive of typefaces as they appear in real work.",
+      "ru": "Архив шрифтов в реальных работах."
+    },
+    "description": {
+      "en": "Searchable by typeface, format and topic, with tens of thousands of examples from books, packaging, posters and screens. Shows how a font behaves outside a specimen.",
+      "ru": "Поиск по шрифту, формату и теме, десятки тысяч примеров с книг, упаковки, плакатов и экранов. Видно, как шрифт ведёт себя вне специмена."
+    }
+  },
+  {
+    "id": "landing-love",
+    "name": "landing.love",
+    "url": "https://landing.love",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["landing pages", "web design", "gallery"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Landing page examples worth studying.",
+      "ru": "Примеры лендингов, на которые стоит посмотреть."
+    },
+    "description": {
+      "en": "A collection of landing pages you can browse by industry and style. Useful when you need to see how others structure the first screen and the pitch.",
+      "ru": "Подборка лендингов с фильтрами по отрасли и стилю. Удобно смотреть, как другие строят первый экран и подачу продукта."
+    }
+  },
+  {
+    "id": "lapa-ninja",
+    "name": "Lapa Ninja",
+    "url": "https://www.lapa.ninja",
+    "category": "inspiration",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["landing pages", "web design", "ui", "gallery"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Thousands of landing pages and UI references.",
+      "ru": "Тысячи лендингов и UI-референсов."
+    },
+    "description": {
+      "en": "A large library of landing pages sorted by category, with sections, mobile apps and brand-style collections. Part of it is free, the rest sits behind a plan.",
+      "ru": "Большая библиотека лендингов по категориям, с отдельными разделами для блоков, мобильных приложений и брендов. Часть открыта, остальное по подписке."
+    }
+  },
+  {
+    "id": "darkmodedesign",
+    "name": "Dark Mode Design",
+    "url": "https://www.darkmodedesign.com",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["dark mode", "web design", "gallery"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Handpicked websites with dark interfaces.",
+      "ru": "Подборка сайтов с тёмным интерфейсом."
+    },
+    "description": {
+      "en": "A showcase of dark-themed sites, a useful reference for contrast, accent colours and imagery on black. Close in spirit to Dark Design.",
+      "ru": "Витрина сайтов в тёмной теме. Подсказывает, как работают контраст, акценты и картинки на чёрном. По духу близка к Dark Design."
+    }
+  },
+  {
+    "id": "land-book",
+    "name": "Land-book",
+    "url": "https://land-book.com",
+    "category": "inspiration",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["web design", "landing pages", "gallery", "sections"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "A daily-updated gallery of website designs and sections.",
+      "ru": "Ежедневно обновляемая галерея сайтов и отдельных блоков."
+    },
+    "description": {
+      "en": "Browse whole sites or single sections such as pricing, headers and sign-up, filtered by type and colour. Search works on what a design looks like, for example a gradient background.",
+      "ru": "Можно смотреть сайты целиком или отдельные блоки: тарифы, шапки, регистрацию, с фильтрами по типу и цвету. Поиск понимает, как выглядит дизайн, например градиентный фон."
+    }
+  },
+  {
+    "id": "onepagelove",
+    "name": "One Page Love",
+    "url": "https://onepagelove.com",
+    "category": "inspiration",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["one page", "web design", "templates", "gallery"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "One-page website inspiration since 2008.",
+      "ru": "Вдохновение одностраничными сайтами с 2008 года."
+    },
+    "description": {
+      "en": "A gallery of single-page sites, with extra sections for typefaces and templates. Updated for more than fifteen years, with a newsletter every two weeks.",
+      "ru": "Галерея одностраничных сайтов, а ещё разделы про шрифты и шаблоны. Обновляется больше пятнадцати лет, раз в две недели выходит рассылка."
+    }
+  },
+  {
+    "id": "bestwebsite-gallery",
+    "name": "Best Website Gallery",
+    "url": "https://bestwebsite.gallery",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["web design", "gallery", "awards", "site of the day"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Handpicked websites, with a Site of the Day since 2008.",
+      "ru": "Отобранные сайты и «сайт дня» с 2008 года."
+    },
+    "description": {
+      "en": "A small gallery maintained by one person. Each day features a site with a score, plus links and tags to browse by theme.",
+      "ru": "Небольшая галерея, которую ведёт один человек. Каждый день выбирается сайт с оценкой, а ещё есть ссылки и теги для просмотра по темам."
+    }
   }
 ]
