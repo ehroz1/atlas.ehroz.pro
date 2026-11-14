@@ -13,7 +13,7 @@
   { "about": "Textures and brushes", "ids": ["texturelabs", "brusheezy"] },
   { "about": "Public-domain and museum images", "ids": ["getty-open-content", "smithsonian-open-access", "met-open-access", "nga-free-images", "artic-open-access", "pd-image-archive", "public-work", "wikimedia-commons"] },
   { "about": "Free fonts", "ids": ["google-fonts", "fontshare", "uncut-wtf", "collletttivo"] },
-  { "about": "Free Cyrillic fonts", "ids": ["shriftoteka", "uprock-fonts"] },
+  { "about": "Free Cyrillic fonts", "ids": ["shriftoteka", "uprock-fonts", "arip"] },
   { "about": "App and site screens", "ids": ["mobbin", "refero"] },
   { "about": "Web design galleries", "ids": ["godly", "dark-design", "dribbble", "minimal-gallery", "httpster", "hoverstates"] },
   { "about": "Visual references", "ids": ["cosmos", "same-energy"] },

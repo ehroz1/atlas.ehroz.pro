@@ -3062,5 +3062,24 @@
       "en": "A chat from the Chinese lab Moonshot AI. It takes long documents, writes and fixes code, and can run multi-step research tasks as an agent.",
       "ru": "Чат от китайской лаборатории Moonshot AI. Принимает длинные документы, пишет и исправляет код, а как агент выполняет многошаговые исследования."
     }
+  },
+  {
+    "id": "arip",
+    "name": "ärip",
+    "url": "https://arip.app",
+    "category": "typography",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["kazakh", "cyrillic", "fonts", "free"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Free fonts with full Kazakh alphabet support.",
+      "ru": "Бесплатные шрифты с полной поддержкой казахского алфавита."
+    },
+    "description": {
+      "en": "A catalogue of about forty typefaces that include every Kazakh letter, free for commercial use. Filter by weight, mood and use case, and preview your own text.",
+      "ru": "Каталог примерно из сорока шрифтов, в которых есть все казахские буквы, бесплатно и для коммерческого использования. Фильтры по начертанию, характеру и задаче, предпросмотр своего текста."
+    }
   }
 ]
