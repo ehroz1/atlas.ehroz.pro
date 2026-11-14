@@ -983,7 +983,16 @@ hr { border: 0; border-top: var(--border); }
 @media (min-width: 40rem) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 64rem) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-.card { display: flex; flex-direction: column; gap: var(--s-3); color: inherit; }
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  color: inherit;
+  transition: transform var(--dur) var(--ease);
+}
+/* hover: the whole card — picture, name, summary — lifts as one piece.
+   Nothing inside scales, so nothing gets cropped. */
+.card:hover, .card:focus-visible { transform: translateY(-6px); }
 .card:focus-visible { outline-offset: 4px; }
 .card__media {
   position: relative;
@@ -997,9 +1006,7 @@ hr { border: 0; border-top: var(--border); }
   height: 100%;
   object-fit: cover;
   object-position: top center;
-  transition: transform var(--dur-slow) var(--ease);
 }
-.card:hover .card__shot { transform: scale(1.02); }
 .card__badge {
   position: absolute;
   top: var(--s-3);
@@ -1014,6 +1021,17 @@ hr { border: 0; border-top: var(--border); }
   backdrop-filter: blur(8px);
   color: var(--c-chrome-text);
   font-size: var(--fs-13);
+}
+/* the price ("Free", "Free plan"…) shows on hover only; on touch screens,
+   which have no hover, it stays visible */
+@media (hover: hover) {
+  .card__badge--price {
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .card:hover .card__badge--price,
+  .card:focus-visible .card__badge--price { opacity: 1; transform: none; }
 }
 /* left corner: "New" (white, the few newest sites only) or "Viewed" (dark) */
 .card__badge--new,

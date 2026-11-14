@@ -47,7 +47,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
     ) : (
       <div class="shot-fallback" aria-hidden="true">{domainOf(d.url)}</div>
     )}
-    <span class="card__badge">{badge}</span>
+    <span class="card__badge card__badge--price">{badge}</span>
     {/* "New" and "Viewed" share the left corner. The script in Base.astro
         shows "Viewed" for sites opened before (and then hides "New"), and
         drops "New" once its date has passed, even if the site wasn't rebuilt. */}
