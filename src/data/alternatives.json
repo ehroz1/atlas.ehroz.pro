@@ -1,5 +1,5 @@
 [
-  { "about": "AI chat assistants", "ids": ["claude", "chatgpt", "grok", "copilot", "deepseek", "google-ai-studio", "perplexity"] },
+  { "about": "AI chat assistants", "ids": ["claude", "chatgpt", "grok", "copilot", "deepseek", "kimi", "google-ai-studio", "perplexity"] },
   { "about": "AI image generation", "ids": ["midjourney", "firefly", "krea", "headai", "higgsfield"] },
   { "about": "AI video generation", "ids": ["kling", "pika", "higgsfield", "krea", "headai"] },
   { "about": "Prompt libraries", "ids": ["claude-prompt-library", "prompthero", "filatov-prompts"] },

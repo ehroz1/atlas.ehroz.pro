@@ -3043,5 +3043,24 @@
       "en": "Open it on two devices and they find each other. Share images, documents and text directly, without sign-up or installing anything.",
       "ru": "Откройте на двух устройствах, и они найдут друг друга. Картинки, документы и текст передаются напрямую, без регистрации и установки."
     }
+  },
+  {
+    "id": "kimi",
+    "name": "Kimi",
+    "url": "https://www.kimi.ai",
+    "category": "ai",
+    "pricing": "freemium",
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["assistant", "chat", "coding", "agents", "long context"],
+    "added": "2026-11-14",
+    "updated": "2026-11-14",
+    "summary": {
+      "en": "Moonshot AI's chat assistant for code and research.",
+      "ru": "Чат-ассистент от Moonshot AI для кода и исследований."
+    },
+    "description": {
+      "en": "A chat from the Chinese lab Moonshot AI. It takes long documents, writes and fixes code, and can run multi-step research tasks as an agent.",
+      "ru": "Чат от китайской лаборатории Moonshot AI. Принимает длинные документы, пишет и исправляет код, а как агент выполняет многошаговые исследования."
+    }
   }
 ]
