@@ -12,7 +12,7 @@ const { chromium } = require('playwright');
 const axePath = require.resolve('axe-core/axe.min.js');
 
 const PORT = 4399;
-const PAGES = ['/', '/en/', '/categories/', '/category/design/', '/en/category/ai/', '/tool/figma/', '/en/tool/claude/', '/about/', '/en/about/', '/contact/', '/en/contact/', '/submit/', '/wall/', '/no-such-page/'];
+const PAGES = ['/', '/ru/', '/en/', '/categories/', '/category/design/', '/ru/category/ai/', '/tool/figma/', '/ru/tool/claude/', '/about/', '/ru/about/', '/contact/', '/ru/contact/', '/submit/', '/wall/', '/no-such-page/'];
 
 const server = await serve('dist', PORT);
 const browser = await chromium.launch();

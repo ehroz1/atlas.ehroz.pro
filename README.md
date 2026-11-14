@@ -35,13 +35,14 @@ src/
   data/categories.json   ← categories, in display order
   assets/shots/          ← homepage screenshots, <tool-id>.jpg
   styles/atlas.css       ← the whole design system (read docs/DESIGN.md)
-  i18n/                  ← interface strings: ru.ts (root) and en.ts (/en/)
+  i18n/                  ← interface strings: en.ts (root, also /en/) and ru.ts (/ru/)
+  components/LangDetect  ← browser-language redirect to /ru/, remembers a manual choice
   lib/routes.ts          ← every page: title, description, lastmod → pages, sitemap, llms.txt, OG
   lib/schema.ts          ← schema.org JSON-LD builders
   components/            ← Header, Footer, Gallery, ToolCard, Analytics (consent)…
   views/                 ← page bodies, one per page type, take `lang`
   pages/
-    [...lang]/…          ← routes: / and /en/ for every page
+    [...lang]/…          ← routes: /, /ru/ and the /en/ alias for every page
     og/[...slug].png.ts  ← OG covers, 1200×630, rendered at build
     robots.txt.ts, sitemap-*.xml.ts, llms*.txt.ts, 404.astro
 integrations/csp.mjs     ← CSP meta with script hashes, added after the build
