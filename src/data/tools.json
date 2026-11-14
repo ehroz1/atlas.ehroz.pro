@@ -615,7 +615,7 @@
     "id": "godly",
     "name": "Godly",
     "url": "https://godly.website",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -625,7 +625,7 @@
       "gallery"
     ],
     "added": "2026-11-11",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "A gallery of standout web design, shown in motion.",
       "ru": "Галерея выдающегося веб-дизайна в движении."
@@ -1395,7 +1395,7 @@
     "id": "icons8",
     "name": "Icons8",
     "url": "https://icons8.com",
-    "category": "assets",
+    "category": "icons-illustrations",
     "pricing": "freemium",
     "platforms": [
       "Web",
@@ -1408,7 +1408,7 @@
       "photos"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Icons in many styles, plus illustrations and photos.",
       "ru": "Иконки во множестве стилей, а ещё иллюстрации и фото."
@@ -1447,7 +1447,7 @@
     "id": "sapiens",
     "name": "Sapiens",
     "url": "https://sapiens.ui8.net",
-    "category": "assets",
+    "category": "icons-illustrations",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1458,7 +1458,7 @@
       "builder"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Assemble a character illustration from parts.",
       "ru": "Соберите иллюстрацию персонажа из частей."
@@ -1472,7 +1472,7 @@
     "id": "blush",
     "name": "Blush",
     "url": "https://blush.design",
-    "category": "assets",
+    "category": "icons-illustrations",
     "pricing": "freemium",
     "platforms": [
       "Web"
@@ -1483,7 +1483,7 @@
       "customisable"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Illustration packs you can recolour and mix.",
       "ru": "Наборы иллюстраций, которые можно перекрашивать и комбинировать."
@@ -1523,7 +1523,7 @@
     "id": "the-mockup-club",
     "name": "The Mockup Club",
     "url": "https://themockup.club",
-    "category": "assets",
+    "category": "mockups",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1534,7 +1534,7 @@
       "branding"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Free mockups for showing off a design.",
       "ru": "Бесплатные мокапы, чтобы показать дизайн."
@@ -1650,7 +1650,7 @@
     "id": "halftone-maker",
     "name": "Halftone Maker",
     "url": "https://halftonemaker.com",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1662,7 +1662,7 @@
       "effects"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Turn an image into halftone dots, lines or stipple.",
       "ru": "Превращает изображение в растр из точек, линий или пунктира."
@@ -1701,7 +1701,7 @@
     "id": "svg-converter",
     "name": "SVG Converter",
     "url": "https://svgconverter.online",
-    "category": "utilities",
+    "category": "file-converters",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1712,7 +1712,7 @@
       "png"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Turn a PNG or JPG into a colour SVG.",
       "ru": "Превращает PNG или JPG в цветной SVG."
@@ -1726,7 +1726,7 @@
     "id": "space-type-generator",
     "name": "Space Type Generator",
     "url": "https://spacetypegenerator.com",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1737,7 +1737,7 @@
       "poster"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Make poster type from letters that bend and stretch.",
       "ru": "Постерная типографика из букв, которые гнутся и тянутся."
@@ -1751,7 +1751,7 @@
     "id": "meshgradient",
     "name": "Mesh Gradient",
     "url": "https://meshgradient.in",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1762,7 +1762,7 @@
       "png"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Generate soft mesh gradients and export them.",
       "ru": "Мягкие mesh-градиенты с экспортом."
@@ -1776,7 +1776,7 @@
     "id": "antlii",
     "name": "Antlii",
     "url": "https://antlii.work",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -1787,7 +1787,7 @@
       "graphics"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Interactive tools for generative graphics.",
       "ru": "Интерактивные инструменты для генеративной графики."
@@ -1984,7 +1984,7 @@
     "id": "convertio",
     "name": "Convertio",
     "url": "https://convertio.co",
-    "category": "utilities",
+    "category": "file-converters",
     "pricing": "freemium",
     "platforms": [
       "Web"
@@ -1995,7 +1995,7 @@
       "documents"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Convert almost any file format online.",
       "ru": "Конвертирует почти любые форматы файлов онлайн."
@@ -2009,7 +2009,7 @@
     "id": "ilovepdf",
     "name": "iLovePDF",
     "url": "https://www.ilovepdf.com",
-    "category": "utilities",
+    "category": "file-converters",
     "pricing": "freemium",
     "platforms": [
       "Web",
@@ -2025,7 +2025,7 @@
       "compress"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Merge, split, compress and convert PDFs.",
       "ru": "Объединение, разделение, сжатие и конвертация PDF."
@@ -2039,7 +2039,7 @@
     "id": "iloveimg",
     "name": "iLoveIMG",
     "url": "https://www.iloveimg.com",
-    "category": "utilities",
+    "category": "file-converters",
     "pricing": "freemium",
     "platforms": [
       "Web",
@@ -2054,7 +2054,7 @@
       "convert"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Resize, crop, compress and convert images.",
       "ru": "Изменение размера, обрезка, сжатие и конвертация картинок."
@@ -2168,7 +2168,7 @@
     "id": "logobaker",
     "name": "Logobaker",
     "url": "https://logobaker.pro",
-    "category": "inspiration",
+    "category": "branding",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2179,7 +2179,7 @@
       "community"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Logo designs and critique from other designers.",
       "ru": "Логотипы и разборы от других дизайнеров."
@@ -2219,7 +2219,7 @@
     "id": "logggos",
     "name": "Logggos",
     "url": "https://www.logggos.club",
-    "category": "inspiration",
+    "category": "branding",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2229,7 +2229,7 @@
       "branding"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "A catalogue of well-made logos.",
       "ru": "Каталог хорошо сделанных логотипов."
@@ -2243,7 +2243,7 @@
     "id": "logobook",
     "name": "Logobook",
     "url": "https://logobook.com",
-    "category": "inspiration",
+    "category": "branding",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2254,7 +2254,7 @@
       "symbols"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "A collection of the world's logos and symbols.",
       "ru": "Собрание логотипов и символов со всего мира."
@@ -2268,7 +2268,7 @@
     "id": "branding-style-guides",
     "name": "Branding Style Guides",
     "url": "https://brandingstyleguides.com",
-    "category": "inspiration",
+    "category": "branding",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2279,7 +2279,7 @@
       "archive"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "An archive of brand guideline documents.",
       "ru": "Архив брендбуков."
@@ -2293,7 +2293,7 @@
     "id": "pentagram",
     "name": "Pentagram",
     "url": "https://www.pentagram.com",
-    "category": "inspiration",
+    "category": "branding",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2304,7 +2304,7 @@
       "design studio"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Work from one of the best-known design studios.",
       "ru": "Работы одной из самых известных дизайн-студий."
@@ -2318,7 +2318,7 @@
     "id": "dark-design",
     "name": "Dark Design",
     "url": "https://www.dark.design",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2329,7 +2329,7 @@
       "gallery"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "A gallery of dark-themed websites.",
       "ru": "Галерея сайтов в тёмной теме."
@@ -2368,7 +2368,7 @@
     "id": "xuix-pack",
     "name": "xuix.pack",
     "url": "https://xuix.ru/pack",
-    "category": "assets",
+    "category": "icons-illustrations",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2379,7 +2379,7 @@
       "design resources"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Free icon and image collections.",
       "ru": "Бесплатные наборы иконок и изображений."
@@ -2443,7 +2443,7 @@
     "id": "pd-image-archive",
     "name": "Public Domain Image Archive",
     "url": "https://pdimagearchive.org",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2454,7 +2454,7 @@
       "old images"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Old prints and photographs with no copyright.",
       "ru": "Старые гравюры и фотографии без авторских прав."
@@ -2468,7 +2468,7 @@
     "id": "public-work",
     "name": "Public Work",
     "url": "https://public.work",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2479,7 +2479,7 @@
       "museums"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Visual search over 100,000 copyright-free images.",
       "ru": "Визуальный поиск по 100 000 изображений без авторских прав."
@@ -2493,7 +2493,7 @@
     "id": "wikimedia-commons",
     "name": "Wikimedia Commons",
     "url": "https://commons.wikimedia.org",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2504,7 +2504,7 @@
       "open licence"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "The media library behind Wikipedia.",
       "ru": "Медиатека, на которой стоит Википедия."
@@ -2518,7 +2518,7 @@
     "id": "getty-open-content",
     "name": "Getty Open Content",
     "url": "https://www.getty.edu/projects/open-content-program/",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2529,7 +2529,7 @@
       "open access"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "High-resolution images from the Getty collection.",
       "ru": "Изображения высокого разрешения из коллекции Getty."
@@ -2543,7 +2543,7 @@
     "id": "smithsonian-open-access",
     "name": "Smithsonian Open Access",
     "url": "https://www.si.edu/openaccess",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2554,7 +2554,7 @@
       "open access"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Millions of images from the Smithsonian, in CC0.",
       "ru": "Миллионы изображений Смитсоновского института в CC0."
@@ -2568,7 +2568,7 @@
     "id": "met-open-access",
     "name": "The Met Open Access",
     "url": "https://www.metmuseum.org/about-the-met/policies-and-documents/open-access",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2579,7 +2579,7 @@
       "open access"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Public-domain artworks from the Met.",
       "ru": "Работы из Метрополитен-музея в общественном достоянии."
@@ -2593,7 +2593,7 @@
     "id": "nga-free-images",
     "name": "National Gallery of Art Images",
     "url": "https://www.nga.gov/artworks/free-images-and-open-access",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2604,7 +2604,7 @@
       "open access"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "Open-access images from the National Gallery of Art.",
       "ru": "Изображения в открытом доступе из Национальной галереи искусства."
@@ -2618,7 +2618,7 @@
     "id": "artic-open-access",
     "name": "Art Institute of Chicago Open Access",
     "url": "https://www.artic.edu/open-access/open-access-images",
-    "category": "assets",
+    "category": "museums",
     "pricing": "free",
     "platforms": [
       "Web"
@@ -2629,7 +2629,7 @@
       "open access"
     ],
     "added": "2026-11-13",
-    "updated": "2026-11-13",
+    "updated": "2026-11-14",
     "summary": {
       "en": "CC0 images from the Art Institute of Chicago.",
       "ru": "Изображения CC0 из Чикагского института искусств."
@@ -2780,7 +2780,7 @@
     "id": "haikei",
     "name": "Haikei",
     "url": "https://haikei.app",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["svg", "generative", "backgrounds", "wallpapers"],
@@ -2799,7 +2799,7 @@
     "id": "pattern-monster",
     "name": "Pattern Monster",
     "url": "https://pattern.monster",
-    "category": "design",
+    "category": "design-generators",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["patterns", "svg", "backgrounds"],
@@ -2894,7 +2894,7 @@
     "id": "minimal-gallery",
     "name": "Minimal Gallery",
     "url": "https://minimal.gallery",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["web design", "gallery", "templates"],
@@ -2913,7 +2913,7 @@
     "id": "hoverstates",
     "name": "Hoverstat.es",
     "url": "https://hoverstat.es",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["alternative web design", "experimental", "archive"],
@@ -2932,7 +2932,7 @@
     "id": "httpster",
     "name": "Httpster",
     "url": "https://httpster.net",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["web design", "gallery", "awards"],
@@ -2951,7 +2951,7 @@
     "id": "navbar-gallery",
     "name": "Navbar Gallery",
     "url": "https://www.navbar.gallery",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["navigation", "ui patterns", "web design"],
@@ -2989,7 +2989,7 @@
     "id": "phosphor-icons",
     "name": "Phosphor Icons",
     "url": "https://phosphoricons.com",
-    "category": "design",
+    "category": "icons-illustrations",
     "pricing": "free",
     "platforms": ["Web", "Figma", "React", "Vue"],
     "tags": ["icons", "svg", "open source"],
@@ -3008,7 +3008,7 @@
     "id": "cobalt",
     "name": "cobalt",
     "url": "https://cobalt.tools",
-    "category": "utilities",
+    "category": "file-converters",
     "pricing": "free",
     "openSource": true,
     "platforms": ["Web"],
@@ -3086,7 +3086,7 @@
     "id": "siteinspire",
     "name": "Siteinspire",
     "url": "https://www.siteinspire.com",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["web design", "gallery", "curated"],
@@ -3124,7 +3124,7 @@
     "id": "landing-love",
     "name": "landinglove",
     "url": "https://landing.love",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["animation", "web design", "gallery", "video"],
@@ -3143,7 +3143,7 @@
     "id": "lapa-ninja",
     "name": "Lapa Ninja",
     "url": "https://www.lapa.ninja",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["landing pages", "web design", "ui", "gallery"],
@@ -3162,7 +3162,7 @@
     "id": "darkmodedesign",
     "name": "Dark Mode Design",
     "url": "https://www.darkmodedesign.com",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["dark mode", "web design", "gallery"],
@@ -3181,7 +3181,7 @@
     "id": "land-book",
     "name": "Land-book",
     "url": "https://land-book.com",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["web design", "landing pages", "gallery", "sections"],
@@ -3200,7 +3200,7 @@
     "id": "onepagelove",
     "name": "One Page Love",
     "url": "https://onepagelove.com",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["one page", "web design", "templates", "gallery"],
@@ -3219,7 +3219,7 @@
     "id": "bestwebsite-gallery",
     "name": "Best Website Gallery",
     "url": "https://bestwebsite.gallery",
-    "category": "inspiration",
+    "category": "web-galleries",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["web design", "gallery", "awards", "site of the day"],
@@ -3257,7 +3257,7 @@
     "id": "noun-project",
     "name": "The Noun Project",
     "url": "https://thenounproject.com",
-    "category": "assets",
+    "category": "icons-illustrations",
     "pricing": "freemium",
     "platforms": ["Web", "macOS", "Figma"],
     "tags": ["icons", "stock photos", "svg"],
@@ -3314,7 +3314,7 @@
     "id": "mockup-world",
     "name": "Mockup World",
     "url": "https://www.mockupworld.co",
-    "category": "assets",
+    "category": "mockups",
     "pricing": "free",
     "platforms": ["Web"],
     "tags": ["mockups", "psd", "free"],
@@ -3390,7 +3390,7 @@
     "id": "shots",
     "name": "Shots",
     "url": "https://shots.so",
-    "category": "design",
+    "category": "mockups",
     "pricing": "freemium",
     "platforms": ["Web"],
     "tags": ["mockups", "screenshots", "video", "animation"],
