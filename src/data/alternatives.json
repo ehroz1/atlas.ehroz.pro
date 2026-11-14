@@ -15,7 +15,7 @@
   { "about": "Free fonts", "ids": ["google-fonts", "fontshare", "uncut-wtf", "collletttivo", "font-squirrel"] },
   { "about": "Free Cyrillic fonts", "ids": ["shriftoteka", "uprock-fonts", "arip"] },
   { "about": "App and site screens", "ids": ["mobbin", "refero"] },
-  { "about": "Web design galleries", "ids": ["godly", "dark-design", "darkmodedesign", "dribbble", "behance", "minimal-gallery", "httpster", "hoverstates", "siteinspire", "onepagelove", "bestwebsite-gallery", "land-book"] },
+  { "about": "Web design galleries", "ids": ["godly", "dark-design", "darkmodedesign", "dribbble", "behance", "minimal-gallery", "httpster", "hoverstates", "siteinspire", "landing-love", "onepagelove", "bestwebsite-gallery", "land-book"] },
   { "about": "Visual references", "ids": ["cosmos", "same-energy"] },
   { "about": "Logo collections", "ids": ["logobaker", "logggos", "logobook"] },
   { "about": "Transcription", "ids": ["turboscribe", "bla-bla", "descript"] },
@@ -28,7 +28,7 @@
   { "about": "Diagrams", "ids": ["excalidraw", "napkin"] },
   { "about": "SVG backgrounds and patterns", "ids": ["haikei", "pattern-monster", "meshgradient"] },
   { "about": "Reference collecting", "ids": ["are-na", "cosmos", "same-energy"] },
-  { "about": "Landing page galleries", "ids": ["landing-love", "lapa-ninja", "land-book", "onepagelove"] },
+  { "about": "Landing page galleries", "ids": ["lapa-ninja", "land-book", "onepagelove"] },
   { "about": "Mockups", "ids": ["shots", "the-mockup-club", "mockup-world"] },
   { "about": "Color tools", "ids": ["coolors", "adobe-color", "color-review"] },
   { "about": "Animated UI components", "ids": ["originkit", "smoothui"] }

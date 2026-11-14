@@ -3122,21 +3122,21 @@
   },
   {
     "id": "landing-love",
-    "name": "landing.love",
+    "name": "landinglove",
     "url": "https://landing.love",
     "category": "inspiration",
     "pricing": "free",
     "platforms": ["Web"],
-    "tags": ["landing pages", "web design", "gallery"],
+    "tags": ["animation", "web design", "gallery", "video"],
     "added": "2026-11-14",
     "updated": "2026-11-14",
     "summary": {
-      "en": "Landing page examples worth studying.",
-      "ru": "Примеры лендингов, на которые стоит посмотреть."
+      "en": "A showcase of animated websites, with video recordings.",
+      "ru": "Витрина анимированных сайтов с видеозаписями."
     },
     "description": {
-      "en": "A collection of landing pages you can browse by industry and style. Useful when you need to see how others structure the first screen and the pitch.",
-      "ru": "Подборка лендингов с фильтрами по отрасли и стилю. Удобно смотреть, как другие строят первый экран и подачу продукта."
+      "en": "A collection of more than two thousand websites known for their animation, each with a full-page video recording, so you can see the motion without visiting.",
+      "ru": "Больше двух тысяч сайтов с выразительной анимацией, у каждого есть видеозапись всей страницы, так что движение видно, не заходя на сайт."
     }
   },
   {
