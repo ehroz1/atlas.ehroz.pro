@@ -13,7 +13,9 @@ export const SITE = {
   /** used for the outbound ?ref= tag */
   ref: 'atlas.ehroz.pro',
   /** address the Submit form writes to */
-  submitEmail: 'admin@picta.cc',
+  submitEmail: 'ehrozkitay@gmail.com',
+  /** phone for Telegram and WhatsApp, digits only, with country code */
+  submitPhone: '77775971798',
 } as const;
 
 /** Author. Same facts and the same @id as on ehroz.pro, so search engines join them. */

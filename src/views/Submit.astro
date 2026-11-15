@@ -14,7 +14,8 @@ const [categories, entry] = await Promise.all([getCategories(), getPage('submit'
    PUBLIC_SUBMIT_EMAIL in .env overrides the receiving address. */
 const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
 const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
-const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject') };
+const phone = SITE.submitPhone;
+const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
@@ -26,7 +27,7 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
         </p>
       </div>
 
-      <form class="form mt-12" data-submit-form data-email={email} data-msg={JSON.stringify(msg)}>
+      <form class="form mt-12" data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)}>
         <div class="field">
           <label class="field__label" for="url">{t('submit.url')}</label>
           <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
@@ -68,7 +69,9 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
         </label>
 
         <div class="cluster" style="--gap: var(--s-4)">
-          <button class="btn btn--solid btn--lg" type="submit">{t('submit.send')}</button>
+          <button class="btn btn--solid btn--lg" type="submit" data-channel="mail">{t('submit.viaMail')}</button>
+          <button class="btn btn--lg" type="submit" data-channel="telegram">Telegram</button>
+          <button class="btn btn--lg" type="submit" data-channel="whatsapp">WhatsApp</button>
           <span class="t-meta" data-submit-status aria-live="polite"></span>
         </div>
       </form>
@@ -79,6 +82,9 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
 <script>
   const form = document.querySelector<HTMLFormElement>('[data-submit-form]');
   const status = document.querySelector<HTMLElement>('[data-submit-status]');
+  let channel = 'mail';
+  form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>
+    b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; }));
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
@@ -96,10 +102,10 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
       d.get('maker') ? 'I made this.' : '',
     ].filter((l, i, a) => l || (i && a[i - 1])).join('\n');
     const subject = `${msg.subject}: ${g('name')}`;
-    (window as any).atlasTrack?.('contact_click', { method: 'submit_form' });
+    (window as any).atlasTrack?.('contact_click', { method: `submit_${channel}` });
     const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
 
-    // Phones: the share sheet can carry real attachments into the mail app.
+    // Phones: the share sheet carries real attachments into any chosen app.
     if (files.length && navigator.canShare?.({ files })) {
       try {
         await navigator.share({ files, title: subject, text: `${subject}\n\n${body}` });
@@ -109,7 +115,18 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
         if ((err as Error).name === 'AbortError') return;
       }
     }
-    location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    status.textContent = files.length ? msg.openedPhotos : msg.opened;
+    const text = `${subject}\n\n${body}`;
+    if (channel === 'whatsapp') {
+      window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      status.textContent = files.length ? msg.openedPhotosChat : msg.openedChat;
+    } else if (channel === 'telegram') {
+      // Telegram's phone links can't prefill text, so copy it for pasting.
+      try { await navigator.clipboard.writeText(text); } catch {}
+      window.open(`https://t.me/+${form.dataset.phone}`, '_blank', 'noopener');
+      status.textContent = msg.copiedChat;
+    } else {
+      location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      status.textContent = files.length ? msg.openedPhotos : msg.opened;
+    }
   });
 </script>
