@@ -849,34 +849,6 @@
     }
   },
   {
-    "id": "copilot",
-    "name": "Microsoft Copilot",
-    "url": "https://copilot.microsoft.com",
-    "category": "ai",
-    "pricing": "free",
-    "platforms": [
-      "Web",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "assistant",
-      "chat",
-      "microsoft"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Microsoft's free AI chat, tied into Windows and Edge.",
-      "ru": "Бесплатный ИИ-чат Microsoft, встроенный в Windows и Edge."
-    },
-    "description": {
-      "en": "A chat assistant with web search, image generation and voice. Handy if you already live in Windows, Edge or Office.",
-      "ru": "Чат-ассистент с поиском в интернете, генерацией картинок и голосом. Удобен, если вы и так работаете в Windows, Edge или Office."
-    }
-  },
-  {
     "id": "deepseek",
     "name": "DeepSeek",
     "url": "https://www.deepseek.com",
@@ -1340,32 +1312,6 @@
     }
   },
   {
-    "id": "pixabay",
-    "name": "Pixabay",
-    "url": "https://pixabay.com",
-    "category": "assets",
-    "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "photos",
-      "vectors",
-      "illustrations",
-      "video"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Photos, vectors, illustrations and video, all free.",
-      "ru": "Фото, векторы, иллюстрации и видео — всё бесплатно."
-    },
-    "description": {
-      "en": "A long-running library with more than photos: vectors, illustrations, music and sound effects are there as well.",
-      "ru": "Давно работающая библиотека, где есть не только фото: векторы, иллюстрации, музыка и звуковые эффекты тоже."
-    }
-  },
-  {
     "id": "freepik",
     "name": "Freepik",
     "url": "https://www.freepik.com",
@@ -1618,32 +1564,6 @@
     "description": {
       "en": "Cuts out the subject cleanly, including hair, then lets you place it on a new background or a plain colour.",
       "ru": "Аккуратно вырезает объект, включая волосы, и позволяет поставить его на новый фон или однотонную заливку."
-    }
-  },
-  {
-    "id": "background-removal-hf",
-    "name": "Background Removal (Hugging Face)",
-    "url": "https://huggingface.co/spaces/not-lain/background-removal",
-    "category": "utilities",
-    "pricing": "free",
-    "openSource": true,
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "background removal",
-      "open source",
-      "demo"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "A free background remover that runs in a Space.",
-      "ru": "Бесплатное удаление фона в Space на Hugging Face."
-    },
-    "description": {
-      "en": "A community demo on Hugging Face using an open model. No sign-up, and you can download the transparent PNG.",
-      "ru": "Демо от сообщества на Hugging Face на открытой модели. Без регистрации, прозрачный PNG можно скачать."
     }
   },
   {
@@ -2033,35 +1953,6 @@
     "description": {
       "en": "A tidy set of PDF tools, including PDF to JPG. Covers most one-off jobs without installing anything.",
       "ru": "Аккуратный набор инструментов для PDF, в том числе PDF в JPG. Покрывает большинство разовых задач без установки программ."
-    }
-  },
-  {
-    "id": "iloveimg",
-    "name": "iLoveIMG",
-    "url": "https://www.iloveimg.com",
-    "category": "file-converters",
-    "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "images",
-      "resize",
-      "compress",
-      "convert"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Resize, crop, compress and convert images.",
-      "ru": "Изменение размера, обрезка, сжатие и конвертация картинок."
-    },
-    "description": {
-      "en": "Same team as iLovePDF, for pictures: batch resize, compress, convert formats, add watermarks.",
-      "ru": "Та же команда, что и iLovePDF, только для изображений: пакетное изменение размера, сжатие, смена формата, водяные знаки."
     }
   },
   {
@@ -2515,31 +2406,6 @@
     }
   },
   {
-    "id": "getty-open-content",
-    "name": "Getty Open Content",
-    "url": "https://www.getty.edu/projects/open-content-program/",
-    "category": "museums",
-    "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "museum",
-      "art",
-      "open access"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "High-resolution images from the Getty collection.",
-      "ru": "Изображения высокого разрешения из коллекции Getty."
-    },
-    "description": {
-      "en": "Artworks from the Getty museum, free to download and use for any purpose.",
-      "ru": "Произведения из музея Getty, которые можно бесплатно скачать и использовать для любых целей."
-    }
-  },
-  {
     "id": "smithsonian-open-access",
     "name": "Smithsonian Open Access",
     "url": "https://www.si.edu/openaccess",
@@ -2587,56 +2453,6 @@
     "description": {
       "en": "Hundreds of thousands of images of works in the Met collection, free to use. Available through the museum's online collection.",
       "ru": "Сотни тысяч изображений произведений из коллекции Метрополитен-музея, свободные для использования. Доступны через онлайн-коллекцию музея."
-    }
-  },
-  {
-    "id": "nga-free-images",
-    "name": "National Gallery of Art Images",
-    "url": "https://www.nga.gov/artworks/free-images-and-open-access",
-    "category": "museums",
-    "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "museum",
-      "art",
-      "open access"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Open-access images from the National Gallery of Art.",
-      "ru": "Изображения в открытом доступе из Национальной галереи искусства."
-    },
-    "description": {
-      "en": "Paintings, prints and photographs from the Washington museum, downloadable in high resolution.",
-      "ru": "Живопись, гравюры и фотографии из музея в Вашингтоне, которые можно скачать в высоком разрешении."
-    }
-  },
-  {
-    "id": "artic-open-access",
-    "name": "Art Institute of Chicago Open Access",
-    "url": "https://www.artic.edu/open-access/open-access-images",
-    "category": "museums",
-    "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "museum",
-      "art",
-      "open access"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "CC0 images from the Art Institute of Chicago.",
-      "ru": "Изображения CC0 из Чикагского института искусств."
-    },
-    "description": {
-      "en": "Public-domain works from the Chicago museum, with large downloads and full catalogue data.",
-      "ru": "Работы из чикагского музея в общественном достоянии, с большими файлами и полными данными каталога."
     }
   },
   {
@@ -2831,25 +2647,6 @@
     "description": {
       "en": "A catalogue of around 160 sans, serif, mono and display fonts, filterable and searchable. Each links to its creator's download.",
       "ru": "Каталог примерно из 160 шрифтов: гротески, антиквы, моно и акцидентные. Есть фильтры и поиск, у каждого ссылка на загрузку у автора."
-    }
-  },
-  {
-    "id": "collletttivo",
-    "name": "Collletttivo",
-    "url": "https://www.collletttivo.it",
-    "category": "typography",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["open source fonts", "foundry", "type design"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "An open-source type foundry run as a collective.",
-      "ru": "Словолитня с открытыми шрифтами, собранная как коллектив."
-    },
-    "description": {
-      "en": "Italian network of type designers who release their fonts under open licences. The site also publishes a journal on the practice.",
-      "ru": "Итальянское сообщество шрифтовых дизайнеров, которые выпускают шрифты под открытыми лицензиями. На сайте есть ещё и журнал о шрифтовой практике."
     }
   },
   {
@@ -3403,6 +3200,25 @@
     "description": {
       "en": "Drop a screenshot into a device frame, adjust the angle and background, and export an image or a short animation for social media or a landing page.",
       "ru": "Кладёте скриншот в рамку устройства, подбираете угол и фон и экспортируете картинку или короткую анимацию для соцсетей или лендинга."
+    }
+  },
+  {
+    "id": "ic-studio",
+    "name": "IC Studio",
+    "url": "https://ic-studio.com",
+    "category": "utilities",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["toolkit", "vectorize", "compress", "svg", "cnc"],
+    "added": "2026-11-16",
+    "updated": "2026-11-16",
+    "summary": {
+      "en": "Free browser toolkit for designers and makers.",
+      "ru": "Бесплатный набор инструментов в браузере для дизайнеров и мейкеров."
+    },
+    "description": {
+      "en": "A set of small tools that run in the tab: vectorize an image, compress files, build a flipbook, add watermarks, generate colour shades and lay out shapes for CNC and laser cutting. Desktop only, in Romanian and English.",
+      "ru": "Набор небольших инструментов, которые работают во вкладке: векторизация картинки, сжатие файлов, флипбук, водяные знаки, оттенки цвета и раскладка деталей для ЧПУ и лазерной резки. Только на компьютере, на румынском и английском."
     }
   }
 ]
