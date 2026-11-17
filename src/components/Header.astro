@@ -112,6 +112,11 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
       <a class="btn btn--bar btn--chrome" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
+      <button class="bar-icon bar-saved" type="button" aria-pressed="false" data-saved-toggle
+        data-href={u('/', lang) + '?saved=1'} aria-label={t('nav.saved')} title={t('nav.saved')} hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
+        <span class="bar-saved__n" data-saved-count aria-hidden="true"></span>
+      </button>
       <div class="bar-menu">
         <button class="bar-icon" type="button" aria-label={t('nav.menu')} aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">

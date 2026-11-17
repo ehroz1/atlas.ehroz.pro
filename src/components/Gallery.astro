@@ -101,6 +101,11 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     <p>{t('results.empty.body')}</p>
     <button class="btn btn--sm mt-2" type="button" data-search-reset>{t('results.empty.reset')}</button>
   </div>
+  <div class="empty" data-saved-empty hidden>
+    <p class="empty__title">{t('saved.empty.title')}</p>
+    <p>{t('saved.empty.body')}</p>
+    <button class="btn btn--sm mt-2" type="button" data-saved-exit>{t('saved.empty.all')}</button>
+  </div>
 </section>
 
 <script>
@@ -122,18 +127,24 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       const rank = (c: HTMLElement) => { const i = saved.indexOf(c.dataset.id!); return i < 0 ? Infinity : i; };
       return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));
     };
-    let current: { ids: Set<string>; q: string } | null = null;
+    const allIds = new Set(original.map((c) => c.dataset.id!));
+    let current: { ids: Set<string>; q: string } = { ids: allIds, q: '' };
+    /* "Saved" view: only the saved sites (header button, or ?saved=1) */
+    let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
+    const savedEmpty = document.querySelector<HTMLElement>('[data-saved-empty]');
 
-    const apply = ({ ids, q }: { ids: Set<string>; q: string }) => {
+    const apply = (detail?: { ids: Set<string>; q: string }) => {
+      if (detail) current = detail;
+      const { ids, q } = current;
+      const saved: string[] = (window as any).__atlasSaved?.() ?? [];
       const nq = normalize(q);
       const lead: HTMLElement[] = [];
       const rest: HTMLElement[] = [];
       for (const card of original) {
-        const match = ids.has(card.dataset.id!);
+        const match = ids.has(card.dataset.id!) && (!savedOnly || saved.includes(card.dataset.id!));
         card.hidden = !match;
         if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
       }
-      current = { ids, q };
       grid.append(...pinned(lead), ...pinned(rest), ...original.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
       if (count) {
@@ -141,18 +152,26 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         const tpl = (count.dataset as Record<string, string | undefined>)[cat] ?? count.dataset.other;
         count.textContent = (tpl ?? '{count}').replace('{count}', String(shown));
       }
-      if (empty) {
-        empty.hidden = shown > 0;
-        grid.hidden = shown === 0;
-      }
+      const noSaved = savedOnly && saved.length === 0;
+      if (savedEmpty) savedEmpty.hidden = !noSaved;
+      if (empty) empty.hidden = shown > 0 || noSaved;
+      grid.hidden = shown === 0;
+      document.querySelectorAll('[data-saved-toggle]').forEach((b) => b.setAttribute('aria-pressed', String(savedOnly)));
     };
+    const setSavedOnly = (on: boolean) => {
+      savedOnly = on;
+      const url = new URL(location.href);
+      if (on) url.searchParams.set('saved', '1'); else url.searchParams.delete('saved');
+      history.replaceState(null, '', url);
+      apply();
+    };
+    document.addEventListener('atlas:saved-toggle', () => setSavedOnly(!savedOnly));
+    document.querySelector('[data-saved-exit]')?.addEventListener('click', () => setSavedOnly(false));
+    if (savedOnly) apply();
 
     const last = (window as any).__atlasFilter;
     if (last) apply(last);
-    document.addEventListener('atlas:saved', () => {
-      if (current) return apply(current);
-      grid.prepend(...pinned(Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'))));
-    });
+    document.addEventListener('atlas:saved', () => apply());
     document.addEventListener('atlas:filter', (e) => apply((e as CustomEvent).detail));
     document.querySelector('[data-search-reset]')?.addEventListener('click', () => {
       document.dispatchEvent(new Event('atlas:reset'));
