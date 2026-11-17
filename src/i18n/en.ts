@@ -68,6 +68,10 @@ export const en = {
   'pricing.paid': 'Paid',
   'pricing.openSource': 'Open source',
 
+  'nav.saved': 'Saved sites',
+  'saved.empty.title': 'Nothing saved yet',
+  'saved.empty.body': 'Tap the bookmark on a card to keep it here. Saved only in this browser.',
+  'saved.empty.all': 'Show all sites',
   'card.new': 'New',
   'card.seen': 'Viewed',
   'card.save': 'Save {name}',

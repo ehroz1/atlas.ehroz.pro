@@ -67,6 +67,10 @@ export const ru: Record<UIKey, string> = {
   'pricing.paid': 'Платно',
   'pricing.openSource': 'Открытый код',
 
+  'nav.saved': 'Сохранённые сайты',
+  'saved.empty.title': 'Пока ничего не сохранено',
+  'saved.empty.body': 'Нажмите закладку на карточке, чтобы оставить сайт здесь. Хранится только в этом браузере.',
+  'saved.empty.all': 'Показать все сайты',
   'card.new': 'Новое',
   'card.seen': 'Смотрели',
   'card.save': 'Сохранить {name}',

@@ -185,9 +185,23 @@ const jsonLd =
               b.setAttribute('aria-label', l); b.setAttribute('title', l);
             }
             var up = card.querySelector('[data-save-up]');
-            if (up) up.hidden = !on || saved[0] === card.getAttribute('data-id');
+            if (up) {
+              up.hidden = !on;
+              up.disabled = saved[0] === card.getAttribute('data-id');
+            }
+          });
+          document.querySelectorAll('[data-saved-toggle]').forEach(function (b) {
+            b.hidden = false;
+            var n = b.querySelector('[data-saved-count]');
+            if (n) n.textContent = saved.length ? String(saved.length) : '';
           });
         };
+        document.addEventListener('click', function (e) {
+          var t = e.target.closest && e.target.closest('[data-saved-toggle]');
+          if (!t) return;
+          if (document.querySelector('[data-cards]')) document.dispatchEvent(new Event('atlas:saved-toggle'));
+          else location.href = t.getAttribute('data-href');
+        });
         window.__atlasSaved = function () { return saved.slice(); };
         document.addEventListener('click', function (e) {
           var btn = e.target.closest && e.target.closest('[data-save], [data-save-up]');
