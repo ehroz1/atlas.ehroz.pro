@@ -3220,5 +3220,25 @@
       "en": "A set of small tools that run in the tab: vectorize an image, compress files, build a flipbook, add watermarks, generate colour shades and lay out shapes for CNC and laser cutting. Desktop only, in Romanian and English.",
       "ru": "Набор небольших инструментов, которые работают во вкладке: векторизация картинки, сжатие файлов, флипбук, водяные знаки, оттенки цвета и раскладка деталей для ЧПУ и лазерной резки. Только на компьютере, на румынском и английском."
     }
+  },
+  {
+    "id": "artcraft",
+    "name": "ArtCraft",
+    "url": "https://getartcraft.com",
+    "category": "design",
+    "pricing": "freemium",
+    "openSource": true,
+    "platforms": ["macOS", "Windows", "Linux", "Web"],
+    "tags": ["open source", "design suite", "image editing", "ai", "rust"],
+    "added": "2026-11-17",
+    "updated": "2026-11-17",
+    "summary": {
+      "en": "Seventeen open-source creative apps, plus an AI studio.",
+      "ru": "Семнадцать творческих приложений с открытым кодом и ИИ-студия."
+    },
+    "description": {
+      "en": "A set of native apps for image editing, vector art, video, layout, 3D texture painting, PDFs and more, free and open source, installed through one launcher. ArtCraft Studio adds AI image and video generation, paid with optional credits.",
+      "ru": "Набор нативных приложений для работы с изображениями, векторной графики, видео, вёрстки, текстур для 3D, PDF и другого. Бесплатные, с открытым кодом, ставятся через один лаунчер. ArtCraft Studio добавляет генерацию картинок и видео, за неё платят необязательными кредитами."
+    }
   }
 ]
