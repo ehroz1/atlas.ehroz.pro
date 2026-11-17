@@ -725,6 +725,7 @@ hr { border: 0; border-top: var(--border); }
 .bar-icon:hover, .bar-icon[aria-current="page"] { background: var(--c-chrome-hover); }
 .bar-icon svg { width: 22px; height: 22px; }
 
+.btn.is-on { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
 .bar-saved { position: relative; }
 .bar-saved[hidden] { display: none; }
 .bar-saved[aria-pressed="true"] { background: var(--c-accent); }

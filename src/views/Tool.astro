@@ -48,6 +48,8 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
           <a class="btn btn--solid" href={outbound.href} target="_blank" rel="noopener" data-track-tool={tool.id}>
             {t('tool.visit', { domain })} <span class="btn__arrow" aria-hidden="true">↗</span>
           </a>
+          <button class="btn" type="button" data-save-page={tool.id} aria-pressed="false"
+            data-label-save={t('tool.save')} data-label-saved={t('tool.saved')}>{t('tool.save')}</button>
           <button class="btn" type="button" data-copy data-label-done={t('tool.copied')}>{t('tool.copy')}</button>
         </div>
       </div>
