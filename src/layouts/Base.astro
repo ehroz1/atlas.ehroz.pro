@@ -163,6 +163,46 @@ const jsonLd =
         });
         window.__atlasSeen = marked;
       })();
+      /* Saved sites, per browser (local only, nothing is sent anywhere).
+         localStorage `atlas:saved` = [ids]; the first id is the top one.
+         Save toggles; "up" moves a saved card to the top. Saved cards are
+         listed first in the grid (Gallery.astro listens to `atlas:saved`). */
+      (function () {
+        var KEY = 'atlas:saved', saved = [];
+        try { saved = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+        if (!Array.isArray(saved)) saved = [];
+        var persist = function () { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} };
+        var paint = function () {
+          document.querySelectorAll('[data-card]').forEach(function (card) {
+            var on = saved.indexOf(card.getAttribute('data-id')) >= 0;
+            card.classList.toggle('is-saved', on);
+            var acts = card.querySelector('[data-card-actions]');
+            if (acts) acts.hidden = false;
+            var b = card.querySelector('[data-save]');
+            if (b) {
+              b.setAttribute('aria-pressed', on ? 'true' : 'false');
+              var l = b.getAttribute(on ? 'data-label-saved' : 'data-label-save');
+              b.setAttribute('aria-label', l); b.setAttribute('title', l);
+            }
+            var up = card.querySelector('[data-save-up]');
+            if (up) up.hidden = !on || saved[0] === card.getAttribute('data-id');
+          });
+        };
+        window.__atlasSaved = function () { return saved.slice(); };
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest && e.target.closest('[data-save], [data-save-up]');
+          if (!btn) return;
+          var card = btn.closest('[data-card]');
+          if (!card) return;
+          var id = card.getAttribute('data-id');
+          var rest = saved.filter(function (x) { return x !== id; });
+          if (btn.hasAttribute('data-save-up')) saved = [id].concat(rest);
+          else saved = saved.indexOf(id) >= 0 ? rest : [id].concat(rest);
+          persist(); paint();
+          document.dispatchEvent(new CustomEvent('atlas:saved', { detail: { ids: saved.slice() } }));
+        });
+        paint();
+      })();
     </script>
     <Analytics lang={lang} />
   </body>

@@ -70,6 +70,9 @@ export const en = {
 
   'card.new': 'New',
   'card.seen': 'Viewed',
+  'card.save': 'Save {name}',
+  'card.saved': 'Remove {name} from saved',
+  'card.up': 'Move {name} to the top of saved',
 
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Open {domain}',

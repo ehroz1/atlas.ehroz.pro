@@ -69,6 +69,9 @@ export const ru: Record<UIKey, string> = {
 
   'card.new': 'Новое',
   'card.seen': 'Смотрели',
+  'card.save': 'Сохранить {name}',
+  'card.saved': 'Убрать {name} из сохранённых',
+  'card.up': 'Поднять {name} вверх в сохранённых',
 
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Открыть {domain}',

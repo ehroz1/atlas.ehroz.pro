@@ -82,6 +82,16 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         ranks.forEach(function (rank, i) { cards.splice(rank, 0, own[i]); });
       }
 
+      // saved sites (localStorage atlas:saved, first = top) go first
+      var saved = [];
+      try { saved = JSON.parse(localStorage.getItem('atlas:saved') || '[]'); } catch (e) {}
+      if (Array.isArray(saved) && saved.length) {
+        var byId = {};
+        cards.forEach(function (c) { byId[c.getAttribute('data-id')] = c; });
+        var top = saved.filter(function (id) { return byId[id]; }).map(function (id) { return byId[id]; });
+        cards = top.concat(cards.filter(function (c) { return top.indexOf(c) < 0; }));
+      }
+
       cards.forEach(function (c) { grid.appendChild(c); });
     })();
   </script>
@@ -106,6 +116,14 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     const original = Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'));
     const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim();
 
+    /* saved cards first, in saved order; the rest keep their order */
+    const pinned = (list: HTMLElement[]) => {
+      const saved: string[] = (window as any).__atlasSaved?.() ?? [];
+      const rank = (c: HTMLElement) => { const i = saved.indexOf(c.dataset.id!); return i < 0 ? Infinity : i; };
+      return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));
+    };
+    let current: { ids: Set<string>; q: string } | null = null;
+
     const apply = ({ ids, q }: { ids: Set<string>; q: string }) => {
       const nq = normalize(q);
       const lead: HTMLElement[] = [];
@@ -115,7 +133,8 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         card.hidden = !match;
         if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
       }
-      grid.append(...lead, ...rest, ...original.filter((c) => c.hidden));
+      current = { ids, q };
+      grid.append(...pinned(lead), ...pinned(rest), ...original.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
       if (count) {
         const cat = new Intl.PluralRules(count.dataset.lang).select(shown);
@@ -130,6 +149,10 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
 
     const last = (window as any).__atlasFilter;
     if (last) apply(last);
+    document.addEventListener('atlas:saved', () => {
+      if (current) return apply(current);
+      grid.prepend(...pinned(Array.from(grid.querySelectorAll<HTMLElement>('[data-card]'))));
+    });
     document.addEventListener('atlas:filter', (e) => apply((e as CustomEvent).detail));
     document.querySelector('[data-search-reset]')?.addEventListener('click', () => {
       document.dispatchEvent(new Event('atlas:reset'));
