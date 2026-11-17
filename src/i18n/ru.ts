@@ -88,6 +88,8 @@ export const ru: Record<UIKey, string> = {
   'tool.alternatives': 'Альтернативы {name}',
   'tool.similar': 'Похожие сайты',
   'tool.seeAll': 'Смотреть все',
+  'tool.save': 'Сохранить',
+  'tool.saved': 'Сохранено ✓',
   'tool.copy': 'Скопировать ссылку',
   'tool.copied': 'Скопировано',
   'tool.shotAlt': 'Главная страница {name}',

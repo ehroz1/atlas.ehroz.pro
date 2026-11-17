@@ -190,6 +190,12 @@ const jsonLd =
               up.disabled = saved[0] === card.getAttribute('data-id');
             }
           });
+          document.querySelectorAll('[data-save-page]').forEach(function (b) {
+            var on = saved.indexOf(b.getAttribute('data-save-page')) >= 0;
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            b.classList.toggle('is-on', on);
+            b.textContent = b.getAttribute(on ? 'data-label-saved' : 'data-label-save');
+          });
           document.querySelectorAll('[data-saved-toggle]').forEach(function (b) {
             b.hidden = false;
             var n = b.querySelector('[data-saved-count]');
@@ -204,11 +210,11 @@ const jsonLd =
         });
         window.__atlasSaved = function () { return saved.slice(); };
         document.addEventListener('click', function (e) {
-          var btn = e.target.closest && e.target.closest('[data-save], [data-save-up]');
+          var btn = e.target.closest && e.target.closest('[data-save], [data-save-up], [data-save-page]');
           if (!btn) return;
           var card = btn.closest('[data-card]');
-          if (!card) return;
-          var id = card.getAttribute('data-id');
+          var id = btn.hasAttribute('data-save-page') ? btn.getAttribute('data-save-page') : card && card.getAttribute('data-id');
+          if (!id) return;
           var rest = saved.filter(function (x) { return x !== id; });
           if (btn.hasAttribute('data-save-up')) saved = [id].concat(rest);
           else saved = saved.indexOf(id) >= 0 ? rest : [id].concat(rest);

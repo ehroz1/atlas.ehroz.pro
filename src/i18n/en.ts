@@ -89,6 +89,8 @@ export const en = {
   'tool.alternatives': 'Alternatives to {name}',
   'tool.similar': 'Similar sites',
   'tool.seeAll': 'See all',
+  'tool.save': 'Save',
+  'tool.saved': 'Saved ✓',
   'tool.copy': 'Copy link',
   'tool.copied': 'Copied',
   'tool.shotAlt': '{name} homepage',
