@@ -1415,31 +1415,6 @@
     }
   },
   {
-    "id": "blush",
-    "name": "Blush",
-    "url": "https://blush.design",
-    "category": "icons-illustrations",
-    "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "illustrations",
-      "vectors",
-      "customisable"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Illustration packs you can recolour and mix.",
-      "ru": "Наборы иллюстраций, которые можно перекрашивать и комбинировать."
-    },
-    "description": {
-      "en": "Collections by independent artists with a built-in editor for changing colours and swapping parts. Exports to PNG and SVG.",
-      "ru": "Коллекции независимых художников со встроенным редактором для смены цветов и замены деталей. Выгрузка в PNG и SVG."
-    }
-  },
-  {
     "id": "texturelabs",
     "name": "Texturelabs",
     "url": "https://texturelabs.org",
@@ -2081,32 +2056,6 @@
     }
   },
   {
-    "id": "refero",
-    "name": "Refero",
-    "url": "https://refero.design",
-    "category": "inspiration",
-    "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "ui",
-      "ux",
-      "references",
-      "screens"
-    ],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Searchable screenshots of real websites and apps.",
-      "ru": "Скриншоты настоящих сайтов и приложений с поиском."
-    },
-    "description": {
-      "en": "Tens of thousands of web and iOS screens, filterable by pattern and category. Handy at the start of an interface project.",
-      "ru": "Десятки тысяч экранов веба и iOS с фильтрами по паттернам и категориям. Удобно в начале работы над интерфейсом."
-    }
-  },
-  {
     "id": "logggos",
     "name": "Logggos",
     "url": "https://www.logggos.club",
@@ -2593,44 +2542,6 @@
     "own": true
   },
   {
-    "id": "haikei",
-    "name": "Haikei",
-    "url": "https://haikei.app",
-    "category": "design-generators",
-    "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["svg", "generative", "backgrounds", "wallpapers"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Generate waves, blobs and gradients as SVG.",
-      "ru": "Волны, пятна и градиенты в виде SVG-графики."
-    },
-    "description": {
-      "en": "Pick a generator, tweak the colours and randomise until it looks right, then export clean SVG or PNG for backgrounds, covers and wallpapers.",
-      "ru": "Выбираете генератор, правите цвета и нажимаете «случайно», пока не понравится. Потом экспорт в чистый SVG или PNG для фонов, обложек и обоев."
-    }
-  },
-  {
-    "id": "pattern-monster",
-    "name": "Pattern Monster",
-    "url": "https://pattern.monster",
-    "category": "design-generators",
-    "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["patterns", "svg", "backgrounds"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Repeatable SVG patterns you can recolour.",
-      "ru": "Бесшовные SVG-паттерны с настройкой цвета."
-    },
-    "description": {
-      "en": "Several hundred patterns with sliders for size, spacing and colour. Copy the CSS or SVG, or download a PNG, for backgrounds and packaging.",
-      "ru": "Несколько сотен узоров с ползунками размера, отступов и цвета. Можно скопировать CSS или SVG либо скачать PNG для фонов и упаковки."
-    }
-  },
-  {
     "id": "uncut-wtf",
     "name": "UNCUT.wtf",
     "url": "https://uncut.wtf",
@@ -2647,25 +2558,6 @@
     "description": {
       "en": "A catalogue of around 160 sans, serif, mono and display fonts, filterable and searchable. Each links to its creator's download.",
       "ru": "Каталог примерно из 160 шрифтов: гротески, антиквы, моно и акцидентные. Есть фильтры и поиск, у каждого ссылка на загрузку у автора."
-    }
-  },
-  {
-    "id": "wakamai-fondue",
-    "name": "Wakamai Fondue",
-    "url": "https://wakamaifondue.com",
-    "category": "typography",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["font inspector", "opentype", "variable fonts"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Drop in a font file and see what it can do.",
-      "ru": "Перетащите файл шрифта и посмотрите, что он умеет."
-    },
-    "description": {
-      "en": "Lists a font's OpenType features, variable axes, languages and glyphs, with live sliders. The local file never leaves your browser.",
-      "ru": "Показывает OpenType-функции, оси вариативности, языки и глифы шрифта, с живыми ползунками. Сам файл не уходит из браузера."
     }
   },
   {
@@ -2704,25 +2596,6 @@
     "description": {
       "en": "A gallery of recent sites you can filter by type, such as portfolio, agency or e-commerce, plus a weekly email digest.",
       "ru": "Галерея свежих сайтов с фильтром по типу: портфолио, агентство, интернет-магазин и другие. Есть еженедельная рассылка."
-    }
-  },
-  {
-    "id": "hoverstates",
-    "name": "Hoverstat.es",
-    "url": "https://hoverstat.es",
-    "category": "web-galleries",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["alternative web design", "experimental", "archive"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "An archive of odd, personal and experimental websites.",
-      "ru": "Архив странных, личных и экспериментальных сайтов."
-    },
-    "description": {
-      "en": "Sites that ignore templates: handmade layouts, strange interactions and independent publishing, shown inside a browser frame.",
-      "ru": "Сайты, которые игнорируют шаблоны: ручная вёрстка, необычные взаимодействия и независимые публикации, показанные в рамке браузера."
     }
   },
   {
@@ -2972,44 +2845,6 @@
     "description": {
       "en": "A showcase of dark-themed sites, a useful reference for contrast, accent colours and imagery on black. Close in spirit to Dark Design.",
       "ru": "Витрина сайтов в тёмной теме. Подсказывает, как работают контраст, акценты и картинки на чёрном. По духу близка к Dark Design."
-    }
-  },
-  {
-    "id": "land-book",
-    "name": "Land-book",
-    "url": "https://land-book.com",
-    "category": "web-galleries",
-    "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["web design", "landing pages", "gallery", "sections"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "A daily-updated gallery of website designs and sections.",
-      "ru": "Ежедневно обновляемая галерея сайтов и отдельных блоков."
-    },
-    "description": {
-      "en": "Browse whole sites or single sections such as pricing, headers and sign-up, filtered by type and colour. Search works on what a design looks like, for example a gradient background.",
-      "ru": "Можно смотреть сайты целиком или отдельные блоки: тарифы, шапки, регистрацию, с фильтрами по типу и цвету. Поиск понимает, как выглядит дизайн, например градиентный фон."
-    }
-  },
-  {
-    "id": "onepagelove",
-    "name": "One Page Love",
-    "url": "https://onepagelove.com",
-    "category": "web-galleries",
-    "pricing": "freemium",
-    "platforms": ["Web"],
-    "tags": ["one page", "web design", "templates", "gallery"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "One-page website inspiration since 2008.",
-      "ru": "Вдохновение одностраничными сайтами с 2008 года."
-    },
-    "description": {
-      "en": "A gallery of single-page sites, with extra sections for typefaces and templates. Updated for more than fifteen years, with a newsletter every two weeks.",
-      "ru": "Галерея одностраничных сайтов, а ещё разделы про шрифты и шаблоны. Обновляется больше пятнадцати лет, раз в две недели выходит рассылка."
     }
   },
   {
