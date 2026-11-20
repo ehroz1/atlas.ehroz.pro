@@ -22,7 +22,6 @@
   { "about": "Video editors", "ids": ["descript", "davinci-resolve"] },
   { "about": "PDF tools", "ids": ["ilovepdf", "convertio"] },
   { "about": "3D and interactive motion", "ids": ["spline", "rive"] },
-  { "about": "Translation and writing", "ids": ["deepl-write", "google-translate"] },
   { "about": "Diagrams", "ids": ["excalidraw", "napkin"] },
   { "about": "Reference collecting", "ids": ["are-na", "cosmos", "same-energy"] },
   { "about": "Mockups", "ids": ["shots", "the-mockup-club", "mockup-world"] },

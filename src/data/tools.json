@@ -846,25 +846,6 @@
     }
   },
   {
-    "id": "google-translate",
-    "name": "Google Translate",
-    "url": "https://translate.google.com",
-    "category": "utilities",
-    "pricing": "free",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["translation", "camera", "offline"],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Translate text, pages and photos in over 100 languages.",
-      "ru": "Перевод текста, страниц и фото на более чем 100 языков."
-    },
-    "description": {
-      "en": "The default translator. Handles text, whole documents, speech and camera input, and can download languages for offline use.",
-      "ru": "Переводчик по умолчанию. Работает с текстом, документами целиком, речью и камерой, а языки можно скачать для работы без интернета."
-    }
-  },
-  {
     "id": "napkin",
     "name": "Napkin AI",
     "url": "https://www.napkin.ai",
