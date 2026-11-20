@@ -1818,25 +1818,6 @@
     }
   },
   {
-    "id": "cubic-bezier",
-    "name": "cubic-bezier.com",
-    "url": "https://cubic-bezier.com",
-    "category": "development",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["css", "animation", "easing"],
-    "added": "2026-11-14",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Draw an easing curve and compare it side by side.",
-      "ru": "Нарисуйте кривую плавности и сравните её с другими."
-    },
-    "description": {
-      "en": "Drag two handles to shape a CSS cubic-bezier, preview the motion against others and copy the value.",
-      "ru": "Двигаете две точки, получаете CSS cubic-bezier, смотрите анимацию рядом с другими кривыми и копируете значение."
-    }
-  },
-  {
     "id": "phosphor-icons",
     "name": "Phosphor Icons",
     "url": "https://phosphoricons.com",
