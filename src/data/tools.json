@@ -270,25 +270,6 @@
     }
   },
   {
-    "id": "caniuse",
-    "name": "Can I use",
-    "url": "https://caniuse.com",
-    "category": "development",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["browser support", "css", "html"],
-    "added": "2026-11-07",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Which browsers support a web feature, at a glance.",
-      "ru": "Какие браузеры поддерживают веб-функцию — с одного взгляда."
-    },
-    "description": {
-      "en": "Support tables for HTML, CSS and JavaScript features across desktop and mobile browsers, with usage percentages and known issues.",
-      "ru": "Таблицы поддержки HTML, CSS и JavaScript в настольных и мобильных браузерах, с долей использования и известными проблемами."
-    }
-  },
-  {
     "id": "raycast",
     "name": "Raycast",
     "url": "https://www.raycast.com",
