@@ -5,19 +5,8 @@
     "url": "https://claude.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "assistant",
-      "writing",
-      "code",
-      "chat"
-    ],
+    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
+    "tags": ["assistant", "writing", "code", "chat"],
     "added": "2026-11-01",
     "updated": "2026-11-13",
     "featured": true,
@@ -36,17 +25,8 @@
     "url": "https://www.perplexity.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "search",
-      "research",
-      "citations"
-    ],
+    "platforms": ["Web", "macOS", "iOS", "Android"],
+    "tags": ["search", "research", "citations"],
     "added": "2026-11-01",
     "updated": "2026-11-13",
     "summary": {
@@ -64,16 +44,8 @@
     "url": "https://cursor.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "macOS",
-      "Windows",
-      "Linux"
-    ],
-    "tags": [
-      "code editor",
-      "agents",
-      "vs code"
-    ],
+    "platforms": ["macOS", "Windows", "Linux"],
+    "tags": ["code editor", "agents", "vs code"],
     "added": "2026-11-02",
     "updated": "2026-11-13",
     "summary": {
@@ -91,15 +63,8 @@
     "url": "https://elevenlabs.io",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "API"
-    ],
-    "tags": [
-      "voice",
-      "text to speech",
-      "dubbing"
-    ],
+    "platforms": ["Web", "API"],
+    "tags": ["voice", "text to speech", "dubbing"],
     "added": "2026-11-02",
     "updated": "2026-11-13",
     "summary": {
@@ -117,13 +82,8 @@
     "url": "https://www.midjourney.com",
     "category": "ai",
     "pricing": "paid",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "image generation",
-      "illustration"
-    ],
+    "platforms": ["Web"],
+    "tags": ["image generation", "illustration"],
     "added": "2026-11-03",
     "updated": "2026-11-13",
     "summary": {
@@ -141,16 +101,8 @@
     "url": "https://www.figma.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "ui design",
-      "prototyping",
-      "collaboration"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["ui design", "prototyping", "collaboration"],
     "added": "2026-11-01",
     "updated": "2026-11-13",
     "featured": true,
@@ -169,15 +121,8 @@
     "url": "https://www.framer.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS"
-    ],
-    "tags": [
-      "website builder",
-      "no-code",
-      "cms"
-    ],
+    "platforms": ["Web", "macOS"],
+    "tags": ["website builder", "no-code", "cms"],
     "added": "2026-11-03",
     "updated": "2026-11-13",
     "summary": {
@@ -195,14 +140,8 @@
     "url": "https://coolors.co",
     "category": "design",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS"
-    ],
-    "tags": [
-      "color",
-      "palettes"
-    ],
+    "platforms": ["Web", "iOS"],
+    "tags": ["color", "palettes"],
     "added": "2026-11-04",
     "updated": "2026-11-13",
     "summary": {
@@ -221,14 +160,8 @@
     "category": "productivity",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "whiteboard",
-      "diagrams",
-      "sketch"
-    ],
+    "platforms": ["Web"],
+    "tags": ["whiteboard", "diagrams", "sketch"],
     "added": "2026-11-04",
     "updated": "2026-11-13",
     "summary": {
@@ -246,16 +179,8 @@
     "url": "https://spline.design",
     "category": "3d-motion",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "3d",
-      "web",
-      "interactive"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["3d", "web", "interactive"],
     "added": "2026-11-05",
     "updated": "2026-11-13",
     "summary": {
@@ -273,16 +198,8 @@
     "url": "https://rive.app",
     "category": "3d-motion",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "animation",
-      "state machines",
-      "runtime"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["animation", "state machines", "runtime"],
     "added": "2026-11-05",
     "updated": "2026-11-13",
     "summary": {
@@ -300,17 +217,8 @@
     "url": "https://github.com",
     "category": "development",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "git",
-      "hosting",
-      "ci",
-      "open source"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["git", "hosting", "ci", "open source"],
     "added": "2026-11-01",
     "updated": "2026-11-13",
     "summary": {
@@ -328,15 +236,8 @@
     "url": "https://vercel.com",
     "category": "development",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "CLI"
-    ],
-    "tags": [
-      "hosting",
-      "deploy",
-      "frontend"
-    ],
+    "platforms": ["Web", "CLI"],
+    "tags": ["hosting", "deploy", "frontend"],
     "added": "2026-11-06",
     "updated": "2026-11-13",
     "summary": {
@@ -355,15 +256,8 @@
     "category": "development",
     "pricing": "freemium",
     "openSource": true,
-    "platforms": [
-      "Web",
-      "API"
-    ],
-    "tags": [
-      "postgres",
-      "auth",
-      "backend"
-    ],
+    "platforms": ["Web", "API"],
+    "tags": ["postgres", "auth", "backend"],
     "added": "2026-11-06",
     "updated": "2026-11-13",
     "summary": {
@@ -381,14 +275,8 @@
     "url": "https://regex101.com",
     "category": "development",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "regex",
-      "debugging",
-      "utility"
-    ],
+    "platforms": ["Web"],
+    "tags": ["regex", "debugging", "utility"],
     "added": "2026-11-07",
     "updated": "2026-11-13",
     "summary": {
@@ -406,14 +294,8 @@
     "url": "https://caniuse.com",
     "category": "development",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "browser support",
-      "css",
-      "html"
-    ],
+    "platforms": ["Web"],
+    "tags": ["browser support", "css", "html"],
     "added": "2026-11-07",
     "updated": "2026-11-13",
     "summary": {
@@ -431,15 +313,8 @@
     "url": "https://www.raycast.com",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": [
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "launcher",
-      "shortcuts",
-      "extensions"
-    ],
+    "platforms": ["macOS", "Windows"],
+    "tags": ["launcher", "shortcuts", "extensions"],
     "added": "2026-11-08",
     "updated": "2026-11-13",
     "summary": {
@@ -457,17 +332,8 @@
     "url": "https://linear.app",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows",
-      "iOS"
-    ],
-    "tags": [
-      "issue tracking",
-      "projects",
-      "teams"
-    ],
+    "platforms": ["Web", "macOS", "Windows", "iOS"],
+    "tags": ["issue tracking", "projects", "teams"],
     "added": "2026-11-08",
     "updated": "2026-11-13",
     "summary": {
@@ -485,18 +351,8 @@
     "url": "https://www.notion.com",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "notes",
-      "wiki",
-      "databases"
-    ],
+    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
+    "tags": ["notes", "wiki", "databases"],
     "added": "2026-11-09",
     "updated": "2026-11-13",
     "summary": {
@@ -514,16 +370,8 @@
     "url": "https://www.descript.com",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "video editing",
-      "podcast",
-      "transcription"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["video editing", "podcast", "transcription"],
     "added": "2026-11-09",
     "updated": "2026-11-13",
     "summary": {
@@ -541,16 +389,8 @@
     "url": "https://www.blackmagicdesign.com/products/davinciresolve",
     "category": "video-audio",
     "pricing": "free",
-    "platforms": [
-      "macOS",
-      "Windows",
-      "Linux"
-    ],
-    "tags": [
-      "video editing",
-      "color grading",
-      "audio"
-    ],
+    "platforms": ["macOS", "Windows", "Linux"],
+    "tags": ["video editing", "color grading", "audio"],
     "added": "2026-11-10",
     "updated": "2026-11-13",
     "summary": {
@@ -569,13 +409,8 @@
     "category": "typography",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "fonts",
-      "open license"
-    ],
+    "platforms": ["Web"],
+    "tags": ["fonts", "open license"],
     "added": "2026-11-10",
     "updated": "2026-11-13",
     "summary": {
@@ -593,13 +428,8 @@
     "url": "https://www.fontshare.com",
     "category": "typography",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "fonts",
-      "free for commercial use"
-    ],
+    "platforms": ["Web"],
+    "tags": ["fonts", "free for commercial use"],
     "added": "2026-11-11",
     "updated": "2026-11-13",
     "summary": {
@@ -617,13 +447,8 @@
     "url": "https://godly.website",
     "category": "web-galleries",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "web design",
-      "gallery"
-    ],
+    "platforms": ["Web"],
+    "tags": ["web design", "gallery"],
     "added": "2026-11-11",
     "updated": "2026-11-14",
     "summary": {
@@ -641,14 +466,8 @@
     "url": "https://mobbin.com",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "ui patterns",
-      "mobile",
-      "screens"
-    ],
+    "platforms": ["Web"],
+    "tags": ["ui patterns", "mobile", "screens"],
     "added": "2026-11-12",
     "updated": "2026-11-13",
     "summary": {
@@ -667,15 +486,8 @@
     "category": "learning",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "documentation",
-      "html",
-      "css",
-      "javascript"
-    ],
+    "platforms": ["Web"],
+    "tags": ["documentation", "html", "css", "javascript"],
     "added": "2026-11-12",
     "updated": "2026-11-13",
     "summary": {
@@ -693,14 +505,8 @@
     "url": "https://tympanus.net/codrops/",
     "category": "learning",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "tutorials",
-      "creative coding",
-      "webgl"
-    ],
+    "platforms": ["Web"],
+    "tags": ["tutorials", "creative coding", "webgl"],
     "added": "2026-11-12",
     "updated": "2026-11-13",
     "summary": {
@@ -719,14 +525,8 @@
     "category": "learning",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "course",
-      "web development",
-      "beginners"
-    ],
+    "platforms": ["Web"],
+    "tags": ["course", "web development", "beginners"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -744,15 +544,8 @@
     "url": "https://picta.cc",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "stock photos",
-      "search",
-      "icons",
-      "video"
-    ],
+    "platforms": ["Web"],
+    "tags": ["stock photos", "search", "icons", "video"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -771,14 +564,8 @@
     "url": "https://ehroz.pro/bla-bla/",
     "category": "utilities",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "transcription",
-      "audio",
-      "speech to text"
-    ],
+    "platforms": ["Web"],
+    "tags": ["transcription", "audio", "speech to text"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -797,16 +584,8 @@
     "url": "https://grok.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "assistant",
-      "chat",
-      "image generation"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["assistant", "chat", "image generation"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -824,19 +603,8 @@
     "url": "https://chatgpt.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "assistant",
-      "chat",
-      "image generation",
-      "spreadsheets"
-    ],
+    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
+    "tags": ["assistant", "chat", "image generation", "spreadsheets"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -855,17 +623,8 @@
     "category": "ai",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "assistant",
-      "chat",
-      "reasoning",
-      "open weights"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["assistant", "chat", "reasoning", "open weights"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -883,15 +642,8 @@
     "url": "https://aistudio.google.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "gemini",
-      "prompts",
-      "image editing",
-      "api"
-    ],
+    "platforms": ["Web"],
+    "tags": ["gemini", "prompts", "image editing", "api"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -909,15 +661,8 @@
     "url": "https://www.krea.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "image generation",
-      "video",
-      "upscaling",
-      "real-time"
-    ],
+    "platforms": ["Web"],
+    "tags": ["image generation", "video", "upscaling", "real-time"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -935,14 +680,8 @@
     "url": "https://firefly.adobe.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "image generation",
-      "adobe",
-      "video"
-    ],
+    "platforms": ["Web"],
+    "tags": ["image generation", "adobe", "video"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -960,16 +699,8 @@
     "url": "https://www.pixelcut.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "uncrop",
-      "background removal",
-      "photo editing"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["uncrop", "background removal", "photo editing"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -987,15 +718,8 @@
     "url": "https://higgsfield.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS"
-    ],
-    "tags": [
-      "video generation",
-      "image generation",
-      "camera moves"
-    ],
+    "platforms": ["Web", "iOS"],
+    "tags": ["video generation", "image generation", "camera moves"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1013,13 +737,8 @@
     "url": "https://app.klingai.com",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "video generation",
-      "image to video"
-    ],
+    "platforms": ["Web"],
+    "tags": ["video generation", "image to video"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1037,14 +756,8 @@
     "url": "https://pika.art",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS"
-    ],
-    "tags": [
-      "video generation",
-      "effects"
-    ],
+    "platforms": ["Web", "iOS"],
+    "tags": ["video generation", "effects"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1062,14 +775,8 @@
     "url": "https://www.genspark.ai",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "agent",
-      "slides",
-      "research"
-    ],
+    "platforms": ["Web"],
+    "tags": ["agent", "slides", "research"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1087,14 +794,8 @@
     "url": "https://lovable.dev",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "app builder",
-      "no-code",
-      "agent"
-    ],
+    "platforms": ["Web"],
+    "tags": ["app builder", "no-code", "agent"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1112,14 +813,8 @@
     "url": "https://platform.claude.com/docs/en/resources/prompt-library/library",
     "category": "ai",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "prompts",
-      "examples",
-      "anthropic"
-    ],
+    "platforms": ["Web"],
+    "tags": ["prompts", "examples", "anthropic"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1137,15 +832,8 @@
     "url": "https://prompthero.com/midjourney-prompts",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "prompts",
-      "midjourney",
-      "3d",
-      "image generation"
-    ],
+    "platforms": ["Web"],
+    "tags": ["prompts", "midjourney", "3d", "image generation"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1163,14 +851,8 @@
     "url": "https://filatov.design/prompts",
     "category": "ai",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "prompts",
-      "styles",
-      "image generation"
-    ],
+    "platforms": ["Web"],
+    "tags": ["prompts", "styles", "image generation"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1188,16 +870,8 @@
     "url": "https://www.deepl.com/en/write",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "Windows",
-      "macOS"
-    ],
-    "tags": [
-      "writing",
-      "grammar",
-      "translation"
-    ],
+    "platforms": ["Web", "Windows", "macOS"],
+    "tags": ["writing", "grammar", "translation"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1215,16 +889,8 @@
     "url": "https://translate.google.com",
     "category": "utilities",
     "pricing": "free",
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "translation",
-      "camera",
-      "offline"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["translation", "camera", "offline"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1242,14 +908,8 @@
     "url": "https://www.napkin.ai",
     "category": "productivity",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "diagrams",
-      "infographics",
-      "mind maps"
-    ],
+    "platforms": ["Web"],
+    "tags": ["diagrams", "infographics", "mind maps"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1267,14 +927,8 @@
     "url": "https://unsplash.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "photos",
-      "stock",
-      "free"
-    ],
+    "platforms": ["Web"],
+    "tags": ["photos", "stock", "free"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1292,14 +946,8 @@
     "url": "https://www.pexels.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "photos",
-      "video",
-      "stock"
-    ],
+    "platforms": ["Web"],
+    "tags": ["photos", "video", "stock"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1317,15 +965,8 @@
     "url": "https://www.freepik.com",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "vectors",
-      "photos",
-      "templates",
-      "ai"
-    ],
+    "platforms": ["Web"],
+    "tags": ["vectors", "photos", "templates", "ai"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1343,16 +984,8 @@
     "url": "https://icons8.com",
     "category": "icons-illustrations",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "icons",
-      "illustrations",
-      "photos"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["icons", "illustrations", "photos"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1370,14 +1003,8 @@
     "url": "https://mixkit.co",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "stock video",
-      "music",
-      "sound effects"
-    ],
+    "platforms": ["Web"],
+    "tags": ["stock video", "music", "sound effects"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1395,14 +1022,8 @@
     "url": "https://sapiens.ui8.net",
     "category": "icons-illustrations",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "illustrations",
-      "characters",
-      "builder"
-    ],
+    "platforms": ["Web"],
+    "tags": ["illustrations", "characters", "builder"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1420,15 +1041,8 @@
     "url": "https://texturelabs.org",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "textures",
-      "grain",
-      "paper",
-      "overlays"
-    ],
+    "platforms": ["Web"],
+    "tags": ["textures", "grain", "paper", "overlays"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1446,14 +1060,8 @@
     "url": "https://themockup.club",
     "category": "mockups",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "mockups",
-      "psd",
-      "branding"
-    ],
+    "platforms": ["Web"],
+    "tags": ["mockups", "psd", "branding"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1471,14 +1079,8 @@
     "url": "https://artlist.io",
     "category": "assets",
     "pricing": "paid",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "music",
-      "stock video",
-      "sound effects"
-    ],
+    "platforms": ["Web"],
+    "tags": ["music", "stock video", "sound effects"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1496,14 +1098,8 @@
     "url": "https://mobygratis.com",
     "category": "assets",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "music",
-      "royalty free",
-      "film"
-    ],
+    "platforms": ["Web"],
+    "tags": ["music", "royalty free", "film"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1521,15 +1117,8 @@
     "url": "https://www.photoroom.com/tools/background-remover",
     "category": "design",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "background removal",
-      "product photos"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["background removal", "product photos"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1547,15 +1136,8 @@
     "url": "https://halftonemaker.com",
     "category": "design-generators",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "halftone",
-      "dithering",
-      "svg",
-      "effects"
-    ],
+    "platforms": ["Web"],
+    "tags": ["halftone", "dithering", "svg", "effects"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1573,14 +1155,8 @@
     "url": "https://tools.ui-layouts.com/clip-paths",
     "category": "development",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "svg",
-      "css",
-      "clip-path"
-    ],
+    "platforms": ["Web"],
+    "tags": ["svg", "css", "clip-path"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1598,14 +1174,8 @@
     "url": "https://svgconverter.online",
     "category": "file-converters",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "svg",
-      "vectorize",
-      "png"
-    ],
+    "platforms": ["Web"],
+    "tags": ["svg", "vectorize", "png"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1623,14 +1193,8 @@
     "url": "https://spacetypegenerator.com",
     "category": "design-generators",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "type",
-      "generative",
-      "poster"
-    ],
+    "platforms": ["Web"],
+    "tags": ["type", "generative", "poster"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1648,14 +1212,8 @@
     "url": "https://meshgradient.in",
     "category": "design-generators",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "gradients",
-      "backgrounds",
-      "png"
-    ],
+    "platforms": ["Web"],
+    "tags": ["gradients", "backgrounds", "png"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1673,14 +1231,8 @@
     "url": "https://antlii.work",
     "category": "design-generators",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "generative",
-      "procedural",
-      "graphics"
-    ],
+    "platforms": ["Web"],
+    "tags": ["generative", "procedural", "graphics"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1698,14 +1250,8 @@
     "url": "https://www.photopea.com",
     "category": "design",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "photo editing",
-      "psd",
-      "photoshop alternative"
-    ],
+    "platforms": ["Web"],
+    "tags": ["photo editing", "psd", "photoshop alternative"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1724,17 +1270,8 @@
     "category": "utilities",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "macOS",
-      "Windows",
-      "Linux"
-    ],
-    "tags": [
-      "upscaling",
-      "ai",
-      "desktop",
-      "open source"
-    ],
+    "platforms": ["macOS", "Windows", "Linux"],
+    "tags": ["upscaling", "ai", "desktop", "open source"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1752,15 +1289,8 @@
     "url": "https://auphonic.com",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "audio",
-      "podcast",
-      "noise reduction",
-      "loudness"
-    ],
+    "platforms": ["Web"],
+    "tags": ["audio", "podcast", "noise reduction", "loudness"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1778,14 +1308,8 @@
     "url": "https://podcast.adobe.com/en/enhance",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "audio",
-      "noise reduction",
-      "speech"
-    ],
+    "platforms": ["Web"],
+    "tags": ["audio", "noise reduction", "speech"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1803,14 +1327,8 @@
     "url": "https://turboscribe.ai",
     "category": "video-audio",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "transcription",
-      "subtitles",
-      "speech to text"
-    ],
+    "platforms": ["Web"],
+    "tags": ["transcription", "subtitles", "speech to text"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1828,14 +1346,8 @@
     "url": "https://tools.rotato.app/compress",
     "category": "video-audio",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "video",
-      "compression",
-      "private"
-    ],
+    "platforms": ["Web"],
+    "tags": ["video", "compression", "private"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1853,17 +1365,8 @@
     "url": "https://www.speedtest.net",
     "category": "utilities",
     "pricing": "free",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "network",
-      "internet speed"
-    ],
+    "platforms": ["Web", "macOS", "Windows", "iOS", "Android"],
+    "tags": ["network", "internet speed"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1881,14 +1384,8 @@
     "url": "https://convertio.co",
     "category": "file-converters",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "converter",
-      "files",
-      "documents"
-    ],
+    "platforms": ["Web"],
+    "tags": ["converter", "files", "documents"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1906,19 +1403,8 @@
     "url": "https://www.ilovepdf.com",
     "category": "file-converters",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "Windows",
-      "macOS",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "pdf",
-      "merge",
-      "convert",
-      "compress"
-    ],
+    "platforms": ["Web", "Windows", "macOS", "iOS", "Android"],
+    "tags": ["pdf", "merge", "convert", "compress"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -1936,14 +1422,8 @@
     "url": "https://www.qrcode-monkey.com",
     "category": "utilities",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "qr",
-      "logo",
-      "vector"
-    ],
+    "platforms": ["Web"],
+    "tags": ["qr", "logo", "vector"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1961,15 +1441,8 @@
     "url": "https://www.cosmos.so",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS"
-    ],
-    "tags": [
-      "moodboards",
-      "references",
-      "pinterest alternative"
-    ],
+    "platforms": ["Web", "iOS"],
+    "tags": ["moodboards", "references", "pinterest alternative"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -1987,13 +1460,8 @@
     "url": "https://same.energy",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "visual search",
-      "references"
-    ],
+    "platforms": ["Web"],
+    "tags": ["visual search", "references"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2011,14 +1479,8 @@
     "url": "https://dribbble.com",
     "category": "inspiration",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "portfolio",
-      "ui design",
-      "community"
-    ],
+    "platforms": ["Web"],
+    "tags": ["portfolio", "ui design", "community"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2036,14 +1498,8 @@
     "url": "https://logobaker.pro",
     "category": "branding",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "logos",
-      "feedback",
-      "community"
-    ],
+    "platforms": ["Web"],
+    "tags": ["logos", "feedback", "community"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2061,13 +1517,8 @@
     "url": "https://www.logggos.club",
     "category": "branding",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "logos",
-      "branding"
-    ],
+    "platforms": ["Web"],
+    "tags": ["logos", "branding"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2085,14 +1536,8 @@
     "url": "https://logobook.com",
     "category": "branding",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "logos",
-      "trademarks",
-      "symbols"
-    ],
+    "platforms": ["Web"],
+    "tags": ["logos", "trademarks", "symbols"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2110,14 +1555,8 @@
     "url": "https://brandingstyleguides.com",
     "category": "branding",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "brand guidelines",
-      "pdf",
-      "archive"
-    ],
+    "platforms": ["Web"],
+    "tags": ["brand guidelines", "pdf", "archive"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2135,14 +1574,8 @@
     "url": "https://www.pentagram.com",
     "category": "branding",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "branding",
-      "packaging",
-      "design studio"
-    ],
+    "platforms": ["Web"],
+    "tags": ["branding", "packaging", "design studio"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2160,14 +1593,8 @@
     "url": "https://www.dark.design",
     "category": "web-galleries",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "web design",
-      "dark mode",
-      "gallery"
-    ],
+    "platforms": ["Web"],
+    "tags": ["web design", "dark mode", "gallery"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2185,14 +1612,8 @@
     "url": "https://www.brusheezy.com",
     "category": "assets",
     "pricing": "freemium",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "brushes",
-      "patterns",
-      "photoshop"
-    ],
+    "platforms": ["Web"],
+    "tags": ["brushes", "patterns", "photoshop"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2210,14 +1631,8 @@
     "url": "https://xuix.ru/pack",
     "category": "icons-illustrations",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "icons",
-      "images",
-      "design resources"
-    ],
+    "platforms": ["Web"],
+    "tags": ["icons", "images", "design resources"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2235,14 +1650,8 @@
     "url": "https://tbc-ornaments.uz",
     "category": "inspiration",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "ornament",
-      "pattern",
-      "culture"
-    ],
+    "platforms": ["Web"],
+    "tags": ["ornament", "pattern", "culture"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2260,14 +1669,8 @@
     "url": "https://myskotom.ru",
     "category": "typography",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "cyrillic",
-      "fonts",
-      "free"
-    ],
+    "platforms": ["Web"],
+    "tags": ["cyrillic", "fonts", "free"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2285,14 +1688,8 @@
     "url": "https://pdimagearchive.org",
     "category": "museums",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "public domain",
-      "archive",
-      "old images"
-    ],
+    "platforms": ["Web"],
+    "tags": ["public domain", "archive", "old images"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2310,14 +1707,8 @@
     "url": "https://public.work",
     "category": "museums",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "public domain",
-      "visual search",
-      "museums"
-    ],
+    "platforms": ["Web"],
+    "tags": ["public domain", "visual search", "museums"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2335,14 +1726,8 @@
     "url": "https://commons.wikimedia.org",
     "category": "museums",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "images",
-      "media",
-      "open licence"
-    ],
+    "platforms": ["Web"],
+    "tags": ["images", "media", "open licence"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2360,14 +1745,8 @@
     "url": "https://www.si.edu/openaccess",
     "category": "museums",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "museum",
-      "science",
-      "open access"
-    ],
+    "platforms": ["Web"],
+    "tags": ["museum", "science", "open access"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2385,14 +1764,8 @@
     "url": "https://www.metmuseum.org/about-the-met/policies-and-documents/open-access",
     "category": "museums",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "museum",
-      "art",
-      "open access"
-    ],
+    "platforms": ["Web"],
+    "tags": ["museum", "art", "open access"],
     "added": "2026-11-13",
     "updated": "2026-11-14",
     "summary": {
@@ -2410,16 +1783,8 @@
     "url": "https://headai.bot/?ref=WEE",
     "category": "ai",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "Telegram"
-    ],
-    "tags": [
-      "image generation",
-      "video generation",
-      "audio",
-      "all-in-one"
-    ],
+    "platforms": ["Web", "Telegram"],
+    "tags": ["image generation", "video generation", "audio", "all-in-one"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2437,14 +1802,8 @@
     "url": "https://www.fonts.uprock.ru",
     "category": "typography",
     "pricing": "free",
-    "platforms": [
-      "Web"
-    ],
-    "tags": [
-      "cyrillic",
-      "fonts",
-      "free"
-    ],
+    "platforms": ["Web"],
+    "tags": ["cyrillic", "fonts", "free"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2462,16 +1821,8 @@
     "url": "https://temp-mail.org",
     "category": "utilities",
     "pricing": "freemium",
-    "platforms": [
-      "Web",
-      "iOS",
-      "Android"
-    ],
-    "tags": [
-      "email",
-      "disposable",
-      "privacy"
-    ],
+    "platforms": ["Web", "iOS", "Android"],
+    "tags": ["email", "disposable", "privacy"],
     "added": "2026-11-13",
     "updated": "2026-11-13",
     "summary": {
@@ -2489,17 +1840,8 @@
     "url": "https://ehroz.pro",
     "category": "utilities",
     "pricing": "free",
-    "platforms": [
-      "Web",
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "apps",
-      "tools",
-      "browser extensions",
-      "astana"
-    ],
+    "platforms": ["Web", "macOS", "Windows"],
+    "tags": ["apps", "tools", "browser extensions", "astana"],
     "added": "2026-11-14",
     "updated": "2026-11-13",
     "summary": {
@@ -2519,16 +1861,8 @@
     "category": "utilities",
     "pricing": "free",
     "openSource": true,
-    "platforms": [
-      "macOS",
-      "Windows"
-    ],
-    "tags": [
-      "desktop",
-      "snow",
-      "fun",
-      "menu bar"
-    ],
+    "platforms": ["macOS", "Windows"],
+    "tags": ["desktop", "snow", "fun", "menu bar"],
     "added": "2026-11-14",
     "updated": "2026-11-13",
     "summary": {
