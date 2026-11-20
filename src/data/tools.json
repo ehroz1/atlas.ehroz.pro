@@ -270,25 +270,6 @@
     }
   },
   {
-    "id": "regex101",
-    "name": "regex101",
-    "url": "https://regex101.com",
-    "category": "development",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["regex", "debugging", "utility"],
-    "added": "2026-11-07",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Write a regular expression and see why it matches.",
-      "ru": "Пишете регулярное выражение и видите, почему оно совпадает."
-    },
-    "description": {
-      "en": "Test regex against sample text with a plain-English explanation of every token. Supports PCRE, JavaScript, Python, Go and more.",
-      "ru": "Проверка регулярок на примере текста с объяснением каждого токена простыми словами. Поддерживает PCRE, JavaScript, Python, Go и другие."
-    }
-  },
-  {
     "id": "caniuse",
     "name": "Can I use",
     "url": "https://caniuse.com",
