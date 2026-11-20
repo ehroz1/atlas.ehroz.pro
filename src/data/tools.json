@@ -960,25 +960,6 @@
     }
   },
   {
-    "id": "sapiens",
-    "name": "Sapiens",
-    "url": "https://sapiens.ui8.net",
-    "category": "icons-illustrations",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["illustrations", "characters", "builder"],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "Assemble a character illustration from parts.",
-      "ru": "Соберите иллюстрацию персонажа из частей."
-    },
-    "description": {
-      "en": "Pick pose, clothes, hair and skin tone, then export a flat illustration as PNG or SVG.",
-      "ru": "Выберите позу, одежду, причёску и цвет кожи и выгрузите плоскую иллюстрацию в PNG или SVG."
-    }
-  },
-  {
     "id": "texturelabs",
     "name": "Texturelabs",
     "url": "https://texturelabs.org",

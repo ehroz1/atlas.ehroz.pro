@@ -8,7 +8,7 @@
   { "about": "Photo upscaling", "ids": ["upscayl", "krea"] },
   { "about": "Free stock photos", "ids": ["unsplash", "pexels", "freepik", "picta"] },
   { "about": "Stock video and music", "ids": ["mixkit", "artlist", "mobygratis", "pexels"] },
-  { "about": "Illustrations", "ids": ["sapiens", "icons8", "freepik"] },
+  { "about": "Illustrations", "ids": ["icons8", "freepik"] },
   { "about": "Icons", "ids": ["icons8", "xuix-pack", "phosphor-icons", "noun-project"] },
   { "about": "Textures and brushes", "ids": ["texturelabs", "brusheezy"] },
   { "about": "Public-domain and museum images", "ids": ["smithsonian-open-access", "met-open-access", "pd-image-archive", "public-work"] },
