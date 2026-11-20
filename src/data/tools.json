@@ -154,26 +154,6 @@
     }
   },
   {
-    "id": "excalidraw",
-    "name": "Excalidraw",
-    "url": "https://excalidraw.com",
-    "category": "productivity",
-    "pricing": "free",
-    "openSource": true,
-    "platforms": ["Web"],
-    "tags": ["whiteboard", "diagrams", "sketch"],
-    "added": "2026-11-04",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "A whiteboard with a hand-drawn look, right in the tab.",
-      "ru": "Доска с «нарисованными от руки» схемами прямо во вкладке."
-    },
-    "description": {
-      "en": "Sketch diagrams and flows that look drawn by hand. No account needed, shareable links, end-to-end encrypted collaboration. Open source.",
-      "ru": "Рисуйте схемы и потоки, которые выглядят как набросок от руки. Без аккаунта, со ссылками для доступа и сквозным шифрованием при совместной работе. Открытый код."
-    }
-  },
-  {
     "id": "spline",
     "name": "Spline",
     "url": "https://spline.design",
