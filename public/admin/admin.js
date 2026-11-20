@@ -440,7 +440,6 @@ async function removeTool(tool) {
 
 /* ---------- wiring ---------- */
 document.addEventListener('DOMContentLoaded', async () => {
-  $('#repo-name').textContent = REPO;
   if (location.hostname.endsWith('github.io')) $('#site-link').href = '../';
 
   $('#login-form').addEventListener('submit', async (e) => {

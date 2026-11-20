@@ -24,14 +24,6 @@
 <!-- вход -->
 <section id="login" class="panel narrow" hidden>
   <h1>Вход</h1>
-  <p class="muted">Админка сохраняет изменения прямо в репозиторий на GitHub, после чего сайт пересобирается сам (2–4 минуты).
-    Для входа нужен токен GitHub — его достаточно создать один раз.</p>
-  <ol class="steps">
-    <li>Откройте <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com → новый fine-grained токен</a>.</li>
-    <li>Expiration — на ваш выбор (например, 1 год). Repository access → <b>Only select repositories</b> → <code id="repo-name"></code>.</li>
-    <li>Permissions → Repository permissions → <b>Contents: Read and write</b>. Больше ничего не нужно.</li>
-    <li>Generate token, скопируйте и вставьте сюда.</li>
-  </ol>
   <form id="login-form">
     <label>Токен <input id="token" type="password" autocomplete="off" placeholder="github_pat_…" required></label>
     <label class="check"><input id="remember" type="checkbox" checked> Запомнить в этом браузере</label>
