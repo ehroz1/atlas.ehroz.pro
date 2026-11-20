@@ -1664,25 +1664,6 @@
     }
   },
   {
-    "id": "wikimedia-commons",
-    "name": "Wikimedia Commons",
-    "url": "https://commons.wikimedia.org",
-    "category": "museums",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["images", "media", "open licence"],
-    "added": "2026-11-13",
-    "updated": "2026-11-14",
-    "summary": {
-      "en": "The media library behind Wikipedia.",
-      "ru": "Медиатека, на которой стоит Википедия."
-    },
-    "description": {
-      "en": "Tens of millions of images, audio and video files, each with its licence stated. Check the licence per file.",
-      "ru": "Десятки миллионов изображений, аудио и видео, у каждого файла указана лицензия. Проверяйте лицензию для каждого файла."
-    }
-  },
-  {
     "id": "smithsonian-open-access",
     "name": "Smithsonian Open Access",
     "url": "https://www.si.edu/openaccess",
