@@ -884,25 +884,6 @@
     }
   },
   {
-    "id": "pexels",
-    "name": "Pexels",
-    "url": "https://www.pexels.com",
-    "category": "assets",
-    "pricing": "free",
-    "platforms": ["Web"],
-    "tags": ["photos", "video", "stock"],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "Free stock photos and video clips.",
-      "ru": "Бесплатные стоковые фото и видео."
-    },
-    "description": {
-      "en": "Photographs and short video clips under a permissive licence. The video section is one of the better free ones.",
-      "ru": "Фотографии и короткие видео под свободной лицензией. Раздел видео — один из лучших среди бесплатных."
-    }
-  },
-  {
     "id": "freepik",
     "name": "Freepik",
     "url": "https://www.freepik.com",
