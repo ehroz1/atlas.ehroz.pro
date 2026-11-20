@@ -1778,25 +1778,6 @@
     }
   },
   {
-    "id": "temp-mail",
-    "name": "Temp Mail",
-    "url": "https://temp-mail.org",
-    "category": "utilities",
-    "pricing": "freemium",
-    "platforms": ["Web", "iOS", "Android"],
-    "tags": ["email", "disposable", "privacy"],
-    "added": "2026-11-13",
-    "updated": "2026-11-13",
-    "summary": {
-      "en": "A throwaway email address for sign-ups.",
-      "ru": "Одноразовая почта для регистраций."
-    },
-    "description": {
-      "en": "Gives you an inbox instantly, with no registration, so you can confirm an account without handing over your real address. Messages disappear after a while.",
-      "ru": "Сразу выдаёт почтовый ящик без регистрации, чтобы подтвердить аккаунт, не отдавая свой настоящий адрес. Письма через какое-то время исчезают."
-    }
-  },
-  {
     "id": "ehroz",
     "name": "Ehroz",
     "url": "https://ehroz.pro",
