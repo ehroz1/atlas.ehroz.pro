@@ -17,6 +17,7 @@ npm run preview
 
 ## Docs
 
+- [ADMIN.md](ADMIN.md) — the `/admin/` page: add, edit and delete sites from the browser
 - [DEPLOY.md](DEPLOY.md) — deploy process, rollback, Search Console / Yandex Webmaster / Bing / GA4 / Metrica setup
 - [SEO.md](SEO.md) — SEO checklist: what is done in code, what is manual
 - [PAGE-STANDARD.md](PAGE-STANDARD.md) — rules and checklist for every new page
@@ -56,6 +57,9 @@ docs/DESIGN.md           ← design rules and the "does it look generated?" chec
 ```
 
 ## Adding a site
+
+Easiest: the admin page at `/admin/` (add, edit, delete sites from the browser;
+see [ADMIN.md](ADMIN.md), in Russian). By hand:
 
 1. Add an entry to `src/data/tools.json`:
 

@@ -299,9 +299,12 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     return s ? '?' + s : '';
   }
 
+  const facetsNow = () => ({ category: [...state.category], pricing: [...state.pricing], platform: [...state.platform] });
+  (window as any).__atlasFacets = facetsNow;
+
   function emit() {
     const ids = new Set(data.tools.filter(matches).map((x) => x.id));
-    const detail = { ids, q: state.q };
+    const detail = { ids, q: state.q, facets: facetsNow() };
     (window as any).__atlasFilter = detail;
     document.dispatchEvent(new CustomEvent('atlas:filter', { detail }));
     try {
@@ -417,6 +420,22 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     input.focus();
   });
   document.addEventListener('atlas:reset', () => clearBtn.click());
+
+  // The "Sort & filter" panel on the home grid (Gallery.astro) changes the
+  // same filters: { facet, id, on } toggles one option, "clear" drops all.
+  document.addEventListener('atlas:facet', (e) => {
+    const { facet: f, id, on } = (e as CustomEvent<{ facet: FacetKey; id: string; on: boolean }>).detail;
+    on ? state[f].add(id) : state[f].delete(id);
+    renderBar();
+    if (dialog.open) renderPane();
+    emit();
+  });
+  document.addEventListener('atlas:facets-clear', () => {
+    for (const f of FACETS) state[f].clear();
+    if (scope) state.category.add(scope);
+    renderBar();
+    emit();
+  });
 
   // Feeling lucky: a random site among what the query and filters match
   // (everything when nothing is set). Sites not opened yet come first.

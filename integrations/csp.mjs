@@ -10,10 +10,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-async function* htmlFiles(dir) {
+async function* htmlFiles(dir, root = dir) {
   for (const e of await fs.readdir(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) yield* htmlFiles(p);
+    // admin/ is a static page from public/ with its own, stricter policy
+    if (e.isDirectory()) { if (e.name !== 'admin' || dir !== root) yield* htmlFiles(p, root); }
     else if (e.name.endsWith('.html')) yield p;
   }
 }

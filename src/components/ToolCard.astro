@@ -28,6 +28,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   class="card-wrap"
   data-card
   data-id={tool.id}
+  data-added={d.added.toISOString().slice(0, 10)}
   data-own={d.own ? '' : undefined}
   data-name={d.name.toLowerCase()}
   data-category={d.category}

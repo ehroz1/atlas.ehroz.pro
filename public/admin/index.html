@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://www.google.com https://*.gstatic.com; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+<title>Atlas — админка</title>
+<link rel="icon" href="../favicon.svg">
+<link rel="stylesheet" href="admin.css">
+<script src="admin.js" defer></script>
+</head>
+<body>
+
+<header class="bar">
+  <strong class="brand">Atlas · админка</strong>
+  <span id="who" class="muted"></span>
+  <span class="grow"></span>
+  <a class="pill" id="site-link" href="../" target="_blank" rel="noopener">Открыть сайт ↗</a>
+  <button class="pill" id="logout" hidden>Выйти</button>
+</header>
+
+<!-- вход -->
+<section id="login" class="panel narrow" hidden>
+  <h1>Вход</h1>
+  <form id="login-form">
+    <label>Токен <input id="token" type="password" autocomplete="off" placeholder="github_pat_…" required></label>
+    <label class="check"><input id="remember" type="checkbox" checked> Запомнить в этом браузере</label>
+    <button class="btn primary" type="submit">Войти</button>
+    <p id="login-error" class="error" role="alert"></p>
+  </form>
+</section>
+
+<!-- список -->
+<section id="list" hidden>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Поиск по названию, адресу, тегам…" aria-label="Поиск">
+    <select id="cat-filter" aria-label="Категория"><option value="">Все категории</option></select>
+    <button class="btn primary" id="add">+ Добавить сайт</button>
+  </div>
+  <p class="muted" id="count"></p>
+  <div id="rows" class="rows"></div>
+</section>
+
+<!-- форма -->
+<section id="edit" class="panel" hidden>
+  <button class="link" id="back" type="button">← К списку</button>
+  <h1 id="edit-title">Новый сайт</h1>
+  <form id="tool-form" novalidate>
+    <div class="grid2">
+      <label>Адрес сайта *
+        <input name="url" type="url" required placeholder="https://example.com">
+      </label>
+      <label>Название *
+        <input name="name" required placeholder="Example">
+      </label>
+      <label>ID (часть адреса страницы)
+        <input name="id" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="example">
+        <small class="muted">Только латиница, цифры и дефис. Подставится сам из названия.</small>
+      </label>
+      <label>Категория *
+        <select name="category" required></select>
+      </label>
+      <label>Цена *
+        <select name="pricing" required>
+          <option value="free">Бесплатно</option>
+          <option value="freemium">Бесплатно + платный тариф</option>
+          <option value="paid">Платно</option>
+        </select>
+      </label>
+      <fieldset class="checks">
+        <legend>Отметки</legend>
+        <label class="check"><input name="openSource" type="checkbox"> Открытый код</label>
+        <label class="check"><input name="featured" type="checkbox"> Закрепить наверху</label>
+        <label class="check"><input name="own" type="checkbox"> Мой сайт</label>
+      </fieldset>
+    </div>
+
+    <fieldset>
+      <legend>Платформы</legend>
+      <div id="platforms" class="chips"></div>
+      <input id="platform-extra" placeholder="Другая платформа — введите и нажмите Enter">
+    </fieldset>
+
+    <label>Теги (через запятую; по ним считаются «похожие сайты»)
+      <input name="tags" placeholder="fonts, free, open source">
+    </label>
+
+    <div class="grid2">
+      <label>Коротко, русский * <small class="muted counter" data-for="summary_ru"></small>
+        <input name="summary_ru" maxlength="120" required placeholder="Одна строка для карточки, ~60 символов">
+      </label>
+      <label>Коротко, English * <small class="muted counter" data-for="summary_en"></small>
+        <input name="summary_en" maxlength="120" required placeholder="One line for the card, ~60 characters">
+      </label>
+      <label>Описание, русский *
+        <textarea name="description_ru" rows="4" required placeholder="Одно-три предложения для страницы сайта"></textarea>
+      </label>
+      <label>Описание, English *
+        <textarea name="description_en" rows="4" required placeholder="One to three sentences for the site's page"></textarea>
+      </label>
+    </div>
+
+    <fieldset>
+      <legend>Альтернативы (сайты, которые делают то же самое)</legend>
+      <div id="alt-chips" class="chips"></div>
+      <input id="alt-input" list="alt-options" placeholder="Начните вводить название и выберите из списка">
+      <datalist id="alt-options"></datalist>
+    </fieldset>
+
+    <fieldset>
+      <legend>Скриншот</legend>
+      <div class="shot-row">
+        <img id="shot-preview" alt="" hidden>
+        <div>
+          <p class="muted" id="shot-note">Если не загружать картинку, скриншот снимется автоматически при публикации.</p>
+          <input id="shot-file" type="file" accept="image/png,image/jpeg,image/webp">
+          <label class="check" id="reshoot-wrap" hidden><input id="reshoot" type="checkbox"> Переснять скриншот автоматически</label>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="grid2">
+      <label>Дата добавления <input name="added" type="date" required></label>
+      <label>Дата изменения текста <input name="updated" type="date"></label>
+    </div>
+
+    <p id="form-error" class="error" role="alert"></p>
+    <div class="actions">
+      <button class="btn primary" type="submit" id="save">Сохранить и опубликовать</button>
+      <button class="btn" type="button" id="cancel">Отмена</button>
+      <span class="grow"></span>
+      <button class="btn danger" type="button" id="delete" hidden>Удалить сайт</button>
+    </div>
+  </form>
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
