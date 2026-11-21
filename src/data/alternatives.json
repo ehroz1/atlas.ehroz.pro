@@ -3,7 +3,7 @@
   { "about": "AI image generation", "ids": ["midjourney", "firefly", "krea", "headai", "higgsfield"] },
   { "about": "AI video generation", "ids": ["kling", "pika", "higgsfield", "krea", "headai"] },
   { "about": "Prompt libraries", "ids": ["claude-prompt-library", "prompthero", "filatov-prompts"] },
-  { "about": "Websites without code", "ids": ["framer", "lovable"] },
+  { "about": "Websites without code", "ids": ["framer", "lovable", "webflow"] },
   { "about": "Background removal", "ids": ["photoroom", "pixelcut"] },
   { "about": "Photo upscaling", "ids": ["upscayl", "krea"] },
   { "about": "Free stock photos", "ids": ["unsplash", "freepik", "picta"] },
@@ -24,6 +24,7 @@
   { "about": "3D and interactive motion", "ids": ["spline", "rive"] },
   { "about": "Reference collecting", "ids": ["are-na", "cosmos", "same-energy"] },
   { "about": "Mockups", "ids": ["shots", "the-mockup-club", "mockup-world"] },
-  { "about": "Color tools", "ids": ["coolors", "adobe-color", "color-review"] },
-  { "about": "Animated UI components", "ids": ["originkit", "smoothui"] }
+  { "about": "Color tools", "ids": ["coolors", "adobe-color", "color-review", "khroma"] },
+  { "about": "Animated UI components", "ids": ["originkit", "smoothui", "osmo-supply", "nav-supply"] },
+  { "about": "SaaS website galleries", "ids": ["saaspo", "webinspoo"] }
 ]

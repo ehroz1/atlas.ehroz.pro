@@ -2237,5 +2237,290 @@
       "en": "A set of native apps for image editing, vector art, video, layout, 3D texture painting, PDFs and more, free and open source, installed through one launcher. ArtCraft Studio adds AI image and video generation, paid with optional credits.",
       "ru": "Набор нативных приложений для работы с изображениями, векторной графики, видео, вёрстки, текстур для 3D, PDF и другого. Бесплатные, с открытым кодом, ставятся через один лаунчер. ArtCraft Studio добавляет генерацию картинок и видео, за неё платят необязательными кредитами."
     }
+  },
+  {
+    "id": "basement-studio",
+    "name": "basement.studio",
+    "url": "https://basement.studio",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["agency", "3d", "web design", "studio"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "A digital studio known for bold sites and 3D work.",
+      "ru": "Цифровая студия, известная смелыми сайтами и 3D."
+    },
+    "description": {
+      "en": "Site of a studio that builds brands, websites, 3D experiences and products. Worth opening for the way it handles motion, type and WebGL.",
+      "ru": "Сайт студии, которая делает бренды, сайты, 3D-проекты и продукты. Стоит открыть ради работы с анимацией, шрифтом и WebGL."
+    }
+  },
+  {
+    "id": "unicorn-studio",
+    "name": "Unicorn Studio",
+    "url": "https://www.unicorn.studio",
+    "category": "3d-motion",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["shaders", "3d", "motion", "webgl", "templates"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Shaders, 3D and motion on one canvas for the web.",
+      "ru": "Шейдеры, 3D и анимация на одном холсте для веба."
+    },
+    "description": {
+      "en": "Design moving graphics with shaders and 3D in the browser, start from templates and embed the result in a site. Works by hand or with an AI agent through MCP.",
+      "ru": "Делаете движущуюся графику на шейдерах и 3D прямо в браузере, начинаете с шаблонов и вставляете результат на сайт. Работает вручную или через ИИ-агента по MCP."
+    }
+  },
+  {
+    "id": "resend",
+    "name": "Resend",
+    "url": "https://resend.com",
+    "category": "development",
+    "pricing": "freemium",
+    "platforms": ["Web", "API"],
+    "tags": ["email", "api", "transactional", "developers"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Email API that developers actually enjoy using.",
+      "ru": "Почтовое API, которым приятно пользоваться разработчикам."
+    },
+    "description": {
+      "en": "Send transactional and marketing email from code, with React-based templates and clear delivery logs. A free tier covers small projects.",
+      "ru": "Отправка транзакционных и маркетинговых писем из кода, с шаблонами на React и понятными логами доставки. Для небольших проектов хватает бесплатного тарифа."
+    }
+  },
+  {
+    "id": "ascii-magic",
+    "name": "ASCII Magic",
+    "url": "https://www.ascii-magic.com",
+    "category": "design-generators",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["ascii", "effects", "halftone", "video"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Turn photos and video into ASCII, pixel art and more.",
+      "ru": "Превращает фото и видео в ASCII, пиксель-арт и другие эффекты."
+    },
+    "description": {
+      "en": "More than a hundred effects, including ASCII, halftone, mosaic, voxel and glitch, applied to images and video in the browser. No sign-up.",
+      "ru": "Больше сотни эффектов: ASCII, полутона, мозаика, воксели, глитч. Применяются к картинкам и видео в браузере, без регистрации."
+    }
+  },
+  {
+    "id": "interface-in-game",
+    "name": "Interface In Game",
+    "url": "https://interfaceingame.com",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["game ui", "screenshots", "interfaces"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "A collection of video game interfaces.",
+      "ru": "Коллекция интерфейсов видеоигр."
+    },
+    "description": {
+      "en": "Screenshots and videos of menus, HUDs and inventories from games, browsable by game and by element. Handy for designers looking beyond apps and websites.",
+      "ru": "Скриншоты и видео меню, HUD и инвентарей из игр, с просмотром по игре и по элементу. Полезно дизайнерам, которые ищут референсы вне приложений и сайтов."
+    }
+  },
+  {
+    "id": "webflow",
+    "name": "Webflow",
+    "url": "https://webflow.com",
+    "category": "design",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["website builder", "no-code", "cms", "hosting"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Visual website builder with a CMS and hosting built in.",
+      "ru": "Визуальный конструктор сайтов со встроенными CMS и хостингом."
+    },
+    "description": {
+      "en": "Design a site on a canvas that maps to real HTML and CSS, add a CMS, animations and hosting, and publish. Free to build, paid when a site goes live.",
+      "ru": "Рисуете сайт на холсте, который соответствует настоящим HTML и CSS, добавляете CMS, анимации и хостинг и публикуете. Собирать бесплатно, платить нужно, когда сайт выходит в сеть."
+    }
+  },
+  {
+    "id": "gsap",
+    "name": "GSAP",
+    "url": "https://gsap.com",
+    "category": "development",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["animation", "javascript", "scrolltrigger"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "The JavaScript animation library most pro sites use.",
+      "ru": "JavaScript-библиотека анимации, на которой сделаны многие профессиональные сайты."
+    },
+    "description": {
+      "en": "Animate anything the browser can show: elements, SVG, scroll effects and timelines. Fast, well documented and now free for everyone, including its plugins.",
+      "ru": "Анимирует всё, что показывает браузер: элементы, SVG, эффекты прокрутки и таймлайны. Быстрая, хорошо задокументированная, теперь бесплатна для всех вместе с плагинами."
+    }
+  },
+  {
+    "id": "osmo-supply",
+    "name": "Osmo Supply",
+    "url": "https://www.osmo.supply",
+    "category": "development",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["webflow", "components", "animation", "html css js"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Production-ready animation components for Webflow and plain code.",
+      "ru": "Готовые анимационные компоненты для Webflow и обычного кода."
+    },
+    "description": {
+      "en": "A growing collection of scroll animations, page transitions, navigations, sliders and cursor effects, as copyable snippets for Webflow or HTML, CSS and JS. New ones added weekly.",
+      "ru": "Растущая коллекция анимаций прокрутки, переходов между страницами, навигации, слайдеров и эффектов курсора в виде копируемых фрагментов для Webflow или HTML, CSS и JS. Новые добавляют каждую неделю."
+    }
+  },
+  {
+    "id": "laws-of-ux",
+    "name": "Laws of UX",
+    "url": "https://lawsofux.com",
+    "category": "learning",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["ux", "psychology", "principles"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "The psychology behind good interface decisions.",
+      "ru": "Психология, которая стоит за хорошими решениями в интерфейсах."
+    },
+    "description": {
+      "en": "A short, illustrated list of principles such as Hick's law and Fitts's law, each explained in plain words with examples. Quick to read and easy to cite in a review.",
+      "ru": "Короткий список принципов с иллюстрациями, например закон Хика и закон Фиттса, каждый объяснён простыми словами с примерами. Быстро читается и удобно ссылаться на обсуждении дизайна."
+    }
+  },
+  {
+    "id": "khroma",
+    "name": "Khroma",
+    "url": "https://www.khroma.co",
+    "category": "design",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["color", "palettes", "ai"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "An AI colour tool that learns what you like.",
+      "ru": "ИИ-инструмент для цвета, который учится на ваших предпочтениях."
+    },
+    "description": {
+      "en": "Pick fifty colours you like and it generates endless combinations in your taste, with palettes you can search and save.",
+      "ru": "Выбираете пятьдесят нравящихся цветов, и он бесконечно генерирует сочетания в вашем вкусе, а палитры можно искать и сохранять."
+    }
+  },
+  {
+    "id": "nav-supply",
+    "name": "Nav.Supply",
+    "url": "https://nav.supply",
+    "category": "development",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["framer", "navigation", "components"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Navigation patterns for Framer sites, free to remix.",
+      "ru": "Паттерны навигации для сайтов на Framer, бесплатно."
+    },
+    "description": {
+      "en": "Mobile menus, desktop menus, bars that collapse or hide on scroll, ready to remix in Framer. Made by Benjamin den Boer.",
+      "ru": "Мобильные и десктопные меню, панели, которые сворачиваются или прячутся при прокрутке, готовые для ремикса во Framer. Автор Benjamin den Boer."
+    }
+  },
+  {
+    "id": "hellohello",
+    "name": "++hellohello",
+    "url": "https://www.hellohello.is",
+    "category": "inspiration",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["agency", "branding", "web design"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "An Icelandic design and technology agency with striking work.",
+      "ru": "Исландское агентство дизайна и технологий с выразительными работами."
+    },
+    "description": {
+      "en": "Brand experiences, digital products and campaigns for global names. A good site to study for layout, type and the way it presents case studies.",
+      "ru": "Бренд-проекты, цифровые продукты и кампании для мировых компаний. Хороший сайт, чтобы изучать вёрстку, шрифты и подачу кейсов."
+    }
+  },
+  {
+    "id": "saaspo",
+    "name": "Saaspo",
+    "url": "https://www.saaspo.com",
+    "category": "web-galleries",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["saas", "landing pages", "gallery"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "A gallery of SaaS websites and landing pages.",
+      "ru": "Галерея сайтов и лендингов SaaS-продуктов."
+    },
+    "description": {
+      "en": "Curated examples of software company sites, sorted by section and page type. Useful when you design a product page and want to see how others handle pricing and hero.",
+      "ru": "Подборка сайтов софтверных компаний по разделам и типам страниц. Пригодится, когда делаете страницу продукта и хотите посмотреть, как другие решают тарифы и первый экран."
+    }
+  },
+  {
+    "id": "selected-site",
+    "name": "Selected Site",
+    "url": "https://selected.site",
+    "category": "web-galleries",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["gallery", "tools", "curated"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "Handpicked websites, tools and designs for creators.",
+      "ru": "Отобранные сайты, инструменты и дизайны для авторов."
+    },
+    "description": {
+      "en": "A small curated feed of useful sites, tools and designs, aimed at creators, founders and developers.",
+      "ru": "Небольшая курируемая лента полезных сайтов, инструментов и дизайнов для авторов, основателей и разработчиков."
+    }
+  },
+  {
+    "id": "webinspoo",
+    "name": "WebInspoo",
+    "url": "https://webinspoo.com",
+    "category": "web-galleries",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["saas", "landing pages", "gallery", "filters"],
+    "added": "2026-11-21",
+    "updated": "2026-11-21",
+    "summary": {
+      "en": "1,200+ SaaS websites, filterable by font, colour and stack.",
+      "ru": "Больше 1200 SaaS-сайтов с фильтрами по шрифту, цвету и стеку."
+    },
+    "description": {
+      "en": "A daily-updated gallery of SaaS sites you can filter by category, font, colour palette, tech stack and page type.",
+      "ru": "Ежедневно обновляемая галерея SaaS-сайтов с фильтрами по категории, шрифту, цветовой палитре, технологиям и типу страницы."
+    }
   }
 ]
