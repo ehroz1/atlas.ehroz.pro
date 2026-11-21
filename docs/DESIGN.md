@@ -133,6 +133,7 @@ put them together.
 | Tile | `.tile`, `.tile__shot` | large framed screenshot on the tool page |
 | No screenshot | `.shot-fallback` | the domain set large |
 | Grid | `.cards`, `.toolbar` | 1 → 2 → 3 columns; chips + count above on category pages |
+| Results bar | `.results-bar`, `.results-bar__text` | shown above the grid only while a query, filters or the Saved view narrow it: "4 sites for “fig”" + Clear |
 | Facts | `.meta` (a `<dl>`), `.tags`, `.tag` | label column 6rem, hairline between rows |
 | Text | `.prose` | 34rem measure, 17px |
 | Forms | `.form`, `.field`, `.input`, `.textarea`, `.select`, `.checkbox` | filled, no border until focus |
@@ -175,6 +176,10 @@ component-scoped `<style>` blocks for things that could be reused.
   the header fires `atlas:filter` with matching ids and the grid updates
   live; elsewhere Done opens the home grid with the same params.
 - Don't add a second search field to a page.
+- Esc closes the finder and keeps the query (it doesn't wipe the field).
+- On phones (≤34rem) the bar is logo · search · saved · menu; Submit lives in the menu and the hero.
+- Keyboard hints (`.kbd`, `.only-keyboard`) are hidden on touch screens.
+- Touch targets: on `pointer: coarse` card buttons are 44px and chips 40px.
 
 ---
 

@@ -34,6 +34,14 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     </span>
   </div>
 
+  {/* What the grid shows right now, with a way back: only visible while a
+      query, filters or the "Saved" view narrow it down. */}
+  <div class="results-bar" data-results-bar hidden
+    data-for={t('results.for')} data-filtered={t('results.filtered')} data-saved-title={t('saved.title')}>
+    <p class="results-bar__text" data-results-text aria-live="polite"></p>
+    <button class="btn btn--sm" type="button" data-results-clear>{t('results.clear')}</button>
+  </div>
+
   <div class="cards" data-cards>
     {tools.map((tool) => (
       <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
@@ -128,12 +136,14 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));
     };
     const allIds = new Set(original.map((c) => c.dataset.id!));
-    let current: { ids: Set<string>; q: string } = { ids: allIds, q: '' };
+    let current: { ids: Set<string>; q: string; filters?: number } = { ids: allIds, q: '', filters: 0 };
+    const bar = document.querySelector<HTMLElement>('[data-results-bar]');
+    const barText = document.querySelector<HTMLElement>('[data-results-text]');
     /* "Saved" view: only the saved sites (header button, or ?saved=1) */
     let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
     const savedEmpty = document.querySelector<HTMLElement>('[data-saved-empty]');
 
-    const apply = (detail?: { ids: Set<string>; q: string }) => {
+    const apply = (detail?: { ids: Set<string>; q: string; filters?: number }) => {
       if (detail) current = detail;
       const { ids, q } = current;
       const saved: string[] = (window as any).__atlasSaved?.() ?? [];
@@ -147,10 +157,24 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       }
       grid.append(...pinned(lead), ...pinned(rest), ...original.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
+      let countText = '';
       if (count) {
         const cat = new Intl.PluralRules(count.dataset.lang).select(shown);
         const tpl = (count.dataset as Record<string, string | undefined>)[cat] ?? count.dataset.other;
-        count.textContent = (tpl ?? '{count}').replace('{count}', String(shown));
+        countText = (tpl ?? '{count}').replace('{count}', String(shown));
+        count.textContent = countText;
+      }
+      // results bar: "12 sites for “fig”", "Saved · 3 sites", with Clear
+      const q2 = q.trim();
+      const active = !!q2 || !!current.filters || savedOnly;
+      if (bar && barText) {
+        bar.hidden = !active || shown === 0;
+        if (active) {
+          const parts = [savedOnly ? `${bar.dataset.savedTitle} · ${countText}` : countText];
+          if (q2) parts.push((bar.dataset.for ?? '').replace('{q}', q2));
+          if (current.filters) parts.push(bar.dataset.filtered ?? '');
+          barText.textContent = parts.join(' ');
+        }
       }
       const noSaved = savedOnly && saved.length === 0;
       if (savedEmpty) savedEmpty.hidden = !noSaved;
@@ -167,6 +191,10 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     };
     document.addEventListener('atlas:saved-toggle', () => setSavedOnly(!savedOnly));
     document.querySelector('[data-saved-exit]')?.addEventListener('click', () => setSavedOnly(false));
+    document.querySelector('[data-results-clear]')?.addEventListener('click', () => {
+      if (savedOnly) setSavedOnly(false);
+      if (current.q.trim() || current.filters) document.dispatchEvent(new Event('atlas:reset'));
+    });
     if (savedOnly) apply();
 
     const last = (window as any).__atlasFilter;

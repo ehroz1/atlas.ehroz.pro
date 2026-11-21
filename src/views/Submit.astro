@@ -19,7 +19,7 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
-    <div class="section" style="padding-bottom: 0">
+    <div class="section" style="padding-block: var(--s-8) 0">
       <div class="stack" style="--gap: var(--s-3)">
         <h1 class="t-statement">{t('submit.h1')}</h1>
         <p class="t-secondary">
@@ -30,19 +30,19 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
       <form class="form mt-12" data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)}>
         <div class="field">
           <label class="field__label" for="url">{t('submit.url')}</label>
-          <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
+          <input class="input" id="url" name="url" type="text" placeholder="figma.com" required inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" data-invalid={t('submit.urlInvalid')} />
         </div>
 
         <div class="field">
-          <label class="field__label" for="name">{t('submit.name')}</label>
-          <input class="input" id="name" name="name" type="text" placeholder={t('submit.namePh')} required />
+          <label class="field__label" for="name">{t('submit.name')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <input class="input" id="name" name="name" type="text" placeholder={t('submit.namePh')} />
         </div>
 
         <div class="field">
           <label class="field__label" for="category">{t('submit.category')}</label>
           <select class="select" id="category" name="category">
+            <option value="other" selected>{t('submit.notSure')}</option>
             {categories.map((c) => <option value={c.id}>{loc(c.data.name, lang)}</option>)}
-            <option value="other">{t('submit.notSure')}</option>
           </select>
         </div>
 
@@ -68,7 +68,8 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
           {t('submit.maker')}
         </label>
 
-        <div class="cluster" style="--gap: var(--s-4)">
+        <p class="field__label" id="send-via">{t('submit.sendVia')}</p>
+        <div class="cluster" style="--gap: var(--s-4); margin-top: calc(var(--s-4) * -1)" role="group" aria-labelledby="send-via">
           <button class="btn btn--solid btn--lg" type="submit" data-channel="mail">{t('submit.viaMail')}</button>
           <button class="btn btn--lg" type="submit" data-channel="telegram">Telegram</button>
           <button class="btn btn--lg" type="submit" data-channel="whatsapp">WhatsApp</button>
@@ -83,8 +84,21 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
   const form = document.querySelector<HTMLFormElement>('[data-submit-form]');
   const status = document.querySelector<HTMLElement>('[data-submit-status]');
   let channel = 'mail';
+  // "figma.com" → "https://figma.com"; then check it looks like an address
+  const urlInput = form?.querySelector<HTMLInputElement>('#url');
+  const normalizeUrl = () => {
+    if (!urlInput) return;
+    const v = urlInput.value.trim();
+    if (v && !/\s/.test(v) && !/^[a-z][a-z0-9+.-]*:\/\//i.test(v)) urlInput.value = 'https://' + v.replace(/^\/+/, '');
+    let ok = true;
+    try { ok = !urlInput.value || new URL(urlInput.value).hostname.includes('.'); } catch { ok = false; }
+    urlInput.setCustomValidity(ok ? '' : urlInput.dataset.invalid ?? 'Invalid link');
+    urlInput.setAttribute('aria-invalid', String(!ok));
+  };
+  urlInput?.addEventListener('blur', normalizeUrl);
+  urlInput?.addEventListener('input', () => { urlInput.setCustomValidity(''); urlInput.removeAttribute('aria-invalid'); });
   form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>
-    b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; }));
+    b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; normalizeUrl(); }));
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
@@ -93,7 +107,7 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
     const g = (k: string) => String(d.get(k) ?? '').trim();
     const body = [
       `Link: ${g('url')}`,
-      `Name: ${g('name')}`,
+      ...(g('name') ? [`Name: ${g('name')}`] : []),
       `Category: ${form.querySelector<HTMLSelectElement>('#category')?.selectedOptions[0]?.text ?? ''}`,
       '',
       g('why'),
@@ -101,7 +115,9 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
       g('email') ? `From: ${g('email')}` : '',
       d.get('maker') ? 'I made this.' : '',
     ].filter((l, i, a) => l || (i && a[i - 1])).join('\n');
-    const subject = `${msg.subject}: ${g('name')}`;
+    let host = '';
+    try { host = new URL(g('url')).hostname.replace(/^www\./, ''); } catch {}
+    const subject = `${msg.subject}: ${g('name') || host}`;
     (window as any).atlasTrack?.('contact_click', { method: `submit_${channel}` });
     const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
 

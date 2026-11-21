@@ -26,12 +26,12 @@ const others = categories.filter((c) => c.id !== category.id);
   pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
 >
   <div class="container container--wide">
-    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+    <section class="hero" style="padding-top: var(--s-10)">
       <h1 class="t-statement">{name}</h1>
       <p class="t-secondary mt-2" style="max-width: 28rem">{loc(category.data.description, lang)}</p>
     </section>
 
-    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+    <div class="section" style="padding-bottom: 0; padding-top: var(--s-10)">
       <Gallery tools={tools} categories={categories} current={category.id} lang={lang} />
     </div>
 

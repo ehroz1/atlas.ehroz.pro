@@ -109,7 +109,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     </div>
 
     <div class="bar-group bar-group--end">
-      <a class="btn btn--bar btn--chrome" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
+      <a class="btn btn--bar btn--chrome bar-submit" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
       <button class="bar-icon bar-saved" type="button" aria-pressed="false" data-saved-toggle
@@ -148,8 +148,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
             {languages[other]}
           </a>
-          <hr class="menu__sep" />
-          <p class="menu__note"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
+          <hr class="menu__sep only-keyboard" />
+          <p class="menu__note only-keyboard"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
         </nav>
       </div>
     </div>
@@ -277,7 +277,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
 
   function emit() {
     const ids = new Set(data.tools.filter(matches).map((x) => x.id));
-    const detail = { ids, q: state.q };
+    const detail = { ids, q: state.q, filters: filterCount() };
     (window as any).__atlasFilter = detail;
     document.dispatchEvent(new CustomEvent('atlas:filter', { detail }));
     try {
@@ -342,12 +342,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
               .join('')
           : `<p class="finder__empty">${esc(S.noCategories)}</p>`;
       }
+      pane.removeAttribute('aria-label');
       pane.innerHTML = `<div class="finder__tabs" role="tablist">${tab('sites', S.tabSites, hits.length)}${tab('categories', S.tabCategories, cats.length)}</div>${list}`;
       active = -1;
       return;
     }
+    pane.setAttribute('aria-label', S[facet]);
     pane.innerHTML =
-      `<div class="finder__label">${esc(S[facet])}</div>` +
       data.facets[facet]
         .map(
           (o) => `<button class="finder__option" type="button" aria-pressed="${state[facet].has(o.id)}" data-option="${esc(o.id)}">
@@ -409,7 +410,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   });
 
   // Wait until the person stops typing before showing results.
-  const DEBOUNCE = 300;
+  const DEBOUNCE = 180;
   let pending: number | undefined;
   const flush = () => {
     clearTimeout(pending);
@@ -444,6 +445,11 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     renderPane();
   });
   input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      done();
+      return;
+    }
     if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') flush();
     const hits = Array.from(pane.querySelectorAll<HTMLAnchorElement>('.finder__result'));
     if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && hits.length) {
@@ -505,7 +511,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   const setMenu = (show: boolean) => {
     menu.hidden = !show;
     menuBtn.setAttribute('aria-expanded', String(show));
+    if (show) menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
   };
+  // Tabbing out of the menu closes it, like clicking outside.
+  menu.parentElement!.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as Node | null;
+    if (!menu.hidden && next && !menu.parentElement!.contains(next)) setMenu(false);
+  });
   menuBtn.addEventListener('click', () => setMenu(menu.hidden));
   document.addEventListener('pointerdown', (e) => {
     if (!menu.hidden && !menu.parentElement!.contains(e.target as Node)) setMenu(false);
