@@ -1,0 +1,123 @@
+---
+/**
+ * /newsletter/ — sign-up and a preview of the next issue.
+ * Subscribing = signing in with an emailed link (double opt-in for free,
+ * via Supabase Auth): the link lands on /account/?subscribe=1, which turns
+ * the newsletter flag on. Sending: scripts/newsletter.mjs, monthly.
+ * ?unsubscribe=<token> unsubscribes in one click.
+ */
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { BACKEND } from '~/lib/backend';
+import { picksFor, issueKey, nextIssue } from '~/lib/picks.mjs';
+import overrides from '~/data/newsletter.json';
+import { loc, useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('newsletter')]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+
+const key = nextIssue(issueKey(new Date()));
+const flat = tools.map((x) => ({ id: x.id, added: x.data.added, featured: x.data.featured, note: x.data.note }));
+const ids = picksFor(flat, key, overrides as Record<string, string[]>);
+const picks = ids.map((id) => tools.find((x) => x.id === id)!);
+const [y, m] = key.split('-').map(Number);
+const month = new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, 1)));
+const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('account.error'), unsubscribed: t('newsletter.unsubscribed'), unsubFailed: t('newsletter.unsubFailed') };
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.newsletter'), path: '/newsletter' }]}>
+  <div class="container">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3); max-width: 40rem">
+        <h1 class="t-statement">{t('newsletter.h1')}</h1>
+        <p class="t-secondary">{t('newsletter.lead')}</p>
+      </div>
+
+      <p class="notice mt-8" data-unsub-status hidden aria-live="polite"></p>
+
+      {BACKEND.enabled ? (
+        <form class="newsletter-form mt-8" data-newsletter-form data-msg={JSON.stringify(msg)} data-lang={lang}>
+          <label class="visually-hidden" for="nl-email">{t('newsletter.email')}</label>
+          <input class="input" id="nl-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+          <button class="btn btn--solid" type="submit">{t('newsletter.subscribe')}</button>
+          <span class="t-meta" data-nl-status aria-live="polite"></span>
+        </form>
+      ) : (
+        <p class="notice mt-8">{t('newsletter.off')}</p>
+      )}
+      <p class="t-small mt-4"><a class="link" href={u('/rss.xml')} type="application/rss+xml">{t('newsletter.rss')}</a></p>
+
+      <section class="section--tight" style="padding-top: var(--s-16); padding-bottom: 0" aria-labelledby="next">
+        <div class="section-head">
+          <h2 class="t-title" id="next">{t('newsletter.next', { month })}</h2>
+        </div>
+        <div class="cards">
+          {picks.map((x) => <ToolCard tool={x} categoryName={names.get(x.data.category)!} lang={lang} />)}
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { enabled, sb, maybeSignedIn, getProfile, updateProfile, sitePath } from '~/scripts/backend';
+
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter-form]');
+  const unsubBox = document.querySelector<HTMLElement>('[data-unsub-status]')!;
+  const params = new URLSearchParams(location.search);
+  const fill = (tpl: string, v: Record<string, string>) => tpl.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? '');
+
+  if (enabled && form) {
+    const msg = JSON.parse(form.dataset.msg!);
+    const status = form.querySelector<HTMLElement>('[data-nl-status]')!;
+
+    const token = params.get('unsubscribe');
+    if (token) {
+      sb()
+        .then((c) => c.rpc('newsletter_unsubscribe', { token }))
+        .then(({ data }) => {
+          unsubBox.textContent = data ? msg.unsubscribed : msg.unsubFailed;
+          unsubBox.hidden = false;
+        });
+    }
+
+    // already signed in: one click, no email round-trip
+    if (maybeSignedIn()) {
+      getProfile().then((p) => {
+        if (!p) return;
+        const input = form.querySelector<HTMLInputElement>('input[name=email]')!;
+        input.value = p.email ?? '';
+        if (p.newsletter && !token) status.textContent = msg.on;
+      });
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = String(new FormData(form).get('email') ?? '').trim();
+      try {
+        const p = maybeSignedIn() ? await getProfile() : null;
+        if (p && p.email === email) {
+          await updateProfile({ newsletter: true });
+          status.textContent = msg.on;
+          return;
+        }
+        const { error } = await (await sb()).auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: location.origin + sitePath('account/?subscribe=1'),
+            data: { lang: form.dataset.lang, newsletter: true },
+          },
+        });
+        if (error) throw error;
+        status.textContent = fill(msg.sent, { email });
+      } catch (err) {
+        status.textContent = fill(msg.error, { msg: (err as Error).message });
+      }
+    });
+  }
+</script>

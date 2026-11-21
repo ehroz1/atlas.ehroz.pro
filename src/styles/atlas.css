@@ -1192,6 +1192,76 @@ hr { border: 0; border-top: var(--border); }
 }
 
 
+/* SORT & FILTER — button at the right end of the home toolbar, opening a
+   dark panel: sort (one choice) and price / category / platform (many).
+   The filters are the finder's own (Header.astro); the panel only toggles
+   them. On phones the panel becomes a sheet at the bottom of the screen. */
+.sortbar { position: relative; margin-left: auto; }
+.sortbar__btn { --_h: var(--control-h); gap: var(--s-2); padding-inline: 1rem 0.85rem; }
+.sortbar__btn svg { width: 18px; height: 18px; flex: none; }
+.sortbar__btn.is-active { background: var(--c-chrome-active); }
+.sort-panel {
+  position: absolute;
+  top: calc(100% + var(--s-2));
+  right: 0;
+  z-index: 20;
+  display: grid;
+  gap: var(--s-5);
+  width: min(30rem, calc(100vw - var(--gutter) * 2));
+  max-height: min(70vh, 40rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-5);
+  border-radius: var(--r-panel);
+  background: var(--c-panel);
+  color: var(--c-chrome-text);
+  box-shadow: var(--shadow-float);
+}
+.sort-panel__group { display: grid; gap: var(--s-2); }
+.sort-panel__label { font-size: var(--fs-13); color: var(--c-chrome-muted); }
+.sort-panel__chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.sort-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: var(--control-h-sm);
+  padding-inline: 0.85rem;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome-hover);
+  color: var(--c-chrome-text);
+  font-size: var(--fs-14);
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.sort-chip:hover { background: var(--c-chrome-active); }
+.sort-chip[aria-pressed="true"],
+.sort-chip[aria-checked="true"] { background: var(--c-chrome-text); color: var(--c-text-invert); }
+.sort-chip__count { font-size: var(--fs-12, 0.75rem); color: var(--c-chrome-muted); font-variant-numeric: tabular-nums; }
+.sort-chip[aria-pressed="true"] .sort-chip__count { color: var(--c-text-invert); opacity: 0.6; }
+.sort-panel__foot {
+  position: sticky;
+  bottom: calc(var(--s-5) * -1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin: 0 calc(var(--s-5) * -1) calc(var(--s-5) * -1);
+  padding: var(--s-3) var(--s-5) var(--s-5);
+  background: var(--c-panel);
+}
+@media (max-width: 40rem) {
+  .sort-panel {
+    position: fixed;
+    top: auto;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: max(var(--s-3), env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-height: 75dvh;
+  }
+}
+
+
 /* 14. TOOL PAGE ------------------------------------------------------------ */
 
 .tool-head {
@@ -1556,6 +1626,111 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .consent__actions { display: flex; gap: var(--s-2); }
 
 .about-author { max-width: 40rem; margin: clamp(var(--s-16), 8vw, var(--s-24)) auto 0; text-align: center; }
+
+
+/* 18b. ACCOUNTS, COLLECTIONS, NEWSLETTER, PRO, API ------------------------ */
+
+/* the author's note and the partner mark (ToolCard, Tool page) */
+.card__note {
+  margin-top: var(--s-1);
+  padding-left: var(--s-2);
+  border-left: 2px solid var(--c-accent);
+  font-size: var(--fs-13);
+  font-style: italic;
+  color: var(--c-text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card__partner {
+  display: inline-flex;
+  align-items: center;
+  height: 1.25rem;
+  padding-inline: 0.45rem;
+  border: 1px solid var(--c-line-strong);
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--c-text-2);
+  white-space: nowrap;
+}
+.card__row .card__partner { margin-left: auto; }
+.card__row .card__partner + .card__category { margin-left: var(--s-2); }
+.author-note { margin: var(--s-2) 0 0; max-width: 34rem; padding-left: var(--s-4); border-left: 2px solid var(--c-accent); }
+.author-note blockquote { margin: 0; font-size: var(--fs-16, 1rem); font-style: italic; color: var(--c-text); }
+.author-note figcaption { margin-top: var(--s-1); font-size: var(--fs-13); color: var(--c-text-3); }
+.partner-note { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); max-width: 34rem; }
+
+/* header account button: a dot once signed in */
+.bar-account { position: relative; }
+.bar-account__dot {
+  position: absolute; top: 7px; right: 7px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-success);
+  opacity: 0; transition: opacity var(--dur-fast) var(--ease);
+}
+.bar-account.is-signed-in .bar-account__dot { opacity: 1; }
+/* no room on phones: the menu has an Account item */
+@media (max-width: 40rem) { .bar-account { display: none; } }
+
+.site-footer__stats { display: inline-flex; flex-wrap: wrap; gap: var(--s-3); }
+.site-footer__stats [data-stats-online]::before {
+  content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 0.4em;
+  border-radius: 50%; background: var(--c-success); vertical-align: middle;
+}
+
+.prefs-note { margin-bottom: var(--s-3); }
+
+/* account */
+.auth-google { align-self: flex-start; gap: var(--s-2); }
+.chips--wrap { flex-wrap: wrap; overflow: visible; }
+.chip--check { cursor: pointer; }
+.chip--check input { position: absolute; opacity: 0; pointer-events: none; }
+.chip--check:has(input:checked) { background: var(--c-text); color: var(--c-text-invert); border-color: var(--c-text); }
+.chip--check:has(input:focus-visible) { outline: 2px solid var(--c-focus); outline-offset: 2px; }
+fieldset.field { border: 0; padding: 0; margin: 0; min-width: 0; }
+.coll-list { display: grid; gap: var(--s-2); padding: 0; list-style: none; }
+.coll-list__item { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+.coll-list__item .btn { margin-left: auto; }
+
+/* collection builder */
+.pick-list {
+  display: grid; gap: 2px; max-height: 24rem; overflow: auto;
+  margin: var(--s-2) 0 0; padding: var(--s-2); list-style: none;
+  border: var(--border); border-radius: var(--r-md);
+}
+.pick-list li[hidden] { display: none; }
+.pick-list__item { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2); border-radius: 6px; cursor: pointer; font-size: var(--fs-14); }
+.pick-list__item:hover { background: var(--c-surface-hover); }
+.share-box { max-width: 40rem; padding: var(--s-5); border: var(--border); border-radius: var(--r-md); background: var(--c-surface); }
+.share-box__row { display: flex; gap: var(--s-2); margin-top: var(--s-2); }
+.share-box__row .input { flex: 1; min-width: 0; }
+
+/* newsletter */
+.newsletter-form { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); max-width: 34rem; }
+.newsletter-form .input { flex: 1 1 14rem; width: auto; }
+.newsletter-form [data-nl-status] { flex-basis: 100%; }
+
+/* pro */
+@media (min-width: 48rem) {
+  .plans.plans--two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 52rem; }
+}
+
+/* comments */
+.comments__list { display: grid; gap: var(--s-5); max-width: 44rem; margin: 0 0 var(--s-6); padding: 0; list-style: none; }
+.comment__head { font-size: var(--fs-14); }
+.comment__body { margin-top: var(--s-1); color: var(--c-text-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+.comments__form { display: grid; gap: var(--s-3); max-width: 44rem; }
+.comments__form .textarea { min-height: 6rem; }
+button.link { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+
+/* api */
+.code {
+  margin: 0; padding: var(--s-4); overflow: auto;
+  border: var(--border); border-radius: var(--r-md); background: var(--c-surface);
+  font-family: var(--font-mono); font-size: var(--fs-13); line-height: 1.55; color: var(--c-text-2);
+}
 
 /* 19. MOTION PREFERENCES & PRINT ------------------------------------------ */
 

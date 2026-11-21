@@ -66,7 +66,8 @@ const files = [];
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p);
+    // admin/ is the noindex editing page from public/admin, not part of the site
+    if (e.isDirectory()) { if (!(dir === DIST && e.name === 'admin')) walk(p); }
     else if (e.name.endsWith('.html')) files.push(p);
   }
 })(DIST);

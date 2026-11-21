@@ -1,0 +1,310 @@
+---
+/**
+ * /account/ — sign in (Google or an emailed link), plan, newsletter flag,
+ * cloud collections and recommendation settings. Rendered as static HTML;
+ * the script fills in the signed-in state. Not indexed.
+ * Recommendations work without an account (localStorage).
+ */
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getCategories } from '~/lib/data';
+import { BACKEND } from '~/lib/backend';
+import { loc, useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const categories = await getCategories();
+const msg = {
+  sent: t('account.sent'),
+  error: t('account.error'),
+  saved: t('account.saved'),
+  prefsSaved: t('prefs.saved'),
+  planFree: t('account.planFree'),
+  planPro: t('account.planPro'),
+  planProAlways: t('account.planProAlways'),
+  signedAs: t('account.signedAs'),
+  none: t('collections.none'),
+  del: t('collections.delete'),
+  priv: t('collections.private'),
+};
+---
+<Base lang={lang} title={t('account.title')} description={t('account.lead')} noindex
+  crumbs={[{ name: t('account.h1'), path: '/account' }]} crumbsContainer="container container--narrow">
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0" data-account data-msg={JSON.stringify(msg)} data-lang={lang}>
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('account.h1')}</h1>
+        <p class="t-secondary">{t('account.lead')}</p>
+      </div>
+
+      {!BACKEND.enabled && <p class="notice mt-8">{t('account.off')}</p>}
+
+      {BACKEND.enabled && (
+        <>
+          {/* signed out */}
+          <section class="mt-12 stack" style="--gap: var(--s-4)" data-signed-out>
+            <button class="btn btn--solid btn--lg auth-google" type="button" data-google>
+              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2 3.5-5.1 3.5-8.7Z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1Z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.4.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9Z"/></svg>
+              {t('account.google')}
+            </button>
+            <p class="t-meta">{t('account.or')}</p>
+            <form class="form" data-email-form style="gap: var(--s-3)">
+              <div class="field">
+                <label class="field__label" for="acc-email">{t('account.email')}</label>
+                <input class="input" id="acc-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+              </div>
+              <div class="cluster" style="--gap: var(--s-3)">
+                <button class="btn btn--lg" type="submit">{t('account.send')}</button>
+              </div>
+            </form>
+            <p class="t-meta" data-auth-status aria-live="polite"></p>
+          </section>
+
+          {/* signed in */}
+          <section class="mt-12 stack" style="--gap: var(--s-5)" data-signed-in hidden>
+            <p class="t-secondary" data-who></p>
+            <dl class="meta">
+              <div class="meta__row">
+                <dt>{t('account.plan')}</dt>
+                <dd class="cluster" style="--gap: var(--s-3)">
+                  <span data-plan></span>
+                  <span class="card__partner" data-supporter hidden>{t('account.supporter')}</span>
+                  <a class="link" href={u('/pro', lang)} data-upgrade hidden>{t('account.upgrade')}</a>
+                  {BACKEND.billingPortal && <a class="link" href={BACKEND.billingPortal} rel="noopener" data-manage hidden>{t('account.manage')}</a>}
+                </dd>
+              </div>
+            </dl>
+            <form class="field" data-name-form style="max-width: 24rem">
+              <label class="field__label" for="acc-name">{t('account.name')}</label>
+              <div class="share-box__row" style="margin: 0">
+                <input class="input" id="acc-name" name="name" maxlength="40" placeholder={t('account.namePh')} />
+                <button class="btn" type="submit">{t('prefs.save')}</button>
+              </div>
+            </form>
+            <p data-admin-link hidden><a class="btn btn--sm" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'}>Админка ↗</a></p>
+            <label class="cluster t-small" style="--gap: var(--s-2)">
+              <input class="checkbox" type="checkbox" data-newsletter />
+              <span>{t('account.newsletter')} <span class="t-muted">· {t('account.newsletterHint')}</span></span>
+            </label>
+
+            <section class="stack" style="--gap: var(--s-3)" aria-labelledby="mine">
+              <div class="section-head" style="margin: 0">
+                <h2 class="t-title" id="mine">{t('collections.mine')}</h2>
+                <a class="link t-small" href={u('/collection', lang)}>{t('collections.new')}</a>
+              </div>
+              <ul class="coll-list" data-collections></ul>
+            </section>
+
+            <p><button class="btn btn--sm" type="button" data-signout>{t('account.signOut')}</button></p>
+          </section>
+        </>
+      )}
+
+      {/* recommendations: always available, local first */}
+      <section class="mt-16 stack" style="--gap: var(--s-4)" id="prefs" aria-labelledby="prefs-h">
+        <h2 class="t-title" id="prefs-h">{t('prefs.title')}</h2>
+        <p class="t-secondary t-small">{t('prefs.lead')}</p>
+        <form class="form" data-prefs style="gap: var(--s-5)">
+          <fieldset class="field">
+            <legend class="field__label">{t('prefs.categories')}</legend>
+            <div class="chips chips--wrap">
+              {categories.map((c) => (
+                <label class="chip chip--check">
+                  <input type="checkbox" name="categories" value={c.id} />
+                  <span>{loc(c.data.name, lang)}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <div class="field">
+            <label class="field__label" for="prefs-pricing">{t('prefs.pricing')}</label>
+            <select class="select" id="prefs-pricing" name="pricing">
+              <option value="any">{t('prefs.pricing.any')}</option>
+              <option value="nopaid">{t('prefs.pricing.nopaid')}</option>
+              <option value="free">{t('prefs.pricing.free')}</option>
+            </select>
+          </div>
+          <label class="cluster t-small" style="--gap: var(--s-2)">
+            <input class="checkbox" type="checkbox" name="hideSeen" />
+            {t('prefs.hideSeen')}
+          </label>
+          <div class="cluster" style="--gap: var(--s-3)">
+            <button class="btn btn--solid" type="submit">{t('prefs.save')}</button>
+            <button class="btn btn--ghost" type="button" data-prefs-reset>{t('prefs.reset')}</button>
+            <span class="t-meta" data-prefs-status aria-live="polite"></span>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { enabled, sb, getProfile, updateProfile, readPrefs, writePrefs, isPro, sitePath, type Prefs } from '~/scripts/backend';
+
+  const root = document.querySelector<HTMLElement>('[data-account]')!;
+  const msg = JSON.parse(root.dataset.msg!);
+  const lang = root.dataset.lang as 'en' | 'ru';
+  const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s);
+  const fill = (tpl: string, vars: Record<string, string>) => tpl.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+
+  /* ---- recommendations ---- */
+  const form = $<HTMLFormElement>('[data-prefs]')!;
+  const prefsStatus = $('[data-prefs-status]')!;
+  const paint = (p: Prefs) => {
+    form.querySelectorAll<HTMLInputElement>('input[name=categories]').forEach((i) => (i.checked = !!p.categories?.includes(i.value)));
+    (form.elements.namedItem('pricing') as HTMLSelectElement).value = p.pricing ?? 'any';
+    (form.elements.namedItem('hideSeen') as HTMLInputElement).checked = !!p.hideSeen;
+  };
+  paint(readPrefs());
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const p: Prefs = {
+      categories: [...form.querySelectorAll<HTMLInputElement>('input[name=categories]:checked')].map((i) => i.value),
+      pricing: (form.elements.namedItem('pricing') as HTMLSelectElement).value as Prefs['pricing'],
+      hideSeen: (form.elements.namedItem('hideSeen') as HTMLInputElement).checked,
+    };
+    await writePrefs(p);
+    prefsStatus.textContent = msg.prefsSaved;
+  });
+  $('[data-prefs-reset]')!.addEventListener('click', async () => {
+    await writePrefs({});
+    paint({});
+    prefsStatus.textContent = msg.prefsSaved;
+  });
+
+  /* ---- account ---- */
+  if (enabled) {
+    const out = $('[data-signed-out]')!;
+    const inn = $('[data-signed-in]')!;
+    const status = $('[data-auth-status]')!;
+    const here = location.origin + location.pathname;
+    const params = new URLSearchParams(location.search);
+    const fail = (e: unknown) => (status.textContent = fill(msg.error, { msg: (e as Error)?.message ?? String(e) }));
+
+    // error coming back from Google / an expired link
+    const urlError = params.get('error_description') || new URLSearchParams(location.hash.slice(1)).get('error_description');
+    if (urlError) status.textContent = fill(msg.error, { msg: urlError });
+
+    $('[data-google]')!.addEventListener('click', async () => {
+      const { error } = await (await sb()).auth.signInWithOAuth({ provider: 'google', options: { redirectTo: here + location.search } });
+      if (error) fail(error);
+    });
+
+    $<HTMLFormElement>('[data-email-form]')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = String(new FormData(e.target as HTMLFormElement).get('email') ?? '').trim();
+      const { error } = await (await sb()).auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: here + location.search, data: { lang, newsletter: params.get('subscribe') === '1' } },
+      });
+      if (error) fail(error);
+      else status.textContent = fill(msg.sent, { email });
+    });
+
+    const renderCollections = async (uid: string) => {
+      const list = $('[data-collections]')!;
+      const { data } = await (await sb()).from('collections').select('id,title,tool_ids,is_public').eq('owner', uid).order('created_at', { ascending: false });
+      list.replaceChildren();
+      if (!data?.length) {
+        const li = document.createElement('li');
+        li.className = 't-meta';
+        li.textContent = msg.none;
+        list.append(li);
+        return;
+      }
+      for (const c of data) {
+        const li = document.createElement('li');
+        li.className = 'coll-list__item';
+        const a = document.createElement('a');
+        a.className = 'link';
+        a.href = sitePath(`collection/?c=${encodeURIComponent(c.id)}`);
+        a.textContent = c.title;
+        const meta = document.createElement('span');
+        meta.className = 't-meta';
+        meta.textContent = ` · ${c.tool_ids.length}${c.is_public ? '' : ' · ' + msg.priv}`;
+        const del = document.createElement('button');
+        del.className = 'btn btn--sm btn--ghost';
+        del.type = 'button';
+        del.textContent = msg.del;
+        del.addEventListener('click', async () => {
+          await (await sb()).from('collections').delete().eq('id', c.id);
+          renderCollections(uid);
+        });
+        li.append(a, meta, del);
+        list.append(li);
+      }
+    };
+
+    const render = async () => {
+      const profile = await getProfile().catch(() => null);
+      out.hidden = !!profile;
+      inn.hidden = !profile;
+      if (!profile) return;
+      $('[data-who]')!.textContent = fill(msg.signedAs, { email: profile.email ?? '' });
+      const pro = isPro(profile);
+      $('[data-plan]')!.textContent = pro
+        ? profile.plan_until
+          ? fill(msg.planPro, { date: new Date(profile.plan_until).toLocaleDateString(lang) })
+          : msg.planProAlways
+        : msg.planFree;
+      $('[data-supporter]')!.hidden = !pro;
+      $('[data-upgrade]')!.hidden = pro;
+      const manage = $('[data-manage]');
+      if (manage) manage.hidden = !pro;
+
+      // came from the newsletter form: turn the flag on
+      if (params.get('subscribe') === '1' && !profile.newsletter) {
+        await updateProfile({ newsletter: true }).catch(fail);
+        profile.newsletter = true;
+      }
+      const nameForm = $<HTMLFormElement>('[data-name-form]')!;
+      const nameInput = nameForm.querySelector<HTMLInputElement>('input')!;
+      nameInput.value = (profile as any).display_name ?? '';
+      nameForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const v = nameInput.value.trim();
+        const { error } = await (await sb()).from('profiles').update({ display_name: v || null }).eq('id', profile.id);
+        const b = nameForm.querySelector<HTMLButtonElement>('button')!;
+        const label = b.textContent;
+        b.textContent = error ? '×' : msg.saved;
+        setTimeout(() => (b.textContent = label), 1600);
+      };
+      $('[data-admin-link]')!.hidden = !(profile as any).is_admin;
+
+      const nl = $<HTMLInputElement>('[data-newsletter]')!;
+      nl.checked = profile.newsletter;
+      nl.onchange = () => updateProfile({ newsletter: nl.checked }).catch(fail);
+
+      // local prefs → account on first sign-in, account → local afterwards
+      const local = readPrefs();
+      if (Object.keys(profile.prefs ?? {}).length) {
+        localStorage.setItem('atlas:prefs', JSON.stringify(profile.prefs));
+        paint(profile.prefs);
+      } else if (Object.keys(local).length) {
+        updateProfile({ prefs: local }).catch(() => {});
+      }
+      if (profile.lang !== lang) updateProfile({ lang }).catch(() => {});
+
+      // a "next" target, e.g. back to /pro/ after signing in
+      const next = params.get('next');
+      if (next && /^[a-z0-9/-]+$/.test(next)) {
+        // the admin page exists once, outside the language folders
+        location.href = next.startsWith('admin') ? import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/' : sitePath(next);
+      }
+
+      renderCollections(profile.id);
+    };
+
+    $('[data-signout]')!.addEventListener('click', async () => {
+      await (await sb()).auth.signOut();
+      render();
+    });
+
+    sb().then((c) => c.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') render();
+    }));
+    render();
+  }
+</script>

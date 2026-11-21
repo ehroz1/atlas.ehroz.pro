@@ -1,0 +1,351 @@
+---
+/**
+ * /collection/ — make a list of sites and send it to a friend.
+ *
+ * Two kinds of collection:
+ *  - link-only: everything lives in the URL hash,
+ *      /collection/#t=Title&n=Note&ids=figma,linear
+ *    no account, no server, works forever;
+ *  - in the account: saved to Supabase, short link /collection/?c=<id>,
+ *    editable later (free: 3, Pro: unlimited and private).
+ * The page is static; the script switches between the builder and the
+ * viewer. Not indexed (its content depends on the link).
+ */
+import Base from '~/layouts/Base.astro';
+import { getImage } from 'astro:assets';
+import { getTools, getCategories, domainOf } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
+import { BACKEND } from '~/lib/backend';
+import { loc, useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const index = [];
+for (const x of [...tools].sort((a, b) => a.data.name.localeCompare(b.data.name))) {
+  const shot = shotFor(x.id);
+  index.push({
+    id: x.id,
+    name: x.data.name,
+    summary: loc(x.data.summary, lang),
+    category: names.get(x.data.category),
+    domain: domainOf(x.data.url),
+    thumb: shot ? (await getImage({ src: shot, width: 480, format: 'webp', quality: 72 })).src : '',
+  });
+}
+const msg = {
+  needOne: t('collection.needOne'),
+  needTitle: t('collection.needTitle'),
+  copied: t('collection.copied'),
+  copy: t('collection.copy'),
+  picked: t('collection.picked'),
+  by: t('collection.by'),
+  notFound: t('collection.notFound'),
+  limit: t('collection.limit'),
+  error: t('account.error'),
+};
+---
+<Base lang={lang} title={t('collection.title')} description={t('collection.lead')} noindex
+  crumbs={[{ name: t('nav.collection'), path: '/collection' }]}>
+  <div class="container">
+    <div class="section" style="padding-bottom: 0" data-coll data-lang={lang} data-msg={JSON.stringify(msg)} data-cloud={BACKEND.enabled ? '' : undefined}>
+      <script type="application/json" data-coll-index set:html={JSON.stringify(index)} />
+
+      {/* ---------- viewer ---------- */}
+      <section data-view hidden>
+        <div class="stack" style="--gap: var(--s-3); max-width: 40rem">
+          <p class="t-meta" data-view-by></p>
+          <div data-view-title></div>
+          <p class="t-secondary" data-view-note hidden></p>
+        </div>
+        <div class="cards mt-12" data-view-cards></div>
+        <p class="mt-12 cluster" style="--gap: var(--s-3)">
+          <a class="btn btn--solid" href="./" data-make-own>{t('collection.makeOwn')}</a>
+          <button class="btn" type="button" data-view-share>{t('collection.share')}</button>
+          <a class="btn btn--ghost" href="#" data-view-edit hidden>{t('collection.edit')}</a>
+        </p>
+      </section>
+
+      <p class="notice" data-not-found hidden>{t('collection.notFound')}</p>
+
+      {/* ---------- builder ---------- */}
+      <section data-build>
+        <div class="stack" style="--gap: var(--s-3); max-width: 40rem">
+          <h1 class="t-statement">{t('collection.h1')}</h1>
+          <p class="t-secondary">{t('collection.lead')}</p>
+        </div>
+
+        <form class="form mt-12" data-build-form style="max-width: 40rem">
+          <div class="field">
+            <label class="field__label" for="c-title">{t('collection.name')}</label>
+            <input class="input" id="c-title" name="title" maxlength="80" placeholder={t('collection.namePh')} required />
+          </div>
+          <div class="field">
+            <label class="field__label" for="c-note">{t('collection.note')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+            <textarea class="textarea" id="c-note" name="note" maxlength="500" placeholder={t('collection.notePh')} style="min-height: 5rem"></textarea>
+          </div>
+
+          <fieldset class="field">
+            <legend class="field__label">{t('collection.pick')} · <span class="t-muted" data-picked></span></legend>
+            <span class="field__hint" data-saved-hint hidden>{t('collection.savedFirst')}</span>
+            <input class="input" type="search" placeholder={t('collection.filter')} aria-label={t('collection.filter')} data-pick-filter />
+            <ul class="pick-list" data-pick-list></ul>
+          </fieldset>
+
+          <div class="cluster" style="--gap: var(--s-3)">
+            <button class="btn btn--solid btn--lg" type="submit">{t('collection.create')}</button>
+            {BACKEND.enabled && <button class="btn btn--lg" type="button" data-cloud-save>{t('collection.cloud')}</button>}
+            {BACKEND.enabled && (
+              <label class="cluster t-small" style="--gap: var(--s-2)">
+                <input class="checkbox" type="checkbox" data-private /> {t('collection.private')}
+              </label>
+            )}
+          </div>
+          {BACKEND.enabled && <p class="field__hint">{t('collection.cloudHint')}</p>}
+          <p class="t-meta" data-build-status aria-live="polite"></p>
+        </form>
+
+        <div class="share-box mt-8" data-result hidden>
+          <label class="field__label" for="c-link">{t('collection.link')}</label>
+          <div class="share-box__row">
+            <input class="input" id="c-link" readonly data-link />
+            <button class="btn" type="button" data-copy-link>{t('collection.copy')}</button>
+          </div>
+          <div class="cluster mt-3" style="--gap: var(--s-3)">
+            <button class="btn btn--sm" type="button" data-share hidden>{t('collection.share')}</button>
+            <a class="btn btn--sm" data-share-tg target="_blank" rel="noopener">Telegram</a>
+            <a class="btn btn--sm" data-share-wa target="_blank" rel="noopener">WhatsApp</a>
+            <a class="btn btn--sm btn--ghost" data-open-link>{t('collection.openLink')} ↗</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { enabled, sb, maybeSignedIn, getSession, sitePath } from '~/scripts/backend';
+
+  type Item = { id: string; name: string; summary: string; category: string; domain: string; thumb: string };
+  const root = document.querySelector<HTMLElement>('[data-coll]')!;
+  const msg = JSON.parse(root.dataset.msg!);
+  const index: Item[] = JSON.parse(root.querySelector('[data-coll-index]')!.textContent!);
+  const byId = new Map(index.map((x) => [x.id, x]));
+  const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s);
+  const fill = (tpl: string, v: Record<string, string | number>) => tpl.replace(/\{(\w+)\}/g, (_, k) => String(v[k] ?? ''));
+  const pageUrl = location.origin + sitePath('collection/');
+
+  const card = (x: Item) => {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = sitePath(`tool/${x.id}/`);
+    const media = document.createElement('div');
+    media.className = 'card__media';
+    if (x.thumb) {
+      const img = document.createElement('img');
+      img.className = 'card__shot';
+      img.src = x.thumb;
+      img.alt = '';
+      img.loading = 'lazy';
+      media.append(img);
+    } else {
+      const f = document.createElement('div');
+      f.className = 'shot-fallback';
+      f.textContent = x.domain;
+      media.append(f);
+    }
+    const cap = document.createElement('div');
+    cap.className = 'card__caption';
+    const row = document.createElement('div');
+    row.className = 'card__row';
+    const name = document.createElement('span');
+    name.className = 'card__name';
+    name.textContent = x.name;
+    const cat = document.createElement('span');
+    cat.className = 'card__category';
+    cat.textContent = x.category;
+    row.append(name, cat);
+    const sum = document.createElement('p');
+    sum.className = 'card__summary';
+    sum.textContent = x.summary;
+    cap.append(row, sum);
+    a.append(media, cap);
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap';
+    wrap.append(a);
+    return wrap;
+  };
+
+  const share = async (url: string, title: string) => {
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); return; } catch { /* cancelled */ }
+    }
+    await navigator.clipboard?.writeText(url).catch(() => {});
+  };
+
+  /* ---------------- viewer ---------------- */
+  const showCollection = (c: { title: string; note?: string | null; ids: string[] }, ownerEdit?: string) => {
+    $('[data-build]')!.hidden = true;
+    $('[data-view]')!.hidden = false;
+    $('[data-view-by]')!.textContent = msg.by;
+    // the builder (hidden now) has the page's only static <h1>; the viewer makes its own
+    const h1 = document.createElement('h1');
+    h1.className = 't-statement';
+    h1.textContent = c.title;
+    $('[data-view-title]')!.replaceChildren(h1);
+    root.querySelector('[data-build] h1')?.remove();
+    document.title = `${c.title} · Atlas`;
+    const note = $('[data-view-note]')!;
+    if (c.note) { note.textContent = c.note; note.hidden = false; }
+    const grid = $('[data-view-cards]')!;
+    grid.replaceChildren(...c.ids.map((id) => byId.get(id)).filter(Boolean).map((x) => card(x!)));
+    $('[data-make-own]')!.setAttribute('href', pageUrl);
+    $('[data-view-share]')!.addEventListener('click', () => share(location.href, c.title));
+    if (ownerEdit) {
+      const edit = $<HTMLAnchorElement>('[data-view-edit]')!;
+      edit.href = `${pageUrl}?edit=${encodeURIComponent(ownerEdit)}`;
+      edit.hidden = false;
+    }
+  };
+
+  // opening another link-only collection from this page changes only the hash
+  window.addEventListener('hashchange', () => location.reload());
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const params = new URLSearchParams(location.search);
+  const cloudId = params.get('c');
+  const editId = params.get('edit');
+
+  if (hash.get('ids')) {
+    showCollection({ title: hash.get('t') || 'Atlas', note: hash.get('n'), ids: hash.get('ids')!.split(',').filter((id) => byId.has(id)) });
+  } else if (cloudId && enabled) {
+    $('[data-build]')!.hidden = true;
+    sb().then(async (client) => {
+      const { data } = await client.from('collections').select('id,title,note,tool_ids,owner').eq('id', cloudId).maybeSingle();
+      if (!data) { $('[data-not-found]')!.hidden = false; return; }
+      const s = maybeSignedIn() ? await getSession() : null;
+      showCollection({ title: data.title, note: data.note, ids: data.tool_ids }, s?.user.id === data.owner ? data.id : undefined);
+    });
+  } else {
+    builder();
+  }
+
+  /* ---------------- builder ---------------- */
+  function builder() {
+    const form = $<HTMLFormElement>('[data-build-form]')!;
+    const list = $('[data-pick-list]')!;
+    const status = $('[data-build-status]')!;
+    const picked = $('[data-picked]')!;
+    let saved: string[] = [];
+    try { saved = JSON.parse(localStorage.getItem('atlas:saved') || '[]'); } catch {}
+    const chosen = new Set<string>(saved.filter((id) => byId.has(id)));
+    if (chosen.size) $('[data-saved-hint]')!.hidden = false;
+
+    // chosen first, then alphabetical
+    const order = [...index].sort((a, b) => Number(chosen.has(b.id)) - Number(chosen.has(a.id)));
+    for (const x of order) {
+      const li = document.createElement('li');
+      li.dataset.text = `${x.name} ${x.domain} ${x.category}`.toLowerCase();
+      const label = document.createElement('label');
+      label.className = 'pick-list__item';
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.className = 'checkbox';
+      box.value = x.id;
+      box.checked = chosen.has(x.id);
+      box.addEventListener('change', () => { box.checked ? chosen.add(x.id) : chosen.delete(x.id); count(); });
+      const name = document.createElement('span');
+      name.className = 't-medium';
+      name.textContent = x.name;
+      const meta = document.createElement('span');
+      meta.className = 't-meta';
+      meta.textContent = ` · ${x.category}`;
+      label.append(box, name, meta);
+      li.append(label);
+      list.append(li);
+    }
+    const count = () => (picked.textContent = fill(msg.picked, { count: chosen.size }));
+    count();
+
+    $<HTMLInputElement>('[data-pick-filter]')!.addEventListener('input', (e) => {
+      const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      list.querySelectorAll<HTMLElement>('li').forEach((li) => (li.hidden = !!q && !li.dataset.text!.includes(q)));
+    });
+
+    const values = () => {
+      const title = String(new FormData(form).get('title') ?? '').trim();
+      const note = String(new FormData(form).get('note') ?? '').trim();
+      // keep the order the sites were ticked in the list
+      const ids = [...list.querySelectorAll<HTMLInputElement>('input:checked')].map((i) => i.value);
+      if (!title) { status.textContent = msg.needTitle; return null; }
+      if (!ids.length) { status.textContent = msg.needOne; return null; }
+      status.textContent = '';
+      return { title, note, ids };
+    };
+
+    const result = (url: string, title: string) => {
+      const box = $('[data-result]')!;
+      box.hidden = false;
+      $<HTMLInputElement>('[data-link]')!.value = url;
+      const text = encodeURIComponent(title);
+      $<HTMLAnchorElement>('[data-share-tg]')!.href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${text}`;
+      $<HTMLAnchorElement>('[data-share-wa]')!.href = `https://wa.me/?text=${text}%20${encodeURIComponent(url)}`;
+      $<HTMLAnchorElement>('[data-open-link]')!.href = url;
+      const sh = $('[data-share]')!;
+      sh.hidden = !navigator.share;
+      sh.onclick = () => share(url, title);
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+
+    $('[data-copy-link]')!.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      await navigator.clipboard?.writeText($<HTMLInputElement>('[data-link]')!.value).catch(() => {});
+      btn.textContent = msg.copied;
+      setTimeout(() => (btn.textContent = msg.copy), 1600);
+    });
+
+    // link-only collection
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const v = values();
+      if (!v) return;
+      const h = new URLSearchParams({ t: v.title, ...(v.note ? { n: v.note } : {}), ids: v.ids.join(',') });
+      result(`${pageUrl}#${h.toString()}`, v.title);
+    });
+
+    // editing a cloud collection: prefill
+    if (editId && enabled) {
+      sb().then(async (c) => {
+        const { data } = await c.from('collections').select('*').eq('id', editId).maybeSingle();
+        if (!data) return;
+        (form.elements.namedItem('title') as HTMLInputElement).value = data.title;
+        (form.elements.namedItem('note') as HTMLTextAreaElement).value = data.note ?? '';
+        list.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.checked = data.tool_ids.includes(i.value)));
+        chosen.clear(); data.tool_ids.forEach((id: string) => chosen.add(id));
+        const priv = $<HTMLInputElement>('[data-private]');
+        if (priv) priv.checked = !data.is_public;
+        count();
+      });
+    }
+
+    // collection in the account
+    $('[data-cloud-save]')?.addEventListener('click', async () => {
+      const v = values();
+      if (!v) return;
+      const s = maybeSignedIn() ? await getSession() : null;
+      if (!s) { location.href = sitePath('account/?next=collection/'); return; }
+      const row = { title: v.title, note: v.note || null, tool_ids: v.ids, is_public: !$<HTMLInputElement>('[data-private]')?.checked };
+      const client = await sb();
+      const q = editId
+        ? client.from('collections').update(row).eq('id', editId).select('id').single()
+        : client.from('collections').insert(row).select('id').single();
+      const { data, error } = await q;
+      if (error) {
+        status.textContent = /3 collections|need Pro/.test(error.message) ? msg.limit : fill(msg.error, { msg: error.message });
+        return;
+      }
+      result(`${pageUrl}?c=${data.id}`, v.title);
+    });
+  }
+</script>

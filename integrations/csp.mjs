@@ -10,17 +10,23 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-async function* htmlFiles(dir) {
+async function* htmlFiles(dir, root = dir) {
   for (const e of await fs.readdir(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) yield* htmlFiles(p);
+    // admin/ is a static page from public/ with its own, stricter policy
+    if (e.isDirectory()) { if (e.name !== 'admin' || dir !== root) yield* htmlFiles(p, root); }
     else if (e.name.endsWith('.html')) yield p;
   }
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
-export function policyHosts({ ga4, metrika, preview }) {
+/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
+export function policyHosts({ ga4, metrika, preview, supabase }) {
   const h = { script: [], img: [], connect: [], frame: [] };
+  if (supabase) {
+    // accounts, collections, member counter: REST + Realtime websocket
+    const host = new URL(supabase).host;
+    h.connect.push(`https://${host}`, `wss://${host}`);
+  }
   if (ga4) {
     h.script.push('https://www.googletagmanager.com');
     h.img.push('https://*.google-analytics.com', 'https://www.googletagmanager.com');
@@ -41,7 +47,7 @@ export function policyHosts({ ga4, metrika, preview }) {
   return h;
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
+/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
 export default function csp(opts) {
   return {
     name: 'atlas-csp',

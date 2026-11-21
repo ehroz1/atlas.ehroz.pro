@@ -8,6 +8,7 @@ import ToolCard from './ToolCard.astro';
 import CategoryChips from './CategoryChips.astro';
 import type { Tool, Category } from '~/lib/data';
 import { loc, useTranslations, plural, defaultLang, type Lang } from '~/i18n';
+import { u } from '~/lib/url';
 
 interface Props {
   tools: Tool[];
@@ -18,20 +19,88 @@ interface Props {
   filters?: boolean;
   /** place the owner's own sites near the top, by visit number (home only) */
   promote?: boolean;
+  /** show the "Sort & filter" button above the grid (home) */
+  controls?: boolean;
 }
-const { tools, categories, current, lang = defaultLang, filters = true, promote = false } = Astro.props;
+const { tools, categories, current, lang = defaultLang, filters = true, promote = false, controls = false } = Astro.props;
 const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
+
+// Options for the "Sort & filter" panel, with how many sites each one has.
+const howMany = (fn: (x: Tool) => boolean) => tools.filter(fn).length;
+const platformList = [...new Set(tools.flatMap((x) => x.data.platforms))]
+  .map((p) => ({ id: p, label: p, count: howMany((x) => x.data.platforms.includes(p)) }))
+  .sort((a, b) => b.count - a.count);
+const facetGroups = [
+  {
+    facet: 'pricing',
+    title: t('search.facet.pricing'),
+    options: [
+      ...(['free', 'freemium', 'paid'] as const).map((p) => ({ id: p, label: t(`pricing.${p}`), count: howMany((x) => x.data.pricing === p) })),
+      { id: 'open', label: t('pricing.openSource'), count: howMany((x) => x.data.openSource) },
+    ].filter((o) => o.count > 0),
+  },
+  {
+    facet: 'category',
+    title: t('search.facet.category'),
+    options: categories
+      .map((c) => ({ id: c.id, label: loc(c.data.name, lang), count: howMany((x) => x.data.category === c.id) }))
+      .filter((o) => o.count > 0),
+  },
+  { facet: 'platform', title: t('search.facet.platform'), options: platformList },
+];
+const sorts = [
+  { id: 'random', label: t('sort.random') },
+  { id: 'new', label: t('sort.new') },
+  { id: 'az', label: t('sort.az') },
+];
 ---
 <section id="sites" aria-label={t('results.label')} data-scope-category={current}>
-  <div class={filters ? 'toolbar' : 'visually-hidden'}>
+  <div class={filters || controls ? 'toolbar' : 'visually-hidden'}>
     {filters && <CategoryChips categories={categories} current={current} lang={lang} />}
     <span class="toolbar__count t-tabular" data-count aria-live="polite"
       data-lang={lang} data-one={t('results.count.one')} data-few={t('results.count.few')}
       data-many={t('results.count.many')} data-other={t('results.count.other')}>
       {countText(tools.length)}
     </span>
+    {controls && (
+      <div class="sortbar" data-sortbar>
+        <button class="btn btn--chrome sortbar__btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sort-panel" data-sort-toggle>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 6h9M15.5 6H17M3 14h2.5M9 14h8" /><circle cx="13.7" cy="6" r="1.9" /><circle cx="7.2" cy="14" r="1.9" />
+          </svg>
+          {t('sort.button')}
+          <span class="bar-search__badge" data-sort-badge hidden></span>
+        </button>
+        <div class="sort-panel" id="sort-panel" role="dialog" aria-label={t('sort.button')} hidden data-sort-panel>
+          <div class="sort-panel__group">
+            <p class="sort-panel__label">{t('sort.title')}</p>
+            <div class="sort-panel__chips" role="radiogroup" aria-label={t('sort.title')}>
+              {sorts.map((o) => (
+                <button class="sort-chip" type="button" role="radio" aria-checked={o.id === 'random' ? 'true' : 'false'} data-sort={o.id}>{o.label}</button>
+              ))}
+            </div>
+          </div>
+          {facetGroups.map((g) => (
+            <div class="sort-panel__group">
+              <p class="sort-panel__label">{g.title}</p>
+              <div class="sort-panel__chips">
+                {g.options.map((o) => (
+                  <button class="sort-chip" type="button" aria-pressed="false" data-facet-opt={g.facet} data-id={o.id}>
+                    {o.label}<span class="sort-chip__count">{o.count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div class="sort-panel__foot">
+            <button class="finder__clear" type="button" data-sort-reset>{t('sort.reset')}</button>
+            <button class="btn btn--solid" type="button" data-sort-done data-template={t('sort.show')}>{t('sort.show', { count: tools.length })}</button>
+          </div>
+        </div>
+      </div>
+    )}
   </div>
 
   {/* What the grid shows right now, with a way back: only visible while a
@@ -42,7 +111,12 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     <button class="btn btn--sm" type="button" data-results-clear>{t('results.clear')}</button>
   </div>
 
-  <div class="cards" data-cards>
+  {promote && (
+    <p class="prefs-note t-small t-secondary" data-prefs-note hidden>
+      {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'}>{t('prefs.change')}</a>
+    </p>
+  )}
+  <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined}>
     {tools.map((tool) => (
       <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
     ))}
@@ -66,6 +140,33 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         return a;
       };
       var cards = shuffle(Array.prototype.slice.call(grid.children));
+
+      // Recommendations (localStorage atlas:prefs, set on /account/):
+      // preferred categories and prices first, opened sites last.
+      // Stable sort, so the shuffle survives inside each group.
+      if (promote) {
+        var prefs = {};
+        try { prefs = JSON.parse(localStorage.getItem('atlas:prefs') || '{}') || {}; } catch (e) {}
+        var cats = Array.isArray(prefs.categories) ? prefs.categories : [];
+        var price = prefs.pricing || 'any';
+        var seen = [];
+        if (prefs.hideSeen) { try { seen = JSON.parse(localStorage.getItem('atlas:seen') || '[]'); } catch (e) {} }
+        if (cats.length || price !== 'any' || seen.length) {
+          var score = function (c) {
+            var s = 0, p = c.getAttribute('data-pricing');
+            if (cats.indexOf(c.getAttribute('data-category')) >= 0) s += 2;
+            if (price === 'free' && p === 'free') s += 1;
+            if (price === 'nopaid' && p !== 'paid') s += 1;
+            if (seen.indexOf(c.getAttribute('data-id')) >= 0) s -= 10;
+            return s;
+          };
+          var scored = cards.map(function (c, i) { return { c: c, s: score(c), i: i }; });
+          scored.sort(function (a, b) { return b.s - a.s || a.i - b.i; });
+          cards = scored.map(function (x) { return x.c; });
+          var note = grid.previousElementSibling;
+          if (note && note.hasAttribute('data-prefs-note')) note.hidden = false;
+        }
+      }
 
       if (promote) {
         var visit = 1;
@@ -136,8 +237,21 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));
     };
     const allIds = new Set(original.map((c) => c.dataset.id!));
+
+    /* Sort: "random" keeps the shuffled (and promoted) order made above;
+       "new" = by date added, newest first; "az" = by name. Mirrored in ?sort= */
+    const shuffled = original.slice();
+    let order = shuffled;
+    const sortBy = (mode: string) => {
+      if (mode === 'new') order = [...shuffled].sort((a, b) => (b.dataset.added ?? '').localeCompare(a.dataset.added ?? ''));
+      else if (mode === 'az') order = [...shuffled].sort((a, b) => (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '', count?.dataset.lang));
+      else order = shuffled;
+    };
+    let sortMode = new URLSearchParams(location.search).get('sort') ?? 'random';
+    if (!['random', 'new', 'az'].includes(sortMode)) sortMode = 'random';
+    sortBy(sortMode);
     let current: { ids: Set<string>; q: string; filters?: number } = { ids: allIds, q: '', filters: 0 };
-    const bar = document.querySelector<HTMLElement>('[data-results-bar]');
+    const resultsBar = document.querySelector<HTMLElement>('[data-results-bar]');
     const barText = document.querySelector<HTMLElement>('[data-results-text]');
     /* "Saved" view: only the saved sites (header button, or ?saved=1) */
     let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
@@ -150,13 +264,14 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       const nq = normalize(q);
       const lead: HTMLElement[] = [];
       const rest: HTMLElement[] = [];
-      for (const card of original) {
+      for (const card of order) {
         const match = ids.has(card.dataset.id!) && (!savedOnly || saved.includes(card.dataset.id!));
         card.hidden = !match;
         if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
       }
-      grid.append(...pinned(lead), ...pinned(rest), ...original.filter((c) => c.hidden));
+      grid.append(...pinned(lead), ...pinned(rest), ...order.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
+      document.dispatchEvent(new CustomEvent('atlas:shown', { detail: shown }));
       let countText = '';
       if (count) {
         const cat = new Intl.PluralRules(count.dataset.lang).select(shown);
@@ -167,12 +282,14 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       // results bar: "12 sites for “fig”", "Saved · 3 sites", with Clear
       const q2 = q.trim();
       const active = !!q2 || !!current.filters || savedOnly;
-      if (bar && barText) {
-        bar.hidden = !active || shown === 0;
+      if (resultsBar && barText) {
+        resultsBar.hidden = !active || shown === 0;
+        // the bar already says how many: don't repeat it in the toolbar
+        if (count) count.style.visibility = resultsBar.hidden ? '' : 'hidden';
         if (active) {
-          const parts = [savedOnly ? `${bar.dataset.savedTitle} · ${countText}` : countText];
-          if (q2) parts.push((bar.dataset.for ?? '').replace('{q}', q2));
-          if (current.filters) parts.push(bar.dataset.filtered ?? '');
+          const parts = [savedOnly ? `${resultsBar.dataset.savedTitle} · ${countText}` : countText];
+          if (q2) parts.push((resultsBar.dataset.for ?? '').replace('{q}', q2));
+          if (current.filters) parts.push(resultsBar.dataset.filtered ?? '');
           barText.textContent = parts.join(' ');
         }
       }
@@ -199,6 +316,83 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
 
     const last = (window as any).__atlasFilter;
     if (last) apply(last);
+    else if (sortMode !== 'random') apply();
+
+    // ---- "Sort & filter" panel (home) ----------------------------------
+    const bar = document.querySelector<HTMLElement>('[data-sortbar]');
+    if (bar) {
+      const toggle = bar.querySelector<HTMLButtonElement>('[data-sort-toggle]')!;
+      const panel = bar.querySelector<HTMLElement>('[data-sort-panel]')!;
+      const badge = bar.querySelector<HTMLElement>('[data-sort-badge]')!;
+      const doneBtn = bar.querySelector<HTMLButtonElement>('[data-sort-done]')!;
+      const facets = () => (window as any).__atlasFacets?.() ?? { category: [], pricing: [], platform: [] };
+
+      const sync = () => {
+        const f = facets();
+        bar.querySelectorAll<HTMLElement>('[data-facet-opt]').forEach((b) => {
+          b.setAttribute('aria-pressed', String((f[b.dataset.facetOpt!] ?? []).includes(b.dataset.id!)));
+        });
+        bar.querySelectorAll<HTMLElement>('[data-sort]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sort === sortMode)));
+        const n = f.category.length + f.pricing.length + f.platform.length + (sortMode !== 'random' ? 1 : 0);
+        badge.hidden = n === 0;
+        badge.textContent = String(n);
+        toggle.classList.toggle('is-active', n > 0);
+      };
+      const setOpen = (open: boolean) => {
+        panel.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        if (open) sync();
+      };
+
+      toggle.addEventListener('click', () => setOpen(panel.hidden));
+      doneBtn.addEventListener('click', () => {
+        setOpen(false);
+        document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      bar.querySelector('[data-sort-reset]')!.addEventListener('click', () => {
+        sortMode = 'random';
+        sortBy(sortMode);
+        writeSort();
+        document.dispatchEvent(new Event('atlas:facets-clear'));
+        apply();
+        sync();
+      });
+      const writeSort = () => {
+        try {
+          const url = new URL(location.href);
+          sortMode === 'random' ? url.searchParams.delete('sort') : url.searchParams.set('sort', sortMode);
+          history.replaceState(history.state, '', url);
+        } catch {}
+      };
+      panel.addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('[data-sort], [data-facet-opt]');
+        if (!el) return;
+        if (el.dataset.sort) {
+          sortMode = el.dataset.sort;
+          sortBy(sortMode);
+          writeSort();
+          apply();
+        } else {
+          const on = el.getAttribute('aria-pressed') !== 'true';
+          document.dispatchEvent(new CustomEvent('atlas:facet', { detail: { facet: el.dataset.facetOpt, id: el.dataset.id, on } }));
+        }
+        sync();
+      });
+      document.addEventListener('atlas:filter', sync);
+      document.addEventListener('atlas:shown', (e) => {
+        doneBtn.textContent = (doneBtn.dataset.template ?? '{count}').replace('{count}', String((e as CustomEvent<number>).detail));
+      });
+      document.addEventListener('pointerdown', (e) => {
+        if (!panel.hidden && !bar.contains(e.target as Node)) setOpen(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !panel.hidden) {
+          setOpen(false);
+          toggle.focus();
+        }
+      });
+      sync();
+    }
     document.addEventListener('atlas:saved', () => apply());
     document.addEventListener('atlas:filter', (e) => apply((e as CustomEvent).detail));
     document.querySelector('[data-search-reset]')?.addEventListener('click', () => {

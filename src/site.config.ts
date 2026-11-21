@@ -18,6 +18,34 @@ export const SITE = {
   submitPhone: '77775971798',
 } as const;
 
+/**
+ * Atlas Pro. Prices are only shown on /pro/; what is actually charged is set
+ * in Gumroad (membership "Atlas Pro"). After a payment Gumroad pings
+ * supabase/functions/gumroad-ping, which switches the account to Pro.
+ */
+export const PRO = {
+  monthly: '$3',
+  yearly: '$24',
+  /** Gumroad membership checkout; PUBLIC_CHECKOUT_MONTHLY / _YEARLY override */
+  checkoutMonthly: 'https://ehroz.gumroad.com/l/atlas-pro',
+  checkoutYearly: '',
+  /** where buyers manage or cancel their membership */
+  billingPortal: 'https://app.gumroad.com/library',
+  /** free accounts keep this many collections in the cloud (also in supabase/schema.sql) */
+  freeCollections: 3,
+} as const;
+
+/**
+ * Supabase project (accounts, collections, newsletter, member counter).
+ * Both values are public by design (access is limited by RLS in
+ * supabase/schema.sql); PUBLIC_SUPABASE_URL / _ANON_KEY override them.
+ * Set both to '' to switch the backend off.
+ */
+export const SUPABASE = {
+  url: 'https://uqfsxipvbccporjtsfoi.supabase.co',
+  anonKey: 'sb_publishable_RWIWeSUBKWz4dGs35_b96w_pAT-HjV9',
+} as const;
+
 /** Author. Same facts and the same @id as on ehroz.pro, so search engines join them. */
 export const AUTHOR = {
   id: 'https://ehroz.pro/#person',
