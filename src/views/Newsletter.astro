@@ -32,7 +32,7 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.newsletter'), path: '/newsletter' }]}>
   <div class="container">
-    <div class="section" style="padding-bottom: 0">
+    <div class="section section--top">
       <div class="stack" style="--gap: var(--s-3); max-width: 40rem">
         <h1 class="t-statement">{t('newsletter.h1')}</h1>
         <p class="t-secondary">{t('newsletter.lead')}</p>
@@ -52,7 +52,7 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
       )}
       <p class="t-small mt-4"><a class="link" href={u('/rss.xml')} type="application/rss+xml">{t('newsletter.rss')}</a></p>
 
-      <section class="section--tight" style="padding-top: var(--s-16); padding-bottom: 0" aria-labelledby="next">
+      <section class="section--next" aria-labelledby="next">
         <div class="section-head">
           <h2 class="t-title" id="next">{t('newsletter.next', { month })}</h2>
         </div>

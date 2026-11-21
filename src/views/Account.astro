@@ -32,7 +32,7 @@ const msg = {
 <Base lang={lang} title={t('account.title')} description={t('account.lead')} noindex
   crumbs={[{ name: t('account.h1'), path: '/account' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
-    <div class="section" style="padding-bottom: 0" data-account data-msg={JSON.stringify(msg)} data-lang={lang}>
+    <div class="section section--top" data-account data-msg={JSON.stringify(msg)} data-lang={lang}>
       <div class="stack" style="--gap: var(--s-3)">
         <h1 class="t-statement">{t('account.h1')}</h1>
         <p class="t-secondary">{t('account.lead')}</p>
@@ -49,7 +49,7 @@ const msg = {
               {t('account.google')}
             </button>
             <p class="t-meta">{t('account.or')}</p>
-            <form class="form" data-email-form style="gap: var(--s-3)">
+            <form class="form" data-email-form style="--gap: var(--s-3)">
               <div class="field">
                 <label class="field__label" for="acc-email">{t('account.email')}</label>
                 <input class="input" id="acc-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
@@ -75,9 +75,9 @@ const msg = {
                 </dd>
               </div>
             </dl>
-            <form class="field" data-name-form style="max-width: 24rem">
+            <form class="field field--short" data-name-form>
               <label class="field__label" for="acc-name">{t('account.name')}</label>
-              <div class="share-box__row" style="margin: 0">
+              <div class="input-row">
                 <input class="input" id="acc-name" name="name" maxlength="40" placeholder={t('account.namePh')} />
                 <button class="btn" type="submit">{t('prefs.save')}</button>
               </div>
@@ -89,7 +89,7 @@ const msg = {
             </label>
 
             <section class="stack" style="--gap: var(--s-3)" aria-labelledby="mine">
-              <div class="section-head" style="margin: 0">
+              <div class="section-head section-head--flush">
                 <h2 class="t-title" id="mine">{t('collections.mine')}</h2>
                 <a class="link t-small" href={u('/collection', lang)}>{t('collections.new')}</a>
               </div>
@@ -105,7 +105,7 @@ const msg = {
       <section class="mt-16 stack" style="--gap: var(--s-4)" id="prefs" aria-labelledby="prefs-h">
         <h2 class="t-title" id="prefs-h">{t('prefs.title')}</h2>
         <p class="t-secondary t-small">{t('prefs.lead')}</p>
-        <form class="form" data-prefs style="gap: var(--s-5)">
+        <form class="form" data-prefs style="--gap: var(--s-5)">
           <fieldset class="field">
             <legend class="field__label">{t('prefs.categories')}</legend>
             <div class="chips chips--wrap">

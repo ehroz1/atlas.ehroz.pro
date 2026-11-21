@@ -20,7 +20,7 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
-    <div class="section" style="padding-block: var(--s-8) 0">
+    <div class="section section--page">
       <div class="stack" style="--gap: var(--s-3)">
         <h1 class="t-statement">{t('submit.h1')}</h1>
         <p class="t-secondary">
@@ -37,7 +37,7 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
         </div>
 
         <div class="field">
-          <label class="field__label" for="name">{t('submit.name')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <label class="field__label" for="name">{t('submit.name')} <span class="field__optional">{t('submit.optional')}</span></label>
           <input class="input" id="name" name="name" type="text" placeholder={t('submit.namePh')} />
         </div>
 
@@ -56,12 +56,12 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
         </div>
 
         <div class="field">
-          <label class="field__label" for="email">{t('submit.email')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <label class="field__label" for="email">{t('submit.email')} <span class="field__optional">{t('submit.optional')}</span></label>
           <input class="input" id="email" name="email" type="email" placeholder={t('submit.emailPh')} autocomplete="email" />
         </div>
 
         <div class="field">
-          <label class="field__label" for="photos">{t('submit.photos')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
+          <label class="field__label" for="photos">{t('submit.photos')} <span class="field__optional">{t('submit.optional')}</span></label>
           <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
           <span class="field__hint">{BACKEND.enabled ? t('submit.photosHintDirect') : t('submit.photosHint')}</span>
         </div>

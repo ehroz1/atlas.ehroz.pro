@@ -56,10 +56,10 @@ const icon = {
     </div>
 
     <div class="container">
-      <div style="padding-block: clamp(var(--s-8), 4vw, var(--s-12)) clamp(var(--s-10), 4.5vw, var(--s-12))">
+      <div class="about-intro">
         <h1 class="t-headline" set:html={t('about.h1')} />
-        <p class="t-center t-secondary mt-6" style="max-width: 36rem; margin-inline: auto">{t('about.lead')}</p>
-        <p class="t-center t-muted mt-4" style="font-size: var(--fs-15)">{t('about.updated', { date: formatDate(entry.updated, lang) })}</p>
+        <p class="t-center t-secondary mt-6 about-intro__lead">{t('about.lead')}</p>
+        <p class="t-center t-muted mt-4 about-intro__date">{t('about.updated', { date: formatDate(entry.updated, lang) })}</p>
       </div>
 
       <div class="plans">

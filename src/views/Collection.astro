@@ -50,7 +50,7 @@ const msg = {
 <Base lang={lang} title={t('collection.title')} description={t('collection.lead')} noindex
   crumbs={[{ name: t('nav.collection'), path: '/collection' }]}>
   <div class="container">
-    <div class="section" style="padding-bottom: 0" data-coll data-lang={lang} data-msg={JSON.stringify(msg)} data-cloud={BACKEND.enabled ? '' : undefined}>
+    <div class="section section--top" data-coll data-lang={lang} data-msg={JSON.stringify(msg)} data-cloud={BACKEND.enabled ? '' : undefined}>
       <script type="application/json" data-coll-index set:html={JSON.stringify(index)} />
 
       {/* ---------- viewer ---------- */}
@@ -77,14 +77,14 @@ const msg = {
           <p class="t-secondary">{t('collection.lead')}</p>
         </div>
 
-        <form class="form mt-12" data-build-form style="max-width: 40rem">
+        <form class="form form--md mt-12" data-build-form>
           <div class="field">
             <label class="field__label" for="c-title">{t('collection.name')}</label>
             <input class="input" id="c-title" name="title" maxlength="80" placeholder={t('collection.namePh')} required />
           </div>
           <div class="field">
-            <label class="field__label" for="c-note">{t('collection.note')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
-            <textarea class="textarea" id="c-note" name="note" maxlength="500" placeholder={t('collection.notePh')} style="min-height: 5rem"></textarea>
+            <label class="field__label" for="c-note">{t('collection.note')} <span class="field__optional">{t('submit.optional')}</span></label>
+            <textarea class="textarea textarea--short" id="c-note" name="note" maxlength="500" placeholder={t('collection.notePh')}></textarea>
           </div>
 
           <fieldset class="field">

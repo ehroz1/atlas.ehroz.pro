@@ -18,12 +18,12 @@ for (const tool of tools) {
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('categories.title'), path: '/categories' }]}>
   <div class="container">
-    <section class="hero" style="padding-top: var(--s-10)">
+    <section class="hero hero--page">
       <h1 class="t-statement">{t('categories.title')}</h1>
       <p class="t-secondary mt-2">{t('categories.lead', { count: categories.length })}</p>
     </section>
 
-    <div class="section" style="padding-bottom: 0; padding-top: var(--s-12)">
+    <div class="section section--list">
     <ul class="category-list" role="list">
       {categories.map((c) => {
         const names = byCategory.get(c.id) ?? [];

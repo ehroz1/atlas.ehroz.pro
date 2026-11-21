@@ -43,10 +43,10 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
   toolId={tool.id}
 >
   <div class="container">
-    <header class="tool-head" style="padding-top: var(--s-6)">
+    <header class="tool-head">
       <div class="tool-head__title">
         <h1 class="t-display">{d.name}</h1>
-        <p class="t-lead" style="max-width: 34rem">{loc(d.description, lang)}</p>
+        <p class="t-lead tool-head__lead">{loc(d.description, lang)}</p>
         {d.note && (
           <figure class="author-note">
             <blockquote><p>{loc(d.note, lang)}</p></blockquote>
@@ -115,7 +115,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     <Comments toolId={tool.id} lang={lang} />
 
     {alternatives.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
+      <section class="section--more" aria-labelledby="alternatives">
         <div class="section-head">
           <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
         </div>
@@ -126,7 +126,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     )}
 
     {similar.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="similar">
+      <section class="section--more" aria-labelledby="similar">
         <div class="section-head">
           <h2 class="t-title" id="similar">{t('tool.similar')}</h2>
           <a class="link t-small" href={u(`/category/${category.id}`, lang)}>{t('tool.more', { category: categoryName })}</a>
