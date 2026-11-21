@@ -11,9 +11,10 @@
  * level security rules in supabase/schema.sql.
  */
 import type { SupabaseClient, Session } from '@supabase/supabase-js';
+import { SUPABASE } from '~/site.config';
 
-const URL_ = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
-const KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+const URL_ = (import.meta.env.PUBLIC_SUPABASE_URL as string | undefined) || SUPABASE.url;
+const KEY = (import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined) || SUPABASE.anonKey;
 
 export const enabled = !!(URL_ && KEY);
 

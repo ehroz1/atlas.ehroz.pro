@@ -30,6 +30,17 @@ export const PRO = {
   freeCollections: 3,
 } as const;
 
+/**
+ * Supabase project (accounts, collections, newsletter, member counter).
+ * Both values are public by design (access is limited by RLS in
+ * supabase/schema.sql); PUBLIC_SUPABASE_URL / _ANON_KEY override them.
+ * Set both to '' to switch the backend off.
+ */
+export const SUPABASE = {
+  url: 'https://uqfsxipvbccporjtsfoi.supabase.co',
+  anonKey: 'sb_publishable_RWIWeSUBKWz4dGs35_b96w_pAT-HjV9',
+} as const;
+
 /** Author. Same facts and the same @id as on ehroz.pro, so search engines join them. */
 export const AUTHOR = {
   id: 'https://ehroz.pro/#person',

@@ -4,11 +4,12 @@
  * locally, or as a repository variable for the GitHub Pages workflow.
  * All of them are public values; secrets never go here.
  */
+import { SUPABASE } from '~/site.config';
 const env = import.meta.env;
 
 export const BACKEND = {
   /** Supabase: accounts, cloud collections, newsletter list, member counter */
-  enabled: !!(env.PUBLIC_SUPABASE_URL && env.PUBLIC_SUPABASE_ANON_KEY),
+  enabled: !!((env.PUBLIC_SUPABASE_URL || SUPABASE.url) && (env.PUBLIC_SUPABASE_ANON_KEY || SUPABASE.anonKey)),
   /** Lemon Squeezy checkout links for Atlas Pro */
   checkoutMonthly: (env.PUBLIC_CHECKOUT_MONTHLY as string | undefined) ?? '',
   checkoutYearly: (env.PUBLIC_CHECKOUT_YEARLY as string | undefined) ?? '',
