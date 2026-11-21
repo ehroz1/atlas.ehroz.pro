@@ -1158,6 +1158,76 @@ hr { border: 0; border-top: var(--border); }
 }
 
 
+/* SORT & FILTER — button at the right end of the home toolbar, opening a
+   dark panel: sort (one choice) and price / category / platform (many).
+   The filters are the finder's own (Header.astro); the panel only toggles
+   them. On phones the panel becomes a sheet at the bottom of the screen. */
+.sortbar { position: relative; margin-left: auto; }
+.sortbar__btn { --_h: var(--control-h); gap: var(--s-2); padding-inline: 1rem 0.85rem; }
+.sortbar__btn svg { width: 18px; height: 18px; flex: none; }
+.sortbar__btn.is-active { background: var(--c-chrome-active); }
+.sort-panel {
+  position: absolute;
+  top: calc(100% + var(--s-2));
+  right: 0;
+  z-index: 20;
+  display: grid;
+  gap: var(--s-5);
+  width: min(30rem, calc(100vw - var(--gutter) * 2));
+  max-height: min(70vh, 40rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-5);
+  border-radius: var(--r-panel);
+  background: var(--c-panel);
+  color: var(--c-chrome-text);
+  box-shadow: var(--shadow-float);
+}
+.sort-panel__group { display: grid; gap: var(--s-2); }
+.sort-panel__label { font-size: var(--fs-13); color: var(--c-chrome-muted); }
+.sort-panel__chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.sort-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: var(--control-h-sm);
+  padding-inline: 0.85rem;
+  border-radius: var(--r-pill);
+  background: var(--c-chrome-hover);
+  color: var(--c-chrome-text);
+  font-size: var(--fs-14);
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.sort-chip:hover { background: var(--c-chrome-active); }
+.sort-chip[aria-pressed="true"],
+.sort-chip[aria-checked="true"] { background: var(--c-chrome-text); color: var(--c-text-invert); }
+.sort-chip__count { font-size: var(--fs-12, 0.75rem); color: var(--c-chrome-muted); font-variant-numeric: tabular-nums; }
+.sort-chip[aria-pressed="true"] .sort-chip__count { color: var(--c-text-invert); opacity: 0.6; }
+.sort-panel__foot {
+  position: sticky;
+  bottom: calc(var(--s-5) * -1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin: 0 calc(var(--s-5) * -1) calc(var(--s-5) * -1);
+  padding: var(--s-3) var(--s-5) var(--s-5);
+  background: var(--c-panel);
+}
+@media (max-width: 40rem) {
+  .sort-panel {
+    position: fixed;
+    top: auto;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: max(var(--s-3), env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-height: 75dvh;
+  }
+}
+
+
 /* 14. TOOL PAGE ------------------------------------------------------------ */
 
 .tool-head {
