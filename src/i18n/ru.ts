@@ -341,7 +341,7 @@ export const ru: Record<UIKey, string> = {
   'pro.signIn': 'Войти',
   'pro.off': 'Pro пока не продаётся.',
   'pro.youArePro': 'У вас Pro. Спасибо!',
-  'pro.note': 'Платежи принимает Lemon Squeezy. Отменить можно в любой момент из письма с чеком.',
+  'pro.note': 'Платежи принимает Gumroad. Отменить можно в любой момент в библиотеке Gumroad или из письма с чеком.',
   'pro.current': 'Ваш тариф',
 
   'comments.title': 'Комментарии',

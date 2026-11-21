@@ -20,12 +20,17 @@ export const SITE = {
 
 /**
  * Atlas Pro. Prices are only shown on /pro/; what is actually charged is set
- * in Lemon Squeezy. Checkout links come from PUBLIC_CHECKOUT_MONTHLY /
- * PUBLIC_CHECKOUT_YEARLY at build time (see FEATURES.md).
+ * in Gumroad (membership "Atlas Pro"). After a payment Gumroad pings
+ * supabase/functions/gumroad-ping, which switches the account to Pro.
  */
 export const PRO = {
   monthly: '$3',
   yearly: '$24',
+  /** Gumroad membership checkout; PUBLIC_CHECKOUT_MONTHLY / _YEARLY override */
+  checkoutMonthly: 'https://ehroz.gumroad.com/l/atlas-pro',
+  checkoutYearly: '',
+  /** where buyers manage or cancel their membership */
+  billingPortal: 'https://app.gumroad.com/library',
   /** free accounts keep this many collections in the cloud (also in supabase/schema.sql) */
   freeCollections: 3,
 } as const;

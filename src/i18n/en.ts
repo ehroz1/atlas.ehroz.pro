@@ -342,7 +342,7 @@ export const en = {
   'pro.signIn': 'Sign in',
   'pro.off': 'Pro isn’t on sale yet.',
   'pro.youArePro': 'You have Pro. Thank you!',
-  'pro.note': 'Payments are handled by Lemon Squeezy. Cancel anytime from your receipt email.',
+  'pro.note': 'Payments are handled by Gumroad. Cancel anytime in your Gumroad library or from the receipt email.',
   'pro.current': 'Your plan',
 
   'comments.title': 'Comments',

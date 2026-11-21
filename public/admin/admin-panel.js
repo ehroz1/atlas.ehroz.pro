@@ -386,7 +386,7 @@ async function renderServices() {
     row('Почта (Resend)', 'Письма для входа и рассылка, домен ehroz.pro', 'https://resend.com/emails'),
     row('GitHub Actions', 'Публикация сайта и ежемесячная рассылка', 'https://github.com/ehroz1/atlas.ehroz.pro/actions'),
     row('Секреты GitHub', 'Ключи для рассылки', 'https://github.com/ehroz1/atlas.ehroz.pro/settings/secrets/actions'),
-    row('Lemon Squeezy — продажа Pro', 'Подписки и выплаты', 'https://app.lemonsqueezy.com/dashboard'),
+    row('Gumroad — продажа Pro', 'Подписки, продажи и выплаты', 'https://app.gumroad.com/dashboard'),
     row('Google Cloud — OAuth', 'Клиент для входа через Google', 'https://console.cloud.google.com/auth/clients'),
     row('Porkbun — DNS', 'Домен ehroz.pro', 'https://porkbun.com/account/domainsSpeedy'),
   );

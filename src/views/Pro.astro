@@ -47,7 +47,7 @@ const check = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke
           <p class="plan__sub">{t('pro.pro.sub')}</p>
           <hr class="plan__rule" />
           <p class="plan__figure">{PRO.monthly}<span class="t-small t-muted"> / {t('pro.month')}</span></p>
-          <p class="plan__caption">{PRO.yearly} / {t('pro.year')}</p>
+          {BACKEND.checkoutYearly && <p class="plan__caption">{PRO.yearly} / {t('pro.year')}</p>}
           <hr class="plan__rule" />
           <ul class="plan__list">{pro.map((li) => <li><Fragment set:html={check} />{li}</li>)}</ul>
           <div class="plan__foot stack" style="--gap: var(--s-3)">
@@ -85,12 +85,19 @@ const check = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke
         document.querySelector<HTMLElement>('[data-is-pro]')!.hidden = false;
         return;
       }
-      // Lemon Squeezy reads these query params: prefilled email + our user id,
-      // which comes back to the webhook as meta.custom_data.user_id
+      // Gumroad prefills `email` and passes other params back in its ping as
+      // url_params[...], so the payment finds this account even with another email.
+      // (Lemon Squeezy-style names are kept for other checkouts.)
       buy.querySelectorAll<HTMLAnchorElement>('[data-checkout]').forEach((a) => {
         const url = new URL(a.href);
-        if (p.email) url.searchParams.set('checkout[email]', p.email);
-        url.searchParams.set('checkout[custom][user_id]', p.id);
+        if (url.hostname.endsWith('gumroad.com')) {
+          if (p.email) url.searchParams.set('email', p.email);
+          url.searchParams.set('user_id', p.id);
+          url.searchParams.set('wanted', 'true');
+        } else {
+          if (p.email) url.searchParams.set('checkout[email]', p.email);
+          url.searchParams.set('checkout[custom][user_id]', p.id);
+        }
         a.href = url.href;
       });
       buy.hidden = false;
