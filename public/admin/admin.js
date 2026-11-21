@@ -252,6 +252,9 @@ function openForm(tool) {
   f('summary_en').value = t.summary?.en || '';
   f('description_ru').value = t.description?.ru || '';
   f('description_en').value = t.description?.en || '';
+  f('note_ru').value = t.note?.ru || '';
+  f('note_en').value = t.note?.en || '';
+  f('affiliateUrl').value = t.affiliateUrl || '';
   f('added').value = t.added || today();
   f('updated').value = t.updated || '';
   state.platforms = new Set(t.platforms || (tool ? [] : ['Web']));
@@ -334,11 +337,18 @@ function readForm() {
     summary: { en: f('summary_en').value.trim(), ru: f('summary_ru').value.trim() },
     description: { en: f('description_en').value.trim(), ru: f('description_ru').value.trim() },
   };
+  const noteRu = f('note_ru').value.trim(), noteEn = f('note_en').value.trim();
+  if (noteRu || noteEn) t.note = { en: noteEn || noteRu, ru: noteRu || noteEn };
+  const aff = f('affiliateUrl').value.trim();
+  if (aff) {
+    try { if (!/^https?:$/.test(new URL(aff).protocol)) throw 0; } catch { throw new Error('Партнёрская ссылка должна начинаться с https://'); }
+    t.affiliateUrl = aff;
+  }
   // keep any fields this form doesn't know about
-  for (const [k, v] of Object.entries(old)) if (!(k in t) && !['openSource', 'featured', 'own'].includes(k)) t[k] = v;
+  for (const [k, v] of Object.entries(old)) if (!(k in t) && !['openSource', 'featured', 'own', 'note', 'affiliateUrl'].includes(k)) t[k] = v;
   // text changed → bump "updated" unless the user set it by hand
   if (state.editing && f('updated').value === (old.updated || '')) {
-    const textChanged = JSON.stringify([old.name, old.summary, old.description]) !== JSON.stringify([t.name, t.summary, t.description]);
+    const textChanged = JSON.stringify([old.name, old.summary, old.description, old.note]) !== JSON.stringify([t.name, t.summary, t.description, t.note]);
     if (textChanged) t.updated = today();
   }
   return t;
@@ -408,6 +418,7 @@ async function save(e) {
     renderList();
     show('list');
     toast(`${isNew ? 'Добавлено' : 'Сохранено'}: ${tool.name}. Сайт обновится через 2–4 минуты.`, 'ok');
+    window.onToolSaved?.(tool, isNew);
   } catch (err) {
     $('#form-error').textContent = err.status ? humanError(err) : err.message;
   } finally {
@@ -500,4 +511,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const saved = store.get();
   if (saved) await start(saved); else show('login');
+  window.onSitesReady?.();
 });

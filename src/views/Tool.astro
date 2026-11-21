@@ -3,6 +3,7 @@ import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
+import Comments from '~/components/Comments.astro';
 import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
 import { alternativesOf, similarTo } from '~/lib/related';
@@ -110,6 +111,8 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
         <div class="shot-fallback">{domain}</div>
       )}
     </a>
+
+    <Comments toolId={tool.id} lang={lang} />
 
     {alternatives.length > 0 && (
       <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">

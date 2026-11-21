@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://www.google.com https://*.gstatic.com; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://www.google.com https://*.gstatic.com https://uqfsxipvbccporjtsfoi.supabase.co; connect-src 'self' https://api.github.com https://uqfsxipvbccporjtsfoi.supabase.co; base-uri 'none'; form-action 'none'">
 <title>Atlas — админка</title>
 <link rel="icon" href="../favicon.svg">
 <link rel="stylesheet" href="admin.css">
 <script src="admin.js" defer></script>
+<script src="admin-panel.js" defer></script>
 </head>
 <body>
 
@@ -18,8 +19,67 @@
   <span id="who" class="muted"></span>
   <span class="grow"></span>
   <a class="pill" id="site-link" href="../" target="_blank" rel="noopener">Открыть сайт ↗</a>
-  <button class="pill" id="logout" hidden>Выйти</button>
+  <button class="pill" id="logout" hidden>Выйти из GitHub</button>
 </header>
+
+<nav class="tabs" aria-label="Разделы">
+  <a href="#overview" data-tab="overview">Обзор</a>
+  <a href="#subs" data-tab="subs">Заявки <span class="count" data-count="submissions_new"></span></a>
+  <a href="#comments" data-tab="comments">Комментарии <span class="count" data-count="comments_pending"></span></a>
+  <a href="#sites" data-tab="sites">Сайты</a>
+  <a href="#users" data-tab="users">Пользователи</a>
+  <a href="#newsletter" data-tab="newsletter">Рассылка</a>
+  <a href="#services" data-tab="services">Сервисы</a>
+</nav>
+
+<!-- вход в аккаунт сайта (для заявок, комментариев, пользователей) -->
+<section id="sb-gate" class="panel narrow" hidden>
+  <h1>Нужен вход администратора</h1>
+  <p class="muted" id="sb-gate-text">Войдите на сайте под своей почтой, а потом вернитесь сюда.</p>
+  <p><a class="btn primary" id="sb-login" href="../account/?next=admin">Войти на сайте</a></p>
+</section>
+
+<div class="tab" id="tab-overview" hidden>
+  <section>
+    <h1>Обзор</h1>
+    <div class="stats" id="stats"></div>
+    <p class="muted" id="stats-note"></p>
+  </section>
+</div>
+
+<div class="tab" id="tab-subs" hidden>
+  <section>
+    <div class="toolbar">
+      <h1 class="grow">Заявки на добавление</h1>
+      <select id="subs-filter" aria-label="Статус">
+        <option value="new">Новые</option>
+        <option value="added">Добавлены</option>
+        <option value="rejected">Отклонены</option>
+        <option value="">Все</option>
+      </select>
+    </div>
+    <div id="subs-list" class="cards-list"></div>
+  </section>
+</div>
+
+<div class="tab" id="tab-comments" hidden>
+  <section>
+    <div class="toolbar">
+      <h1 class="grow">Комментарии</h1>
+      <select id="comments-filter" aria-label="Статус">
+        <option value="pending">На проверке</option>
+        <option value="approved">Опубликованы</option>
+        <option value="rejected">Скрыты</option>
+        <option value="">Все</option>
+      </select>
+      <button class="btn primary" id="approve-all" type="button">Одобрить все на странице</button>
+    </div>
+    <p class="muted">Автор видит свой комментарий сразу, как будто он опубликован. Остальные увидят его только после одобрения. «Скрыть» — автор об этом не узнает.</p>
+    <div id="comments-list" class="cards-list"></div>
+  </section>
+</div>
+
+<div class="tab" id="tab-sites" hidden>
 
 <!-- вход -->
 <section id="login" class="panel narrow" hidden>
@@ -103,6 +163,19 @@
     </div>
 
     <fieldset>
+      <legend>Ваша заметка (видна на карточке, на странице, в рассылке)</legend>
+      <div class="grid2">
+        <label>Заметка, русский <textarea name="note_ru" rows="2" maxlength="300" placeholder="Например: с него начинаю каждый макет"></textarea></label>
+        <label>Заметка, English <textarea name="note_en" rows="2" maxlength="300" placeholder="e.g. I start every layout here"></textarea></label>
+      </div>
+    </fieldset>
+
+    <label>Партнёрская ссылка (необязательно)
+      <input name="affiliateUrl" type="url" placeholder="https://partner.example.com/?ref=atlas">
+      <small class="muted">Если заполнить, кнопка «Открыть сайт» поведёт сюда, а на карточке появится метка «Партнёр».</small>
+    </label>
+
+    <fieldset>
       <legend>Альтернативы (сайты, которые делают то же самое)</legend>
       <div id="alt-chips" class="chips"></div>
       <input id="alt-input" list="alt-options" placeholder="Начните вводить название и выберите из списка">
@@ -135,6 +208,51 @@
     </div>
   </form>
 </section>
+
+</div><!-- /tab-sites -->
+
+<div class="tab" id="tab-users" hidden>
+  <section>
+    <div class="toolbar">
+      <h1 class="grow">Пользователи</h1>
+      <input id="users-q" type="search" placeholder="Поиск по почте или имени" aria-label="Поиск">
+    </div>
+    <p class="muted" id="users-count"></p>
+    <div id="users-list" class="rows"></div>
+  </section>
+</div>
+
+<div class="tab" id="tab-newsletter" hidden>
+  <section class="panel">
+    <h1>Рассылка «Пять находок»</h1>
+    <p class="muted" id="nl-subs"></p>
+    <p>Письмо уходит автоматически <b>1-го числа</b> каждого месяца. Если пять сайтов не выбраны — берутся добавленные за прошлый месяц (сначала с вашей заметкой).</p>
+    <fieldset>
+      <legend>Выпуск</legend>
+      <label>Месяц отправки <input id="nl-month" type="month"></label>
+      <div id="nl-picks" class="chips"></div>
+      <input id="nl-input" list="nl-options" placeholder="Добавить сайт: начните вводить название">
+      <datalist id="nl-options"></datalist>
+      <p class="muted" id="nl-auto"></p>
+      <div class="actions">
+        <button class="btn primary" id="nl-save" type="button">Сохранить выбор</button>
+        <button class="btn" id="nl-clear" type="button">Выбирать автоматически</button>
+      </div>
+      <p class="muted" id="nl-need-token" hidden>Чтобы сохранить выбор, войдите GitHub-токеном на вкладке «Сайты».</p>
+    </fieldset>
+    <p><a class="btn" href="https://github.com/ehroz1/atlas.ehroz.pro/actions/workflows/newsletter.yml" target="_blank" rel="noopener">Отправить тестовое письмо ↗</a>
+      <span class="muted">Run workflow → впишите свою почту в test_to.</span></p>
+    <p><a class="link" href="../newsletter/" target="_blank" rel="noopener">Страница рассылки на сайте ↗</a></p>
+  </section>
+</div>
+
+<div class="tab" id="tab-services" hidden>
+  <section class="panel">
+    <h1>Сервисы</h1>
+    <div id="services" class="rows"></div>
+    <p class="muted">Подробная настройка — в FEATURES.md и ADMIN.md в репозитории.</p>
+  </section>
+</div>
 
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body>

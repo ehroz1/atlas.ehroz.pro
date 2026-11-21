@@ -19,6 +19,7 @@ export function toolJson(t: Tool, site: URL | undefined) {
     domain: domainOf(d.url),
     /** true when the site's "Open" button is a partner (affiliate) link */
     partner: !!d.affiliateUrl,
+    featured: d.featured,
     category: d.category,
     pricing: d.pricing,
     openSource: d.openSource,

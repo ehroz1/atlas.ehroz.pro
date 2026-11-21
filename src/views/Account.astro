@@ -75,6 +75,14 @@ const msg = {
                 </dd>
               </div>
             </dl>
+            <form class="field" data-name-form style="max-width: 24rem">
+              <label class="field__label" for="acc-name">{t('account.name')}</label>
+              <div class="share-box__row" style="margin: 0">
+                <input class="input" id="acc-name" name="name" maxlength="40" placeholder={t('account.namePh')} />
+                <button class="btn" type="submit">{t('prefs.save')}</button>
+              </div>
+            </form>
+            <p data-admin-link hidden><a class="btn btn--sm" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'}>Админка ↗</a></p>
             <label class="cluster t-small" style="--gap: var(--s-2)">
               <input class="checkbox" type="checkbox" data-newsletter />
               <span>{t('account.newsletter')} <span class="t-muted">· {t('account.newsletterHint')}</span></span>
@@ -251,6 +259,20 @@ const msg = {
         await updateProfile({ newsletter: true }).catch(fail);
         profile.newsletter = true;
       }
+      const nameForm = $<HTMLFormElement>('[data-name-form]')!;
+      const nameInput = nameForm.querySelector<HTMLInputElement>('input')!;
+      nameInput.value = (profile as any).display_name ?? '';
+      nameForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const v = nameInput.value.trim();
+        const { error } = await (await sb()).from('profiles').update({ display_name: v || null }).eq('id', profile.id);
+        const b = nameForm.querySelector<HTMLButtonElement>('button')!;
+        const label = b.textContent;
+        b.textContent = error ? '×' : msg.saved;
+        setTimeout(() => (b.textContent = label), 1600);
+      };
+      $('[data-admin-link]')!.hidden = !(profile as any).is_admin;
+
       const nl = $<HTMLInputElement>('[data-newsletter]')!;
       nl.checked = profile.newsletter;
       nl.onchange = () => updateProfile({ newsletter: nl.checked }).catch(fail);
@@ -267,7 +289,10 @@ const msg = {
 
       // a "next" target, e.g. back to /pro/ after signing in
       const next = params.get('next');
-      if (next && /^[a-z/-]+$/.test(next)) location.href = sitePath(next);
+      if (next && /^[a-z0-9/-]+$/.test(next)) {
+        // the admin page exists once, outside the language folders
+        location.href = next.startsWith('admin') ? import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/' : sitePath(next);
+      }
 
       renderCollections(profile.id);
     };

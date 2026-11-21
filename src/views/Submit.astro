@@ -4,6 +4,7 @@ import Base from '~/layouts/Base.astro';
 import { getCategories } from '~/lib/data';
 import { getPage } from '~/lib/routes';
 import { SITE } from '~/site.config';
+import { BACKEND } from '~/lib/backend';
 import { loc, useTranslations, type Lang } from '~/i18n';
 
 interface Props { lang: Lang }
@@ -15,7 +16,7 @@ const [categories, entry] = await Promise.all([getCategories(), getPage('submit'
 const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
 const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
 const phone = SITE.submitPhone;
-const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
+const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('submit.tooMany'), sending: t('submit.sending'), thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
@@ -27,7 +28,9 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
         </p>
       </div>
 
-      <form class="form mt-12" data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)}>
+      <form class="form mt-12" data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)} data-lang={lang} data-backend={BACKEND.enabled ? '' : undefined}>
+        {/* bots fill every field; people never see this one */}
+        <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
         <div class="field">
           <label class="field__label" for="url">{t('submit.url')}</label>
           <input class="input" id="url" name="url" type="url" placeholder="https://" required inputmode="url" />
@@ -60,7 +63,7 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
         <div class="field">
           <label class="field__label" for="photos">{t('submit.photos')} <span class="t-muted" style="font-weight: 400">{t('submit.optional')}</span></label>
           <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
-          <span class="field__hint">{t('submit.photosHint')}</span>
+          <span class="field__hint">{BACKEND.enabled ? t('submit.photosHintDirect') : t('submit.photosHint')}</span>
         </div>
 
         <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
@@ -68,21 +71,37 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
           {t('submit.maker')}
         </label>
 
-        <div class="cluster" style="--gap: var(--s-4)">
-          <button class="btn btn--solid btn--lg" type="submit" data-channel="mail">{t('submit.viaMail')}</button>
-          <button class="btn btn--lg" type="submit" data-channel="telegram">Telegram</button>
-          <button class="btn btn--lg" type="submit" data-channel="whatsapp">WhatsApp</button>
-          <span class="t-meta" data-submit-status aria-live="polite"></span>
-        </div>
+        {BACKEND.enabled ? (
+          <div class="stack" style="--gap: var(--s-4)">
+            <div class="cluster" style="--gap: var(--s-4)">
+              <button class="btn btn--solid btn--lg" type="submit" data-channel="atlas">{t('submit.send')}</button>
+              <span class="t-meta" data-submit-status aria-live="polite"></span>
+            </div>
+            <p class="t-meta">
+              {t('submit.orChat')}{' '}
+              <button class="link" type="submit" data-channel="telegram">Telegram</button>{' · '}
+              <button class="link" type="submit" data-channel="whatsapp">WhatsApp</button>{' · '}
+              <button class="link" type="submit" data-channel="mail">{t('submit.viaMail')}</button>
+            </p>
+          </div>
+        ) : (
+          <div class="cluster" style="--gap: var(--s-4)">
+            <button class="btn btn--solid btn--lg" type="submit" data-channel="mail">{t('submit.viaMail')}</button>
+            <button class="btn btn--lg" type="submit" data-channel="telegram">Telegram</button>
+            <button class="btn btn--lg" type="submit" data-channel="whatsapp">WhatsApp</button>
+            <span class="t-meta" data-submit-status aria-live="polite"></span>
+          </div>
+        )}
       </form>
     </div>
   </div>
 </Base>
 
 <script>
+  import { enabled, sb, maybeSignedIn, getSession } from '~/scripts/backend';
   const form = document.querySelector<HTMLFormElement>('[data-submit-form]');
   const status = document.querySelector<HTMLElement>('[data-submit-status]');
-  let channel = 'mail';
+  let channel = form?.hasAttribute('data-backend') ? 'atlas' : 'mail';
   form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>
     b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; }));
   form?.addEventListener('submit', async (e) => {
@@ -104,6 +123,43 @@ const msg = { thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhot
     const subject = `${msg.subject}: ${g('name')}`;
     (window as any).atlasTrack?.('contact_click', { method: `submit_${channel}` });
     const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
+
+    // Straight to the admin's inbox (Supabase table `submissions`)
+    if (channel === 'atlas' && enabled) {
+      if (g('website')) { status.textContent = msg.sent; form.reset(); return; } // bot
+      const btn = form.querySelector<HTMLButtonElement>('[data-channel=atlas]');
+      if (btn) btn.disabled = true;
+      status.textContent = msg.sending;
+      try {
+        const client = await sb();
+        if (maybeSignedIn()) await getSession(); // attaches the user to the request when signed in
+        const photos: string[] = [];
+        for (const f of files.slice(0, 4)) {
+          if (f.size > 5 * 1024 * 1024 || !/^image\/(png|jpe?g|webp)$/.test(f.type)) continue;
+          const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${f.type.split('/')[1].replace('jpeg', 'jpg')}`;
+          const { error } = await client.storage.from('submissions').upload(path, f, { contentType: f.type });
+          if (!error) photos.push(path);
+        }
+        const { error } = await client.from('submissions').insert({
+          url: g('url'),
+          name: g('name'),
+          category: g('category') || null,
+          why: g('why'),
+          email: g('email') || null,
+          maker: !!d.get('maker'),
+          lang: form.dataset.lang,
+          photos,
+        });
+        if (error) throw error;
+        status.textContent = msg.sent;
+        form.reset();
+      } catch (err) {
+        status.textContent = /too many/.test((err as Error).message) ? msg.tooMany : msg.failed;
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+      return;
+    }
 
     // Phones: the share sheet carries real attachments into any chosen app.
     if (files.length && navigator.canShare?.({ files })) {
