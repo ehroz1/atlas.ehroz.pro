@@ -18,6 +18,18 @@ export const SITE = {
   submitPhone: '77775971798',
 } as const;
 
+/**
+ * Atlas Pro. Prices are only shown on /pro/; what is actually charged is set
+ * in Lemon Squeezy. Checkout links come from PUBLIC_CHECKOUT_MONTHLY /
+ * PUBLIC_CHECKOUT_YEARLY at build time (see FEATURES.md).
+ */
+export const PRO = {
+  monthly: '$3',
+  yearly: '$24',
+  /** free accounts keep this many collections in the cloud (also in supabase/schema.sql) */
+  freeCollections: 3,
+} as const;
+
 /** Author. Same facts and the same @id as on ehroz.pro, so search engines join them. */
 export const AUTHOR = {
   id: 'https://ehroz.pro/#person',

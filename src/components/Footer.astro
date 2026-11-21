@@ -5,6 +5,7 @@ import { useTranslations, defaultLang, formatDate, langs, languages, type Lang }
 import { analytics } from '~/analytics.config';
 import { IS_PROD } from '~/lib/env';
 import { SITE } from '~/site.config';
+import { BACKEND } from '~/lib/backend';
 interface Props { lang?: Lang; switchHref: string }
 const { lang = defaultLang, switchHref } = Astro.props;
 const t = useTranslations(lang);
@@ -20,6 +21,10 @@ const links = [
   ['/about', t('nav.about')],
   ['/contact', t('nav.contact')],
   ['/submit', t('nav.submit')],
+  ['/collection', t('nav.collection')],
+  ['/newsletter', t('nav.newsletter')],
+  ['/pro', t('nav.pro')],
+  ['/api', t('nav.api')],
 ] as const;
 ---
 <footer class="site-footer">
@@ -27,6 +32,12 @@ const links = [
     <div class="stack" style="--gap: var(--s-1)">
       <span>© {year} {SITE.name} · {t('footer.note')}</span>
       <span>{t('footer.updated', { date: formatDate(updated, lang) })}</span>
+      {BACKEND.enabled && (
+        <span class="site-footer__stats t-tabular" data-stats hidden>
+          <span data-stats-members data-tpl={t('footer.members', { n: '{n}' })} hidden></span>
+          <span data-stats-online data-tpl={t('footer.online', { n: '{n}' })} hidden></span>
+        </span>
+      )}
     </div>
     <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label={t('nav.other')}>
       {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}

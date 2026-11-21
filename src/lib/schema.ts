@@ -73,6 +73,9 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   contact: 'ContactPage',
   submit: 'WebPage',
   wall: 'CollectionPage',
+  newsletter: 'WebPage',
+  pro: 'WebPage',
+  api: 'WebPage',
 };
 
 export function webPage(entry: PageEntry, lang: Lang, url: string, image: string, hasCrumbs: boolean, extra: Node = {}): Node {

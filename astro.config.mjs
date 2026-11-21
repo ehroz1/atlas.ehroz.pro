@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { loadEnv } from 'vite';
 import csp from './integrations/csp.mjs';
 import { analytics } from './src/analytics.config.ts';
 
@@ -8,6 +9,9 @@ import { analytics } from './src/analytics.config.ts';
 // locally, on Vercel and on the custom domain both are unset.
 const site = process.env.SITE_URL || 'https://atlas.ehroz.pro';
 const base = process.env.BASE_PATH || '/';
+// PUBLIC_* from .env / the environment; the Supabase host goes into the CSP
+const env = { ...loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), 'PUBLIC_'), ...process.env };
+const supabase = env.PUBLIC_SUPABASE_URL && env.PUBLIC_SUPABASE_ANON_KEY ? env.PUBLIC_SUPABASE_URL : '';
 const preview = process.env.VERCEL_ENV === 'preview' || process.env.VERCEL_ENV === 'development';
 
 export default defineConfig({
@@ -18,5 +22,5 @@ export default defineConfig({
   build: { assets: 'assets', format: 'directory' },
   // languages are routed by hand: src/pages/[...lang]/, see src/i18n/index.ts
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
-  integrations: [csp({ ga4: analytics.ga4, metrika: analytics.metrika, preview })],
+  integrations: [csp({ ga4: analytics.ga4, metrika: analytics.metrika, preview, supabase })],
 });

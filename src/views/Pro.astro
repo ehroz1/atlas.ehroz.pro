@@ -1,0 +1,99 @@
+---
+/**
+ * /pro/ — Free vs Pro. Buttons open the Lemon Squeezy checkout with the
+ * signed-in user's id and email attached; the payment webhook
+ * (supabase/functions/payments-webhook) then switches the account to Pro.
+ */
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { BACKEND } from '~/lib/backend';
+import { PRO } from '~/site.config';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('pro');
+const onSale = BACKEND.enabled && !!(BACKEND.checkoutMonthly || BACKEND.checkoutYearly);
+const free = [1, 2, 3, 4, 5].map((i) => t(`pro.free.li${i}` as any));
+const pro = [1, 2, 3, 4, 5].map((i) => t(`pro.pro.li${i}` as any));
+const check = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.pro'), path: '/pro' }]}>
+  <div class="container">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3); max-width: 40rem">
+        <h1 class="t-statement">{t('pro.h1')}</h1>
+        <p class="t-secondary">{t('pro.lead')}</p>
+      </div>
+
+      <div class="plans plans--two mt-12">
+        <article class="plan">
+          <h2 class="plan__name">{t('pro.free.name')}</h2>
+          <p class="plan__sub">{t('pro.free.sub')}</p>
+          <hr class="plan__rule" />
+          <p class="plan__figure">$0</p>
+          <hr class="plan__rule" />
+          <ul class="plan__list">{free.map((li) => <li><Fragment set:html={check} />{li}</li>)}</ul>
+          <div class="plan__foot">
+            <a class="btn" href={u('/', lang)}>{t('about.plan1.cta')}</a>
+          </div>
+        </article>
+
+        <article class="plan plan--raised" data-pro-plan>
+          <span class="plan__flag">{t('pro.pro.flag')}</span>
+          <h2 class="plan__name">{t('pro.pro.name')}</h2>
+          <p class="plan__sub">{t('pro.pro.sub')}</p>
+          <hr class="plan__rule" />
+          <p class="plan__figure">{PRO.monthly}<span class="t-small t-muted"> / {t('pro.month')}</span></p>
+          <p class="plan__caption">{PRO.yearly} / {t('pro.year')}</p>
+          <hr class="plan__rule" />
+          <ul class="plan__list">{pro.map((li) => <li><Fragment set:html={check} />{li}</li>)}</ul>
+          <div class="plan__foot stack" style="--gap: var(--s-3)">
+            {onSale ? (
+              <>
+                <div class="cluster" style="--gap: var(--s-3)" data-buy hidden>
+                  {BACKEND.checkoutMonthly && <a class="btn btn--solid" href={BACKEND.checkoutMonthly} data-checkout rel="noopener">{t('pro.buyMonthly', { price: PRO.monthly })}</a>}
+                  {BACKEND.checkoutYearly && <a class="btn" href={BACKEND.checkoutYearly} data-checkout rel="noopener">{t('pro.buyYearly', { price: PRO.yearly })}</a>}
+                </div>
+                <p class="t-small" data-need-login>
+                  {t('pro.signInFirst')} <a class="link" href={u('/account', lang) + '?next=pro/'}>{t('pro.signIn')}</a>
+                </p>
+                <p class="notice notice--success" data-is-pro hidden>{t('pro.youArePro')}</p>
+                <p class="plan__note">{t('pro.note')}</p>
+              </>
+            ) : (
+              <p class="notice">{t('pro.off')}</p>
+            )}
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { enabled, maybeSignedIn, getProfile, isPro } from '~/scripts/backend';
+
+  const buy = document.querySelector<HTMLElement>('[data-buy]');
+  if (enabled && buy && maybeSignedIn()) {
+    getProfile().then((p) => {
+      if (!p) return;
+      document.querySelector<HTMLElement>('[data-need-login]')!.hidden = true;
+      if (isPro(p)) {
+        document.querySelector<HTMLElement>('[data-is-pro]')!.hidden = false;
+        return;
+      }
+      // Lemon Squeezy reads these query params: prefilled email + our user id,
+      // which comes back to the webhook as meta.custom_data.user_id
+      buy.querySelectorAll<HTMLAnchorElement>('[data-checkout]').forEach((a) => {
+        const url = new URL(a.href);
+        if (p.email) url.searchParams.set('checkout[email]', p.email);
+        url.searchParams.set('checkout[custom][user_id]', p.id);
+        a.href = url.href;
+      });
+      buy.hidden = false;
+    });
+  }
+</script>

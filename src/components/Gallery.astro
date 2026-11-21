@@ -8,6 +8,7 @@ import ToolCard from './ToolCard.astro';
 import CategoryChips from './CategoryChips.astro';
 import type { Tool, Category } from '~/lib/data';
 import { loc, useTranslations, plural, defaultLang, type Lang } from '~/i18n';
+import { u } from '~/lib/url';
 
 interface Props {
   tools: Tool[];
@@ -34,7 +35,12 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     </span>
   </div>
 
-  <div class="cards" data-cards>
+  {promote && (
+    <p class="prefs-note t-small t-secondary" data-prefs-note hidden>
+      {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'}>{t('prefs.change')}</a>
+    </p>
+  )}
+  <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined}>
     {tools.map((tool) => (
       <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
     ))}
@@ -58,6 +64,33 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
         return a;
       };
       var cards = shuffle(Array.prototype.slice.call(grid.children));
+
+      // Recommendations (localStorage atlas:prefs, set on /account/):
+      // preferred categories and prices first, opened sites last.
+      // Stable sort, so the shuffle survives inside each group.
+      if (promote) {
+        var prefs = {};
+        try { prefs = JSON.parse(localStorage.getItem('atlas:prefs') || '{}') || {}; } catch (e) {}
+        var cats = Array.isArray(prefs.categories) ? prefs.categories : [];
+        var price = prefs.pricing || 'any';
+        var seen = [];
+        if (prefs.hideSeen) { try { seen = JSON.parse(localStorage.getItem('atlas:seen') || '[]'); } catch (e) {} }
+        if (cats.length || price !== 'any' || seen.length) {
+          var score = function (c) {
+            var s = 0, p = c.getAttribute('data-pricing');
+            if (cats.indexOf(c.getAttribute('data-category')) >= 0) s += 2;
+            if (price === 'free' && p === 'free') s += 1;
+            if (price === 'nopaid' && p !== 'paid') s += 1;
+            if (seen.indexOf(c.getAttribute('data-id')) >= 0) s -= 10;
+            return s;
+          };
+          var scored = cards.map(function (c, i) { return { c: c, s: score(c), i: i }; });
+          scored.sort(function (a, b) { return b.s - a.s || a.i - b.i; });
+          cards = scored.map(function (x) { return x.c; });
+          var note = grid.previousElementSibling;
+          if (note && note.hasAttribute('data-prefs-note')) note.hidden = false;
+        }
+      }
 
       if (promote) {
         var visit = 1;
