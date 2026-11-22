@@ -42,14 +42,28 @@ const code = `<a href="${absUrl('/tool/YOUR-ID/', lang)}"><img src="${badge}" wi
 
 <script>
   const btn = document.querySelector<HTMLButtonElement>('[data-copy-code]');
+  const codeEl = document.getElementById('badge-code');
   btn?.addEventListener('click', async () => {
     const label = btn.textContent;
+    const text = codeEl?.textContent ?? '';
+    let ok = false;
     try {
-      await navigator.clipboard.writeText(document.getElementById('badge-code')?.textContent ?? '');
+      await navigator.clipboard.writeText(text);
+      ok = true;
+    } catch {
+      /* clipboard API blocked: select the code and use the old copy command */
+      if (codeEl) {
+        const range = document.createRange();
+        range.selectNodeContents(codeEl);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+        try { ok = document.execCommand('copy'); } catch { ok = false; }
+      }
+    }
+    if (ok) {
       btn.textContent = btn.dataset.labelDone ?? 'Copied';
       setTimeout(() => (btn.textContent = label), 1600);
-    } catch {
-      /* clipboard blocked: the code is selectable on the page */
     }
   });
 </script>
