@@ -1,0 +1,54 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { privacy, cookies, disclaimer, type Section } from '~/lib/texts';
+import { useTranslations, formatDate, type Lang } from '~/i18n';
+
+/* One view for the three legal pages. The text is in src/lib/texts.ts and
+   follows the build's real settings (counters on or off, host). */
+type Kind = 'privacy' | 'cookies' | 'disclaimer';
+interface Props { lang: Lang; kind: Kind }
+const { lang, kind } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage(kind);
+const sections: Section[] = { privacy, cookies, disclaimer }[kind](lang);
+const others = (['privacy', 'cookies', 'disclaimer'] as const).filter((k) => k !== kind);
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t(`nav.${kind}`), path: `/${kind}` }]} crumbsContainer="container container--narrow">
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t(`${kind}.h1`)}</h1>
+        <p class="t-lead t-secondary">{t(`${kind}.lead`)}</p>
+        <p class="t-meta">{t('legal.updated', { date: formatDate(entry.updated, lang) })}</p>
+      </div>
+
+      <div class="prose mt-12">
+        {sections.map((s) => (
+          <>
+            <h2>{s.h}</h2>
+            {s.p?.map((p) => <p>{p}</p>)}
+            {s.list && <ul>{s.list.map((i) => <li>{i}</li>)}</ul>}
+            {s.rows && (
+              <table class="keys">
+                <thead><tr><th scope="col">{t('legal.key')}</th><th scope="col">{t('legal.purpose')}</th></tr></thead>
+                <tbody>{s.rows.map((r) => <tr><td>{r.k}</td><td>{r.v}</td></tr>)}</tbody>
+              </table>
+            )}
+            {s.consent && (
+              <p><button class="btn btn--sm" type="button" data-consent-reset>{t('legal.cookieSettings')}</button></p>
+            )}
+          </>
+        ))}
+      </div>
+
+      <nav class="mt-12" aria-label={t('nav.legal')}>
+        <ul class="chips" role="list">
+          {others.map((k) => <li><a class="chip" href={u(`/${k}`, lang)}>{t(`nav.${k}`)}</a></li>)}
+          <li><a class="chip" href={u('/support', lang)}>{t('nav.support')}</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</Base>

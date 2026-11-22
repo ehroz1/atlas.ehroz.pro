@@ -109,16 +109,21 @@ const items = Array.from({ length: COUNT }, (_, i) => withShots[Math.floor((i * 
     const stop = () => { running = false; };
 
     panel.classList.add('is-live');
-    measure();
-    draw();
-    start();
 
+    // The first measure waits for ResizeObserver: it fires right after the
+    // browser's own layout, so reading sizes here doesn't force a second,
+    // synchronous layout (PageSpeed: "forced reflow"). It also fires on resize.
+    let ready = false;
+    new ResizeObserver(() => {
+      measure();
+      draw();
+      if (!ready) { ready = true; start(); }
+    }).observe(panel);
     new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      visible ? start() : stop();
+      visible && ready ? start() : stop();
     }).observe(panel);
-    new ResizeObserver(() => { measure(); draw(); }).observe(panel);
     document.fonts?.ready.then(() => { measure(); draw(); });
-    reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
+    reduced.addEventListener('change', () => (reduced.matches ? stop() : ready && start()));
   }
 </script>

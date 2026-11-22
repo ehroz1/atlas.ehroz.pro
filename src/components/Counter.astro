@@ -1,0 +1,29 @@
+---
+/**
+ * GoatCounter page view: one image request, no script from another host,
+ * no cookies, no storage, so no consent banner is needed. Rendered only on
+ * the production build with `analytics.goatcounter` set
+ * (src/analytics.config.ts). The counts feed the Popular page: see
+ * scripts/popular.mjs. Headless browsers and prerender are skipped.
+ */
+import { analytics } from '~/analytics.config';
+import { IS_PROD } from '~/lib/env';
+
+const code = analytics.goatcounter;
+const endpoint = code ? `https://${code}.goatcounter.com/count` : '';
+---
+{IS_PROD && endpoint && (
+  <script is:inline define:vars={{ endpoint }}>
+    (function () {
+      if (navigator.webdriver || document.visibilityState === 'prerender') return;
+      var q = [
+        'p=' + encodeURIComponent(location.pathname),
+        't=' + encodeURIComponent(document.title),
+        'r=' + encodeURIComponent(document.referrer),
+        's=' + encodeURIComponent(screen.width + ',' + screen.height + ',' + (window.devicePixelRatio || 1)),
+        'rnd=' + Math.random().toString(36).slice(2),
+      ].join('&');
+      new Image().src = endpoint + '?' + q;
+    })();
+  </script>
+)}

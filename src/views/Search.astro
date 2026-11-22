@@ -1,0 +1,38 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import Gallery from '~/components/Gallery.astro';
+import { getTools, getCategories } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { tagCounts } from '~/lib/tags';
+import { useTranslations, type Lang } from '~/i18n';
+
+/* Results page for the search in the top bar. The bar's finder filters
+   this grid in place (it reads ?q=&category=&pricing=&platform= on load),
+   so the page itself has no search field: one search per site. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('search')]);
+const tags = tagCounts(tools).slice(0, 12);
+const tagHref = (tag: string) => u('/search', lang) + `?q=${encodeURIComponent(tag)}`;
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.search'), path: '/search' }]} crumbsContainer="container container--wide">
+  <div class="container container--wide">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+      <h1 class="t-statement">{t('searchPage.h1')}</h1>
+      <p class="t-secondary mt-2" style="max-width: 32rem">{t('searchPage.lead')}</p>
+      <nav class="mt-6" aria-labelledby="try-tags">
+        <h2 class="visually-hidden" id="try-tags">{t('searchPage.tags')}</h2>
+        <ul class="chips" role="list" style="justify-content: center">
+          {tags.map((x) => <li><a class="chip" href={tagHref(x.tag)}>{x.tag}</a></li>)}
+          <li><a class="chip" href={u('/tags', lang)}>{t('searchPage.allTags')} →</a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+      <Gallery tools={tools} categories={categories} filters={false} lang={lang} />
+    </div>
+  </div>
+</Base>

@@ -19,14 +19,16 @@ async function* htmlFiles(dir, root = dir) {
   }
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
-export function policyHosts({ ga4, metrika, preview, supabase }) {
+/** @param {{ ga4?: string, metrika?: string, goatcounter?: string, preview?: boolean, supabase?: string }} opts */
+export function policyHosts({ ga4, metrika, goatcounter, preview, supabase }) {
   const h = { script: [], img: [], connect: [], frame: [] };
   if (supabase) {
     // accounts, collections, member counter: REST + Realtime websocket
     const host = new URL(supabase).host;
     h.connect.push(`https://${host}`, `wss://${host}`);
   }
+  // GoatCounter: the page view is a plain image request to <code>.goatcounter.com
+  if (goatcounter) h.img.push(`https://${goatcounter}.goatcounter.com`);
   if (ga4) {
     h.script.push('https://www.googletagmanager.com');
     h.img.push('https://*.google-analytics.com', 'https://www.googletagmanager.com');
@@ -47,7 +49,7 @@ export function policyHosts({ ga4, metrika, preview, supabase }) {
   return h;
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
+/** @param {{ ga4?: string, metrika?: string, goatcounter?: string, preview?: boolean, supabase?: string }} opts */
 export default function csp(opts) {
   return {
     name: 'atlas-csp',

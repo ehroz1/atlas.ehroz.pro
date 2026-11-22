@@ -4,6 +4,12 @@
  * with every ID empty there is no counter, no cookie and no consent banner.
  */
 export const analytics = {
+  /**
+   * GoatCounter site code: "atlas-ehroz" for https://atlas-ehroz.goatcounter.com.
+   * Cookieless page-view counter, no consent banner needed. Its numbers feed
+   * the Popular page (scripts/popular.mjs at build time). See DEPLOY.md.
+   */
+  goatcounter: '',
   /** Google Analytics 4 measurement ID, "G-XXXXXXXXXX" */
   ga4: 'G-VMHW04TWE8',
   /** Yandex Metrika counter number, e.g. "98765432" */

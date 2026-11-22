@@ -144,6 +144,11 @@ put them together.
 | Text | `.prose` | 34rem measure, 17px |
 | Forms | `.form` (`--gap`), `.form--md`, `.field`, `.field--short`, `.field__optional`, `.input`, `.input-row`, `.textarea`, `.textarea--short`, `.select`, `.checkbox` | filled, no border until focus; "(optional)" after a label is `.field__optional` |
 | Empty state | `.empty`, `.empty--page` | one line title, one line help, one button; `--page` for the 404 |
+| FAQ | `.faq`, `.faq__item` (`<details>`), `.faq__q`, `.faq__a` | Help page; hairline between rows, `+`/`−` on the right, first one open |
+| Key table | `.keys` | legal pages: storage key (mono) → what and how long; hairline rows |
+| Card rank | `.card__rank` | one grey line under the summary, e.g. "Place 1 · 120 views" on Popular |
+| Footer | `.site-footer--cols`, `.foot-top`, `.foot-brand`, `.foot-cols`, `.foot-col`, `.foot-bottom`; home adds `.site-footer--scenic`, `.foot-scene`, `.foot-scene__img` | every page: brand + three link columns + legal row; home only (`<Base scenicFooter>`): `src/assets/footer/mountains.webp` (transparent sky) full width at the very bottom |
+| Ranked grid | `<Gallery ordered notes>` | keeps the given order (no shuffle, saved sites not lifted); Popular only |
 
 Layout helpers: `.container`, `.stack` (`--gap`), `.cluster` (`--gap`),
 `.split`, `.section`, `.section--tight`, `.chips--center`, `.section-head--flush`.
@@ -186,6 +191,16 @@ component-scoped `<style>` blocks for things that could be reused.
 
 ---
 
+### Pages
+
+| Page | View | Notes |
+|---|---|---|
+| `/search/` | `Search.astro` | results grid for the bar's finder (`?q=&category=&pricing=&platform=`), tag chips under the title; no second search field |
+| `/tags/` | `Tags.astro` | every tag as a `.chip` with `.chip__count`, most used first; links to `/search/?q=<tag>` |
+| `/popular/` | `Popular.astro` | ranked by GoatCounter page views (`src/lib/popular.ts`); without data an `.empty` note and featured sites, never invented numbers |
+| `/support/` | `Support.astro` | `.faq` + how to help; `FAQPage` in JSON-LD |
+| `/privacy/`, `/cookies/`, `/disclaimer/` | `Legal.astro` | `.prose` + `.keys`; text in `src/lib/texts.ts` follows the build's real settings |
+
 ### The top bar and search
 
 - The bar is `position: fixed` and transparent; only the pills catch clicks.
@@ -195,7 +210,7 @@ component-scoped `<style>` blocks for things that could be reused.
   State is `{ q, category[], pricing[], platform[] }`, mirrored in the URL
   (`?q=&category=&pricing=&platform=`). On pages that render `Gallery`
   the header fires `atlas:filter` with matching ids and the grid updates
-  live; elsewhere Done opens the home grid with the same params.
+  live; elsewhere Done opens `/search/` with the same params.
 - Don't add a second search field to a page.
 - Esc closes the finder and keeps the query (it doesn't wipe the field).
 - On phones (≤34rem) the bar is logo · search · saved · menu; Submit lives in the menu and the hero.

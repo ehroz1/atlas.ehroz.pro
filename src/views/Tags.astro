@@ -1,0 +1,35 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getTools } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { tagCounts } from '~/lib/tags';
+import { useTranslations, plural, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, entry] = await Promise.all([getTools(), getPage('tags')]);
+const tags = tagCounts(tools);
+const n = t(`tags.n.${plural(lang, tags.length)}`, { count: tags.length });
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.tags'), path: '/tags' }]}>
+  <div class="container">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+      <h1 class="t-statement">{t('tags.h1')}</h1>
+      <p class="t-secondary mt-2" style="max-width: 30rem">{t('tags.lead', { tags: n })}</p>
+    </section>
+
+    <div class="section" style="padding-bottom: 0; padding-top: var(--s-12)">
+      <ul class="chips" role="list">
+        {tags.map((x) => (
+          <li>
+            <a class="chip" href={u('/search', lang) + `?q=${encodeURIComponent(x.tag)}`}>
+              {x.tag}<span class="chip__count">{x.count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</Base>

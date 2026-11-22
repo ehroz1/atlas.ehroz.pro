@@ -7,6 +7,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # daily rebuild so the Popular page follows the latest 30 days of views
+  schedule:
+    - cron: '17 3 * * *'
   workflow_dispatch:
 
 permissions:
@@ -53,6 +56,10 @@ jobs:
             git commit -m "Add screenshots for new sites"
             git pull --rebase origin main && git push origin HEAD:main
           fi
+      # page views from GoatCounter → src/data/popular.json (skipped without the secret)
+      - run: node scripts/popular.mjs
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
       # base_path is "/atlas.ehroz.pro" on github.io, "" once a custom domain is set
       - run: npm run build
         env:

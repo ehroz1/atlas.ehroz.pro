@@ -7,7 +7,7 @@ import { u, pagePath } from '~/lib/url';
  * State: { q, category[], pricing[], platform[] }, mirrored in the URL.
  * - On pages with a grid (home, category) results filter in place: the
  *   header fires `atlas:filter` with the matching ids; Gallery listens.
- * - Elsewhere, Done opens the home grid with the same URL params, and
+ * - Elsewhere, Done opens the search page (/search/) with the same URL params, and
  *   typed queries list matching sites to jump to directly.
  */
 import { getImage } from 'astro:assets';
@@ -80,7 +80,7 @@ const index = {
   },
 };
 
-const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/tool/') || path.startsWith('/categor') ? 'sites' : null;
+const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor', '/search', '/popular', '/tags'].some((p) => path.startsWith(p)) ? 'sites' : null;
 ---
 <header class="site-header">
   <div class="site-header__inner">
@@ -143,6 +143,10 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
             {t('nav.contact')}
           </a>
+          <a class="menu__item" href={u('/popular', lang)} aria-current={path === '/popular' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19V13M12 19V5M19 19v-9"/></svg>
+            {t('nav.popular')}
+          </a>
           <a class="menu__item" href={u('/categories', lang)} aria-current={path === '/categories' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
             {t('nav.categories')}
@@ -175,6 +179,10 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
               {t('nav.accountIn')}
             </a>
           )}
+          <a class="menu__item" href={u('/support', lang)} aria-current={path === '/support' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17v.1"/></svg>
+            {t('nav.support')}
+          </a>
           <a class="menu__item" href={switchHref} hreflang={other} lang={other} data-lang-switch>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
             {languages[other]}
@@ -417,7 +425,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
       emit();
       if (state.q.trim() || filterCount()) document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (state.q.trim() || filterCount()) {
-      location.href = pageUrl('', queryString() + '#sites');
+      location.href = pageUrl('search', queryString());
     }
   }
 

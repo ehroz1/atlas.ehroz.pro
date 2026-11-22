@@ -22,6 +22,7 @@
      13. Tiles & cards      (.tile .card .cards)
      14. Tool page          (.tool-head .meta .tags)
      15. Prose              (.prose)
+     15b. FAQ & key table   (.faq .keys)
      16. Forms              (.field .input .textarea .select)
      17. Feedback states    (.empty .notice)
      18. Utilities
@@ -803,6 +804,70 @@ hr { border: 0; border-top: var(--border); }
 .site-footer a:hover { color: var(--c-text); }
 
 
+/* FOOTER WITH COLUMNS — brand and link columns, a legal row; on the home
+   page (.site-footer--scenic) the mountain range runs under it, full width.
+   The picture's sky is transparent, so the page shows through it; the
+   footer sits above the page frame (z-index 2), so the peaks hide the
+   frame lines the way a horizon would.                                  */
+.site-footer--cols { padding-block: var(--s-16) var(--s-10); }
+.site-footer--scenic {
+  position: relative;
+  z-index: 2;
+  padding-bottom: 0;
+}
+.foot-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: var(--s-12);
+}
+.foot-brand__name {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--c-text);
+}
+.site-footer .foot-brand__name { padding-block: 0; color: var(--c-text); }
+.foot-brand__name sup { font-size: 0.45em; font-weight: var(--fw-regular); vertical-align: top; position: relative; top: 0.1em; }
+.foot-brand__note { max-width: 22rem; margin-top: var(--s-4); font-size: var(--fs-15); color: var(--c-text-2); }
+.foot-brand__meta { margin-top: var(--s-2); font-size: var(--fs-13); color: var(--c-text-3); }
+.foot-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-8); }
+.foot-col__title { margin-bottom: var(--s-3); font-size: var(--fs-13); color: var(--c-text-3); }
+.foot-col__list { display: grid; }
+.foot-col__list a { font-size: var(--fs-15); }
+.foot-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-8);
+  margin-top: var(--s-12);
+  padding-top: var(--s-6);
+  border-top: var(--border);
+  font-size: var(--fs-13);
+}
+.foot-scene {
+  position: relative;
+  margin-top: clamp(var(--s-10), 6vw, var(--s-20));
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.foot-scene__img {
+  position: relative;
+  width: 100%;
+  min-height: 8rem;
+  object-fit: cover;
+  object-position: center bottom;
+}
+@media (max-width: 52rem) {
+  .foot-top { grid-template-columns: minmax(0, 1fr); gap: var(--s-10); }
+}
+@media (max-width: 34rem) {
+  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-6) var(--s-4); }
+}
+
+
 /* 9. BUTTONS & LINKS -------------------------------------------------------
    .btn             outlined pill (default action: “Submit a site”)
    .btn--solid      ink pill (one primary action per screen, at most)
@@ -1048,6 +1113,18 @@ hr { border: 0; border-top: var(--border); }
 @media (min-width: 64rem) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .card-wrap { position: relative; }
+/* Cards off screen skip style, layout and paint until they scroll near
+   (PageSpeed: main-thread "Style & Layout"); all of them stay in the HTML.
+   content-visibility clips to the box, so the clip margin leaves room for
+   the hover lift (6px) and the focus ring (4px offset + 2px). Browsers
+   without overflow-clip-margin (Safari) would crop those: they skip it. */
+@supports (overflow-clip-margin: 1px) {
+  .card-wrap {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 20rem;
+    overflow-clip-margin: 12px;
+  }
+}
 /* save / move-to-top buttons sit on the picture's bottom-right corner:
    the layer has the picture's 16:10 box, so no heights are guessed */
 .card__actions {
@@ -1554,6 +1631,39 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .prose th { font-weight: var(--fw-medium); color: var(--c-text-2); }
 
 
+/* 15b. FAQ & KEY TABLE ----------------------------------------------------
+   .faq   questions as <details>, hairline between rows (Help page)
+   .keys  two-column table of storage keys / cookies (legal pages)       */
+
+.faq { display: grid; border-bottom: var(--border); }
+.faq__item { border-top: var(--border); }
+.faq__q {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  font-size: var(--fs-17);
+  font-weight: var(--fw-medium);
+  list-style: none;
+  cursor: pointer;
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q::after { content: "+"; flex: none; color: var(--c-text-3); font-weight: var(--fw-regular); }
+.faq__item[open] > .faq__q::after { content: "−"; }
+.faq__a { max-width: 34rem; padding-bottom: var(--s-5); color: var(--c-text-2); }
+
+.keys { width: 100%; border-collapse: collapse; font-size: var(--fs-14); line-height: var(--lh-body); }
+.keys th, .keys td { padding-block: var(--s-3); border-top: var(--border); text-align: left; vertical-align: top; }
+.keys th { color: var(--c-text-3); font-weight: var(--fw-regular); }
+.keys td { color: var(--c-text-2); }
+.keys th:first-child, .keys td:first-child { padding-right: var(--s-6); white-space: nowrap; }
+.keys td:first-child { color: var(--c-text); font-family: var(--font-mono); font-size: var(--fs-13); }
+@media (max-width: 40rem) { .keys td:first-child { white-space: normal; overflow-wrap: anywhere; } }
+
+.card__rank { margin-top: 2px; font-size: var(--fs-13); color: var(--c-text-3); }
+
+
 /* 16. FORMS ---------------------------------------------------------------- */
 
 .form { display: grid; gap: var(--gap, var(--s-6)); }
@@ -1694,21 +1804,20 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .about-intro__date { font-size: var(--fs-15); }
 .about-author { max-width: 40rem; margin: clamp(var(--s-16), 8vw, var(--s-24)) auto 0; text-align: center; }
 
-/* Skeleton: screenshots shimmer while they load. The script in Base.astro
+/* Skeleton: screenshots pulse while they load. The script in Base.astro
    puts .skel on <html> and .is-loaded on each image once it has arrived.
-   The shimmer is the image's own background, so the picture covers it as
-   it paints, and nothing else on the card has to know about loading. */
+   The placeholder is the image's own background, so the picture covers it
+   as it paints, and nothing else on the card has to know about loading.
+   Only opacity is animated: it runs on the compositor, so 100+ pulsing
+   placeholders cost no layout or paint (a moving background-position did). */
 .skel :is(.card__shot, .tile__shot, .collage__item img, .wall__item img, .edge-shots__item img, .finder__thumb img):not(.is-loaded) {
   background-color: var(--c-surface);
-  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.05) 50%, transparent 70%);
-  background-size: 250% 100%;
-  background-repeat: no-repeat;
-  animation: skeleton 1.4s ease-in-out infinite;
+  animation: skeleton 1.4s ease-in-out infinite alternate;
 }
 .skel .tile__shot:not(.is-loaded) { background-color: var(--c-fill); }
 @keyframes skeleton {
-  from { background-position: 120% 0; }
-  to { background-position: -20% 0; }
+  from { opacity: 1; }
+  to { opacity: 0.45; }
 }
 
 /* 18b. ACCOUNTS, COLLECTIONS, NEWSLETTER, PRO, API ------------------------ */
