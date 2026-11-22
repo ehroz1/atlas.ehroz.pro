@@ -42,11 +42,13 @@ interface Props {
   flush?: boolean;
   /** hide the footer (pages that are a single full-bleed view) */
   bare?: boolean;
+  /** footer with link columns over the mountains (home page) */
+  scenicFooter?: boolean;
   /** on a site's own page: its id, remembered as "viewed" */
   toolId?: string;
 }
 
-const { lang = defaultLang, entry, crumbs, crumbsContainer = 'container', nodes = [], pageExtra, flush = false, bare = false, toolId } = Astro.props;
+const { lang = defaultLang, entry, crumbs, crumbsContainer = 'container', nodes = [], pageExtra, flush = false, bare = false, scenicFooter = false, toolId } = Astro.props;
 const noindex = Astro.props.noindex || !entry;
 const t = useTranslations(lang);
 
@@ -152,7 +154,7 @@ const jsonLd =
       )}
       <slot />
     </main>
-    {!bare && <Footer lang={lang} switchHref={switchHref} />}
+    {!bare && <Footer lang={lang} switchHref={switchHref} scenic={scenicFooter} />}
     {/* "Viewed" and "New", per browser. Inline at the end of the body so the
         marks are there on first paint. localStorage key: atlas:seen = [ids],
         most recent first. Without storage nothing is marked. */}

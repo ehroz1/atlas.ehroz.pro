@@ -267,6 +267,10 @@ export const ru: Record<UIKey, string> = {
   'submit.subject': 'Заявка в {brand}',
 
   'footer.note': 'Собрано вручную.',
+  'footer.catalog': 'Каталог',
+  'footer.project': 'Проект',
+  'footer.more': 'Ещё',
+  'footer.tagline': '{sites} в {categories} категориях, все отобраны вручную. Без регистрации и платных размещений.',
   'footer.updated': 'Обновлено {date}',
   'footer.rss': 'RSS',
   'rss.title': '{brand} — новые сайты',

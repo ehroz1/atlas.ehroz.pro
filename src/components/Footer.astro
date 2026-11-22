@@ -1,10 +1,17 @@
 ---
 import { u } from '~/lib/url';
 import { getTools, getCategories, toolUpdated, latest } from '~/lib/data';
-import { useTranslations, defaultLang, formatDate, langs, languages, type Lang } from '~/i18n';
+import { useTranslations, defaultLang, formatDate, plural, langs, languages, type Lang } from '~/i18n';
+import { Image } from 'astro:assets';
 import { SITE } from '~/site.config';
-interface Props { lang?: Lang; switchHref: string }
-const { lang = defaultLang, switchHref } = Astro.props;
+import mountains from '~/assets/footer/mountains.webp';
+interface Props {
+  lang?: Lang;
+  switchHref: string;
+  /** the home page's footer: links in columns over a mountain range */
+  scenic?: boolean;
+}
+const { lang = defaultLang, switchHref, scenic = false } = Astro.props;
 const t = useTranslations(lang);
 const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
@@ -33,7 +40,48 @@ const legal = [
   ['/cookies', t('nav.cookies')],
   ['/disclaimer', t('nav.disclaimer')],
 ] as const;
+// columns of the scenic footer
+const groups = [
+  { title: t('footer.catalog'), links: [['/', t('nav.sites')], ['/search', t('nav.search')], ['/popular', t('nav.popular')], ['/categories', t('nav.categories')], ['/tags', t('nav.tags')], ['/wall', t('nav.wall')]] },
+  { title: t('footer.project'), links: [['/about', t('nav.about')], ['/for-makers', t('nav.makers')], ['/badge', t('nav.badge')], ['/pro', t('nav.pro')], ['/api', t('nav.api')], ['/contact', t('nav.contact')]] },
+  { title: t('footer.more'), links: [['/submit', t('nav.submit')], ['/collection', t('nav.collection')], ['/newsletter', t('nav.newsletter')], ['/support', t('nav.support')]] },
+] as const;
 ---
+{scenic ? (
+<footer class="site-footer site-footer--scenic">
+  <div class="container container--wide">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="foot-brand__name" href={u('/', lang)}>{SITE.name}<sup>°</sup></a>
+        <p class="foot-brand__note">{t('footer.tagline', { sites: t(`results.count.${plural(lang, tools.length)}`, { count: tools.length }), categories: categories.length })}</p>
+        <p class="foot-brand__meta">{t('footer.updated', { date: formatDate(updated, lang) })}</p>
+      </div>
+      <nav class="foot-cols" aria-label={t('nav.other')}>
+        {groups.map((g) => (
+          <div class="foot-col">
+            <p class="foot-col__title">{g.title}</p>
+            <ul class="foot-col__list" role="list">
+              {g.links.map(([path, label]) => <li><a href={u(path, lang)}>{label}</a></li>)}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>© {year} {SITE.name} · {t('footer.note')}</span>
+      <nav class="cluster" style="--gap: var(--s-1) var(--s-5)" aria-label={t('nav.legal')}>
+        {legal.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
+        <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
+        <a href={u('/rss.xml')} type="application/rss+xml">{t('footer.rss')}</a>
+      </nav>
+    </div>
+  </div>
+  <div class="foot-scene" aria-hidden="true">
+    <span class="foot-scene__word">{SITE.name}</span>
+    <Image class="foot-scene__img" src={mountains} alt="" widths={[800, 1400, 2000]} sizes="100vw" format="webp" quality={80} loading="lazy" />
+  </div>
+</footer>
+) : (
 <footer class="site-footer">
   <div class="container container--wide site-footer__inner">
     <div class="stack" style="--gap: var(--s-1)">
@@ -50,3 +98,4 @@ const legal = [
     </nav>
   </div>
 </footer>
+)}
