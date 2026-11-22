@@ -21,19 +21,27 @@ Free fonts that are safe for commercial work are easiest to find on [Google Font
 
 [Google Fonts](/tool/google-fonts/) is the default place to start. Every font is under an open licence that allows commercial use, and you can either download the files or load the font straight into a site. Filters cover language support and variable axes, which helps when you need Cyrillic or a font with a weight axis.
 
+![Google Fonts: filters for language support and variable axes](shot:google-fonts)
+
 ### Fontshare
 
 [Fontshare](/tool/fontshare/) is a collection from the Indian Type Foundry. All fonts are free for personal and commercial work. There are fewer families than on Google Fonts, but the bar is higher: it is a good place to find something that doesn't look like every other site.
 
+![Fontshare by the Indian Type Foundry](shot:fontshare)
+
 ### Font Squirrel
 
 [Font Squirrel](/tool/font-squirrel/) checks the licence of each font before listing it. It also has two tools that save time: a webfont generator that turns a font file into web formats, and a matcher that identifies a font from an image.
+
+![Font Squirrel lists only fonts with a checked licence](shot:font-squirrel)
 
 ## Catalogues that link to the author
 
 ### UNCUT.wtf
 
 [UNCUT.wtf](/tool/uncut-wtf/) is a catalogue of about 160 sans, serif, mono and display fonts with filters and search. Downloads go to each creator's own page, so read the licence there: terms are set by the author, not by the catalogue.
+
+![UNCUT.wtf: about 160 fonts with filters and search](shot:uncut-wtf)
 
 ## Cyrillic and Kazakh fonts
 
@@ -48,6 +56,8 @@ Most fonts on Google Fonts and Fontshare cover Latin only or Latin plus basic Cy
 ## See the font in real work first
 
 A specimen page shows a font at its best. [Fonts In Use](/tool/fontsinuse/) shows how it behaves on books, packaging, posters and screens: tens of thousands of examples searchable by typeface, format and topic. It is a quick way to see whether a free font holds up in the kind of work you are doing.
+
+![Fonts In Use: type in books, packaging, posters and screens](shot:fontsinuse)
 
 ## How to check a font licence
 

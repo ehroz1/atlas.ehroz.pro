@@ -521,6 +521,17 @@ export const en = {
   'article.sources': 'Sources',
   'article.more': 'More articles',
   'article.all': 'All articles',
+  'article.minutes': '{n} min read',
+  'article.views': '{n} view|{n} views',
+  'article.toc': 'Contents',
+  'article.share': 'Share',
+  'article.copy': 'Copy link',
+  'article.copied': 'Link copied',
+  'article.aboutAuthor': 'About the author',
+  'article.authorBio': 'Designer and developer from Astana. Collects useful sites for makers in {brand} and checks every one by hand before it goes in.',
+  'article.authorSite': 'Website',
+  'article.coverAlt': 'Screenshots: {names}',
+  'article.related': 'Read next',
   'tool.articles': 'Articles about {name}',
 } as const;
 

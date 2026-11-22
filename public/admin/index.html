@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="admin.css">
 <script src="admin.js" defer></script>
 <script src="admin-panel.js" defer></script>
+<script src="admin-articles.js" defer></script>
 </head>
 <body>
 
@@ -36,6 +37,7 @@
   <a href="#subs" data-tab="subs">Заявки <span class="count" data-count="submissions_new"></span></a>
   <a href="#comments" data-tab="comments">Комментарии <span class="count" data-count="comments_pending"></span></a>
   <a href="#sites" data-tab="sites">Сайты</a>
+  <a href="#articles" data-tab="articles">Статьи</a>
   <a href="#users" data-tab="users">Пользователи</a>
   <a href="#newsletter" data-tab="newsletter">Рассылка</a>
   <a href="#services" data-tab="services">Сервисы</a>
@@ -229,6 +231,145 @@
 </section>
 
 </div><!-- /tab-sites -->
+
+<div class="tab" id="tab-articles" hidden>
+
+<section id="art-gate" class="panel narrow" hidden>
+  <h1>Статьи</h1>
+  <p class="muted">Статьи хранятся в репозитории, как и каталог. Войдите GitHub-токеном на вкладке «Сайты» и вернитесь сюда.</p>
+  <p><button class="btn primary" id="art-gate-go" type="button">Перейти ко входу</button></p>
+</section>
+
+<section id="art-list" hidden>
+  <div class="toolbar">
+    <h1 class="grow">Статьи</h1>
+    <button class="btn primary" id="art-new" type="button">+ Новая статья</button>
+  </div>
+  <p class="muted" id="art-count"></p>
+  <p class="muted">Статьи можно писать здесь или запускать нейросеть: GitHub → Actions → Articles → Run workflow (откроет pull request на проверку).</p>
+  <div id="art-rows" class="rows" aria-live="polite"></div>
+</section>
+
+<section id="art-edit" class="panel panel--wide" hidden>
+  <button class="link" id="art-back" type="button">← К списку</button>
+  <h1 id="art-title">Новая статья</h1>
+  <form id="art-form" novalidate>
+    <div class="grid2">
+      <label>Адрес статьи (slug)
+        <input name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="free-icons-for-websites">
+        <small class="muted">Будет /blog/&lt;slug&gt;/. Подставится из заголовка; после публикации не меняется.</small>
+      </label>
+      <label>Тип
+        <select name="type"></select>
+      </label>
+      <label>Дата публикации <input name="published" type="date"></label>
+      <fieldset class="checks">
+        <legend>Статус</legend>
+        <label class="check"><input name="draft" type="checkbox"> Черновик — не показывать на сайте</label>
+      </fieldset>
+    </div>
+
+    <fieldset>
+      <legend>Сайты из каталога (минимум 3) — карточки под статьёй</legend>
+      <div id="art-tool-chips" class="chips"></div>
+      <input id="art-tool-input" list="art-tool-options" placeholder="Начните вводить название сайта и выберите из списка">
+      <datalist id="art-tool-options"></datalist>
+      <small class="muted" id="art-tools-note"></small>
+    </fieldset>
+
+    <fieldset>
+      <legend>Категории</legend>
+      <div id="art-cats" class="chips"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Обложка</legend>
+      <div class="shot-row">
+        <img id="art-cover-preview" alt="" hidden>
+        <div>
+          <p class="muted" id="art-cover-note"></p>
+          <div class="file-row">
+            <input id="art-cover-file" class="file-input" type="file" accept="image/png,image/jpeg,image/webp">
+            <label for="art-cover-file" class="btn file-btn">Выбрать обложку</label>
+            <button class="btn danger" id="art-cover-remove" type="button" hidden>Убрать обложку</button>
+          </div>
+          <label>Описание обложки (для незрячих и поисковиков)
+            <input name="coverAlt" placeholder="Что изображено на обложке">
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <input id="art-img-file" class="file-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+    <div class="art-langs">
+      <fieldset class="art-lang">
+        <legend>Русский</legend>
+        <label>Заголовок <small class="muted" id="art-c-title-ru"></small>
+          <input name="title_ru" maxlength="70" placeholder="Бесплатные иконки для сайта: 10 библиотек">
+        </label>
+        <label>Описание (под заголовком и в поиске) <small class="muted" id="art-c-desc-ru"></small>
+          <textarea name="description_ru" rows="2" maxlength="160" placeholder="50–160 символов: о чём статья и чем полезна"></textarea>
+        </label>
+        <div class="grid2">
+          <label>Главный запрос <input name="kw_ru" placeholder="бесплатные иконки для сайта"></label>
+          <label>Доп. запросы (через запятую) <input name="kw2_ru" placeholder="иконки svg, наборы иконок"></label>
+        </div>
+        <div class="art-editor">
+          <div class="art-toolbar" id="art-toolbar-ru"></div>
+          <div class="art-pick" id="art-pick-ru" hidden><input list="art-all-tools" placeholder="Какой сайт? Начните вводить и выберите"></div>
+          <textarea name="body_ru" rows="24" class="art-body" placeholder="Первый абзац — сразу ответ на вопрос читателя.&#10;&#10;## Первый раздел&#10;&#10;Текст…"></textarea>
+          <div class="art-preview" id="art-preview-ru" hidden></div>
+          <small class="muted" id="art-c-body-ru"></small>
+        </div>
+      </fieldset>
+
+      <fieldset class="art-lang">
+        <legend>English</legend>
+        <label>Title <small class="muted" id="art-c-title-en"></small>
+          <input name="title_en" maxlength="70" placeholder="Free icons for websites: 10 libraries">
+        </label>
+        <label>Description <small class="muted" id="art-c-desc-en"></small>
+          <textarea name="description_en" rows="2" maxlength="160" placeholder="50–160 characters"></textarea>
+        </label>
+        <div class="grid2">
+          <label>Main query <input name="kw_en" placeholder="free icons for websites"></label>
+          <label>More queries (comma-separated) <input name="kw2_en" placeholder="svg icons, icon sets"></label>
+        </div>
+        <div class="art-editor">
+          <div class="art-toolbar" id="art-toolbar-en"></div>
+          <div class="art-pick" id="art-pick-en" hidden><input list="art-all-tools" placeholder="Which site? Start typing and pick"></div>
+          <textarea name="body_en" rows="24" class="art-body" placeholder="The first paragraph answers the reader's question.&#10;&#10;## First section&#10;&#10;Text…"></textarea>
+          <div class="art-preview" id="art-preview-en" hidden></div>
+          <small class="muted" id="art-c-body-en"></small>
+        </div>
+      </fieldset>
+    </div>
+    <datalist id="art-all-tools"></datalist>
+
+    <details class="art-help">
+      <summary>Как оформлять текст</summary>
+      <ul>
+        <li><code>## Раздел</code>, <code>### Подраздел</code> — заголовки; из разделов собирается «Содержание».</li>
+        <li><code>**жирный**</code>, списки с <code>- </code> или <code>1. </code>, цитата — строка с <code>&gt; </code>.</li>
+        <li><code>[Figma](/tool/figma/)</code> — ссылка на страницу сайта в каталоге (кнопка «Ссылка на сайт»).</li>
+        <li><code>![Подпись](shot:figma)</code> — скриншот сайта, кликабельный (кнопка «Скриншот сайта»).</li>
+        <li><code>![Описание](./img-….jpg "Подпись")</code> — своя картинка (кнопка «Картинка…»).</li>
+        <li>Пустая строка между абзацами. Заголовок «# …» в тексте не нужен — он сверху.</li>
+      </ul>
+    </details>
+
+    <p id="art-error" class="error" role="alert"></p>
+    <div class="actions">
+      <button class="btn primary" type="submit" id="art-save">Сохранить и опубликовать</button>
+      <button class="btn" type="button" id="art-cancel">Отмена</button>
+      <span class="grow"></span>
+      <button class="btn danger" type="button" id="art-delete" hidden>Удалить статью</button>
+    </div>
+  </form>
+</section>
+
+</div><!-- /tab-articles -->
 
 <div class="tab" id="tab-users" hidden>
   <section>

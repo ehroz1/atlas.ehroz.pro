@@ -9,8 +9,14 @@ import { u } from '~/lib/url';
 import { BACKEND } from '~/lib/backend';
 import { useTranslations, type Lang } from '~/i18n';
 
-interface Props { toolId: string; lang: Lang }
-const { toolId, lang } = Astro.props;
+interface Props {
+  /** comment thread: a tool id, or "blog-<slug>" for an article (the table's tool_id column) */
+  toolId: string;
+  lang: Lang;
+  /** page to come back to after signing in, language-free, e.g. "blog/my-article/" */
+  next?: string;
+}
+const { toolId, lang, next = `tool/${toolId}/` } = Astro.props;
 const t = useTranslations(lang);
 const msg = {
   failed: t('comments.failed'),
@@ -37,7 +43,7 @@ const msg = {
       </div>
     </form>
     <p class="t-small t-secondary" data-comments-login hidden>
-      <a class="link" href={u('/account', lang) + `?next=tool/${toolId}/`}>{t('comments.signIn')}</a>
+      <a class="link" href={u('/account', lang) + `?next=${next}`}>{t('comments.signIn')}</a>
     </p>
   </section>
 )}

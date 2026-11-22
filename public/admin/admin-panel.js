@@ -13,7 +13,7 @@
 const SB = 'https://uqfsxipvbccporjtsfoi.supabase.co';
 const SB_KEY = 'sb_publishable_RWIWeSUBKWz4dGs35_b96w_pAT-HjV9';
 const SB_STORE = 'sb-uqfsxipvbccporjtsfoi-auth-token';
-const TABS = ['overview', 'subs', 'comments', 'sites', 'users', 'newsletter', 'services'];
+const TABS = ['overview', 'subs', 'comments', 'sites', 'articles', 'users', 'newsletter', 'services'];
 const NEEDS_DB = new Set(['overview', 'subs', 'comments', 'users']);
 const SITE = location.pathname.replace(/admin\/?.*$/, ''); // "/" or "/atlas.ehroz.pro/"
 const panel = { admin: null, tools: null, fromSubmission: null };
@@ -149,6 +149,7 @@ async function openTab(name) {
     if (name === 'subs') await renderSubs();
     if (name === 'comments') await renderComments();
     if (name === 'users') await renderUsers();
+    if (name === 'articles') await window.renderArticles?.();
     if (name === 'newsletter') await renderNewsletter();
     if (name === 'services') await renderServices();
   } catch (e) { clearSkeletons(); fail(e); }
@@ -302,7 +303,9 @@ async function renderComments() {
     el('div', { class: 'item__head' },
       el('strong', {}, r.author_name),
       el('span', { class: 'muted' }, 'о сайте'),
-      el('a', { href: `${SITE}tool/${r.tool_id}/#comments-h`, target: '_blank', rel: 'noopener' }, toolName(r.tool_id) + ' ↗'),
+      (r.tool_id.startsWith('blog-')
+        ? el('a', { href: `${SITE}ru/blog/${r.tool_id.slice(5)}/#comments-h`, target: '_blank', rel: 'noopener' }, 'Статья: ' + r.tool_id.slice(5) + ' ↗')
+        : el('a', { href: `${SITE}tool/${r.tool_id}/#comments-h`, target: '_blank', rel: 'noopener' }, toolName(r.tool_id) + ' ↗')),
       el('span', { class: 'badge' + (r.status === 'pending' ? ' warn' : '') }, { pending: 'на проверке', approved: 'опубликован', rejected: 'скрыт' }[r.status]),
       el('span', { class: 'grow' }),
       el('span', { class: 'muted' }, fmtDate(r.created_at))),

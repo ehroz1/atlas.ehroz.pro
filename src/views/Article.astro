@@ -2,12 +2,14 @@
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
+import Comments from '~/components/Comments.astro';
+import ArticleCover from '~/components/ArticleCover.astro';
 import { getTools, getCategories, domainOf } from '~/lib/data';
 import { getArticles, type Article } from '~/lib/articles';
 import { getPage } from '~/lib/routes';
 import { blogPosting } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
-import { AUTHOR } from '~/site.config';
+import { AUTHOR, SITE } from '~/site.config';
 import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
 
 interface Props { article: Article; lang: Lang }
@@ -20,43 +22,100 @@ const tools = article.tools.map((id) => all.find((x) => x.id === id)!);
 const url = absUrl(entry.path, lang);
 const iso = (x: Date) => x.toISOString().slice(0, 10);
 const changed = iso(article.updated) !== iso(article.published);
+const toc = article.toc[lang];
 // other articles: ones sharing a category first, then the newest
-const others = articles
-  .filter((a) => a.slug !== article.slug)
-  .sort((a, b) => Number(b.categories.some((c) => article.categories.includes(c))) - Number(a.categories.some((c) => article.categories.includes(c))))
-  .slice(0, 3);
+const shares = (a: Article) => Number(a.categories.some((c) => article.categories.includes(c)));
+const others = articles.filter((a) => a.slug !== article.slug).sort((a, b) => shares(b) - shares(a)).slice(0, 3);
+const enc = encodeURIComponent;
+const share = [
+  { name: 'Telegram', href: `https://t.me/share/url?url=${enc(url)}&text=${enc(d.title)}` },
+  { name: 'X', href: `https://x.com/intent/post?url=${enc(url)}&text=${enc(d.title)}` },
+  { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}` },
+];
+const initials = AUTHOR.name.slice(0, 1);
 ---
 <Base
   lang={lang}
   entry={entry}
   crumbs={[{ name: t('nav.blog'), path: '/blog' }, { name: d.title, path: entry.path }]}
-  crumbsContainer="container container--narrow"
+  crumbsContainer="container"
   nodes={[blogPosting(url, entry, lang)]}
   pageExtra={{ mainEntity: { '@id': url + '#article' } }}
 >
-  <div class="container container--narrow">
-    <article class="section" style="padding-bottom: 0" data-article={article.slug}>
-      <header class="stack" style="--gap: var(--s-3)">
-        <h1 class="t-statement">{d.title}</h1>
-        <p class="t-meta">
-          <a class="link" href={AUTHOR.url} rel="author">{t('article.by', { name: AUTHOR.name })}</a>
-          {' · '}{t('article.published')} <time datetime={iso(article.published)}>{formatDate(article.published, lang)}</time>
-          {changed && <>{' · '}{t('article.updated')} <time datetime={iso(article.updated)}>{formatDate(article.updated, lang)}</time></>}
-        </p>
+  <div class="reading-progress" aria-hidden="true"></div>
+
+  <article class="article" data-article={article.slug}>
+    <div class="container">
+      <header class="article-head">
+        <ul class="article-head__cats" role="list">
+          {article.categories.map((c) => <li><a class="chip" href={u(`/category/${c}`, lang)}>{names.get(c)}</a></li>)}
+        </ul>
+        <h1 class="article-head__title">{d.title}</h1>
+        <p class="article-head__lead">{d.description}</p>
+        <div class="article-meta">
+          <a class="article-meta__author" href={AUTHOR.url} rel="author">
+            <span class="avatar" aria-hidden="true">{initials}</span>
+            <span>{AUTHOR.name}</span>
+          </a>
+          <span class="article-meta__items">
+            <time datetime={iso(article.published)}>{formatDate(article.published, lang)}</time>
+            {changed && <span>{t('article.updated')} <time datetime={iso(article.updated)}>{formatDate(article.updated, lang)}</time></span>}
+            <span>{t('article.minutes', { n: article.minutes[lang] })}</span>
+            <span data-views={article.slug} data-label={t('article.views')} hidden><span data-views-text></span></span>
+          </span>
+        </div>
       </header>
 
-      <div class="prose prose--article mt-8" set:html={article.html[lang]} />
+      <ArticleCover article={article} lang={lang} size="hero" eager />
 
-      {d.sources.length > 0 && (
-        <section class="mt-12 stack" style="--gap: var(--s-2)" aria-labelledby="sources">
-          <h2 class="t-title" id="sources">{t('article.sources')}</h2>
-          <ul class="stack t-small" style="--gap: var(--s-1)" role="list">
-            {d.sources.map((s) => <li><a class="link" href={s} rel="noopener nofollow">{domainOf(s)}</a></li>)}
-          </ul>
-        </section>
-      )}
-    </article>
-  </div>
+      <div class="article-layout">
+        <aside class="article-aside">
+          {toc.length > 1 && (
+            <nav class="article-toc" aria-labelledby="toc-h">
+              <p class="article-aside__label" id="toc-h">{t('article.toc')}</p>
+              <ol role="list">
+                {toc.map((h) => <li><a href={`#${h.id}`} data-toc-link>{h.text}</a></li>)}
+              </ol>
+            </nav>
+          )}
+          <div class="article-share">
+            <p class="article-aside__label">{t('article.share')}</p>
+            <div class="cluster" style="--gap: var(--s-2)">
+              {share.map((s) => <a class="chip" href={s.href} target="_blank" rel="noopener nofollow">{s.name}</a>)}
+              <button class="chip" type="button" data-copy-link data-done={t('article.copied')}>{t('article.copy')}</button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="article-body">
+          <div class="prose prose--article" set:html={article.html[lang]} />
+
+          {d.sources.length > 0 && (
+            <section class="article-sources" aria-labelledby="sources">
+              <h2 class="t-title" id="sources">{t('article.sources')}</h2>
+              <ul role="list">
+                {d.sources.map((s) => <li><a class="link" href={s} rel="noopener nofollow">{domainOf(s)}{new URL(s).pathname.length > 1 ? new URL(s).pathname : ''}</a></li>)}
+              </ul>
+            </section>
+          )}
+
+          <section class="author-card" aria-labelledby="author-h">
+            <span class="avatar avatar--lg" aria-hidden="true">{initials}</span>
+            <div class="stack" style="--gap: var(--s-2)">
+              <p class="article-aside__label" id="author-h">{t('article.aboutAuthor')}</p>
+              <p class="t-medium">{AUTHOR.name}</p>
+              <p class="t-secondary t-small">{t('article.authorBio')}</p>
+              <p class="cluster t-small" style="--gap: var(--s-2) var(--s-4)">
+                <a class="link" href={AUTHOR.url} rel="author">{t('article.authorSite')}</a>
+                <a class="link" href={AUTHOR.telegram.url} rel="noopener">Telegram</a>
+                <a class="link" href={u('/about', lang)}>{SITE.name}</a>
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </article>
 
   <div class="container container--wide">
     <section class="section--more" aria-labelledby="tools">
@@ -69,13 +128,73 @@ const others = articles
     </section>
   </div>
 
-  <div class="container container--narrow">
-    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="more">
-      <h2 class="t-title" id="more">{t('article.more')}</h2>
-      <ul class="stack mt-4" style="--gap: var(--s-3)" role="list">
-        {others.map((a) => <li><a class="link" href={u(`/blog/${a.slug}`, lang)}>{a.entry[lang].data.title}</a></li>)}
-        <li><a class="link" href={u('/blog', lang)}>{t('article.all')}</a></li>
-      </ul>
-    </nav>
+  <div class="container">
+    <div class="article-comments">
+      <Comments toolId={`blog-${article.slug}`} lang={lang} next={`blog/${article.slug}/`} />
+    </div>
   </div>
+
+  {others.length > 0 && (
+    <div class="container container--wide">
+      <section class="section--more" aria-labelledby="more">
+        <div class="section-head">
+          <h2 class="t-title" id="more">{t('article.related')}</h2>
+          <a class="link t-small" href={u('/blog', lang)}>{t('article.all')}</a>
+        </div>
+        <ul class="post-grid" role="list">
+          {others.map((a) => (
+            <li class="post-card">
+              <a class="post-card__link" href={u(`/blog/${a.slug}`, lang)}>
+                <ArticleCover article={a} lang={lang} />
+                <span class="post-card__title">{a.entry[lang].data.title}</span>
+              </a>
+              <p class="post-card__meta t-meta">
+                <time datetime={iso(a.published)}>{formatDate(a.published, lang)}</time> · {t('article.minutes', { n: a.minutes[lang] })}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  )}
 </Base>
+
+<script>
+  import { hitArticle } from '~/scripts/views';
+
+  const art = document.querySelector<HTMLElement>('[data-article]');
+  if (art) hitArticle(art.dataset.article!);
+
+  // copy link
+  const copy = document.querySelector<HTMLButtonElement>('[data-copy-link]');
+  copy?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(location.origin + location.pathname);
+      const label = copy.textContent;
+      copy.textContent = copy.dataset.done ?? label;
+      setTimeout(() => (copy.textContent = label), 1600);
+    } catch {
+      /* clipboard blocked */
+    }
+  });
+
+  // table of contents: mark the section being read
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  if (links.length && 'IntersectionObserver' in window) {
+    const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a) => a.removeAttribute('aria-current'));
+          byId.get(e.target.id)?.setAttribute('aria-current', 'true');
+        }
+      },
+      { rootMargin: '0px 0px -70% 0px' },
+    );
+    for (const id of byId.keys()) {
+      const h = document.getElementById(id);
+      if (h) io.observe(h);
+    }
+  }
+</script>

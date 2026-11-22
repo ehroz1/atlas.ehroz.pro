@@ -1,16 +1,22 @@
 ---
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
-import { getArticles } from '~/lib/articles';
+import ArticleCover from '~/components/ArticleCover.astro';
+import { getArticles, type Article } from '~/lib/articles';
+import { getCategories } from '~/lib/data';
 import { getPage } from '~/lib/routes';
 import { absUrl } from '~/lib/seo';
-import { useTranslations, formatDate, type Lang } from '~/i18n';
+import { AUTHOR } from '~/site.config';
+import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [articles, entry] = await Promise.all([getArticles(), getPage('blog')]);
+const [articles, categories, entry] = await Promise.all([getArticles(), getCategories(), getPage('blog')]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const url = absUrl(entry.path, lang);
+const iso = (x: Date) => x.toISOString().slice(0, 10);
+const [lead, ...rest] = articles;
 const list = {
   '@type': 'ItemList',
   '@id': url + '#itemlist',
@@ -22,34 +28,63 @@ const list = {
     url: absUrl(`/blog/${a.slug}/`, lang),
   })),
 };
+const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.published), minutes: t('article.minutes', { n: a.minutes[lang] }) });
 ---
 <Base
   lang={lang}
   entry={entry}
   crumbs={[{ name: t('nav.blog'), path: '/blog' }]}
-  crumbsContainer="container container--narrow"
+  crumbsContainer="container container--wide"
   nodes={[list]}
   pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
 >
-  <div class="container container--narrow">
-    <div class="section" style="padding-bottom: 0">
-      <div class="stack" style="--gap: var(--s-3)">
-        <h1 class="t-statement">{t('blog.h1')}</h1>
-        <p class="t-secondary">{t('blog.lead')}</p>
-      </div>
+  <div class="container container--wide">
+    <section class="hero hero--page">
+      <h1 class="t-statement">{t('blog.h1')}</h1>
+      <p class="t-secondary mt-2 hero__lead">{t('blog.lead')}</p>
+    </section>
 
-      <ol class="stack mt-12" style="--gap: var(--s-10)" role="list">
-        {articles.map((a) => {
-          const d = a.entry[lang].data;
-          return (
-            <li class="stack" style="--gap: var(--s-2)">
-              <p class="t-meta"><time datetime={a.published.toISOString().slice(0, 10)}>{formatDate(a.published, lang)}</time></p>
-              <h2 class="t-title"><a class="link" href={u(`/blog/${a.slug}`, lang)}>{d.title}</a></h2>
-              <p class="t-secondary">{d.description}</p>
+    <div class="section section--follow">
+      {lead && (
+        <article class="post-lead">
+          <a class="post-lead__cover" href={u(`/blog/${lead.slug}`, lang)} tabindex="-1" aria-hidden="true">
+            <ArticleCover article={lead} lang={lang} size="hero" eager />
+          </a>
+          <div class="post-lead__text">
+            <p class="post-card__cat t-meta">{lead.categories.map((c) => names.get(c)).join(' · ')}</p>
+            <h2 class="post-lead__title"><a href={u(`/blog/${lead.slug}`, lang)}>{lead.entry[lang].data.title}</a></h2>
+            <p class="t-secondary">{lead.entry[lang].data.description}</p>
+            <p class="post-card__meta t-meta">
+              {AUTHOR.name} · <time datetime={meta(lead).iso}>{meta(lead).date}</time> · {meta(lead).minutes}
+              <span data-views={lead.slug} data-label={t('article.views')} hidden> · <span data-views-text></span></span>
+            </p>
+          </div>
+        </article>
+      )}
+
+      {rest.length > 0 && (
+        <ul class="post-grid mt-16" role="list">
+          {rest.map((a) => (
+            <li class="post-card">
+              <a class="post-card__link" href={u(`/blog/${a.slug}`, lang)}>
+                <ArticleCover article={a} lang={lang} />
+                <span class="post-card__cat t-meta">{a.categories.map((c) => names.get(c)).join(' · ')}</span>
+                <span class="post-card__title">{a.entry[lang].data.title}</span>
+              </a>
+              <p class="post-card__desc t-secondary t-small">{a.entry[lang].data.description}</p>
+              <p class="post-card__meta t-meta">
+                <time datetime={meta(a).iso}>{meta(a).date}</time> · {meta(a).minutes}
+                <span data-views={a.slug} data-label={t('article.views')} hidden> · <span data-views-text></span></span>
+              </p>
             </li>
-          );
-        })}
-      </ol>
+          ))}
+        </ul>
+      )}
     </div>
   </div>
 </Base>
+
+<script>
+  import { showViews } from '~/scripts/views';
+  showViews();
+</script>

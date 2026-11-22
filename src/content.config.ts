@@ -51,7 +51,7 @@ const tools = defineCollection({
  */
 const articles = defineCollection({
   loader: glob({ pattern: '*/*.md', base: 'src/content/articles' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     /** H1 and the base of <title>; the brand is added when it fits */
     title: z.string().max(70),
     /** meta description, 50–160 characters */
@@ -73,6 +73,10 @@ const articles = defineCollection({
     reviewedBy: z.string().optional(),
     /** drafts are not built */
     draft: z.boolean().default(false),
+    /** cover image next to the file, e.g. ./cover.jpg (16:9 works best);
+        without it the cover is made from the screenshots of the article's sites */
+    cover: image().optional(),
+    coverAlt: z.string().optional(),
   }),
 });
 

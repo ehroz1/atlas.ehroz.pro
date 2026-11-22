@@ -1,0 +1,58 @@
+---
+/**
+ * An article's cover: its own image (frontmatter `cover`) or, without one,
+ * a collage of the screenshots of the sites it is about.
+ */
+import { Image } from 'astro:assets';
+import { getTools } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
+import type { Article } from '~/lib/articles';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props {
+  article: Article;
+  lang: Lang;
+  /** "hero" on the article page, "card" in lists */
+  size?: 'hero' | 'card';
+  eager?: boolean;
+}
+const { article, lang, size = 'card', eager = false } = Astro.props;
+const t = useTranslations(lang);
+const d = article.entry[lang].data;
+const tools = await getTools();
+const shots = article.tools
+  .map((id) => ({ id, name: tools.find((x) => x.id === id)?.data.name ?? id, shot: shotFor(id) }))
+  .filter((x) => x.shot)
+  .slice(0, 3);
+const hero = size === 'hero';
+const loading = eager ? 'eager' : 'lazy';
+---
+{d.cover ? (
+  <div class={`article-cover article-cover--${size}`}>
+    <Image
+      src={d.cover}
+      alt={d.coverAlt ?? ''}
+      widths={hero ? [640, 960, 1280, 1600] : [480, 720, 960]}
+      sizes={hero ? '(min-width: 64rem) 60rem, 92vw' : '(min-width: 64rem) 30rem, 92vw'}
+      format="webp"
+      quality={80}
+      loading={loading}
+      fetchpriority={eager && hero ? 'high' : undefined}
+    />
+  </div>
+) : shots.length > 0 && (
+  <div class={`article-cover article-cover--${size} article-cover--collage`} data-count={shots.length} role="img" aria-label={t('article.coverAlt', { names: shots.map((x) => x.name).join(', ') })}>
+    {shots.map((x, i) => (
+      <Image
+        src={x.shot!}
+        alt=""
+        widths={i === 0 ? (hero ? [640, 960, 1280] : [480, 720]) : [360, 640]}
+        sizes={i === 0 ? (hero ? '(min-width: 64rem) 40rem, 92vw' : '(min-width: 64rem) 20rem, 60vw') : '(min-width: 64rem) 20rem, 30vw'}
+        format="webp"
+        quality={78}
+        loading={loading}
+        fetchpriority={eager && hero && i === 0 ? 'high' : undefined}
+      />
+    ))}
+  </div>
+)}

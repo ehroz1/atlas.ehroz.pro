@@ -22,6 +22,8 @@ For free photos you can use in commercial work without credit, start with [Unspl
 
 [Unsplash](/tool/unsplash/) is a large library of photographs from working photographers. It is strongest on landscapes, people and workspaces. Under the Unsplash licence you can download and use photos for free, commercially and non-commercially, without asking permission. Attribution isn't required, though photographers appreciate it.
 
+![Unsplash: photos from working photographers](shot:unsplash)
+
 Two things the licence doesn't allow: selling the photos without significant changes (prints of an unedited photo, for example), and collecting Unsplash photos to build a similar or competing service.
 
 Some photos on the site are marked Unsplash+. These come with a paid subscription and a separate licence that has its own limits, so check the label before you download.
@@ -30,9 +32,13 @@ Some photos on the site are marked Unsplash+. These come with a paid subscriptio
 
 [Picta](/tool/picta/) doesn't host images itself. It searches Pixabay, Pexels, Unsplash, Wikimedia Commons and other free libraries in one go, for photos, icons and video, without an account. It saves opening five tabs when you need something specific. The licence is set by the library the image comes from, so check it on the source page.
 
+![Picta searches several free libraries at once](shot:picta)
+
 ### Freepik
 
 [Freepik](/tool/freepik/) is a huge catalogue of vectors, PSD files, mockups and photos. The free plan requires attribution. A subscription removes that requirement and adds AI tools. If you can't put a credit line where the image is used, as in an ad or on packaging, the free plan won't fit.
+
+![Freepik: vectors, PSD files, mockups and photos](shot:freepik)
 
 ## Public domain museum archives
 
@@ -49,9 +55,13 @@ Not every object in a museum's online collection is open access. Use the open-ac
 
 [Public Work](/tool/public-work/) is the quickest way into these collections when you are looking for a mood rather than a specific object: the search is visual, so you can go from one image to similar ones.
 
+![Public Work: visual search over museum collections](shot:public-work)
+
 ## Textures and backgrounds
 
 [Texturelabs](/tool/texturelabs/) has hand-made textures: paper, concrete, grain, scratches. Most are seamless and large enough for print. They are useful for adding a tactile layer over flat graphics or photos.
+
+![Texturelabs: hand-made textures](shot:texturelabs)
 
 ## Before you use a free image commercially
 

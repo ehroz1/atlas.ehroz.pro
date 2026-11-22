@@ -26,7 +26,7 @@ const STYLE = `Voice of the site: short, calm, concrete. No exclamation marks, n
 
 const LINKS = `Links: mention each catalog site with a Markdown link to its catalog page, exactly as given in TOOL FACTS "page" (e.g. [Figma](/tool/figma/)), the first time it appears. Category pages are /category/<id>/. Never link to a tool's own website in the text (the catalog page has the link) and never invent catalog paths. Do not use links to anything else on the site.`;
 
-const MARKDOWN = `Format: Markdown body only, without the H1 (the title is rendered as H1 separately). Start with the answer paragraph, then H2 sections (##) and H3 (###) under them; never skip a level. Use a table when comparing 3+ sites on the same attributes. A "FAQ" section only with real questions from the brief, as H3 questions with short answers. Leave one HTML comment <!-- AUTHOR: personal experience --> in the place where the author's own experience would help most; the author fills it in before merging.`;
+const MARKDOWN = `Format: Markdown body only, without the H1 (the title is rendered as H1 separately). Start with the answer paragraph, then H2 sections (##) and H3 (###) under them; never skip a level. Use a table when comparing 3+ sites on the same attributes. A "FAQ" section only with real questions from the brief, as H3 questions with short answers. After the section about each main site, add its screenshot on its own line as ![short caption](shot:<tool id>) — the site renders it as a linked screenshot; use 3–6 of them per article, only for ids in TOOL FACTS. Leave one HTML comment <!-- AUTHOR: personal experience --> in the place where the author's own experience would help most; the author fills it in before merging.`;
 
 const pair = { type: 'object', additionalProperties: false, required: ['en', 'ru'], properties: { en: { type: 'string' }, ru: { type: 'string' } } };
 const outline = {
@@ -172,7 +172,7 @@ Checklist:
 - every catalog site is linked to its /tool/<id>/ page on first mention; no other internal links; no links to the tools' own sites
 - no AI-sounding phrases, no marketing adjectives, no repeated summary at the end
 - natural ${LANG_NAME[lang]}, not translated-sounding
-- keep the <!-- AUTHOR: ... --> comment
+- keep the <!-- AUTHOR: ... --> comment and the ![...](shot:<id>) screenshot lines (ids must be in TOOL FACTS)
 
 <tool_facts>
 ${JSON.stringify(facts)}
@@ -196,7 +196,7 @@ ${d.body}
 /** Catalog links to unknown pages become plain text; returns body and the set of linked catalog pages. */
 function cleanLinks(body) {
   const linked = new Set();
-  const out = body.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (m, text, href) => {
+  let out = body.replace(/(?<!!)\[([^\]]+)\]\(([^)\s]+)\)/g, (m, text, href) => {
     const cat = href.match(/^\/(tool|alternatives|category)\/([^/]+)\/?$/);
     if (cat) {
       const ok = cat[1] === 'category' ? categoryIds.has(cat[2]) : toolIds.has(cat[2]);
@@ -207,6 +207,8 @@ function cleanLinks(body) {
     if (href.startsWith('/')) return text; // other internal paths: not allowed
     return m;
   });
+  // screenshots of sites that aren't in the catalog are dropped
+  out = out.replace(/^!\[[^\]]*\]\(shot:([a-z0-9-]+)\)\s*$/gm, (m, id) => (toolIds.has(id) ? m : ''));
   return { body: out, linked };
 }
 
