@@ -5,14 +5,15 @@
  */
 import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type Category } from '~/lib/data';
 import { fitTitle, fitDescription } from '~/lib/seo';
-import { useTranslations, loc, langs, type Lang } from '~/i18n';
+import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
+import { alternativesOf } from '~/lib/related';
 import { tagCounts } from '~/lib/tags';
 import { getPopular } from '~/lib/popular';
 import { privacy, cookies, disclaimer, supportFaq, type Section } from '~/lib/texts';
 
 export type PageKind =
-  | 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall'
+  | 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api'
   | 'search' | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer';
 
 export interface PageEntry {
@@ -39,6 +40,11 @@ export const PAGE_UPDATED = {
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
+  badge: '2026-11-22',
+  'for-makers': '2026-11-22',
+  newsletter: '2026-11-21',
+  pro: '2026-11-21',
+  api: '2026-11-21',
   search: '2026-11-22',
   support: '2026-11-22',
   privacy: '2026-11-22',
@@ -74,7 +80,7 @@ async function build(): Promise<PageEntry[]> {
     updated: allUpdated,
     title: per((l) => fitTitle(T[l]('site.title'))),
     description: per((l) => fitDescription(T[l]('site.description'))),
-    heading: per((l) => T[l]('hero.title', { count: tools.length })),
+    heading: per((l) => T[l](`hero.title.${plural(l, tools.length)}`, { count: tools.length })),
     text: per((l) => T[l]('hero.sub', { categories: categories.length })),
     og: per((l) => `og/${l}/home`),
   });
@@ -143,8 +149,32 @@ async function build(): Promise<PageEntry[]> {
     });
   }
 
-  type SimpleKey = 'about' | 'contact' | 'submit' | 'wall' | 'support' | 'privacy' | 'cookies' | 'disclaimer';
-  const simple = (key: SimpleKey, h1: string, body: (l: Lang) => string) =>
+  // "Alternatives to X": only for sites with at least 2 alternatives, so no page is thin
+  for (const tool of tools) {
+    const alts = alternativesOf(tool, tools);
+    if (alts.length < 2) continue;
+    const d = tool.data;
+    const lastmod = latest([toolUpdated(tool), ...alts.map(toolUpdated)]);
+    pages.push({
+      key: `alternatives/${tool.id}`,
+      kind: 'alternatives',
+      path: `/alternatives/${tool.id}/`,
+      updated: lastmod,
+      title: per((l) => {
+        const t = T[l]('alt.title', { name: d.name, count: alts.length });
+        return fitTitle(brand(t), t);
+      }),
+      description: per((l) =>
+        fitDescription(T[l]('alt.description', { name: d.name, count: alts.length, names: alts.slice(0, 5).map((x) => x.data.name).join(', ') })),
+      ),
+      heading: per((l) => T[l]('alt.h1', { name: d.name })),
+      text: per((l) => alts.map((x) => `- ${x.data.name}: ${loc(x.data.summary, l)}`).join('\n')),
+      og: per((l) => `og/${l}/alternatives/${tool.id}`),
+      tool,
+    });
+  }
+
+  const simple = (key: keyof typeof PAGE_UPDATED, h1: string, body: (l: Lang) => string) =>
     pages.push({
       key,
       kind: key,
@@ -163,6 +193,11 @@ async function build(): Promise<PageEntry[]> {
   simple('contact', 'contact.h1', (l) => T[l]('contact.description'));
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
+  simple('badge', 'badge.h1', (l) => T[l]('badge.lead'));
+  simple('for-makers', 'for-makers.h1', (l) => T[l]('for-makers.lead'));
+  simple('newsletter', 'newsletter.h1', (l) => T[l]('newsletter.lead'));
+  simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
+  simple('api', 'api.h1', (l) => T[l]('api.lead'));
 
   pages.push({
     key: 'search',

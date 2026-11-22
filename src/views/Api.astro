@@ -1,0 +1,74 @@
+---
+/** /api/ — docs for the static JSON API (src/pages/api/v1/*). */
+import Base from '~/layouts/Base.astro';
+import { getTools } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { toolJson } from '~/lib/api';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, defaultLang, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [tools, entry] = await Promise.all([getTools(), getPage('api')]);
+const base = absUrl('/', defaultLang).replace(/\/$/, '');
+const sample = tools[0];
+const example = JSON.stringify(toolJson(sample, Astro.site), null, 2);
+const endpoints = [
+  ['/api/v1/index.json', t('api.e.index')],
+  ['/api/v1/tools.json', t('api.e.tools')],
+  [`/api/v1/tools/${sample.id}.json`, t('api.e.tool')],
+  ['/api/v1/categories.json', t('api.e.categories')],
+];
+const fields: [string, string][] = [
+  ['id', 'string'], ['name', 'string'], ['url', 'string'], ['domain', 'string'], ['partner', 'boolean'],
+  ['category', 'string'], ['pricing', '"free" | "freemium" | "paid"'], ['openSource', 'boolean'],
+  ['platforms', 'string[]'], ['tags', 'string[]'], ['added', 'YYYY-MM-DD'], ['updated', 'YYYY-MM-DD'],
+  ['summary', '{ en, ru }'], ['description', '{ en, ru }'], ['note', '{ en, ru } | null'], ['page', 'string'], ['image', 'string'],
+];
+const code = `fetch('${base}/api/v1/tools.json')
+  .then((r) => r.json())
+  .then(({ tools }) => console.log(tools.filter((t) => t.pricing === 'free')));`;
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.api'), path: '/api' }]} crumbsContainer="container container--narrow">
+  <div class="container container--narrow">
+    <div class="section section--top">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('api.h1')}</h1>
+        <p class="t-secondary">{t('api.lead')}</p>
+      </div>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="endpoints">
+        <h2 class="t-title" id="endpoints">{t('api.endpoints')}</h2>
+        <dl class="meta meta--stack">
+          {endpoints.map(([path, label]) => (
+            <div class="meta__row">
+              <dt class="t-mono t-small"><a class="link" href={base + path}>GET {path}</a></dt>
+              <dd>{label}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="fields">
+        <h2 class="t-title" id="fields">{t('api.fields')}</h2>
+        <dl class="meta">
+          {fields.map(([k, v]) => (
+            <div class="meta__row"><dt class="t-mono t-small">{k}</dt><dd class="t-mono t-small t-secondary">{v}</dd></div>
+          ))}
+        </dl>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="example">
+        <h2 class="t-title" id="example">{t('api.example')}</h2>
+        <pre class="code" tabindex="0"><code>{code}</code></pre>
+        <pre class="code" tabindex="0"><code>{example}</code></pre>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-2)" aria-labelledby="terms">
+        <h2 class="t-title" id="terms">{t('api.terms')}</h2>
+        <p class="t-secondary">{t('api.termsBody')}</p>
+      </section>
+    </div>
+  </div>
+</Base>

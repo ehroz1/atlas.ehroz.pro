@@ -17,9 +17,11 @@ npm run preview
 
 ## Docs
 
+- [ADMIN.md](ADMIN.md) — the `/admin/` page: add, edit and delete sites from the browser
 - [DEPLOY.md](DEPLOY.md) — deploy process, rollback, Search Console / Yandex Webmaster / Bing / GA4 / Metrica setup
 - [SEO.md](SEO.md) — SEO checklist: what is done in code, what is manual
 - [PAGE-STANDARD.md](PAGE-STANDARD.md) — rules and checklist for every new page
+- [FEATURES.md](FEATURES.md) — accounts (Google / email), recommendations, collections, monthly newsletter, Pro subscription, API, author notes, partner links: how they work and how to switch them on (RU)
 - [DECISIONS.md](DECISIONS.md) — decisions taken without asking
 - [docs/DESIGN.md](docs/DESIGN.md) — design rules
 
@@ -56,6 +58,9 @@ docs/DESIGN.md           ← design rules and the "does it look generated?" chec
 
 ## Adding a site
 
+Easiest: the admin page at `/admin/` (add, edit, delete sites from the browser;
+see [ADMIN.md](ADMIN.md), in Russian). By hand:
+
 1. Add an entry to `src/data/tools.json`:
 
    ```json
@@ -71,7 +76,9 @@ docs/DESIGN.md           ← design rules and the "does it look generated?" chec
      "added": "2026-11-04",
      "updated": "2026-11-04",
      "summary": { "en": "One line for the card, about 60 characters.", "ru": "Одна строка для карточки." },
-     "description": { "en": "One to three sentences for the site's own page.", "ru": "Одно-три предложения." }
+     "description": { "en": "One to three sentences for the site's own page.", "ru": "Одно-три предложения." },
+     "note": { "en": "Optional: your own short remark.", "ru": "Необязательно: ваша короткая заметка." },
+     "affiliateUrl": "https://optional-partner-link.example"
    }
    ```
 

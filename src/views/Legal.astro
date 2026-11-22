@@ -36,6 +36,9 @@ const others = (['privacy', 'cookies', 'disclaimer'] as const).filter((k) => k !
                 <tbody>{s.rows.map((r) => <tr><td>{r.k}</td><td>{r.v}</td></tr>)}</tbody>
               </table>
             )}
+            {s.consent && (
+              <p><button class="btn btn--sm" type="button" data-consent-reset>{t('legal.cookieSettings')}</button></p>
+            )}
           </>
         ))}
       </div>

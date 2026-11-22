@@ -1,0 +1,76 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories, type Tool } from '~/lib/data';
+import { alternativesOf } from '~/lib/related';
+import { getPage } from '~/lib/routes';
+import { itemList, faqPage } from '~/lib/schema';
+import { SITE } from '~/site.config';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, loc, type Lang } from '~/i18n';
+
+interface Props { tool: Tool; lang: Lang }
+const { tool, lang } = Astro.props;
+const d = tool.data;
+const t = useTranslations(lang);
+const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage(`alternatives/${tool.id}`)]);
+const alternatives = alternativesOf(tool, all);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const category = categories.find((c) => c.id === d.category)!;
+const heading = t('alt.h1', { name: d.name });
+const url = absUrl(entry.path, lang);
+
+// FAQ answers come straight from the catalog data; a question is dropped when it has no answer.
+const list = (xs: Tool[]) => xs.map((x) => x.data.name).join(', ');
+const free = alternatives.filter((x) => x.data.pricing !== 'paid');
+const open = alternatives.filter((x) => x.data.openSource);
+const faq = [
+  { q: t('alt.q1', { name: d.name }), a: t('alt.a1', { name: d.name, names: list(alternatives) }) },
+  free.length > 0 && { q: t('alt.q2', { name: d.name }), a: t('alt.a2', { names: list(free) }) },
+  open.length > 0 && { q: t('alt.q3', { name: d.name }), a: t('alt.a3', { names: list(open) }) },
+].filter(Boolean) as { q: string; a: string }[];
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[
+    { name: names.get(d.category)!, path: `/category/${category.id}` },
+    { name: d.name, path: `/tool/${tool.id}` },
+    { name: t('alt.crumb'), path: entry.path },
+  ]}
+  nodes={[itemList(url, heading, alternatives, lang), faqPage(url, faq)]}
+  pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
+>
+  <div class="container container--wide">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+      <h1 class="t-statement">{heading}</h1>
+      <p class="t-secondary mt-2" style="max-width: 34rem">{t('alt.lead', { name: d.name, count: alternatives.length })}</p>
+    </section>
+
+    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+      <div class="cards">
+        {alternatives.map((r, i) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} eager={i < 3} />)}
+      </div>
+    </div>
+
+    <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="faq">
+      <h2 class="t-title" id="faq">{t('alt.faq')}</h2>
+      <dl class="stack mt-4" style="--gap: var(--s-5); max-width: 42rem">
+        {faq.map((f) => (
+          <div class="stack" style="--gap: var(--s-1)">
+            <dt class="t-small" style="font-weight: 600">{f.q}</dt>
+            <dd class="t-secondary">{f.a}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-label={d.name}>
+      <ul class="chips" role="list">
+        <li><a class="chip" href={u(`/tool/${tool.id}`, lang)}>{t('alt.back', { name: d.name })}</a></li>
+        <li><a class="chip" href={u(`/category/${category.id}`, lang)}>{t('alt.more', { category: names.get(d.category)! })}</a></li>
+      </ul>
+    </nav>
+  </div>
+</Base>

@@ -5,6 +5,7 @@ import { shotFor } from '~/lib/shots';
 import { domainOf, getTools, type Tool } from '~/lib/data';
 import { newIds, newUntil } from '~/lib/related';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
+import { AUTHOR } from '~/site.config';
 
 interface Props {
   tool: Tool;
@@ -14,11 +15,11 @@ interface Props {
   eager?: boolean;
   /** hide the category label, e.g. on a category page */
   hideCategory?: boolean;
-  /** one extra line under the summary, e.g. "120 views" on Popular */
-  note?: string;
+  /** one grey line under the summary, e.g. "Place 1 · 120 views" on Popular */
+  rank?: string;
 }
 
-const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false, note } = Astro.props;
+const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false, rank } = Astro.props;
 const shot = shotFor(tool.id);
 const d = tool.data;
 const t = useTranslations(lang);
@@ -29,8 +30,11 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   class="card-wrap"
   data-card
   data-id={tool.id}
+  data-added={d.added.toISOString().slice(0, 10)}
   data-own={d.own ? '' : undefined}
   data-name={d.name.toLowerCase()}
+  data-category={d.category}
+  data-pricing={d.openSource && d.pricing === 'free' ? 'free' : d.pricing}
 >
 <a class="card" href={u(`/tool/${tool.id}`, lang)}>
   <div class="card__media">
@@ -59,10 +63,14 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   <div class="card__caption">
     <div class="card__row">
       <span class="card__name">{d.name}</span>
+      {d.affiliateUrl && <span class="card__partner" title={t('tool.partner')}>{t('card.partner')}</span>}
       {!hideCategory && <span class="card__category">{categoryName}</span>}
     </div>
     <p class="card__summary">{loc(d.summary, lang)}</p>
-    {note && <p class="card__note t-tabular">{note}</p>}
+    {d.note && (
+      <p class="card__note"><span class="visually-hidden">{t('card.note', { name: AUTHOR.name })}: </span>{loc(d.note, lang)}</p>
+    )}
+    {rank && <p class="card__rank t-tabular">{rank}</p>}
   </div>
 </a>
   {/* Save / move to top. Siblings of the link (a button can't live inside

@@ -14,6 +14,8 @@ import { getImage } from 'astro:assets';
 import { getTools, getCategories, searchText, domainOf } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
 import { SITE } from '~/site.config';
+import { BACKEND } from '~/lib/backend';
+const enabled = BACKEND.enabled;
 import { useTranslations, loc, defaultLang, langs, languages, type Lang } from '~/i18n';
 
 interface Props { lang?: Lang; switchHref: string }
@@ -109,7 +111,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     </div>
 
     <div class="bar-group bar-group--end">
-      <a class="btn btn--bar btn--chrome" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
+      <a class="btn btn--bar btn--chrome bar-submit" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
       <button class="bar-icon bar-saved" type="button" aria-pressed="false" data-saved-toggle
@@ -117,6 +119,14 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
         <span class="bar-saved__n" data-saved-count aria-hidden="true"></span>
       </button>
+      {enabled && (
+        <a class="bar-icon bar-account" href={u('/account', lang)} data-account-btn
+          aria-label={t('nav.account')} title={t('nav.account')} data-label-in={t('nav.accountIn')}
+          aria-current={path === '/account' ? 'page' : undefined}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="3.6"/><path d="M5.2 19.3c1.3-3 3.8-4.6 6.8-4.6s5.5 1.6 6.8 4.6"/></svg>
+          <span class="bar-account__dot" aria-hidden="true"></span>
+        </a>
+      )}
       <div class="bar-menu">
         <button class="bar-icon" type="button" aria-label={t('nav.menu')} aria-expanded="false" aria-controls="site-menu" data-menu-toggle>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
@@ -148,6 +158,20 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
             {t('nav.submit')}
           </a>
+          <a class="menu__item" href={u('/collection', lang)} aria-current={path === '/collection' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h9l3 3v12H6z"/><path d="M9 11h6M9 14.5h6"/></svg>
+            {t('nav.collection')}
+          </a>
+          <a class="menu__item" href={u('/newsletter', lang)} aria-current={path === '/newsletter' ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h16v11H4z"/><path d="M4 10h16"/></svg>
+            {t('nav.newsletter')}
+          </a>
+          {enabled && (
+            <a class="menu__item" href={u('/account', lang)} aria-current={path === '/account' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="3.6"/><path d="M5.2 19.3c1.3-3 3.8-4.6 6.8-4.6s5.5 1.6 6.8 4.6"/></svg>
+              {t('nav.accountIn')}
+            </a>
+          )}
           <a class="menu__item" href={u('/support', lang)} aria-current={path === '/support' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17v.1"/></svg>
             {t('nav.support')}
@@ -156,8 +180,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
             {languages[other]}
           </a>
-          <hr class="menu__sep" />
-          <p class="menu__note"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
+          <hr class="menu__sep only-keyboard" />
+          <p class="menu__note only-keyboard"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
         </nav>
       </div>
     </div>
@@ -246,6 +270,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const scope = document.querySelector<HTMLElement>('[data-scope-category]')?.dataset.scopeCategory;
 
   const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
+  // Words match at the start of a word, not anywhere inside one: "ai" finds
+  // "AI studio" and "ai.com", not "PairDrop".
+  const wordsOf = (s: string) => normalize(s).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const hasWords = (hay: string, words: string[]) => {
+    const h = ' ' + wordsOf(hay).join(' ');
+    return words.every((w) => h.includes(' ' + w));
+  };
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   const CHECK = '<svg class="finder__check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
 
@@ -261,9 +292,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     FACETS.reduce((n, f) => n + state[f].size, 0) - (scope && state.category.size === 1 && state.category.has(scope) ? 1 : 0);
 
   function matches(tool: Tool) {
-    const words = normalize(state.q).split(/\s+/).filter(Boolean);
-    const hay = normalize(tool.text);
-    if (!words.every((w) => hay.includes(w))) return false;
+    if (!hasWords(tool.text, wordsOf(state.q))) return false;
     if (state.category.size && !state.category.has(tool.category)) return false;
     if (state.pricing.size && !(state.pricing.has(tool.pricing) || (state.pricing.has('open') && tool.open))) return false;
     if (state.platform.size && !tool.platforms.some((p) => state.platform.has(p))) return false;
@@ -283,9 +312,12 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     return s ? '?' + s : '';
   }
 
+  const facetsNow = () => ({ category: [...state.category], pricing: [...state.pricing], platform: [...state.platform] });
+  (window as any).__atlasFacets = facetsNow;
+
   function emit() {
     const ids = new Set(data.tools.filter(matches).map((x) => x.id));
-    const detail = { ids, q: state.q };
+    const detail = { ids, q: state.q, filters: filterCount(), facets: facetsNow() };
     (window as any).__atlasFilter = detail;
     document.dispatchEvent(new CustomEvent('atlas:filter', { detail }));
     try {
@@ -323,8 +355,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     if (state.q.trim()) {
       // Typing: tabs with counts, then results with thumbnails.
       const hits = data.tools.filter(matches);
-      const words = normalize(state.q).split(/\s+/).filter(Boolean);
-      const cats = data.facets.category.filter((c) => words.every((w) => normalize(c.label).includes(w)));
+      const words = wordsOf(state.q);
+      const cats = data.facets.category.filter((c) => hasWords(c.label, words));
       const tab = (id: 'sites' | 'categories', label: string, n: number) =>
         `<button class="finder__tab" type="button" role="tab" aria-selected="${resultTab === id}" data-tab="${id}">${esc(label)}<span class="finder__tab-count">${n}</span></button>`;
       let list = '';
@@ -350,12 +382,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
               .join('')
           : `<p class="finder__empty">${esc(S.noCategories)}</p>`;
       }
+      pane.removeAttribute('aria-label');
       pane.innerHTML = `<div class="finder__tabs" role="tablist">${tab('sites', S.tabSites, hits.length)}${tab('categories', S.tabCategories, cats.length)}</div>${list}`;
       active = -1;
       return;
     }
+    pane.setAttribute('aria-label', S[facet]);
     pane.innerHTML =
-      `<div class="finder__label">${esc(S[facet])}</div>` +
       data.facets[facet]
         .map(
           (o) => `<button class="finder__option" type="button" aria-pressed="${state[facet].has(o.id)}" data-option="${esc(o.id)}">
@@ -402,6 +435,22 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   });
   document.addEventListener('atlas:reset', () => clearBtn.click());
 
+  // The "Sort & filter" panel on the home grid (Gallery.astro) changes the
+  // same filters: { facet, id, on } toggles one option, "clear" drops all.
+  document.addEventListener('atlas:facet', (e) => {
+    const { facet: f, id, on } = (e as CustomEvent<{ facet: FacetKey; id: string; on: boolean }>).detail;
+    on ? state[f].add(id) : state[f].delete(id);
+    renderBar();
+    if (dialog.open) renderPane();
+    emit();
+  });
+  document.addEventListener('atlas:facets-clear', () => {
+    for (const f of FACETS) state[f].clear();
+    if (scope) state.category.add(scope);
+    renderBar();
+    emit();
+  });
+
   // Feeling lucky: a random site among what the query and filters match
   // (everything when nothing is set). Sites not opened yet come first.
   luckyBtn.addEventListener('click', () => {
@@ -417,7 +466,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   });
 
   // Wait until the person stops typing before showing results.
-  const DEBOUNCE = 300;
+  const DEBOUNCE = 180;
   let pending: number | undefined;
   const flush = () => {
     clearTimeout(pending);
@@ -452,6 +501,11 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     renderPane();
   });
   input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      done();
+      return;
+    }
     if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') flush();
     const hits = Array.from(pane.querySelectorAll<HTMLAnchorElement>('.finder__result'));
     if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && hits.length) {
@@ -513,7 +567,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const setMenu = (show: boolean) => {
     menu.hidden = !show;
     menuBtn.setAttribute('aria-expanded', String(show));
+    if (show) menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
   };
+  // Tabbing out of the menu closes it, like clicking outside.
+  menu.parentElement!.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as Node | null;
+    if (!menu.hidden && next && !menu.parentElement!.contains(next)) setMenu(false);
+  });
   menuBtn.addEventListener('click', () => setMenu(menu.hidden));
   document.addEventListener('pointerdown', (e) => {
     if (!menu.hidden && !menu.parentElement!.contains(e.target as Node)) setMenu(false);

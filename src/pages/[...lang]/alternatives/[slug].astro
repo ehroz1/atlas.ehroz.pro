@@ -1,0 +1,15 @@
+---
+import View from '~/views/Alternatives.astro';
+import { getTools, type Tool } from '~/lib/data';
+import { alternativesOf } from '~/lib/related';
+import { langParams, type Lang } from '~/i18n';
+export async function getStaticPaths() {
+  const tools = await getTools();
+  const withAlts = tools.filter((x) => alternativesOf(x, tools).length >= 2);
+  return langParams().flatMap(({ params, props }) =>
+    withAlts.map((tool) => ({ params: { ...params, slug: tool.id }, props: { ...props, tool } })),
+  );
+}
+const { lang, tool } = Astro.props as { lang: Lang; tool: Tool };
+---
+<View lang={lang} tool={tool} />
