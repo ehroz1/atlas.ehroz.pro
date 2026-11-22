@@ -1,0 +1,53 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories, type Tool } from '~/lib/data';
+import { alternativesOf } from '~/lib/related';
+import { getPage } from '~/lib/routes';
+import { itemList } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, loc, type Lang } from '~/i18n';
+
+interface Props { tool: Tool; lang: Lang }
+const { tool, lang } = Astro.props;
+const d = tool.data;
+const t = useTranslations(lang);
+const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage(`alternatives/${tool.id}`)]);
+const alternatives = alternativesOf(tool, all);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const category = categories.find((c) => c.id === d.category)!;
+const heading = t('alt.h1', { name: d.name });
+const url = absUrl(entry.path, lang);
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[
+    { name: names.get(d.category)!, path: `/category/${category.id}` },
+    { name: d.name, path: `/tool/${tool.id}` },
+    { name: t('alt.crumb'), path: entry.path },
+  ]}
+  nodes={[itemList(url, heading, alternatives, lang)]}
+  pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
+>
+  <div class="container container--wide">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+      <h1 class="t-statement">{heading}</h1>
+      <p class="t-secondary mt-2" style="max-width: 34rem">{t('alt.lead', { name: d.name, count: alternatives.length })}</p>
+    </section>
+
+    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+      <div class="cards">
+        {alternatives.map((r, i) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} eager={i < 3} />)}
+      </div>
+    </div>
+
+    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-label={d.name}>
+      <ul class="chips" role="list">
+        <li><a class="chip" href={u(`/tool/${tool.id}`, lang)}>{t('alt.back', { name: d.name })}</a></li>
+        <li><a class="chip" href={u(`/category/${category.id}`, lang)}>{t('alt.more', { category: names.get(d.category)! })}</a></li>
+      </ul>
+    </nav>
+  </div>
+</Base>

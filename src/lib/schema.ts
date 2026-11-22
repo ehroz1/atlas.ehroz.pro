@@ -69,6 +69,7 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   categories: 'CollectionPage',
   category: 'CollectionPage',
   tool: 'ItemPage',
+  alternatives: 'CollectionPage',
   about: 'AboutPage',
   contact: 'ContactPage',
   submit: 'WebPage',

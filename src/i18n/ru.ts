@@ -99,6 +99,16 @@ export const ru: Record<UIKey, string> = {
   'tool.saved': 'Сохранено ✓',
   'tool.copy': 'Скопировать ссылку',
   'tool.copied': 'Скопировано',
+  'tool.allAlternatives': 'Все альтернативы {name}',
+
+  'alt.title': 'Альтернативы {name}: {count} похожих сайтов',
+  'alt.description': '{count} альтернатив {name}, отобранных вручную: {names}. Цены, бесплатные тарифы и платформы на одной странице.',
+  'alt.h1': 'Альтернативы {name}',
+  'alt.lead': 'Ищете замену {name}? Вот {count} сайтов, отобранных вручную, которые решают похожую задачу. Каждый мы пробовали, прежде чем добавить.',
+  'alt.crumb': 'Альтернативы',
+  'alt.back': 'Назад к {name}',
+  'alt.more': 'Ещё в разделе «{category}»',
+
   'tool.shotAlt': 'Главная страница {name}',
 
   'category.title': '{category}: сайты и инструменты',

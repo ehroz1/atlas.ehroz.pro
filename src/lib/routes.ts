@@ -7,8 +7,9 @@ import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type
 import { fitTitle, fitDescription } from '~/lib/seo';
 import { useTranslations, loc, langs, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
+import { alternativesOf } from '~/lib/related';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'about' | 'contact' | 'submit' | 'wall';
 
 export interface PageEntry {
   key: string;
@@ -129,6 +130,31 @@ async function build(): Promise<PageEntry[]> {
           .join('\n'),
       ),
       og: per((l) => `og/${l}/tool/${tool.id}`),
+      tool,
+    });
+  }
+
+  // "Alternatives to X": only for sites with at least 2 alternatives, so no page is thin
+  for (const tool of tools) {
+    const alts = alternativesOf(tool, tools);
+    if (alts.length < 2) continue;
+    const d = tool.data;
+    const lastmod = latest([toolUpdated(tool), ...alts.map(toolUpdated)]);
+    pages.push({
+      key: `alternatives/${tool.id}`,
+      kind: 'alternatives',
+      path: `/alternatives/${tool.id}/`,
+      updated: lastmod,
+      title: per((l) => {
+        const t = T[l]('alt.title', { name: d.name, count: alts.length });
+        return fitTitle(brand(t), t);
+      }),
+      description: per((l) =>
+        fitDescription(T[l]('alt.description', { name: d.name, count: alts.length, names: alts.slice(0, 5).map((x) => x.data.name).join(', ') })),
+      ),
+      heading: per((l) => T[l]('alt.h1', { name: d.name })),
+      text: per((l) => alts.map((x) => `- ${x.data.name}: ${loc(x.data.summary, l)}`).join('\n')),
+      og: per((l) => `og/${l}/alternatives/${tool.id}`),
       tool,
     });
   }

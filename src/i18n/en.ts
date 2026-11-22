@@ -101,6 +101,15 @@ export const en = {
   'tool.copy': 'Copy link',
   'tool.copied': 'Copied',
   'tool.shotAlt': '{name} homepage',
+  'tool.allAlternatives': 'All alternatives to {name}',
+
+  'alt.title': 'Alternatives to {name}: {count} similar sites',
+  'alt.description': '{count} alternatives to {name}, hand-picked: {names}. Free plans, pricing and platforms at a glance.',
+  'alt.h1': 'Alternatives to {name}',
+  'alt.lead': 'Looking for something other than {name}? Here are {count} hand-picked sites that do a similar job. Each one is used before it is listed.',
+  'alt.crumb': 'Alternatives',
+  'alt.back': 'Back to {name}',
+  'alt.more': 'More in {category}',
 
   'category.title': '{category}: tools and websites',
   'category.others': 'Other categories',

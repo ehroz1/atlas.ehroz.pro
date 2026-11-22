@@ -104,6 +104,9 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
         <div class="section-head">
           <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
+          {alternatives.length >= 2 && (
+            <a class="link t-small" href={u(`/alternatives/${tool.id}`, lang)}>{t('tool.allAlternatives', { name: d.name })}</a>
+          )}
         </div>
         <div class="cards">
           {alternatives.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
