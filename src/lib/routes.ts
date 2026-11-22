@@ -9,7 +9,7 @@ import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 import { alternativesOf } from '~/lib/related';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
 
 export interface PageEntry {
   key: string;
@@ -36,6 +36,7 @@ export const PAGE_UPDATED = {
   submit: '2026-11-13',
   wall: '2026-11-13',
   badge: '2026-11-22',
+  'for-makers': '2026-11-22',
   newsletter: '2026-11-21',
   pro: '2026-11-21',
   api: '2026-11-21',
@@ -181,6 +182,7 @@ async function build(): Promise<PageEntry[]> {
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
   simple('badge', 'badge.h1', (l) => T[l]('badge.lead'));
+  simple('for-makers', 'for-makers.h1', (l) => T[l]('for-makers.lead'));
   simple('newsletter', 'newsletter.h1', (l) => T[l]('newsletter.lead'));
   simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
   simple('api', 'api.h1', (l) => T[l]('api.lead'));
