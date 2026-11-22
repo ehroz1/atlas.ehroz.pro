@@ -22,6 +22,7 @@
      13. Tiles & cards      (.tile .card .cards)
      14. Tool page          (.tool-head .meta .tags)
      15. Prose              (.prose)
+     15b. FAQ & key table   (.faq .keys)
      16. Forms              (.field .input .textarea .select)
      17. Feedback states    (.empty .notice)
      18. Utilities
@@ -1399,6 +1400,39 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .prose li::marker { color: var(--c-text-3); }
 .prose code { padding: 0.1em 0.35em; border-radius: var(--r-sm); background: var(--c-fill); }
 .prose blockquote { padding-left: var(--s-4); border-left: 2px solid var(--c-line-strong); color: var(--c-text-2); }
+
+
+/* 15b. FAQ & KEY TABLE ----------------------------------------------------
+   .faq   questions as <details>, hairline between rows (Help page)
+   .keys  two-column table of storage keys / cookies (legal pages)       */
+
+.faq { display: grid; border-bottom: var(--border); }
+.faq__item { border-top: var(--border); }
+.faq__q {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  font-size: var(--fs-17);
+  font-weight: var(--fw-medium);
+  list-style: none;
+  cursor: pointer;
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q::after { content: "+"; flex: none; color: var(--c-text-3); font-weight: var(--fw-regular); }
+.faq__item[open] > .faq__q::after { content: "−"; }
+.faq__a { max-width: 34rem; padding-bottom: var(--s-5); color: var(--c-text-2); }
+
+.keys { width: 100%; border-collapse: collapse; font-size: var(--fs-14); line-height: var(--lh-body); }
+.keys th, .keys td { padding-block: var(--s-3); border-top: var(--border); text-align: left; vertical-align: top; }
+.keys th { color: var(--c-text-3); font-weight: var(--fw-regular); }
+.keys td { color: var(--c-text-2); }
+.keys th:first-child, .keys td:first-child { padding-right: var(--s-6); white-space: nowrap; }
+.keys td:first-child { color: var(--c-text); font-family: var(--font-mono); font-size: var(--fs-13); }
+@media (max-width: 40rem) { .keys td:first-child { white-space: normal; overflow-wrap: anywhere; } }
+
+.card__note { margin-top: 2px; font-size: var(--fs-13); color: var(--c-text-3); }
 
 
 /* 16. FORMS ---------------------------------------------------------------- */

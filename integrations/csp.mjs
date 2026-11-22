@@ -18,9 +18,11 @@ async function* htmlFiles(dir) {
   }
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
-export function policyHosts({ ga4, metrika, preview }) {
+/** @param {{ ga4?: string, metrika?: string, goatcounter?: string, preview?: boolean }} opts */
+export function policyHosts({ ga4, metrika, goatcounter, preview }) {
   const h = { script: [], img: [], connect: [], frame: [] };
+  // GoatCounter: the page view is a plain image request to <code>.goatcounter.com
+  if (goatcounter) h.img.push(`https://${goatcounter}.goatcounter.com`);
   if (ga4) {
     h.script.push('https://www.googletagmanager.com');
     h.img.push('https://*.google-analytics.com', 'https://www.googletagmanager.com');
@@ -41,7 +43,7 @@ export function policyHosts({ ga4, metrika, preview }) {
   return h;
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
+/** @param {{ ga4?: string, metrika?: string, goatcounter?: string, preview?: boolean }} opts */
 export default function csp(opts) {
   return {
     name: 'atlas-csp',

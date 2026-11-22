@@ -18,8 +18,12 @@ interface Props {
   filters?: boolean;
   /** place the owner's own sites near the top, by visit number (home only) */
   promote?: boolean;
+  /** keep the given order: no shuffle, saved sites not lifted (a ranking, e.g. Popular) */
+  ordered?: boolean;
+  /** text under each card's name, by site id (e.g. "120 views") */
+  notes?: Record<string, string>;
 }
-const { tools, categories, current, lang = defaultLang, filters = true, promote = false } = Astro.props;
+const { tools, categories, current, lang = defaultLang, filters = true, promote = false, ordered = false, notes } = Astro.props;
 const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
@@ -34,9 +38,10 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
     </span>
   </div>
 
-  <div class="cards" data-cards>
-    {tools.map((tool) => (
-      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
+  <div class="cards" data-cards data-ordered={ordered ? '' : undefined}>
+    {tools.map((tool, i) => (
+      <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current}
+        eager={ordered && i < 3} note={notes?.[tool.id]} />
     ))}
   </div>
   {/* Shuffle the cards for every visit. Inline and synchronous, so it runs
@@ -47,8 +52,9 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
       random places inside a window of ranks that depends on the visit:
         1st visit → places 1–6, 2nd → 4–12, 3rd and later → 6–21.
       A visit = a browser session; reloading in the same tab doesn't count. */}
-  <script is:inline define:vars={{ promote }}>
+  <script is:inline define:vars={{ promote, ordered }}>
     (function () {
+      if (ordered) return;
       var grid = document.currentScript.previousElementSibling;
       var shuffle = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
@@ -123,6 +129,7 @@ const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: 
 
     /* saved cards first, in saved order; the rest keep their order */
     const pinned = (list: HTMLElement[]) => {
+      if (grid.hasAttribute('data-ordered')) return list;
       const saved: string[] = (window as any).__atlasSaved?.() ?? [];
       const rank = (c: HTMLElement) => { const i = saved.indexOf(c.dataset.id!); return i < 0 ? Infinity : i; };
       return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));

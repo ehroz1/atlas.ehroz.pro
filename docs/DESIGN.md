@@ -137,6 +137,10 @@ put them together.
 | Text | `.prose` | 34rem measure, 17px |
 | Forms | `.form`, `.field`, `.input`, `.textarea`, `.select`, `.checkbox` | filled, no border until focus |
 | Empty state | `.empty` | one line title, one line help, one button |
+| FAQ | `.faq`, `.faq__item` (`<details>`), `.faq__q`, `.faq__a` | Help page; hairline between rows, `+`/`−` on the right, first one open |
+| Key table | `.keys` | legal pages: storage key (mono) → what and how long; hairline rows |
+| Card note | `.card__note` | one grey line under the summary, e.g. "Place 1 · 120 views" on Popular |
+| Ranked grid | `<Gallery ordered notes>` | keeps the given order (no shuffle, saved sites not lifted); Popular only |
 
 Layout helpers: `.container`, `.stack` (`--gap`), `.cluster` (`--gap`),
 `.split`, `.section`, `.section--tight`.
@@ -164,6 +168,16 @@ component-scoped `<style>` blocks for things that could be reused.
 
 ---
 
+### Pages
+
+| Page | View | Notes |
+|---|---|---|
+| `/search/` | `Search.astro` | results grid for the bar's finder (`?q=&category=&pricing=&platform=`), tag chips under the title; no second search field |
+| `/tags/` | `Tags.astro` | every tag as a `.chip` with `.chip__count`, most used first; links to `/search/?q=<tag>` |
+| `/popular/` | `Popular.astro` | ranked by GoatCounter page views (`src/lib/popular.ts`); without data an `.empty` note and featured sites, never invented numbers |
+| `/support/` | `Support.astro` | `.faq` + how to help; `FAQPage` in JSON-LD |
+| `/privacy/`, `/cookies/`, `/disclaimer/` | `Legal.astro` | `.prose` + `.keys`; text in `src/lib/texts.ts` follows the build's real settings |
+
 ### The top bar and search
 
 - The bar is `position: fixed` and transparent; only the pills catch clicks.
@@ -173,7 +187,7 @@ component-scoped `<style>` blocks for things that could be reused.
   State is `{ q, category[], pricing[], platform[] }`, mirrored in the URL
   (`?q=&category=&pricing=&platform=`). On pages that render `Gallery`
   the header fires `atlas:filter` with matching ids and the grid updates
-  live; elsewhere Done opens the home grid with the same params.
+  live; elsewhere Done opens `/search/` with the same params.
 - Don't add a second search field to a page.
 
 ---

@@ -34,7 +34,7 @@ export function website(): Node {
     author: { '@id': ids.person() },
     potentialAction: {
       '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: absUrl('/', defaultLang) + '?q={search_term_string}' },
+      target: { '@type': 'EntryPoint', urlTemplate: absUrl('/search/', defaultLang) + '?q={search_term_string}' },
       'query-input': 'required name=search_term_string',
     },
   };
@@ -73,6 +73,13 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   contact: 'ContactPage',
   submit: 'WebPage',
   wall: 'CollectionPage',
+  search: 'SearchResultsPage',
+  tags: 'CollectionPage',
+  popular: 'CollectionPage',
+  support: 'FAQPage',
+  privacy: 'WebPage',
+  cookies: 'WebPage',
+  disclaimer: 'WebPage',
 };
 
 export function webPage(entry: PageEntry, lang: Lang, url: string, image: string, hasCrumbs: boolean, extra: Node = {}): Node {

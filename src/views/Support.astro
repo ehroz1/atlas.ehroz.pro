@@ -1,0 +1,54 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { supportFaq } from '~/lib/texts';
+import { AUTHOR } from '~/site.config';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('support');
+const faq = supportFaq(lang);
+const qa = {
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.support'), path: '/support' }]} crumbsContainer="container container--narrow" pageExtra={qa}>
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('support.h1')}</h1>
+        <p class="t-secondary">{t('support.lead')}</p>
+      </div>
+
+      <section class="mt-12" aria-labelledby="faq">
+        <h2 class="t-title" id="faq">{t('support.faq')}</h2>
+        <div class="faq mt-4">
+          {faq.map((f, i) => (
+            <details class="faq__item" open={i === 0}>
+              <summary class="faq__q">{f.q}</summary>
+              <p class="faq__a">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="help">
+        <h2 class="t-title" id="help">{t('support.help.title')}</h2>
+        <p class="t-secondary">{t('support.help.body')}</p>
+        <ul class="prose" style="font-size: var(--fs-15); color: var(--c-text-2)">
+          <li>{t('support.help.li1')}</li>
+          <li>{t('support.help.li2')}</li>
+          <li>{t('support.help.li3')}</li>
+        </ul>
+        <div class="cluster mt-2">
+          <a class="btn btn--solid" href={u('/submit', lang)}>{t('nav.submit')}</a>
+          <a class="btn" href={u('/contact', lang)}>{t('support.write')}</a>
+        </div>
+        <p class="t-meta">{AUTHOR.email} · {AUTHOR.telegram.handle}</p>
+      </section>
+    </div>
+  </div>
+</Base>

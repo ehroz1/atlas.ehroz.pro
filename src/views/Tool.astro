@@ -72,7 +72,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
         <div class="meta__row">
           <dt>{t('tool.tags')}</dt>
           <dd class="tags">
-            {d.tags.map((tag) => <a class="tag" href={u(`/?q=${encodeURIComponent(tag)}#sites`, lang)}>{tag}</a>)}
+            {d.tags.map((tag) => <a class="tag" href={u('/search', lang) + `?q=${encodeURIComponent(tag)}`}>{tag}</a>)}
           </dd>
         </div>
         <div class="meta__row">

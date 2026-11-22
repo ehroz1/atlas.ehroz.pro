@@ -14,9 +14,11 @@ interface Props {
   eager?: boolean;
   /** hide the category label, e.g. on a category page */
   hideCategory?: boolean;
+  /** one extra line under the summary, e.g. "120 views" on Popular */
+  note?: string;
 }
 
-const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false } = Astro.props;
+const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false, note } = Astro.props;
 const shot = shotFor(tool.id);
 const d = tool.data;
 const t = useTranslations(lang);
@@ -60,6 +62,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
       {!hideCategory && <span class="card__category">{categoryName}</span>}
     </div>
     <p class="card__summary">{loc(d.summary, lang)}</p>
+    {note && <p class="card__note t-tabular">{note}</p>}
   </div>
 </a>
   {/* Save / move to top. Siblings of the link (a button can't live inside

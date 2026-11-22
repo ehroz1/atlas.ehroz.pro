@@ -18,5 +18,5 @@ export default defineConfig({
   build: { assets: 'assets', format: 'directory' },
   // languages are routed by hand: src/pages/[...lang]/, see src/i18n/index.ts
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
-  integrations: [csp({ ga4: analytics.ga4, metrika: analytics.metrika, preview })],
+  integrations: [csp({ ga4: analytics.ga4, metrika: analytics.metrika, goatcounter: analytics.goatcounter, preview })],
 });

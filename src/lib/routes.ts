@@ -7,8 +7,13 @@ import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type
 import { fitTitle, fitDescription } from '~/lib/seo';
 import { useTranslations, loc, langs, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
+import { tagCounts } from '~/lib/tags';
+import { getPopular } from '~/lib/popular';
+import { privacy, cookies, disclaimer, supportFaq, type Section } from '~/lib/texts';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall';
+export type PageKind =
+  | 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall'
+  | 'search' | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer';
 
 export interface PageEntry {
   key: string;
@@ -34,6 +39,11 @@ export const PAGE_UPDATED = {
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
+  search: '2026-11-22',
+  support: '2026-11-22',
+  privacy: '2026-11-22',
+  cookies: '2026-11-22',
+  disclaimer: '2026-11-22',
 };
 
 const per = <T,>(fn: (lang: Lang) => T) => Object.fromEntries(langs.map((l) => [l, fn(l)])) as Record<Lang, T>;
@@ -133,23 +143,73 @@ async function build(): Promise<PageEntry[]> {
     });
   }
 
-  const simple = (key: 'about' | 'contact' | 'submit' | 'wall', h1: string, body: (l: Lang) => string) =>
+  type SimpleKey = 'about' | 'contact' | 'submit' | 'wall' | 'support' | 'privacy' | 'cookies' | 'disclaimer';
+  const simple = (key: SimpleKey, h1: string, body: (l: Lang) => string) =>
     pages.push({
       key,
       kind: key,
       path: `/${key}/`,
       updated: new Date(PAGE_UPDATED[key]),
-      title: per((l) => fitTitle(T[l](`${key}.title`))),
-      description: per((l) => fitDescription(T[l](`${key}.description`))),
+      title: per((l) => fitTitle(T[l](`${key}.title` as any))),
+      description: per((l) => fitDescription(T[l](`${key}.description` as any))),
       heading: per((l) => T[l](h1 as any).replace(/<br\s*\/?>/g, ' ')),
       text: per(body),
       og: per((l) => `og/${l}/${key}`),
     });
+  const sectionsText = (list: Section[]) =>
+    list.map((x) => [x.h, ...(x.p ?? []), ...(x.list ?? []).map((i) => `- ${i}`), ...(x.rows ?? []).map((r) => `- ${r.k}: ${r.v}`)].join('\n')).join('\n\n');
 
   simple('about', 'about.h1', (l) => T[l]('about.lead'));
   simple('contact', 'contact.h1', (l) => T[l]('contact.description'));
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
+
+  pages.push({
+    key: 'search',
+    kind: 'search',
+    path: '/search/',
+    updated: allUpdated,
+    title: per((l) => fitTitle(T[l]('searchPage.title'))),
+    description: per((l) => fitDescription(T[l]('searchPage.description'))),
+    heading: per((l) => T[l]('searchPage.h1')),
+    text: per((l) => T[l]('searchPage.lead')),
+    og: per((l) => `og/${l}/search`),
+  });
+
+  const tags = tagCounts(tools);
+  pages.push({
+    key: 'tags',
+    kind: 'tags',
+    path: '/tags/',
+    updated: allUpdated,
+    title: per((l) => fitTitle(T[l]('tags.title'))),
+    description: per((l) => fitDescription(T[l]('tags.description'))),
+    heading: per((l) => T[l]('tags.h1')),
+    text: per(() => tags.map((x) => `${x.tag} (${x.count})`).join(', ')),
+    og: per((l) => `og/${l}/tags`),
+  });
+
+  const popular = getPopular(tools);
+  pages.push({
+    key: 'popular',
+    kind: 'popular',
+    path: '/popular/',
+    updated: popular.updated ?? new Date(PAGE_UPDATED.search),
+    title: per((l) => fitTitle(T[l]('popular.title'))),
+    description: per((l) => fitDescription(T[l]('popular.description'))),
+    heading: per((l) => T[l]('popular.h1')),
+    text: per((l) =>
+      popular.ranked.length
+        ? popular.ranked.map((x, i) => `${i + 1}. ${x.tool.data.name}: ${loc(x.tool.data.summary, l)}`).join('\n')
+        : T[l]('popular.leadEmpty'),
+    ),
+    og: per((l) => `og/${l}/popular`),
+  });
+
+  simple('support', 'support.h1', (l) => supportFaq(l).map((f) => `${f.q}\n${f.a}`).join('\n\n'));
+  simple('privacy', 'privacy.h1', (l) => `${T[l]('privacy.lead')}\n\n${sectionsText(privacy(l))}`);
+  simple('cookies', 'cookies.h1', (l) => `${T[l]('cookies.lead')}\n\n${sectionsText(cookies(l))}`);
+  simple('disclaimer', 'disclaimer.h1', (l) => `${T[l]('disclaimer.lead')}\n\n${sectionsText(disclaimer(l))}`);
 
   return pages;
 }

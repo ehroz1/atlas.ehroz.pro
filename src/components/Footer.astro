@@ -15,11 +15,20 @@ const other = langs.find((l) => l !== lang)!;
 const counters = IS_PROD && !!(analytics.ga4 || analytics.metrika);
 const links = [
   ['/', t('nav.sites')],
+  ['/search', t('nav.search')],
+  ['/popular', t('nav.popular')],
   ['/categories', t('nav.categories')],
+  ['/tags', t('nav.tags')],
   ['/wall', t('nav.wall')],
   ['/about', t('nav.about')],
   ['/contact', t('nav.contact')],
   ['/submit', t('nav.submit')],
+  ['/support', t('nav.support')],
+] as const;
+const legal = [
+  ['/privacy', t('nav.privacy')],
+  ['/cookies', t('nav.cookies')],
+  ['/disclaimer', t('nav.disclaimer')],
 ] as const;
 ---
 <footer class="site-footer">
@@ -27,6 +36,9 @@ const links = [
     <div class="stack" style="--gap: var(--s-1)">
       <span>© {year} {SITE.name} · {t('footer.note')}</span>
       <span>{t('footer.updated', { date: formatDate(updated, lang) })}</span>
+      <nav class="cluster mt-2" style="--gap: var(--s-1) var(--s-4)" aria-label={t('nav.legal')}>
+        {legal.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
+      </nav>
     </div>
     <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label={t('nav.other')}>
       {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}

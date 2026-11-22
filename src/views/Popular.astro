@@ -1,0 +1,62 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import Gallery from '~/components/Gallery.astro';
+import { getTools, getCategories } from '~/lib/data';
+import { getPage } from '~/lib/routes';
+import { getPopular } from '~/lib/popular';
+import { itemList } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, plural, formatDate, type Lang } from '~/i18n';
+
+/* Sites ranked by page views (GoatCounter, last 30 days; src/lib/popular.ts).
+   With no counted views yet the page says so and lists featured sites,
+   never made-up numbers. */
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('popular')]);
+const popular = getPopular(all);
+const has = popular.ranked.length > 0;
+const tools = has ? popular.ranked.map((x) => x.tool) : all.filter((x) => x.data.featured);
+const notes = has
+  ? Object.fromEntries(
+      popular.ranked.map((x, i) => [
+        x.tool.id,
+        `${t('popular.rank', { rank: i + 1 })} · ${t(`popular.views.${plural(lang, x.views)}`, { count: x.views })}`,
+      ]),
+    )
+  : undefined;
+const url = absUrl(entry.path, lang);
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: t('nav.popular'), path: '/popular' }]}
+  crumbsContainer="container container--wide"
+  nodes={has ? [itemList(url, entry.heading[lang], tools, lang)] : []}
+  pageExtra={has ? { mainEntity: { '@id': url + '#itemlist' } } : undefined}
+>
+  <div class="container container--wide">
+    <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
+      <h1 class="t-statement">{t('popular.h1')}</h1>
+      <p class="t-secondary mt-2" style="max-width: 30rem">
+        {has && popular.updated
+          ? t('popular.lead', { days: popular.days, date: formatDate(popular.updated, lang) })
+          : t('popular.leadEmpty')}
+      </p>
+    </section>
+
+    {!has && (
+      <div class="empty" style="padding-block: var(--s-12) 0">
+        <p class="empty__title">{t('popular.empty.title')}</p>
+        <p>{t('popular.empty.body')}</p>
+      </div>
+    )}
+
+    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+      <Gallery tools={tools} categories={categories} filters={false} ordered notes={notes} lang={lang} />
+      <p class="mt-12" style="text-align: center"><a class="btn" href={u('/', lang)}>{t('notFound.home')}</a></p>
+    </div>
+  </div>
+</Base>

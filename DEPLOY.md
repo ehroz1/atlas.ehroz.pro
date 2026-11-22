@@ -90,6 +90,26 @@ https://www.bing.com/webmasters → **Import your sites from GSC** → выбр�
 2. Номер счётчика → `analytics.metrika` в `src/analytics.config.ts`.
    Стандартный код в `<head>` **не вставлять**: Метрика грузится из скрипта согласия.
 
+## Счётчик посещений GoatCounter (страница «Популярное»)
+
+Считает просмотры без cookies, поэтому плашка согласия не нужна. Из его данных
+собирается `/popular/`: при каждом деплое (и раз в сутки по расписанию)
+`scripts/popular.mjs` забирает просмотры страниц сайтов за 30 дней в `src/data/popular.json`.
+Пока кода или токена нет, страница пишет, что данных ещё нет, и показывает сайты с `featured`.
+
+1. https://www.goatcounter.com/signup → **Code** — например `atlas-ehroz`
+   (адрес станет `atlas-ehroz.goatcounter.com`), почта, пароль → **Sign up**.
+   Использование бесплатно для некоммерческих сайтов.
+2. Код вписать в `analytics.goatcounter` в `src/analytics.config.ts` → задеплоить.
+   Скрипт со стороннего домена не грузится: страница отправляет один запрос-картинку
+   на `<код>.goatcounter.com/count`, адрес уже разрешён в CSP.
+3. GoatCounter → **Settings → API** → **New API key**, отметить только
+   **Read statistics** → скопировать ключ.
+4. GitHub → репозиторий → **Settings → Secrets and variables → Actions → New repository secret**:
+   имя `GOATCOUNTER_TOKEN`, значение — ключ из шага 3.
+5. Через день-два, когда накопятся просмотры: Actions → **Deploy to GitHub Pages** →
+   **Run workflow** (или дождаться ночного запуска). Локально: `GOATCOUNTER_TOKEN=… npm run popular`.
+
 ## События: ключевые в GA4 и цели в Метрике
 
 Сайт шлёт события с одинаковыми именами в оба счётчика (`window.atlasTrack`).
