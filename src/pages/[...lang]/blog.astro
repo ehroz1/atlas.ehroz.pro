@@ -1,0 +1,9 @@
+---
+import View from '~/views/Blog.astro';
+import { getArticles } from '~/lib/articles';
+import { langParams, type Lang } from '~/i18n';
+// no articles yet → no /blog/ page (it would be empty)
+export const getStaticPaths = async () => ((await getArticles()).length ? langParams() : []);
+const { lang } = Astro.props as { lang: Lang };
+---
+<View lang={lang} />

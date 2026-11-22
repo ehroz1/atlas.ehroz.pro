@@ -1,0 +1,10 @@
+# Queries to consider for articles, one per line. Lines starting with # are ignored.
+# Paste here: rising queries from Yandex Wordstat (wordstat.yandex.ru) and
+# Google Trends (trends.google.com → "Rising"), questions from clients, ideas.
+# The topic picker treats them as demand signals alongside Search Console data.
+бесплатные нейросети для генерации видео
+альтернативы figma бесплатно
+где скачать бесплатные иконки
+free stock photos for commercial use
+best websites for ui inspiration
+нейросеть для удаления фона

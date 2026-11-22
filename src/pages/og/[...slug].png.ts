@@ -98,7 +98,11 @@ async function toolCard(page: PageEntry, lang: Lang) {
 
 async function pageCard(page: PageEntry, lang: Lang) {
   const tools = await getTools();
-  const pool = page.category ? tools.filter((x) => x.data.category === page.category!.id) : tools;
+  const pool = page.article
+    ? page.article.tools.map((id) => tools.find((x) => x.id === id)!).filter(Boolean)
+    : page.category
+      ? tools.filter((x) => x.data.category === page.category!.id)
+      : tools;
   const imgs = (await Promise.all(pool.slice(0, 6).map((x) => shot(x.id, 400)))).filter(Boolean).slice(0, 3) as string[];
   return h('div', { width: 1072, height: 502, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: BG, fontFamily: 'Medeo Sans', padding: 64 }, [
     brandRow(),

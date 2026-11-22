@@ -12,7 +12,7 @@ const { chromium } = require('playwright');
 const axePath = require.resolve('axe-core/axe.min.js');
 
 const PORT = 4399;
-const PAGES = ['/', '/ru/', '/en/', '/categories/', '/category/design/', '/ru/category/ai/', '/tool/figma/', '/ru/tool/claude/', '/about/', '/ru/about/', '/contact/', '/ru/contact/', '/submit/', '/wall/', '/alternatives/claude/', '/ru/alternatives/claude/', '/badge/', '/ru/badge/', '/for-makers/', '/ru/for-makers/', '/no-such-page/'];
+const PAGES = ['/', '/ru/', '/en/', '/categories/', '/category/design/', '/ru/category/ai/', '/tool/figma/', '/ru/tool/claude/', '/about/', '/ru/about/', '/contact/', '/ru/contact/', '/submit/', '/wall/', '/alternatives/claude/', '/ru/alternatives/claude/', '/badge/', '/ru/badge/', '/for-makers/', '/ru/for-makers/', '/blog/', '/ru/blog/', '/blog/free-fonts-for-commercial-use/', '/ru/blog/free-fonts-for-commercial-use/', '/no-such-page/'];
 
 const server = await serve('dist', PORT);
 const browser = await chromium.launch();

@@ -13,6 +13,7 @@ npm run build      # static output in dist/
 npm run check:seo  # SEO checks on dist/ (run after build)
 npm run check:a11y # axe accessibility checks (needs Playwright + Chromium)
 npm run preview
+npm run articles   # write articles from trends with Claude (needs ANTHROPIC_API_KEY)
 ```
 
 ## Docs
@@ -23,6 +24,7 @@ npm run preview
 - [PAGE-STANDARD.md](PAGE-STANDARD.md) — rules and checklist for every new page
 - [FEATURES.md](FEATURES.md) — accounts (Google / email), recommendations, collections, monthly newsletter, Pro subscription, API, author notes, partner links: how they work and how to switch them on (RU)
 - [DECISIONS.md](DECISIONS.md) — decisions taken without asking
+- [docs/AI-ARTICLES-PLAN.md](docs/AI-ARTICLES-PLAN.md) — articles (/blog/): the trend → Claude → pull request pipeline
 - [docs/DESIGN.md](docs/DESIGN.md) — design rules
 
 Node 22.23+ is required by Astro 7.

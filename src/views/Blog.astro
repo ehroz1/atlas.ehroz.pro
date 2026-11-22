@@ -1,0 +1,55 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getArticles } from '~/lib/articles';
+import { getPage } from '~/lib/routes';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, formatDate, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [articles, entry] = await Promise.all([getArticles(), getPage('blog')]);
+const url = absUrl(entry.path, lang);
+const list = {
+  '@type': 'ItemList',
+  '@id': url + '#itemlist',
+  numberOfItems: articles.length,
+  itemListElement: articles.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: a.entry[lang].data.title,
+    url: absUrl(`/blog/${a.slug}/`, lang),
+  })),
+};
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: t('nav.blog'), path: '/blog' }]}
+  crumbsContainer="container container--narrow"
+  nodes={[list]}
+  pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}
+>
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('blog.h1')}</h1>
+        <p class="t-secondary">{t('blog.lead')}</p>
+      </div>
+
+      <ol class="stack mt-12" style="--gap: var(--s-10)" role="list">
+        {articles.map((a) => {
+          const d = a.entry[lang].data;
+          return (
+            <li class="stack" style="--gap: var(--s-2)">
+              <p class="t-meta"><time datetime={a.published.toISOString().slice(0, 10)}>{formatDate(a.published, lang)}</time></p>
+              <h2 class="t-title"><a class="link" href={u(`/blog/${a.slug}`, lang)}>{d.title}</a></h2>
+              <p class="t-secondary">{d.description}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </div>
+</Base>

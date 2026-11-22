@@ -8,6 +8,7 @@ import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
 import { alternativesOf, similarTo } from '~/lib/related';
 import { getPage } from '~/lib/routes';
+import { articlesWithTool } from '~/lib/articles';
 import { software } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
 import { SITE, AUTHOR } from '~/site.config';
@@ -18,7 +19,7 @@ const { tool, lang } = Astro.props;
 const d = tool.data;
 const t = useTranslations(lang);
 
-const [all, categories, entry] = await Promise.all([getTools(), getCategories(), getPage(`tool/${tool.id}`)]);
+const [all, categories, entry, articles] = await Promise.all([getTools(), getCategories(), getPage(`tool/${tool.id}`), articlesWithTool(tool.id)]);
 const category = categories.find((c) => c.id === d.category)!;
 const categoryName = loc(category.data.name, lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
@@ -118,6 +119,22 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     </a>
 
     <Comments toolId={tool.id} lang={lang} />
+
+    {articles.length > 0 && (
+      <section class="section--more" aria-labelledby="articles">
+        <div class="section-head">
+          <h2 class="t-title" id="articles">{t('tool.articles', { name: d.name })}</h2>
+        </div>
+        <ul class="stack" style="--gap: var(--s-3)" role="list">
+          {articles.slice(0, 5).map((a) => (
+            <li class="stack" style="--gap: var(--s-1)">
+              <a class="link" href={u(`/blog/${a.slug}`, lang)}>{a.entry[lang].data.title}</a>
+              <span class="t-meta">{a.entry[lang].data.description}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     {alternatives.length > 0 && (
       <section class="section--more" aria-labelledby="alternatives">

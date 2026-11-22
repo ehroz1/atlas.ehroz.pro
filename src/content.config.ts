@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { file } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 /** A string that has an English value and optionally other languages. */
@@ -44,4 +44,36 @@ const tools = defineCollection({
   }),
 });
 
-export const collections = { categories, tools };
+/**
+ * Articles: src/content/articles/<slug>/<lang>.md, one file per language.
+ * Both languages are required (src/lib/articles.ts checks it). Written by
+ * the pipeline in scripts/articles/ and reviewed by a person in a PR.
+ */
+const articles = defineCollection({
+  loader: glob({ pattern: '*/*.md', base: 'src/content/articles' }),
+  schema: z.object({
+    /** H1 and the base of <title>; the brand is added when it fits */
+    title: z.string().max(70),
+    /** meta description, 50–160 characters */
+    description: z.string().min(50).max(160),
+    type: z.enum(['listicle', 'comparison', 'alternatives', 'howto', 'news']),
+    primaryKeyword: z.string(),
+    secondaryKeywords: z.array(z.string()).default([]),
+    /** tool ids from tools.json, shown as cards after the text (at least 3) */
+    tools: z.array(z.string()).min(3),
+    categories: z.array(z.string()).min(1),
+    published: z.coerce.date(),
+    /** date the text last changed (sitemap lastmod) */
+    updated: z.coerce.date(),
+    /** why this topic was picked: the trend signal */
+    trendSource: z.string().optional(),
+    /** pages used for fact-checking */
+    sources: z.array(z.url()).default([]),
+    /** set by the person who reviewed and merged it */
+    reviewedBy: z.string().optional(),
+    /** drafts are not built */
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { categories, tools, articles };

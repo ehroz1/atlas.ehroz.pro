@@ -433,6 +433,21 @@ export const en = {
   'api.example': 'Example',
   'api.terms': 'Terms',
   'api.termsBody': 'Free for any project. Please link back to {brand} and cache responses: the data changes a few times a week.',
+  // blog
+  'nav.blog': 'Articles',
+  'blog.title': 'Articles: guides and roundups of useful sites · {brand}',
+  'blog.description': 'Guides, comparisons and roundups built on the {brand} catalog: which site to pick for a task, free alternatives and new tools worth a look.',
+  'blog.h1': 'Articles',
+  'blog.lead': 'Guides, comparisons and roundups built on the catalog. Every site mentioned has its own page here, with a screenshot and the basics.',
+  'blog.read': 'Read',
+  'article.published': 'Published',
+  'article.updated': 'Updated',
+  'article.by': 'By {name}',
+  'article.tools': 'Sites from this article',
+  'article.sources': 'Sources',
+  'article.more': 'More articles',
+  'article.all': 'All articles',
+  'tool.articles': 'Articles about {name}',
 } as const;
 
 export type UIKey = keyof typeof en;

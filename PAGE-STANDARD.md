@@ -12,6 +12,15 @@
 Страница `/tool/<id>/` и `/en/tool/<id>/`, обложка, sitemap и llms.txt появятся сами.
 Поменяли текст — обновите `updated`.
 
+## Новая статья
+
+1. Папка `src/content/articles/<slug>/` с `en.md` и `ru.md` (формат — `docs/AI-ARTICLES-PLAN.md`),
+   или `npm run articles -- --topic "…"`.
+2. Ссылки на каталог в тексте — `[Имя](/tool/<id>/)`, без языка; в `tools` — минимум 3 id.
+3. `npm run build && npm run check:seo`.
+
+Страница `/blog/<slug>/`, обложка, sitemap, llms.txt и блок «Статьи про …» на страницах сайтов появятся сами.
+
 ## Новая обычная страница
 
 1. Тексты — в `src/i18n/ru.ts` и `src/i18n/en.ts` (ключи `<page>.title`, `<page>.description`, `<page>.h1`…).

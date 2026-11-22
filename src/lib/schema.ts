@@ -79,6 +79,8 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   newsletter: 'WebPage',
   pro: 'WebPage',
   api: 'WebPage',
+  blog: 'CollectionPage',
+  article: 'WebPage',
 };
 
 export function webPage(entry: PageEntry, lang: Lang, url: string, image: string, hasCrumbs: boolean, extra: Node = {}): Node {
@@ -174,5 +176,27 @@ export function faqPage(url: string, qa: { q: string; a: string }[]): Node {
       name: q,
       acceptedAnswer: { '@type': 'Answer', text: a },
     })),
+  };
+}
+
+/** BlogPosting for an article page. Dates and names come from the article's frontmatter. */
+export function blogPosting(url: string, entry: PageEntry, lang: Lang): Node {
+  const a = entry.article!;
+  const d = a.entry[lang].data;
+  return {
+    '@type': 'BlogPosting',
+    '@id': url + '#article',
+    headline: d.title,
+    description: d.description,
+    url,
+    mainEntityOfPage: { '@id': ids.page(url) },
+    inLanguage: langTag[lang],
+    datePublished: iso(a.published),
+    dateModified: iso(a.updated),
+    author: { '@id': ids.person() },
+    publisher: { '@id': ids.person() },
+    image: { '@id': ids.image(url) },
+    keywords: [d.primaryKeyword, ...d.secondaryKeywords].join(', '),
+    isPartOf: { '@id': ids.website() },
   };
 }

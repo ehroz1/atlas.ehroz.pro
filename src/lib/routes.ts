@@ -8,8 +8,9 @@ import { fitTitle, fitDescription } from '~/lib/seo';
 import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 import { alternativesOf } from '~/lib/related';
+import { getArticles, type Article } from '~/lib/articles';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api' | 'blog' | 'article';
 
 export interface PageEntry {
   key: string;
@@ -27,6 +28,7 @@ export interface PageEntry {
   og: Record<Lang, string>;
   tool?: Tool;
   category?: Category;
+  article?: Article;
 }
 
 /** Dates the hand-written pages last changed. Update when you edit their text. */
@@ -57,7 +59,7 @@ export async function getPage(key: string) {
 }
 
 async function build(): Promise<PageEntry[]> {
-  const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+  const [tools, categories, articles] = await Promise.all([getTools(), getCategories(), getArticles()]);
   const allUpdated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
   const pages: PageEntry[] = [];
   const T = per((l) => useTranslations(l));
@@ -186,6 +188,35 @@ async function build(): Promise<PageEntry[]> {
   simple('newsletter', 'newsletter.h1', (l) => T[l]('newsletter.lead'));
   simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
   simple('api', 'api.h1', (l) => T[l]('api.lead'));
+
+  // Blog: the list and one page per article (src/content/articles/)
+  if (articles.length) {
+    pages.push({
+      key: 'blog',
+      kind: 'blog',
+      path: '/blog/',
+      updated: latest(articles.map((a) => a.updated)),
+      title: per((l) => fitTitle(T[l]('blog.title'))),
+      description: per((l) => fitDescription(T[l]('blog.description'))),
+      heading: per((l) => T[l]('blog.h1')),
+      text: per((l) => articles.map((a) => `- ${a.entry[l].data.title}: ${a.entry[l].data.description}`).join('\n')),
+      og: per((l) => `og/${l}/blog`),
+    });
+    for (const a of articles) {
+      pages.push({
+        key: `blog/${a.slug}`,
+        kind: 'article',
+        path: `/blog/${a.slug}/`,
+        updated: a.updated,
+        title: per((l) => fitTitle(brand(a.entry[l].data.title), a.entry[l].data.title)),
+        description: per((l) => fitDescription(a.entry[l].data.description)),
+        heading: per((l) => a.entry[l].data.title),
+        text: per((l) => a.text[l]),
+        og: per((l) => `og/${l}/blog/${a.slug}`),
+        article: a,
+      });
+    }
+  }
 
   return pages;
 }

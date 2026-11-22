@@ -1,0 +1,13 @@
+---
+import View from '~/views/Article.astro';
+import { getArticles, type Article } from '~/lib/articles';
+import { langParams, type Lang } from '~/i18n';
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return langParams().flatMap(({ params, props }) =>
+    articles.map((article) => ({ params: { ...params, slug: article.slug }, props: { ...props, article } })),
+  );
+}
+const { lang, article } = Astro.props as { lang: Lang; article: Article };
+---
+<View lang={lang} article={article} />

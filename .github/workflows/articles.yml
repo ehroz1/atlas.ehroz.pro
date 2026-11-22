@@ -1,0 +1,93 @@
+# Weekly: collect trends, pick topics, write articles with Claude, build,
+# run the SEO checks and open a pull request. Nothing goes live until a
+# person reviews and merges the PR.
+#
+# Setup (repo Settings → Secrets and variables → Actions):
+#   secret   ANTHROPIC_API_KEY         required
+#   secret   GSC_SERVICE_ACCOUNT       optional, JSON key of a service account added to Search Console
+#   variable GSC_SITE                  optional, e.g. sc-domain:atlas.ehroz.pro
+#   secret   YANDEX_WEBMASTER_TOKEN    optional, OAuth token for the Webmaster API
+#   variable YANDEX_USER_ID            optional
+#   variable YANDEX_HOST_ID            optional, e.g. https:atlas.ehroz.pro:443
+# And: Settings → Actions → General → "Allow GitHub Actions to create pull requests".
+name: Articles
+
+on:
+  schedule:
+    - cron: '17 4 * * 1'   # Mondays, 04:17 UTC
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Write about this topic (skips the trend step)'
+        required: false
+      count:
+        description: 'How many topics to pick from trends'
+        required: false
+        default: '3'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: articles
+  cancel-in-progress: false
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Write articles
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
+          GSC_SITE: ${{ vars.GSC_SITE }}
+          YANDEX_WEBMASTER_TOKEN: ${{ secrets.YANDEX_WEBMASTER_TOKEN }}
+          YANDEX_USER_ID: ${{ vars.YANDEX_USER_ID }}
+          YANDEX_HOST_ID: ${{ vars.YANDEX_HOST_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOPIC: ${{ inputs.topic }}
+          COUNT: ${{ inputs.count || '3' }}
+        run: |
+          if [ -n "$TOPIC" ]; then
+            node scripts/articles/run.mjs --topic "$TOPIC"
+          else
+            node scripts/articles/run.mjs --count "$COUNT"
+          fi
+      - run: npm run build
+      - run: npm run check:seo
+      - name: Pull request text
+        id: report
+        run: |
+          {
+            echo 'body<<EOF_REPORT'
+            echo 'Articles written by the pipeline (scripts/articles/). Before merging:'
+            echo ''
+            echo '- [ ] read both languages; check every fact against the sources'
+            echo '- [ ] replace `<!-- AUTHOR: personal experience -->` with your own experience'
+            echo '- [ ] add `reviewedBy:` to the frontmatter'
+            echo ''
+            cat content-pipeline/*/report.md 2>/dev/null || true
+            echo ''
+            echo '<details><summary>Sites to consider for the catalog</summary>'
+            echo ''
+            node -e "for (const f of require('fs').readdirSync('content-pipeline')) { try { for (const s of require('./content-pipeline/'+f+'/topics.json').addToCatalog) console.log('- ' + s.name + (s.url ? ' ' + s.url : '') + ': ' + s.why) } catch {} }"
+            echo ''
+            echo '</details>'
+            echo 'EOF_REPORT'
+          } >> "$GITHUB_OUTPUT"
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: articles/${{ github.run_id }}
+          title: 'Articles: ${{ inputs.topic || format(''weekly run {0}'', github.run_number) }}'
+          commit-message: 'Add articles from the pipeline'
+          body: ${{ steps.report.outputs.body }}
+          add-paths: src/content/articles/**
+          labels: articles

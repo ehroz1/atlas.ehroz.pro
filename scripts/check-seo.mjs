@@ -11,6 +11,7 @@
  *  - JSON-LD: invalid JSON, not exactly one @graph, duplicate @id, @id references that don't resolve
  *  - orphan pages and pages deeper than 3 clicks from the home page
  *  - 404 without noindex or with a canonical
+ *  - articles (/blog/<slug>/): fewer than 3 links to catalog pages in the text, no BlogPosting
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -219,6 +220,20 @@ for (const p of pages.values()) {
     })(data['@graph'], false);
     for (const r of refs) if (!ids.has(r)) err(url, `JSON-LD reference to missing @id ${r}`);
     if (/"(aggregateRating|review|offers)"/.test(b.text)) warn(url, 'JSON-LD has ratings/reviews/offers: make sure they are real');
+  }
+
+  // articles: the text must lead into the catalog
+  const article = doc.querySelector('[data-article]');
+  if (article && !p.alias) {
+    const body = article.querySelector('.prose');
+    const catalogLinks = new Set(
+      (body?.querySelectorAll('a[href]') ?? []).map((a) => a.getAttribute('href')).filter((h) => /\/(tool|category|alternatives)\/[^/]+\/$/.test(h)),
+    );
+    if (catalogLinks.size < 3) err(url, `article links to ${catalogLinks.size} catalog pages in its text (need at least 3)`);
+    if (!/"@type":"BlogPosting"/.test(p.html)) err(url, 'article without BlogPosting JSON-LD');
+    const words = (body?.text ?? '').split(/\s+/).filter(Boolean).length;
+    if (words < 300) warn(url, `article is short: ${words} words`);
+    if (/<!--\s*AUTHOR/.test(p.html)) warn(url, 'article still has the <!-- AUTHOR --> placeholder: add your own experience');
   }
 
   // a11y basics checked here too

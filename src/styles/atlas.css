@@ -1547,6 +1547,11 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .prose li::marker { color: var(--c-text-3); }
 .prose code { padding: 0.1em 0.35em; border-radius: var(--r-sm); background: var(--c-fill); }
 .prose blockquote { padding-left: var(--s-4); border-left: 2px solid var(--c-line-strong); color: var(--c-text-2); }
+/* articles: wider measure, tables for comparisons */
+.prose--article { max-width: 42rem; }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--fs-15); display: block; overflow-x: auto; }
+.prose th, .prose td { padding: var(--s-2) var(--s-3); border-bottom: 1px solid var(--c-line-strong); text-align: left; vertical-align: top; }
+.prose th { font-weight: var(--fw-medium); color: var(--c-text-2); }
 
 
 /* 16. FORMS ---------------------------------------------------------------- */

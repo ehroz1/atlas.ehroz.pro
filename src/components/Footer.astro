@@ -1,18 +1,20 @@
 ---
 import { u } from '~/lib/url';
 import { getTools, getCategories, toolUpdated, latest } from '~/lib/data';
+import { getArticles } from '~/lib/articles';
 import { useTranslations, defaultLang, formatDate, langs, languages, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 interface Props { lang?: Lang; switchHref: string }
 const { lang = defaultLang, switchHref } = Astro.props;
 const t = useTranslations(lang);
-const [tools, categories] = await Promise.all([getTools(), getCategories()]);
+const [tools, categories, articles] = await Promise.all([getTools(), getCategories(), getArticles()]);
 const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
 const year = updated.getUTCFullYear();
 const other = langs.find((l) => l !== lang)!;
 const links = [
   ['/', t('nav.sites')],
   ['/categories', t('nav.categories')],
+  ...(articles.length ? ([['/blog', t('nav.blog')]] as const) : []),
   ['/wall', t('nav.wall')],
   ['/about', t('nav.about')],
   ['/contact', t('nav.contact')],
@@ -23,7 +25,7 @@ const links = [
   ['/newsletter', t('nav.newsletter')],
   ['/pro', t('nav.pro')],
   ['/api', t('nav.api')],
-] as const;
+];
 ---
 <footer class="site-footer">
   <div class="container container--wide site-footer__inner">

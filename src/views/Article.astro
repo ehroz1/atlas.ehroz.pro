@@ -1,0 +1,81 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import ToolCard from '~/components/ToolCard.astro';
+import { getTools, getCategories, domainOf } from '~/lib/data';
+import { getArticles, type Article } from '~/lib/articles';
+import { getPage } from '~/lib/routes';
+import { blogPosting } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import { AUTHOR } from '~/site.config';
+import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
+
+interface Props { article: Article; lang: Lang }
+const { article, lang } = Astro.props;
+const t = useTranslations(lang);
+const d = article.entry[lang].data;
+const [all, categories, articles, entry] = await Promise.all([getTools(), getCategories(), getArticles(), getPage(`blog/${article.slug}`)]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const tools = article.tools.map((id) => all.find((x) => x.id === id)!);
+const url = absUrl(entry.path, lang);
+const iso = (x: Date) => x.toISOString().slice(0, 10);
+const changed = iso(article.updated) !== iso(article.published);
+// other articles: ones sharing a category first, then the newest
+const others = articles
+  .filter((a) => a.slug !== article.slug)
+  .sort((a, b) => Number(b.categories.some((c) => article.categories.includes(c))) - Number(a.categories.some((c) => article.categories.includes(c))))
+  .slice(0, 3);
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: t('nav.blog'), path: '/blog' }, { name: d.title, path: entry.path }]}
+  crumbsContainer="container container--narrow"
+  nodes={[blogPosting(url, entry, lang)]}
+  pageExtra={{ mainEntity: { '@id': url + '#article' } }}
+>
+  <div class="container container--narrow">
+    <article class="section" style="padding-bottom: 0" data-article={article.slug}>
+      <header class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{d.title}</h1>
+        <p class="t-meta">
+          <a class="link" href={AUTHOR.url} rel="author">{t('article.by', { name: AUTHOR.name })}</a>
+          {' · '}{t('article.published')} <time datetime={iso(article.published)}>{formatDate(article.published, lang)}</time>
+          {changed && <>{' · '}{t('article.updated')} <time datetime={iso(article.updated)}>{formatDate(article.updated, lang)}</time></>}
+        </p>
+      </header>
+
+      <div class="prose prose--article mt-8" set:html={article.html[lang]} />
+
+      {d.sources.length > 0 && (
+        <section class="mt-12 stack" style="--gap: var(--s-2)" aria-labelledby="sources">
+          <h2 class="t-title" id="sources">{t('article.sources')}</h2>
+          <ul class="stack t-small" style="--gap: var(--s-1)" role="list">
+            {d.sources.map((s) => <li><a class="link" href={s} rel="noopener nofollow">{domainOf(s)}</a></li>)}
+          </ul>
+        </section>
+      )}
+    </article>
+  </div>
+
+  <div class="container container--wide">
+    <section class="section--more" aria-labelledby="tools">
+      <div class="section-head">
+        <h2 class="t-title" id="tools">{t('article.tools')}</h2>
+      </div>
+      <div class="cards">
+        {tools.map((x) => <ToolCard tool={x} categoryName={names.get(x.data.category)!} lang={lang} />)}
+      </div>
+    </section>
+  </div>
+
+  <div class="container container--narrow">
+    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="more">
+      <h2 class="t-title" id="more">{t('article.more')}</h2>
+      <ul class="stack mt-4" style="--gap: var(--s-3)" role="list">
+        {others.map((a) => <li><a class="link" href={u(`/blog/${a.slug}`, lang)}>{a.entry[lang].data.title}</a></li>)}
+        <li><a class="link" href={u('/blog', lang)}>{t('article.all')}</a></li>
+      </ul>
+    </nav>
+  </div>
+</Base>
