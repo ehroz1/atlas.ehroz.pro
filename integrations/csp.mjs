@@ -19,9 +19,14 @@ async function* htmlFiles(dir, root = dir) {
   }
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
-export function policyHosts({ ga4, metrika, preview }) {
+/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
+export function policyHosts({ ga4, metrika, preview, supabase }) {
   const h = { script: [], img: [], connect: [], frame: [] };
+  if (supabase) {
+    // accounts, collections, member counter: REST + Realtime websocket
+    const host = new URL(supabase).host;
+    h.connect.push(`https://${host}`, `wss://${host}`);
+  }
   if (ga4) {
     h.script.push('https://www.googletagmanager.com');
     h.img.push('https://*.google-analytics.com', 'https://www.googletagmanager.com');
@@ -42,7 +47,7 @@ export function policyHosts({ ga4, metrika, preview }) {
   return h;
 }
 
-/** @param {{ ga4?: string, metrika?: string, preview?: boolean }} opts */
+/** @param {{ ga4?: string, metrika?: string, preview?: boolean, supabase?: string }} opts */
 export default function csp(opts) {
   return {
     name: 'atlas-csp',

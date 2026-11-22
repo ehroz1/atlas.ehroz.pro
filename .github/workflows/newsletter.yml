@@ -1,0 +1,46 @@
+# Monthly "five finds" email (scripts/newsletter.mjs).
+# Runs on the 1st of every month; run it by hand with a test address first.
+# Secrets (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY, NEWSLETTER_FROM
+# Until they are set the scheduled run only prints the issue and stops.
+name: Newsletter
+
+on:
+  schedule:
+    - cron: '17 7 1 * *'
+  workflow_dispatch:
+    inputs:
+      test_to:
+        description: 'Send one test email to this address instead of everyone'
+        required: false
+      issue:
+        description: 'Issue month, YYYY-MM (default: this month)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Send
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NEWSLETTER_FROM: ${{ secrets.NEWSLETTER_FROM }}
+          ISSUE: ${{ inputs.issue }}
+          TEST_TO: ${{ inputs.test_to }}
+        run: |
+          if [ -z "$RESEND_API_KEY" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Newsletter secrets are not set; preview only."
+            node scripts/newsletter.mjs
+            exit 0
+          fi
+          if [ -n "$TEST_TO" ]; then node scripts/newsletter.mjs --to "$TEST_TO"
+          else node scripts/newsletter.mjs --send; fi

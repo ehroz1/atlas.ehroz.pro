@@ -5,10 +5,10 @@
  */
 import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type Category } from '~/lib/data';
 import { fitTitle, fitDescription } from '~/lib/seo';
-import { useTranslations, loc, langs, type Lang } from '~/i18n';
+import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
 
 export interface PageEntry {
   key: string;
@@ -34,6 +34,9 @@ export const PAGE_UPDATED = {
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
+  newsletter: '2026-11-21',
+  pro: '2026-11-21',
+  api: '2026-11-21',
 };
 
 const per = <T,>(fn: (lang: Lang) => T) => Object.fromEntries(langs.map((l) => [l, fn(l)])) as Record<Lang, T>;
@@ -64,7 +67,7 @@ async function build(): Promise<PageEntry[]> {
     updated: allUpdated,
     title: per((l) => fitTitle(T[l]('site.title'))),
     description: per((l) => fitDescription(T[l]('site.description'))),
-    heading: per((l) => T[l]('hero.title', { count: tools.length })),
+    heading: per((l) => T[l](`hero.title.${plural(l, tools.length)}`, { count: tools.length })),
     text: per((l) => T[l]('hero.sub', { categories: categories.length })),
     og: per((l) => `og/${l}/home`),
   });
@@ -133,7 +136,7 @@ async function build(): Promise<PageEntry[]> {
     });
   }
 
-  const simple = (key: 'about' | 'contact' | 'submit' | 'wall', h1: string, body: (l: Lang) => string) =>
+  const simple = (key: keyof typeof PAGE_UPDATED, h1: string, body: (l: Lang) => string) =>
     pages.push({
       key,
       kind: key,
@@ -150,6 +153,9 @@ async function build(): Promise<PageEntry[]> {
   simple('contact', 'contact.h1', (l) => T[l]('contact.description'));
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
+  simple('newsletter', 'newsletter.h1', (l) => T[l]('newsletter.lead'));
+  simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
+  simple('api', 'api.h1', (l) => T[l]('api.lead'));
 
   return pages;
 }

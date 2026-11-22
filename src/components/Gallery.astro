@@ -8,6 +8,7 @@ import ToolCard from './ToolCard.astro';
 import CategoryChips from './CategoryChips.astro';
 import type { Tool, Category } from '~/lib/data';
 import { loc, useTranslations, plural, defaultLang, type Lang } from '~/i18n';
+import { u } from '~/lib/url';
 
 interface Props {
   tools: Tool[];
@@ -102,7 +103,20 @@ const sorts = [
     )}
   </div>
 
-  <div class="cards" data-cards>
+  {/* What the grid shows right now, with a way back: only visible while a
+      query, filters or the "Saved" view narrow it down. */}
+  <div class="results-bar" data-results-bar hidden
+    data-for={t('results.for')} data-filtered={t('results.filtered')} data-saved-title={t('saved.title')}>
+    <p class="results-bar__text" data-results-text aria-live="polite"></p>
+    <button class="btn btn--sm" type="button" data-results-clear>{t('results.clear')}</button>
+  </div>
+
+  {promote && (
+    <p class="prefs-note t-small t-secondary" data-prefs-note hidden>
+      {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'}>{t('prefs.change')}</a>
+    </p>
+  )}
+  <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined}>
     {tools.map((tool) => (
       <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current} />
     ))}
@@ -126,6 +140,33 @@ const sorts = [
         return a;
       };
       var cards = shuffle(Array.prototype.slice.call(grid.children));
+
+      // Recommendations (localStorage atlas:prefs, set on /account/):
+      // preferred categories and prices first, opened sites last.
+      // Stable sort, so the shuffle survives inside each group.
+      if (promote) {
+        var prefs = {};
+        try { prefs = JSON.parse(localStorage.getItem('atlas:prefs') || '{}') || {}; } catch (e) {}
+        var cats = Array.isArray(prefs.categories) ? prefs.categories : [];
+        var price = prefs.pricing || 'any';
+        var seen = [];
+        if (prefs.hideSeen) { try { seen = JSON.parse(localStorage.getItem('atlas:seen') || '[]'); } catch (e) {} }
+        if (cats.length || price !== 'any' || seen.length) {
+          var score = function (c) {
+            var s = 0, p = c.getAttribute('data-pricing');
+            if (cats.indexOf(c.getAttribute('data-category')) >= 0) s += 2;
+            if (price === 'free' && p === 'free') s += 1;
+            if (price === 'nopaid' && p !== 'paid') s += 1;
+            if (seen.indexOf(c.getAttribute('data-id')) >= 0) s -= 10;
+            return s;
+          };
+          var scored = cards.map(function (c, i) { return { c: c, s: score(c), i: i }; });
+          scored.sort(function (a, b) { return b.s - a.s || a.i - b.i; });
+          cards = scored.map(function (x) { return x.c; });
+          var note = grid.previousElementSibling;
+          if (note && note.hasAttribute('data-prefs-note')) note.hidden = false;
+        }
+      }
 
       if (promote) {
         var visit = 1;
@@ -209,12 +250,14 @@ const sorts = [
     let sortMode = new URLSearchParams(location.search).get('sort') ?? 'random';
     if (!['random', 'new', 'az'].includes(sortMode)) sortMode = 'random';
     sortBy(sortMode);
-    let current: { ids: Set<string>; q: string } = { ids: allIds, q: '' };
+    let current: { ids: Set<string>; q: string; filters?: number } = { ids: allIds, q: '', filters: 0 };
+    const resultsBar = document.querySelector<HTMLElement>('[data-results-bar]');
+    const barText = document.querySelector<HTMLElement>('[data-results-text]');
     /* "Saved" view: only the saved sites (header button, or ?saved=1) */
     let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
     const savedEmpty = document.querySelector<HTMLElement>('[data-saved-empty]');
 
-    const apply = (detail?: { ids: Set<string>; q: string }) => {
+    const apply = (detail?: { ids: Set<string>; q: string; filters?: number }) => {
       if (detail) current = detail;
       const { ids, q } = current;
       const saved: string[] = (window as any).__atlasSaved?.() ?? [];
@@ -229,10 +272,26 @@ const sorts = [
       grid.append(...pinned(lead), ...pinned(rest), ...order.filter((c) => c.hidden));
       const shown = lead.length + rest.length;
       document.dispatchEvent(new CustomEvent('atlas:shown', { detail: shown }));
+      let countText = '';
       if (count) {
         const cat = new Intl.PluralRules(count.dataset.lang).select(shown);
         const tpl = (count.dataset as Record<string, string | undefined>)[cat] ?? count.dataset.other;
-        count.textContent = (tpl ?? '{count}').replace('{count}', String(shown));
+        countText = (tpl ?? '{count}').replace('{count}', String(shown));
+        count.textContent = countText;
+      }
+      // results bar: "12 sites for “fig”", "Saved · 3 sites", with Clear
+      const q2 = q.trim();
+      const active = !!q2 || !!current.filters || savedOnly;
+      if (resultsBar && barText) {
+        resultsBar.hidden = !active || shown === 0;
+        // the bar already says how many: don't repeat it in the toolbar
+        if (count) count.style.visibility = resultsBar.hidden ? '' : 'hidden';
+        if (active) {
+          const parts = [savedOnly ? `${resultsBar.dataset.savedTitle} · ${countText}` : countText];
+          if (q2) parts.push((resultsBar.dataset.for ?? '').replace('{q}', q2));
+          if (current.filters) parts.push(resultsBar.dataset.filtered ?? '');
+          barText.textContent = parts.join(' ');
+        }
       }
       const noSaved = savedOnly && saved.length === 0;
       if (savedEmpty) savedEmpty.hidden = !noSaved;
@@ -249,6 +308,10 @@ const sorts = [
     };
     document.addEventListener('atlas:saved-toggle', () => setSavedOnly(!savedOnly));
     document.querySelector('[data-saved-exit]')?.addEventListener('click', () => setSavedOnly(false));
+    document.querySelector('[data-results-clear]')?.addEventListener('click', () => {
+      if (savedOnly) setSavedOnly(false);
+      if (current.q.trim() || current.filters) document.dispatchEvent(new Event('atlas:reset'));
+    });
     if (savedOnly) apply();
 
     const last = (window as any).__atlasFilter;

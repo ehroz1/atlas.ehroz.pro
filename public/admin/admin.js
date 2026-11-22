@@ -145,7 +145,7 @@ const humanError = (e) =>
 
 function show(id) {
   for (const s of ['login', 'list', 'edit']) $('#' + s).hidden = s !== id;
-  $('#logout').hidden = id === 'login';
+  $('#logout').hidden = !state.token;
   window.scrollTo(0, 0);
 }
 
@@ -159,8 +159,8 @@ function renderSkeleton(n = 10) {
     el('span', { class: 'visually-hidden' }, 'Загрузка…'),
     ...Array.from({ length: n }, () =>
       el('div', { class: 'row', 'aria-hidden': 'true' },
-        el('span', { class: 'sk sk-icon' }),
-        el('div', {},
+        el('span', { class: 'row__icon sk' }),
+        el('div', { class: 'main' },
           el('span', { class: 'sk sk-line lg' }),
           el('span', { class: 'sk sk-line' })),
         el('div', { class: 'tags' }, el('span', { class: 'sk sk-pill' })),
@@ -185,10 +185,12 @@ async function start(token) {
     endSkeleton();
     renderList();
     show('list');
+    window.onGithubLogin?.();
     return true;
   } catch (e) {
     state.token = '';
     endSkeleton();
+    $('#who').textContent = 'не вошли';
     $('#login-error').textContent = humanError(e);
     show('login');
     return false;
@@ -196,6 +198,12 @@ async function start(token) {
 }
 
 /* ---------- list ---------- */
+/** Google's favicon service; if it fails (blocked, offline) a letter stands in, never a broken image. */
+function favicon(t) {
+  const img = el('img', { class: 'row__icon', src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainOf(t.url))}&sz=64`, alt: '', loading: 'lazy' });
+  img.addEventListener('error', () => img.replaceWith(el('span', { class: 'row__icon row__icon--fallback', 'aria-hidden': 'true' }, (t.name || '?').charAt(0))), { once: true });
+  return img;
+}
 function renderList() {
   const q = $('#q').value.trim().toLowerCase();
   const cat = $('#cat-filter').value;
@@ -210,7 +218,7 @@ function renderList() {
   $('#count').textContent = `Сайтов: ${state.tools.length}` + (list.length !== state.tools.length ? ` · показано ${list.length}` : '');
   $('#rows').replaceChildren(...list.map((t) =>
     el('div', { class: 'row' },
-      el('img', { src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainOf(t.url))}&sz=64`, alt: '', loading: 'lazy' }),
+      favicon(t),
       el('div', { class: 'main', onclick: () => openForm(t) },
         el('div', { class: 'name' }, t.name),
         el('div', { class: 'sub' }, `${domainOf(t.url)} · ${catName(t.category)} · ${t.added}`)),
@@ -222,7 +230,7 @@ function renderList() {
         el('button', { class: 'btn', type: 'button', onclick: () => openForm(t) }, 'Изменить'),
         el('button', { class: 'btn danger', type: 'button', onclick: () => removeTool(t) }, 'Удалить')),
     )));
-  if (!list.length) $('#rows').replaceChildren(el('div', { class: 'row' }, el('span'), el('span', { class: 'muted' }, 'Ничего не найдено')));
+  if (!list.length) $('#rows').replaceChildren(el('div', { class: 'row row--plain row--empty' }, el('div', { class: 'main' }, 'Ничего не найдено')));
 }
 
 /* ---------- form ---------- */
@@ -269,6 +277,8 @@ function openForm(tool) {
   f('name').value = t.name || '';
   f('id').value = t.id || '';
   f('id').readOnly = !!tool;
+  $('#id-hint').textContent = tool ? 'Менять нельзя: от ID зависит адрес страницы сайта.' : 'Только латиница, цифры и дефис. Подставится сам из названия.';
+  $('#shot-name').textContent = 'Файл не выбран';
   f('id').dataset.auto = tool ? '' : '1';
   f('category').value = t.category || '';
   f('pricing').value = t.pricing || 'free';
@@ -280,6 +290,9 @@ function openForm(tool) {
   f('summary_en').value = t.summary?.en || '';
   f('description_ru').value = t.description?.ru || '';
   f('description_en').value = t.description?.en || '';
+  f('note_ru').value = t.note?.ru || '';
+  f('note_en').value = t.note?.en || '';
+  f('affiliateUrl').value = t.affiliateUrl || '';
   f('added').value = t.added || today();
   f('updated').value = t.updated || '';
   state.platforms = new Set(t.platforms || (tool ? [] : ['Web']));
@@ -364,11 +377,18 @@ function readForm() {
     summary: { en: f('summary_en').value.trim(), ru: f('summary_ru').value.trim() },
     description: { en: f('description_en').value.trim(), ru: f('description_ru').value.trim() },
   };
+  const noteRu = f('note_ru').value.trim(), noteEn = f('note_en').value.trim();
+  if (noteRu || noteEn) t.note = { en: noteEn || noteRu, ru: noteRu || noteEn };
+  const aff = f('affiliateUrl').value.trim();
+  if (aff) {
+    try { if (!/^https?:$/.test(new URL(aff).protocol)) throw 0; } catch { throw new Error('Партнёрская ссылка должна начинаться с https://'); }
+    t.affiliateUrl = aff;
+  }
   // keep any fields this form doesn't know about
-  for (const [k, v] of Object.entries(old)) if (!(k in t) && !['openSource', 'featured', 'own'].includes(k)) t[k] = v;
+  for (const [k, v] of Object.entries(old)) if (!(k in t) && !['openSource', 'featured', 'own', 'note', 'affiliateUrl'].includes(k)) t[k] = v;
   // text changed → bump "updated" unless the user set it by hand
   if (state.editing && f('updated').value === (old.updated || '')) {
-    const textChanged = JSON.stringify([old.name, old.summary, old.description]) !== JSON.stringify([t.name, t.summary, t.description]);
+    const textChanged = JSON.stringify([old.name, old.summary, old.description, old.note]) !== JSON.stringify([t.name, t.summary, t.description, t.note]);
     if (textChanged) t.updated = today();
   }
   return t;
@@ -438,6 +458,7 @@ async function save(e) {
     renderList();
     show('list');
     toast(`${isNew ? 'Добавлено' : 'Сохранено'}: ${tool.name}. Сайт обновится через 2–4 минуты.`, 'ok');
+    window.onToolSaved?.(tool, isNew);
   } catch (err) {
     $('#form-error').textContent = err.status ? humanError(err) : err.message;
   } finally {
@@ -478,7 +499,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const t = $('#token').value.trim();
     if (await start(t)) { store.set(t, $('#remember').checked); $('#token').value = ''; }
   });
-  $('#logout').addEventListener('click', () => { store.clear(); state.token = ''; show('login'); });
+  $('#logout').addEventListener('click', () => { store.clear(); state.token = ''; $('#who').textContent = 'не вошли'; show('login'); });
 
   $('#q').addEventListener('input', renderList);
   $('#cat-filter').addEventListener('change', renderList);
@@ -519,6 +540,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('#shot-file').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     state.shotBlob = null;
+    $('#shot-name').textContent = file ? file.name : 'Файл не выбран';
     if (!file) return;
     try {
       state.shotBlob = await toShotJpeg(file);
@@ -529,6 +551,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch { $('#form-error').textContent = 'Не удалось прочитать картинку.'; }
   });
 
+  // the tabs don't wait for GitHub: the Sites tab shows its skeleton meanwhile
   const saved = store.get();
-  if (saved) await start(saved); else show('login');
+  const loading = saved ? start(saved) : show('login');
+  window.onSitesReady?.();
+  await loading;
 });

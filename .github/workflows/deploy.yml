@@ -58,6 +58,12 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # optional services (FEATURES.md); repository *variables*, all public values
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_CHECKOUT_MONTHLY: ${{ vars.PUBLIC_CHECKOUT_MONTHLY }}
+          PUBLIC_CHECKOUT_YEARLY: ${{ vars.PUBLIC_CHECKOUT_YEARLY }}
+          PUBLIC_BILLING_PORTAL: ${{ vars.PUBLIC_BILLING_PORTAL }}
       - run: npm run check:seo
       - uses: actions/upload-pages-artifact@v3
         with:
