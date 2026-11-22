@@ -1126,6 +1126,18 @@ hr { border: 0; border-top: var(--border); }
 @media (min-width: 64rem) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 .card-wrap { position: relative; }
+/* Cards off screen skip style, layout and paint until they scroll near
+   (PageSpeed: main-thread "Style & Layout"); all of them stay in the HTML.
+   content-visibility clips to the box, so the clip margin leaves room for
+   the hover lift (6px) and the focus ring (4px offset + 2px). Browsers
+   without overflow-clip-margin (Safari) would crop those: they skip it. */
+@supports (overflow-clip-margin: 1px) {
+  .card-wrap {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 20rem;
+    overflow-clip-margin: 12px;
+  }
+}
 /* save / move-to-top buttons sit on the picture's bottom-right corner:
    the layer has the picture's 16:10 box, so no heights are guessed */
 .card__actions {
