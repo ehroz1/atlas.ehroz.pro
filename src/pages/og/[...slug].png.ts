@@ -62,10 +62,12 @@ const h = (type: string, style: Record<string, unknown>, children?: unknown, ext
   props: { style, children, ...extra },
 });
 
-const BG = '#0d0d0d';
-const INK = '#ffffff';
-const MUTED = '#a3a3a3';
-const BLUE = '#2f5bea';
+// Satori can't read CSS variables: these copy the tokens in atlas.css.
+const BG = '#0d0d0d';    // --c-bg
+const INK = '#ffffff';   // --c-text
+const MUTED = '#b0b0b0'; // --c-text-2
+const BLUE = '#1268ff';  // --c-accent
+const LINE = '#2a2a2a';  // --c-line-strong
 
 const brandRow = () =>
   h('div', { display: 'flex', alignItems: 'center', gap: 14, fontSize: 30, color: INK, fontWeight: 600 }, [
@@ -88,9 +90,9 @@ async function toolCard(page: PageEntry, lang: Lang) {
     ]),
     img
       ? h('div', { display: 'flex', flex: 1, alignItems: 'center' }, [
-          h('img', { width: 564, height: 352, borderRadius: 16, objectFit: 'cover', border: '1px solid #333' }, undefined, { src: img, width: 564, height: 352 }),
+          h('img', { width: 564, height: 352, borderRadius: 16, objectFit: 'cover', border: `1px solid ${LINE}` }, undefined, { src: img, width: 564, height: 352 }),
         ])
-      : h('div', { display: 'flex', width: 564, height: 352, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', fontSize: 40, color: MUTED, border: '1px solid #333', borderRadius: 16 }, domainOf(tool.data.url)),
+      : h('div', { display: 'flex', width: 564, height: 352, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', fontSize: 40, color: MUTED, border: `1px solid ${LINE}`, borderRadius: 16 }, domainOf(tool.data.url)),
   ]);
 }
 
@@ -104,7 +106,7 @@ async function pageCard(page: PageEntry, lang: Lang) {
       h('div', { display: 'flex', fontSize: 64, fontWeight: 600, color: INK, lineHeight: 1.08 }, cutByWord(page.heading[lang], 60)),
       h('div', { display: 'flex', fontSize: 28, color: MUTED, lineHeight: 1.35 }, cutByWord(page.description[lang], 120)),
     ]),
-    h('div', { display: 'flex', gap: 24 }, imgs.map((src) => h('img', { width: 336, height: 180, borderRadius: 12, objectFit: 'cover', objectPosition: 'top', border: '1px solid #333' }, undefined, { src, width: 336, height: 180 }))),
+    h('div', { display: 'flex', gap: 24 }, imgs.map((src) => h('img', { width: 336, height: 180, borderRadius: 12, objectFit: 'cover', objectPosition: 'top', border: `1px solid ${LINE}` }, undefined, { src, width: 336, height: 180 }))),
   ]);
 }
 

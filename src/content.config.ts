@@ -21,6 +21,9 @@ const tools = defineCollection({
   schema: z.object({
     name: z.string(),
     url: z.url(),
+    /** partner (affiliate) link. When set, "Open site" goes here, with
+        rel="sponsored" and a visible "Partner link" mark on the card and page */
+    affiliateUrl: z.url().optional(),
     category: z.string(),
     pricing: z.enum(['free', 'freemium', 'paid']),
     openSource: z.boolean().default(false),
@@ -36,6 +39,8 @@ const tools = defineCollection({
     summary: localized,
     /** 1–3 sentences for the tool page */
     description: localized,
+    /** the author's own short remark, shown on the card and the page; your voice, 1–2 sentences */
+    note: localized.optional(),
   }),
 });
 

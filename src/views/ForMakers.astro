@@ -1,0 +1,80 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { faqPage } from '~/lib/schema';
+import { absUrl } from '~/lib/seo';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('for-makers');
+const url = absUrl(entry.path, lang);
+const criteria = ['about.plan1.li1', 'about.plan1.li2', 'about.plan1.li3', 'about.plan1.li4'] as const;
+const faq = [1, 2, 3, 4].map((n) => ({
+  q: t(`for-makers.faq.q${n}` as 'for-makers.faq.q1'),
+  a: t(`for-makers.faq.a${n}` as 'for-makers.faq.a1'),
+}));
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: t('nav.makers'), path: '/for-makers' }]}
+  crumbsContainer="container container--narrow"
+  nodes={[faqPage(url, faq)]}
+>
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('for-makers.h1')}</h1>
+        <p class="t-secondary">{t('for-makers.lead')}</p>
+        <p class="mt-2">
+          <a class="btn btn--solid" href={u('/submit', lang)}>{t('for-makers.cta.submit')}</a>
+        </p>
+      </div>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="look">
+        <h2 class="t-title" id="look">{t('for-makers.look.h')}</h2>
+        <ul class="stack" style="--gap: var(--s-2)" role="list">
+          {criteria.map((k) => <li class="t-secondary">{t(k)}</li>)}
+        </ul>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="free">
+        <h2 class="t-title" id="free">{t('for-makers.free.h')}</h2>
+        <p class="t-secondary">{t('for-makers.free.body')}</p>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="steps">
+        <h2 class="t-title" id="steps">{t('for-makers.steps.h')}</h2>
+        <ol class="stack" style="--gap: var(--s-2); padding-left: 1.25rem">
+          <li class="t-secondary">{t('for-makers.steps.1')}</li>
+          <li class="t-secondary">{t('for-makers.steps.2')}</li>
+          <li class="t-secondary">{t('for-makers.steps.3')}</li>
+        </ol>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="after">
+        <h2 class="t-title" id="after">{t('for-makers.after.h')}</h2>
+        <ul class="stack" style="--gap: var(--s-2)" role="list">
+          <li class="t-secondary">{t('for-makers.after.badge')} <a class="link" href={u('/badge', lang)}>{t('for-makers.cta.badge')}</a></li>
+          <li class="t-secondary">{t('for-makers.after.api')} <a class="link" href={u('/api', lang)}>API</a></li>
+          <li class="t-secondary">{t('for-makers.after.fix')} <a class="link" href={u('/contact', lang)}>{t('for-makers.cta.contact')}</a></li>
+        </ul>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="faq">
+        <h2 class="t-title" id="faq">{t('for-makers.faq.h')}</h2>
+        <dl class="stack" style="--gap: var(--s-5)">
+          {faq.map((f) => (
+            <div class="stack" style="--gap: var(--s-1)">
+              <dt class="t-small" style="font-weight: 600">{f.q}</dt>
+              <dd class="t-secondary">{f.a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </div>
+  </div>
+</Base>

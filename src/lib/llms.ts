@@ -28,6 +28,7 @@ export async function llmsTxt() {
     if (lines.length) lines.push('', '---', '');
     lines.push(...intro(lang), '');
     lines.push(lang === 'ru' ? `Полный текст всех страниц: ${absUrl('/llms-full.txt')}` : `Full text of every page: ${absUrl('/llms-full.txt')}`, '');
+    lines.push(lang === 'ru' ? `Открытые данные каталога (JSON): ${absUrl('/api/v1/tools.json')}` : `Open catalog data (JSON): ${absUrl('/api/v1/tools.json')}`, '');
     const link = (p: PageEntry) => `- [${p.heading[lang]}](${absUrl(p.path, lang)}): ${p.description[lang]}`;
     lines.push(`## ${lang === 'ru' ? 'Страницы' : 'Pages'}`, '');
     for (const p of pages.filter((x) => x.kind !== 'tool' && x.kind !== 'category')) lines.push(link(p));

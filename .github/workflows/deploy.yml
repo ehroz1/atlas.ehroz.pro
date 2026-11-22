@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # to commit screenshots captured for newly added sites
   pages: write
   id-token: write
 
@@ -30,11 +30,40 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      # Sites added through /admin/ come without a screenshot: capture the
+      # missing ones (sites added in the last 14 days, so ones behind a bot
+      # check aren't retried forever), commit them back, build with them.
+      # A site that can't be captured just shows its domain on the card.
+      - id: missing
+        run: |
+          ids=$(node -e "const fs=require('fs');const t=require('./src/data/tools.json');const since=Date.now()-14*864e5;console.log(t.filter(x=>new Date(x.added)>=since&&!['jpg','jpeg','png','webp'].some(e=>fs.existsSync('src/assets/shots/'+x.id+'.'+e))).map(x=>x.id).join(' '))")
+          echo "ids=$ids" >> "$GITHUB_OUTPUT"
+      - name: Capture missing screenshots
+        if: steps.missing.outputs.ids != ''
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+          npm run shots -- ${{ steps.missing.outputs.ids }}
+          git add src/assets/shots
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Add screenshots for new sites"
+            git pull --rebase origin main && git push origin HEAD:main
+          fi
       # base_path is "/atlas.ehroz.pro" on github.io, "" once a custom domain is set
       - run: npm run build
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # optional services (FEATURES.md); repository *variables*, all public values
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY }}
+          PUBLIC_CHECKOUT_MONTHLY: ${{ vars.PUBLIC_CHECKOUT_MONTHLY }}
+          PUBLIC_CHECKOUT_YEARLY: ${{ vars.PUBLIC_CHECKOUT_YEARLY }}
+          PUBLIC_BILLING_PORTAL: ${{ vars.PUBLIC_BILLING_PORTAL }}
       - run: npm run check:seo
       - uses: actions/upload-pages-artifact@v3
         with:

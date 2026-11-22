@@ -2,8 +2,6 @@
 import { u } from '~/lib/url';
 import { getTools, getCategories, toolUpdated, latest } from '~/lib/data';
 import { useTranslations, defaultLang, formatDate, langs, languages, type Lang } from '~/i18n';
-import { analytics } from '~/analytics.config';
-import { IS_PROD } from '~/lib/env';
 import { SITE } from '~/site.config';
 interface Props { lang?: Lang; switchHref: string }
 const { lang = defaultLang, switchHref } = Astro.props;
@@ -12,7 +10,6 @@ const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
 const year = updated.getUTCFullYear();
 const other = langs.find((l) => l !== lang)!;
-const counters = IS_PROD && !!(analytics.ga4 || analytics.metrika);
 const links = [
   ['/', t('nav.sites')],
   ['/categories', t('nav.categories')],
@@ -20,6 +17,12 @@ const links = [
   ['/about', t('nav.about')],
   ['/contact', t('nav.contact')],
   ['/submit', t('nav.submit')],
+  ['/for-makers', t('nav.makers')],
+  ['/badge', t('nav.badge')],
+  ['/collection', t('nav.collection')],
+  ['/newsletter', t('nav.newsletter')],
+  ['/pro', t('nav.pro')],
+  ['/api', t('nav.api')],
 ] as const;
 ---
 <footer class="site-footer">
@@ -32,7 +35,6 @@ const links = [
       {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
       <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
       <a href={u('/rss.xml')} type="application/rss+xml">{t('footer.rss')}</a>
-      {counters && <a href="#" data-consent-reset role="button">{t('footer.cookies')}</a>}
     </nav>
   </div>
 </footer>
