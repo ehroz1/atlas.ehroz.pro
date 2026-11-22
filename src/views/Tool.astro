@@ -3,13 +3,14 @@ import { u } from '~/lib/url';
 import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import ToolCard from '~/components/ToolCard.astro';
+import Comments from '~/components/Comments.astro';
 import { getTools, getCategories, domainOf, type Tool } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
 import { alternativesOf, similarTo } from '~/lib/related';
 import { getPage } from '~/lib/routes';
 import { software } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
-import { SITE } from '~/site.config';
+import { SITE, AUTHOR } from '~/site.config';
 import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
 
 interface Props { tool: Tool; lang: Lang }
@@ -25,8 +26,10 @@ const alternatives = alternativesOf(tool, all);
 const similar = similarTo(tool, all, new Set(alternatives.map((x) => x.id)));
 const shot = shotFor(tool.id);
 const domain = domainOf(d.url);
-const outbound = new URL(d.url);
-outbound.searchParams.set('ref', SITE.ref);
+// a partner link goes out as is (its own tracking), a normal one gets ?ref=
+const outbound = new URL(d.affiliateUrl ?? d.url);
+if (!d.affiliateUrl) outbound.searchParams.set('ref', SITE.ref);
+const rel = d.affiliateUrl ? 'sponsored noopener' : 'noopener';
 const url = absUrl(entry.path, lang);
 
 const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
@@ -40,18 +43,27 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
   toolId={tool.id}
 >
   <div class="container">
-    <header class="tool-head" style="padding-top: var(--s-6)">
+    <header class="tool-head">
       <div class="tool-head__title">
         <h1 class="t-display">{d.name}</h1>
-        <p class="t-lead" style="max-width: 34rem">{loc(d.description, lang)}</p>
+        <p class="t-lead tool-head__lead">{loc(d.description, lang)}</p>
+        {d.note && (
+          <figure class="author-note">
+            <blockquote><p>{loc(d.note, lang)}</p></blockquote>
+            <figcaption>— {t('tool.note', { name: AUTHOR.name })}</figcaption>
+          </figure>
+        )}
         <div class="tool-head__actions">
-          <a class="btn btn--solid" href={outbound.href} target="_blank" rel="noopener" data-track-tool={tool.id}>
+          <a class="btn btn--solid" href={outbound.href} target="_blank" rel={rel} data-track-tool={tool.id}>
             {t('tool.visit', { domain })} <span class="btn__arrow" aria-hidden="true">↗</span>
           </a>
           <button class="btn" type="button" data-save-page={tool.id} aria-pressed="false"
             data-label-save={t('tool.save')} data-label-saved={t('tool.saved')}>{t('tool.save')}</button>
           <button class="btn" type="button" data-copy data-label-done={t('tool.copied')}>{t('tool.copy')}</button>
         </div>
+        {d.affiliateUrl && (
+          <p class="partner-note t-meta"><span class="card__partner">{t('tool.partner')}</span> {t('tool.partnerHint')}</p>
+        )}
       </div>
 
       <dl class="meta">
@@ -82,7 +94,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       </dl>
     </header>
 
-    <a class="tile" href={outbound.href} target="_blank" rel="noopener" aria-label={t('tool.visit', { domain })} data-track-tool={tool.id}>
+    <a class="tile" href={outbound.href} target="_blank" rel={rel} aria-label={t('tool.visit', { domain })} data-track-tool={tool.id}>
       {shot ? (
         <Image
           class="tile__shot"
@@ -100,8 +112,10 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       )}
     </a>
 
+    <Comments toolId={tool.id} lang={lang} />
+
     {alternatives.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="alternatives">
+      <section class="section--more" aria-labelledby="alternatives">
         <div class="section-head">
           <h2 class="t-title" id="alternatives">{t('tool.alternatives', { name: d.name })}</h2>
           {alternatives.length >= 2 && (
@@ -115,7 +129,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     )}
 
     {similar.length > 0 && (
-      <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="similar">
+      <section class="section--more" aria-labelledby="similar">
         <div class="section-head">
           <h2 class="t-title" id="similar">{t('tool.similar')}</h2>
           <a class="link t-small" href={u(`/category/${category.id}`, lang)}>{t('tool.more', { category: categoryName })}</a>

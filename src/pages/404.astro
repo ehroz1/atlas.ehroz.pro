@@ -23,13 +23,13 @@ const blocks = langs.map((lang) => {
 ---
 <Base title={t('notFound.metaTitle')} description={t('notFound.body')} noindex>
   <div class="container">
-    <div class="empty" style="padding-block: var(--s-24)">
+    <div class="empty empty--page">
       <HeroDrawing class="hero__drawing" />
       {blocks.map((b, i) => (
         <div lang={b.lang} class={i ? 'mt-12' : ''}>
           {i === 0 ? <h1 class="t-statement">{b.title}</h1> : <h2 class="t-title">{b.title}</h2>}
           <p class="mt-2">{b.body}</p>
-          <ul class="chips mt-4" role="list" style="justify-content: center">
+          <ul class="chips chips--center mt-4" role="list">
             {b.links.map(([path, label]) => <li><a class="chip" href={u(path, b.lang)}>{label}</a></li>)}
           </ul>
         </div>

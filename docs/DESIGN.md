@@ -22,8 +22,9 @@ do less.
    the hero and the grid (`--section-gap`), a tight 8px gap between tiles
    (`--grid-gap`). That contrast is what makes the page feel calm.
 4. **Flat.** Two shadows exist: `--shadow-shot` under screenshots and
-   `--shadow-float` under the search panel. Cards, buttons, the bar pills and
-   inputs have none.
+   `--shadow-float` under things that float (search panel, menu, cookie
+   banner, admin toast). Cards, buttons, the bar pills and inputs have none.
+   No `backdrop-filter` blur: badges over screenshots sit on `--c-scrim`.
 5. **Words are plain.** Write like you'd explain the site to a friend. No
    "supercharge", "unlock", "seamless", "revolutionary", "AI-powered" as an
    adjective, and no exclamation marks.
@@ -52,6 +53,10 @@ Use semantic tokens (`--c-text`, `--c-surface`), never the raw scale
 | `--c-accent` | `#1268ff` | **one primary button per screen** (hero "Submit a site") |
 | `--c-ink-blue` | `#5b8cff` | **illustrations only** |
 | `--c-signal` | `#ff6b5e` | hover on card/category names, errors |
+| `--c-on-accent` | `#fff` | text on blue or red fills |
+| `--c-scrim` / `--c-scrim-hover` | near-black, 88% / 96% | badges and buttons over screenshots |
+| `--c-backdrop` | black, 62% | behind the finder dialog |
+| `--c-accent-tint` | blue, 18% | the "most used" flag on About |
 
 Three accents, one job each. Don't add a fourth, don't use blue for links or
 other buttons, and don't use gradients.
@@ -134,13 +139,29 @@ put them together.
 | Tile | `.tile`, `.tile__shot` | large framed screenshot on the tool page |
 | No screenshot | `.shot-fallback` | the domain set large |
 | Grid | `.cards`, `.toolbar` | 1 → 2 → 3 columns; chips + count above on category pages |
+| Results bar | `.results-bar`, `.results-bar__text` | shown above the grid only while a query, filters or the Saved view narrow it: "4 sites for “fig”" + Clear |
 | Facts | `.meta` (a `<dl>`), `.tags`, `.tag` | label column 6rem, hairline between rows |
 | Text | `.prose` | 34rem measure, 17px |
-| Forms | `.form`, `.field`, `.input`, `.textarea`, `.select`, `.checkbox` | filled, no border until focus |
-| Empty state | `.empty` | one line title, one line help, one button |
+| Forms | `.form` (`--gap`), `.form--md`, `.field`, `.field--short`, `.field__optional`, `.input`, `.input-row`, `.textarea`, `.textarea--short`, `.select`, `.checkbox` | filled, no border until focus; "(optional)" after a label is `.field__optional` |
+| Empty state | `.empty`, `.empty--page` | one line title, one line help, one button; `--page` for the 404 |
 
 Layout helpers: `.container`, `.stack` (`--gap`), `.cluster` (`--gap`),
-`.split`, `.section`, `.section--tight`.
+`.split`, `.section`, `.section--tight`, `.chips--center`, `.section-head--flush`.
+
+Page spacing modifiers (instead of inline `padding`):
+
+| Class | Padding | Use |
+|---|---|---|
+| `.section--top` | section gap above, 0 below | body of Account, API, Pro, Newsletter, Collection |
+| `.section--page` | `--s-8` above | form and text pages under breadcrumbs (Submit, Contact) |
+| `.hero--page` | `--s-10` above | page hero on Categories / Category |
+| `.section--follow` | `--s-10` above | grid right under a page hero |
+| `.section--list` | `--s-12` above | category index under its hero |
+| `.section--more` | `--s-20` above | related block after main content (alternatives, similar, comments, other categories) |
+| `.section--next` | `--s-16` above | second block on Newsletter |
+
+The only inline `style` allowed in templates is a custom property such as
+`style="--gap: var(--s-3)"` on `.stack`, `.cluster` or `.form`.
 
 ### Adding a page
 
@@ -150,7 +171,7 @@ import Base from '~/layouts/Base.astro';
 ---
 <Base title="Page title" description="One sentence for search engines.">
   <div class="container">
-    <div class="section" style="padding-bottom: 0">
+    <div class="section section--top">
       <h1 class="t-statement">Page title</h1>
       <p class="t-secondary mt-2">One line about the page.</p>
       <!-- content -->
@@ -176,6 +197,10 @@ component-scoped `<style>` blocks for things that could be reused.
   the header fires `atlas:filter` with matching ids and the grid updates
   live; elsewhere Done opens the home grid with the same params.
 - Don't add a second search field to a page.
+- Esc closes the finder and keeps the query (it doesn't wipe the field).
+- On phones (≤34rem) the bar is logo · search · saved · menu; Submit lives in the menu and the hero.
+- Keyboard hints (`.kbd`, `.only-keyboard`) are hidden on touch screens.
+- Touch targets: on `pointer: coarse` card buttons are 44px and chips 40px.
 
 ---
 
@@ -234,3 +259,15 @@ fields are `{ "en": "…" }` objects in `src/data/*.json`. To add Russian:
 
 Medeo Sans includes Cyrillic, so no font changes are needed. Russian plural
 forms need `few`/`many` keys (see `plural()` in `src/i18n/index.ts`).
+
+---
+
+## 8. Admin
+
+`/admin/` is a plain static page in `public/admin/` (no Astro build, its own
+strict CSP), so it can't import `atlas.css`. `public/admin/admin.css` copies
+the semantic tokens under the same names and values and loads Medeo Sans
+from `public/admin/MedeoSansVariable.woff2`. When a token changes in
+`atlas.css`, change it there too. The same rules apply: 400/500 only, the
+spacing scale, pills for buttons, `--r-card` for list boxes, `--r-md` for
+inputs, one `.btn.primary` per tab, `--shadow-float` for the toast only.

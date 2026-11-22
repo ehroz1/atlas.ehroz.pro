@@ -5,6 +5,7 @@ import { shotFor } from '~/lib/shots';
 import { domainOf, getTools, type Tool } from '~/lib/data';
 import { newIds, newUntil } from '~/lib/related';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
+import { AUTHOR } from '~/site.config';
 
 interface Props {
   tool: Tool;
@@ -30,6 +31,8 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   data-added={d.added.toISOString().slice(0, 10)}
   data-own={d.own ? '' : undefined}
   data-name={d.name.toLowerCase()}
+  data-category={d.category}
+  data-pricing={d.openSource && d.pricing === 'free' ? 'free' : d.pricing}
 >
 <a class="card" href={u(`/tool/${tool.id}`, lang)}>
   <div class="card__media">
@@ -58,9 +61,13 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   <div class="card__caption">
     <div class="card__row">
       <span class="card__name">{d.name}</span>
+      {d.affiliateUrl && <span class="card__partner" title={t('tool.partner')}>{t('card.partner')}</span>}
       {!hideCategory && <span class="card__category">{categoryName}</span>}
     </div>
     <p class="card__summary">{loc(d.summary, lang)}</p>
+    {d.note && (
+      <p class="card__note"><span class="visually-hidden">{t('card.note', { name: AUTHOR.name })}: </span>{loc(d.note, lang)}</p>
+    )}
   </div>
 </a>
   {/* Save / move to top. Siblings of the link (a button can't live inside
