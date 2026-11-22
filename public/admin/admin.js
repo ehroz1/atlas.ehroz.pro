@@ -149,18 +149,46 @@ function show(id) {
   window.scrollTo(0, 0);
 }
 
+/* ---------- skeleton ---------- */
+/** Placeholder rows shaped like the real list, shown while data loads. */
+function renderSkeleton(n = 10) {
+  $('#count').replaceChildren(el('span', { class: 'sk sk-count' }));
+  $('#rows').classList.add('loading');
+  $('#rows').setAttribute('aria-busy', 'true');
+  $('#rows').replaceChildren(
+    el('span', { class: 'visually-hidden' }, 'Загрузка…'),
+    ...Array.from({ length: n }, () =>
+      el('div', { class: 'row', 'aria-hidden': 'true' },
+        el('span', { class: 'sk sk-icon' }),
+        el('div', {},
+          el('span', { class: 'sk sk-line lg' }),
+          el('span', { class: 'sk sk-line' })),
+        el('div', { class: 'tags' }, el('span', { class: 'sk sk-pill' })),
+        el('div', { class: 'ops' }, el('span', { class: 'sk sk-btn' }), el('span', { class: 'sk sk-btn' })))));
+  for (const n of ['#q', '#cat-filter', '#add']) $(n).disabled = true;
+}
+function endSkeleton() {
+  $('#rows').classList.remove('loading');
+  $('#rows').removeAttribute('aria-busy');
+  for (const n of ['#q', '#cat-filter', '#add']) $(n).disabled = false;
+}
+
 /* ---------- login ---------- */
 async function start(token) {
   state.token = token;
+  renderSkeleton();
+  show('list');
   try {
     const me = await gh('/user');
     await refresh();
     $('#who').textContent = me.login;
+    endSkeleton();
     renderList();
     show('list');
     return true;
   } catch (e) {
     state.token = '';
+    endSkeleton();
     $('#login-error').textContent = humanError(e);
     show('login');
     return false;
@@ -263,6 +291,7 @@ function openForm(tool) {
   const has = tool && state.shots.has(tool.id);
   $('#shot-preview').hidden = true;
   $('#shot-preview').removeAttribute('src');
+  $('#shot-skeleton').hidden = !has;
   $('#reshoot-wrap').hidden = !has;
   $('#shot-note').textContent = has
     ? 'Скриншот есть. Можно загрузить свой или переснять автоматически.'
@@ -282,6 +311,7 @@ async function loadShotPreview(id) {
     $('#shot-preview').src = `data:image/${ext};base64,${r.content.replace(/\n/g, '')}`;
     $('#shot-preview').hidden = false;
   } catch {}
+  if (state.editing?.id === id) $('#shot-skeleton').hidden = true;
 }
 
 function updateCounters() {
@@ -494,6 +524,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       state.shotBlob = await toShotJpeg(file);
       $('#shot-preview').src = URL.createObjectURL(state.shotBlob);
       $('#shot-preview').hidden = false;
+      $('#shot-skeleton').hidden = true;
       $('#reshoot').checked = false;
     } catch { $('#form-error').textContent = 'Не удалось прочитать картинку.'; }
   });

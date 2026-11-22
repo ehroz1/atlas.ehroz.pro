@@ -121,3 +121,30 @@ fieldset.checks { margin-bottom: 16px; }
 }
 .toast.ok { border-color: color-mix(in srgb, var(--c-ok) 50%, transparent); }
 .toast.bad { border-color: color-mix(in srgb, var(--c-signal) 60%, transparent); }
+
+/* skeleton: grey blocks with a moving shimmer while data is loading */
+.sk {
+  display: block; border-radius: 6px;
+  background: var(--c-surface) linear-gradient(100deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%) no-repeat;
+  background-size: 250% 100%;
+  animation: sk 1.4s ease-in-out infinite;
+}
+@keyframes sk { from { background-position: 120% 0; } to { background-position: -20% 0; } }
+.sk-line { height: 12px; }
+.sk-line.lg { height: 15px; margin-bottom: 7px; }
+/* uneven line lengths so the placeholder list looks like real names */
+.sk-line.lg { width: 22%; }
+.sk-line { width: 48%; }
+.row:nth-child(3n) .sk-line.lg { width: 15%; }
+.row:nth-child(3n+1) .sk-line.lg { width: 28%; }
+.row:nth-child(4n) .sk-line:not(.lg) { width: 36%; }
+.row:nth-child(4n+1) .sk-line:not(.lg) { width: 58%; }
+.sk-pill { height: 22px; width: 64px; border-radius: 999px; }
+.sk-btn { height: 30px; width: 84px; border-radius: 999px; }
+.row .sk-icon { width: 20px; height: 20px; border-radius: 4px; }
+.rows.loading .row:hover { background: none; }
+.sk-count { height: 14px; width: 140px; margin: 15px 0; }
+#shot-skeleton { width: 240px; aspect-ratio: 16/10; border-radius: 8px; }
+.row img { background: var(--c-surface); }
+@media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

@@ -99,6 +99,21 @@ const jsonLd =
     <link rel="icon" href={u('/favicon-32.png')} type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href={u('/apple-touch-icon.png')} />
     <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
+    {/* Skeleton for screenshots: while an <img> is loading it shows a moving
+        grey shimmer (CSS: "Skeleton" in atlas.css). This marks every image
+        that finished (or failed) with .is-loaded, which stops the shimmer.
+        Runs in <head>, before any <img> exists, so no load event is missed;
+        `load` doesn't bubble, hence the capture listener. Without JavaScript
+        there is no .skel class and no shimmer, just the plain grey box. */}
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('skel');
+        var done = function (e) { var t = e.target; if (t && t.tagName === 'IMG') t.classList.add('is-loaded'); };
+        document.addEventListener('load', done, true);
+        document.addEventListener('error', done, true);
+      })();
+    </script>
     <meta name="theme-color" content="#0d0d0d" />
     <meta name="color-scheme" content="dark" />
     <meta property="og:type" content={entry?.kind === 'tool' ? 'article' : 'website'} />
