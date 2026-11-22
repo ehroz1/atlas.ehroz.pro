@@ -1752,12 +1752,6 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 /* no room on phones: the menu has an Account item */
 @media (max-width: 40rem) { .bar-account { display: none; } }
 
-.site-footer__stats { display: inline-flex; flex-wrap: wrap; gap: var(--s-3); }
-.site-footer__stats [data-stats-online]::before {
-  content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 0.4em;
-  border-radius: 50%; background: var(--c-success); vertical-align: middle;
-}
-
 .prefs-note { margin-bottom: var(--s-3); }
 
 /* account */

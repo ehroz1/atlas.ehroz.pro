@@ -2,10 +2,7 @@
 import { u } from '~/lib/url';
 import { getTools, getCategories, toolUpdated, latest } from '~/lib/data';
 import { useTranslations, defaultLang, formatDate, langs, languages, type Lang } from '~/i18n';
-import { analytics } from '~/analytics.config';
-import { IS_PROD } from '~/lib/env';
 import { SITE } from '~/site.config';
-import { BACKEND } from '~/lib/backend';
 interface Props { lang?: Lang; switchHref: string }
 const { lang = defaultLang, switchHref } = Astro.props;
 const t = useTranslations(lang);
@@ -13,7 +10,6 @@ const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
 const year = updated.getUTCFullYear();
 const other = langs.find((l) => l !== lang)!;
-const counters = IS_PROD && !!(analytics.ga4 || analytics.metrika);
 const links = [
   ['/', t('nav.sites')],
   ['/categories', t('nav.categories')],
@@ -33,18 +29,11 @@ const links = [
     <div class="stack" style="--gap: var(--s-1)">
       <span>© {year} {SITE.name} · {t('footer.note')}</span>
       <span>{t('footer.updated', { date: formatDate(updated, lang) })}</span>
-      {BACKEND.enabled && (
-        <span class="site-footer__stats t-tabular" data-stats hidden>
-          <span data-stats-members data-tpl={t('footer.members', { n: '{n}' })} hidden></span>
-          <span data-stats-online data-tpl={t('footer.online', { n: '{n}' })} hidden></span>
-        </span>
-      )}
     </div>
     <nav class="cluster" style="--gap: var(--s-2) var(--s-5)" aria-label={t('nav.other')}>
       {links.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
       <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
       <a href={u('/rss.xml')} type="application/rss+xml">{t('footer.rss')}</a>
-      {counters && <a href="#" data-consent-reset role="button">{t('footer.cookies')}</a>}
     </nav>
   </div>
 </footer>

@@ -238,9 +238,8 @@ export const ru: Record<UIKey, string> = {
   'submit.photosHintDirect': 'До 4 картинок, по 5 МБ.',
   'submit.subject': 'Заявка в {brand}',
 
-  'footer.note': 'Собрано вручную. Без платных размещений.',
+  'footer.note': 'Собрано вручную.',
   'footer.updated': 'Обновлено {date}',
-  'footer.cookies': 'Настройки cookies',
   'footer.rss': 'RSS',
   'rss.title': '{brand} — новые сайты',
 
@@ -261,8 +260,6 @@ export const ru: Record<UIKey, string> = {
   'nav.pro': 'Atlas Pro',
   'nav.api': 'API',
 
-  'footer.members': 'Участников: {n}',
-  'footer.online': 'Сейчас на сайте: {n}',
 
   'card.note': 'Заметка автора',
   'card.partner': 'Партнёр',
