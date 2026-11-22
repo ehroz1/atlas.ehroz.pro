@@ -147,7 +147,7 @@ put them together.
 | FAQ | `.faq`, `.faq__item` (`<details>`), `.faq__q`, `.faq__a` | Help page; hairline between rows, `+`/`−` on the right, first one open |
 | Key table | `.keys` | legal pages: storage key (mono) → what and how long; hairline rows |
 | Card rank | `.card__rank` | one grey line under the summary, e.g. "Place 1 · 120 views" on Popular |
-| Scenic footer | `.site-footer--scenic`, `.foot-top`, `.foot-brand`, `.foot-cols`, `.foot-col`, `.foot-bottom`, `.foot-scene`, `.foot-scene__word`, `.foot-scene__img` | home only (`<Base scenicFooter>`): brand + three link columns, legal row, then `src/assets/footer/mountains.webp` (transparent sky) full width with a faint "Atlas" behind the peaks |
+| Footer | `.site-footer--cols`, `.foot-top`, `.foot-brand`, `.foot-cols`, `.foot-col`, `.foot-bottom`; home adds `.site-footer--scenic`, `.foot-scene`, `.foot-scene__img` | every page: brand + three link columns + legal row; home only (`<Base scenicFooter>`): `src/assets/footer/mountains.webp` (transparent sky) full width at the very bottom |
 | Ranked grid | `<Gallery ordered notes>` | keeps the given order (no shuffle, saved sites not lifted); Popular only |
 
 Layout helpers: `.container`, `.stack` (`--gap`), `.cluster` (`--gap`),

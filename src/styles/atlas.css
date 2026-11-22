@@ -804,15 +804,16 @@ hr { border: 0; border-top: var(--border); }
 .site-footer a:hover { color: var(--c-text); }
 
 
-/* SCENIC FOOTER (home page) — brand and link columns, then the mountain
-   range at the very bottom with a large faint "Atlas" behind its peaks.
+/* FOOTER WITH COLUMNS — brand and link columns, a legal row; on the home
+   page (.site-footer--scenic) the mountain range runs under it, full width.
    The picture's sky is transparent, so the page shows through it; the
    footer sits above the page frame (z-index 2), so the peaks hide the
    frame lines the way a horizon would.                                  */
+.site-footer--cols { padding-block: var(--s-16) var(--s-10); }
 .site-footer--scenic {
   position: relative;
   z-index: 2;
-  padding-block: var(--s-16) 0;
+  padding-bottom: 0;
 }
 .foot-top {
   display: grid;
@@ -847,23 +848,10 @@ hr { border: 0; border-top: var(--border); }
 }
 .foot-scene {
   position: relative;
-  margin-top: clamp(var(--s-6), 3vw, var(--s-10));
-  padding-top: clamp(2.5rem, 11vw, 13rem);
+  margin-top: clamp(var(--s-10), 6vw, var(--s-20));
   overflow: hidden;
   pointer-events: none;
   user-select: none;
-}
-.foot-scene__word {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(6rem, 24vw, 28rem);
-  font-weight: var(--fw-medium);
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-  color: var(--c-fill);
-  white-space: nowrap;
 }
 .foot-scene__img {
   position: relative;
@@ -877,7 +865,6 @@ hr { border: 0; border-top: var(--border); }
 }
 @media (max-width: 34rem) {
   .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-6) var(--s-4); }
-  .foot-scene__word { font-size: 30vw; }
 }
 
 
