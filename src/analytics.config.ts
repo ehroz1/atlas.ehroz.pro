@@ -19,7 +19,7 @@ export const SEARCH_VERIFICATION = {
   /** Yandex Webmaster, "Метатег" tab, the content value */
   yandex: '6a8b554db1ca875b',
   /** Bing Webmaster, msvalidate.01 content value */
-  bing: '',
+  bing: '9D1F8EDD4BBDBC71259A119F269010ED',
 };
 
 /** IndexNow key; the matching file is public/<key>.txt */
