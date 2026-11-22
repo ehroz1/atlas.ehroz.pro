@@ -17,7 +17,7 @@ export const SEARCH_VERIFICATION = {
   /** Google Search Console, HTML tag "content" value (not needed for a DNS-verified domain property) */
   google: '',
   /** Yandex Webmaster, "Метатег" tab, the content value */
-  yandex: '',
+  yandex: '6a8b554db1ca875b',
   /** Bing Webmaster, msvalidate.01 content value */
   bing: '',
 };
