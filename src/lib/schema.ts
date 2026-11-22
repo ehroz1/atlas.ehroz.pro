@@ -71,6 +71,7 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   tool: 'ItemPage',
   alternatives: 'CollectionPage',
   badge: 'WebPage',
+  'for-makers': 'WebPage',
   about: 'AboutPage',
   contact: 'ContactPage',
   submit: 'WebPage',
