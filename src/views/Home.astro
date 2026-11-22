@@ -13,7 +13,7 @@ const { lang } = Astro.props;
 const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('home')]);
 const url = absUrl('/', lang);
 ---
-<Base lang={lang} entry={entry} nodes={[itemList(url, entry.heading[lang], tools, lang)]} pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }}>
+<Base lang={lang} entry={entry} nodes={[itemList(url, entry.heading[lang], tools, lang)]} pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }} scenicFooter>
   <div class="container container--wide">
     <HeroCollage tools={tools} categoryCount={categories.length} lang={lang} />
     <div class="home-grid">

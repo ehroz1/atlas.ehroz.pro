@@ -267,6 +267,10 @@ export const en = {
   'submit.subject': '{brand} submission',
 
   'footer.note': 'Curated by hand.',
+  'footer.catalog': 'Catalog',
+  'footer.project': 'Project',
+  'footer.more': 'More',
+  'footer.tagline': '{sites} in {categories} categories, all hand-picked. No sign-up, no paid placements.',
   'footer.updated': 'Updated {date}',
   'footer.rss': 'RSS',
   'rss.title': '{brand} — new sites',
