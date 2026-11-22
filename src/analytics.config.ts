@@ -7,7 +7,7 @@ export const analytics = {
   /** Google Analytics 4 measurement ID, "G-XXXXXXXXXX" */
   ga4: '',
   /** Yandex Metrika counter number, e.g. "98765432" */
-  metrika: '',
+  metrika: '114501614',
   /** Metrika Webvisor (session recording) */
   webvisor: false,
 };
