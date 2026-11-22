@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const entry = await getPage('badge');
 const badge = absUrl('/badges/featured-on-atlas.svg');
-const code = `<a href="${absUrl('/tool/YOUR-ID/', lang)}"><img src="${badge}" width="200" height="48" alt="${t('badge.alt')}"></a>`;
+const code = `<a href="${absUrl('/tool/YOUR-ID/', lang)}"><img src="${badge}" width="220" height="56" alt="${t('badge.alt')}"></a>`;
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.badge'), path: '/badge' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
@@ -23,7 +23,7 @@ const code = `<a href="${absUrl('/tool/YOUR-ID/', lang)}"><img src="${badge}" wi
 
       <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="preview">
         <h2 class="t-title" id="preview">{t('badge.preview')}</h2>
-        <p><img src={u('/badges/featured-on-atlas.svg')} width="200" height="48" alt={t('badge.alt')} /></p>
+        <p><img src={u('/badges/featured-on-atlas.svg')} width="220" height="56" alt={t('badge.alt')} /></p>
       </section>
 
       <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="code">

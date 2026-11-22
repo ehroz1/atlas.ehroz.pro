@@ -57,9 +57,14 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
           <a class="btn btn--solid" href={outbound.href} target="_blank" rel={rel} data-track-tool={tool.id}>
             {t('tool.visit', { domain })} <span class="btn__arrow" aria-hidden="true">↗</span>
           </a>
-          <button class="btn" type="button" data-save-page={tool.id} aria-pressed="false"
-            data-label-save={t('tool.save')} data-label-saved={t('tool.saved')}>{t('tool.save')}</button>
-          <button class="btn" type="button" data-copy data-label-done={t('tool.copied')}>{t('tool.copy')}</button>
+          <button class="btn btn--icon" type="button" data-save-page={tool.id} data-icon aria-pressed="false"
+            data-label-save={t('tool.save')} data-label-saved={t('tool.saved')} aria-label={t('tool.save')} title={t('tool.save')}>
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h9v13L10 13.2l-4.5 3.3v-13Z"/></svg>
+          </button>
+          <button class="btn btn--icon" type="button" data-copy data-label-copy={t('tool.copy')} data-label-done={t('tool.copied')} aria-label={t('tool.copy')} title={t('tool.copy')}>
+            <svg class="i-copy" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.9.9"/><path d="M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.9-.9"/></svg>
+            <svg class="i-done" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>
+          </button>
         </div>
         {d.affiliateUrl && (
           <p class="partner-note t-meta"><span class="card__partner">{t('tool.partner')}</span> {t('tool.partnerHint')}</p>
@@ -144,12 +149,20 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
 
 <script>
   const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const setLabel = (text: string) => {
+    if (!btn) return;
+    btn.setAttribute('aria-label', text);
+    btn.title = text;
+  };
   btn?.addEventListener('click', async () => {
-    const label = btn.textContent;
     try {
       await navigator.clipboard.writeText(location.origin + location.pathname);
-      btn.textContent = btn.dataset.labelDone ?? 'Copied';
-      setTimeout(() => (btn.textContent = label), 1600);
+      btn.classList.add('is-done');
+      setLabel(btn.dataset.labelDone ?? 'Copied');
+      setTimeout(() => {
+        btn.classList.remove('is-done');
+        setLabel(btn.dataset.labelCopy ?? 'Copy link');
+      }, 1600);
     } catch {
       /* clipboard blocked — nothing to do */
     }

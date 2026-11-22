@@ -266,9 +266,8 @@ export const en = {
   'submit.photosHintDirect': 'Up to 4 images, 5 MB each.',
   'submit.subject': '{brand} submission',
 
-  'footer.note': 'Curated by hand. No sponsored placements.',
+  'footer.note': 'Curated by hand.',
   'footer.updated': 'Updated {date}',
-  'footer.cookies': 'Cookie settings',
   'footer.rss': 'RSS',
   'rss.title': '{brand} — new sites',
 
@@ -289,8 +288,6 @@ export const en = {
   'nav.pro': 'Atlas Pro',
   'nav.api': 'API',
 
-  'footer.members': '{n} members',
-  'footer.online': '{n} online now',
 
   'card.note': 'Note from {name}',
   'card.partner': 'Partner',
