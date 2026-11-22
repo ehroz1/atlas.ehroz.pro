@@ -128,7 +128,9 @@ const sorts = [
   </div>
   {/* Shuffle the cards for every visit. Inline and synchronous, so it runs
       before the first paint and nobody sees the original order flash by.
-      (All card images are lazy: whichever cards land on top load first.)
+      The first cards after the shuffle are on screen, so their images
+      switch from lazy to eager + fetchpriority=high (one of them is the
+      LCP element); the browser hasn't requested any lazy image yet.
 
       With `promote`, the owner's own sites ([data-own]) are then put at
       random places inside a window of ranks that depends on the visit:
@@ -208,6 +210,10 @@ const sorts = [
       }
 
       cards.forEach(function (c) { grid.appendChild(c); });
+      cards.slice(0, 3).forEach(function (c) {
+        var img = c.querySelector('img');
+        if (img) { img.loading = 'eager'; img.setAttribute('fetchpriority', 'high'); }
+      });
     })();
   </script>
 

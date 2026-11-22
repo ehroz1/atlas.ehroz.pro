@@ -1723,21 +1723,20 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .about-intro__date { font-size: var(--fs-15); }
 .about-author { max-width: 40rem; margin: clamp(var(--s-16), 8vw, var(--s-24)) auto 0; text-align: center; }
 
-/* Skeleton: screenshots shimmer while they load. The script in Base.astro
+/* Skeleton: screenshots pulse while they load. The script in Base.astro
    puts .skel on <html> and .is-loaded on each image once it has arrived.
-   The shimmer is the image's own background, so the picture covers it as
-   it paints, and nothing else on the card has to know about loading. */
+   The placeholder is the image's own background, so the picture covers it
+   as it paints, and nothing else on the card has to know about loading.
+   Only opacity is animated: it runs on the compositor, so 100+ pulsing
+   placeholders cost no layout or paint (a moving background-position did). */
 .skel :is(.card__shot, .tile__shot, .collage__item img, .wall__item img, .edge-shots__item img, .finder__thumb img):not(.is-loaded) {
   background-color: var(--c-surface);
-  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.05) 50%, transparent 70%);
-  background-size: 250% 100%;
-  background-repeat: no-repeat;
-  animation: skeleton 1.4s ease-in-out infinite;
+  animation: skeleton 1.4s ease-in-out infinite alternate;
 }
 .skel .tile__shot:not(.is-loaded) { background-color: var(--c-fill); }
 @keyframes skeleton {
-  from { background-position: 120% 0; }
-  to { background-position: -20% 0; }
+  from { opacity: 1; }
+  to { opacity: 0.45; }
 }
 
 /* 18b. ACCOUNTS, COLLECTIONS, NEWSLETTER, PRO, API ------------------------ */

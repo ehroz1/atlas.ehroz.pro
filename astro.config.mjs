@@ -21,7 +21,9 @@ export default defineConfig({
   base,
   // every page URL ends with "/" (vercel.json redirects /page → /page/)
   trailingSlash: 'always',
-  build: { assets: 'assets', format: 'directory' },
+  // CSS goes inline into each page: no render-blocking request before the
+  // first paint (PageSpeed: "render-blocking requests")
+  build: { assets: 'assets', format: 'directory', inlineStylesheets: 'always' },
   // languages are routed by hand: src/pages/[...lang]/, see src/i18n/index.ts
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
   integrations: [csp({ ga4: analytics.ga4, metrika: analytics.metrika, goatcounter: analytics.goatcounter, preview, supabase })],
