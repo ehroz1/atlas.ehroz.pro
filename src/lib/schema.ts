@@ -69,6 +69,8 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   categories: 'CollectionPage',
   category: 'CollectionPage',
   tool: 'ItemPage',
+  alternatives: 'CollectionPage',
+  badge: 'WebPage',
   about: 'AboutPage',
   contact: 'ContactPage',
   submit: 'WebPage',
@@ -158,4 +160,18 @@ export function software(url: string, tool: Tool, lang: Lang, categoryName: stri
 
 export function graph(nodes: Node[]) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes }).replace(/</g, '\\u003c');
+}
+
+/** FAQPage node. Answers must be built from real catalog data, never invented. */
+export function faqPage(url: string, qa: { q: string; a: string }[]): Node {
+  return {
+    '@type': 'FAQPage',
+    '@id': url + '#faq',
+    url,
+    mainEntity: qa.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
 }

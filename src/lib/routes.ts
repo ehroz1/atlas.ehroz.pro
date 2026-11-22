@@ -7,8 +7,9 @@ import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type
 import { fitTitle, fitDescription } from '~/lib/seo';
 import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
+import { alternativesOf } from '~/lib/related';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
 
 export interface PageEntry {
   key: string;
@@ -34,6 +35,7 @@ export const PAGE_UPDATED = {
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
+  badge: '2026-11-22',
   newsletter: '2026-11-21',
   pro: '2026-11-21',
   api: '2026-11-21',
@@ -136,6 +138,31 @@ async function build(): Promise<PageEntry[]> {
     });
   }
 
+  // "Alternatives to X": only for sites with at least 2 alternatives, so no page is thin
+  for (const tool of tools) {
+    const alts = alternativesOf(tool, tools);
+    if (alts.length < 2) continue;
+    const d = tool.data;
+    const lastmod = latest([toolUpdated(tool), ...alts.map(toolUpdated)]);
+    pages.push({
+      key: `alternatives/${tool.id}`,
+      kind: 'alternatives',
+      path: `/alternatives/${tool.id}/`,
+      updated: lastmod,
+      title: per((l) => {
+        const t = T[l]('alt.title', { name: d.name, count: alts.length });
+        return fitTitle(brand(t), t);
+      }),
+      description: per((l) =>
+        fitDescription(T[l]('alt.description', { name: d.name, count: alts.length, names: alts.slice(0, 5).map((x) => x.data.name).join(', ') })),
+      ),
+      heading: per((l) => T[l]('alt.h1', { name: d.name })),
+      text: per((l) => alts.map((x) => `- ${x.data.name}: ${loc(x.data.summary, l)}`).join('\n')),
+      og: per((l) => `og/${l}/alternatives/${tool.id}`),
+      tool,
+    });
+  }
+
   const simple = (key: keyof typeof PAGE_UPDATED, h1: string, body: (l: Lang) => string) =>
     pages.push({
       key,
@@ -153,6 +180,7 @@ async function build(): Promise<PageEntry[]> {
   simple('contact', 'contact.h1', (l) => T[l]('contact.description'));
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
+  simple('badge', 'badge.h1', (l) => T[l]('badge.lead'));
   simple('newsletter', 'newsletter.h1', (l) => T[l]('newsletter.lead'));
   simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
   simple('api', 'api.h1', (l) => T[l]('api.lead'));
