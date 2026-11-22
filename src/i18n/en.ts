@@ -26,7 +26,10 @@ export const en = {
   'lang.switch': 'Русский',
   'lang.switchLabel': 'Читать по-русски',
 
-  'hero.title': 'Browse {count} hand-picked sites',
+  'hero.title.one': 'Browse {count} hand-picked site',
+  'hero.title.few': 'Browse {count} hand-picked sites',
+  'hero.title.many': 'Browse {count} hand-picked sites',
+  'hero.title.other': 'Browse {count} hand-picked sites',
   'hero.sub': 'Useful websites and tools for makers, developers and the curious.',
   'hero.cta': 'Submit a site',
 
@@ -185,6 +188,8 @@ export const en = {
   'submit.emailPh': 'So we can say thanks',
   'submit.optional': '(optional)',
   'submit.photos': 'Photos',
+  'submit.photosChoose': 'Choose photos',
+  'submit.photosNone': 'No files chosen',
   'submit.photosHint': 'On phones they attach automatically. On a computer, attach them in the chat or email that opens.',
   'submit.maker': 'I made this',
   'submit.send': 'Send',

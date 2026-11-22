@@ -40,7 +40,7 @@ const code = `fetch('${base}/api/v1/tools.json')
 
       <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="endpoints">
         <h2 class="t-title" id="endpoints">{t('api.endpoints')}</h2>
-        <dl class="meta">
+        <dl class="meta meta--stack">
           {endpoints.map(([path, label]) => (
             <div class="meta__row">
               <dt class="t-mono t-small"><a class="link" href={base + path}>GET {path}</a></dt>
@@ -61,8 +61,8 @@ const code = `fetch('${base}/api/v1/tools.json')
 
       <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="example">
         <h2 class="t-title" id="example">{t('api.example')}</h2>
-        <pre class="code"><code>{code}</code></pre>
-        <pre class="code"><code>{example}</code></pre>
+        <pre class="code" tabindex="0"><code>{code}</code></pre>
+        <pre class="code" tabindex="0"><code>{example}</code></pre>
       </section>
 
       <section class="mt-12 stack" style="--gap: var(--s-2)" aria-labelledby="terms">

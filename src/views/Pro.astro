@@ -57,9 +57,10 @@ const check = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke
                   {BACKEND.checkoutMonthly && <a class="btn btn--solid" href={BACKEND.checkoutMonthly} data-checkout rel="noopener">{t('pro.buyMonthly', { price: PRO.monthly })}</a>}
                   {BACKEND.checkoutYearly && <a class="btn" href={BACKEND.checkoutYearly} data-checkout rel="noopener">{t('pro.buyYearly', { price: PRO.yearly })}</a>}
                 </div>
-                <p class="t-small" data-need-login>
-                  {t('pro.signInFirst')} <a class="link" href={u('/account', lang) + '?next=pro/'}>{t('pro.signIn')}</a>
-                </p>
+                <div class="stack" style="--gap: var(--s-3)" data-need-login>
+                  <p class="t-small t-secondary">{t('pro.signInFirst')}</p>
+                  <a class="btn btn--solid" href={u('/account', lang) + '?next=pro/'}>{t('pro.signIn')}</a>
+                </div>
                 <p class="notice notice--success" data-is-pro hidden>{t('pro.youArePro')}</p>
                 <p class="plan__note">{t('pro.note')}</p>
               </>

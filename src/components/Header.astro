@@ -262,6 +262,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
   const scope = document.querySelector<HTMLElement>('[data-scope-category]')?.dataset.scopeCategory;
 
   const normalize = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').trim();
+  // Words match at the start of a word, not anywhere inside one: "ai" finds
+  // "AI studio" and "ai.com", not "PairDrop".
+  const wordsOf = (s: string) => normalize(s).split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const hasWords = (hay: string, words: string[]) => {
+    const h = ' ' + wordsOf(hay).join(' ');
+    return words.every((w) => h.includes(' ' + w));
+  };
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
   const CHECK = '<svg class="finder__check" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8"/></svg>';
 
@@ -277,9 +284,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     FACETS.reduce((n, f) => n + state[f].size, 0) - (scope && state.category.size === 1 && state.category.has(scope) ? 1 : 0);
 
   function matches(tool: Tool) {
-    const words = normalize(state.q).split(/\s+/).filter(Boolean);
-    const hay = normalize(tool.text);
-    if (!words.every((w) => hay.includes(w))) return false;
+    if (!hasWords(tool.text, wordsOf(state.q))) return false;
     if (state.category.size && !state.category.has(tool.category)) return false;
     if (state.pricing.size && !(state.pricing.has(tool.pricing) || (state.pricing.has('open') && tool.open))) return false;
     if (state.platform.size && !tool.platforms.some((p) => state.platform.has(p))) return false;
@@ -342,8 +347,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || path.startsWith('/to
     if (state.q.trim()) {
       // Typing: tabs with counts, then results with thumbnails.
       const hits = data.tools.filter(matches);
-      const words = normalize(state.q).split(/\s+/).filter(Boolean);
-      const cats = data.facets.category.filter((c) => words.every((w) => normalize(c.label).includes(w)));
+      const words = wordsOf(state.q);
+      const cats = data.facets.category.filter((c) => hasWords(c.label, words));
       const tab = (id: 'sites' | 'categories', label: string, n: number) =>
         `<button class="finder__tab" type="button" role="tab" aria-selected="${resultTab === id}" data-tab="${id}">${esc(label)}<span class="finder__tab-count">${n}</span></button>`;
       let list = '';

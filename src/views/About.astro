@@ -141,8 +141,18 @@ const icon = {
     const lefts = items.filter((el) => el.dataset.side === 'left');
     const rights = items.filter((el) => el.dataset.side === 'right');
     const SPEED = 22; // px per second
-    let W = 0, H = 0, tw = 0, th = 0, gap = 0, len = 0;
+    // Shots must not run into the text: keep them outside the plans and the headline.
+    const plans = document.querySelector<HTMLElement>('.plans');
+    const h1 = document.querySelector<HTMLElement>('.t-headline');
+    let W = 0, H = 0, tw = 0, th = 0, gap = 0, len = 0, limL = 0, limR = 0;
+    const MARGIN = 16;
     const measure = () => {
+      const b = box.getBoundingClientRect();
+      const rects = [plans?.getBoundingClientRect()];
+      if (h1) { const r = document.createRange(); r.selectNodeContents(h1); rects.push(r.getBoundingClientRect()); }
+      const kept = rects.filter((r): r is DOMRect => !!r && r.width > 0);
+      limL = Math.min(...kept.map((r) => r.left - b.left), Infinity);
+      limR = Math.max(...kept.map((r) => r.right - b.left), -Infinity);
       W = box.clientWidth;
       H = box.clientHeight;
       tw = items[0].offsetWidth;
@@ -157,8 +167,9 @@ const icon = {
         el.style.transform = `translate3d(${xFor(Number(el.dataset.dx))}px, ${y}px, 0)`;
       });
     const draw = () => {
-      place(lefts, -1, (dx) => dx * tw); // left column rides up
-      place(rights, 1, (dx) => W - tw + dx * tw); // right column rides down
+      // left column rides up, right column rides down; each stops short of the text
+      place(lefts, -1, (dx) => Math.min(dx * tw, limL - MARGIN - tw));
+      place(rights, 1, (dx) => Math.max(W - tw + dx * tw, limR + MARGIN));
     };
     let running = false, visible = true, last = 0;
     const frame = (now: number) => {

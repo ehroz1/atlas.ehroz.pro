@@ -386,7 +386,10 @@ hr { border: 0; border-top: var(--border); }
 }
 .site-header__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem) minmax(0, 1fr);
+  /* The side groups never shrink below their content (brand + sections on the
+     left; Submit + icons on the right), so the search pill gives way instead of
+     being overlapped. Equal 1fr sides keep it centered when there is room. */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, 30rem) minmax(max-content, 1fr);
   align-items: center;
   gap: var(--s-2);
   width: 100%;
@@ -662,10 +665,18 @@ hr { border: 0; border-top: var(--border); }
 .finder__lucky:hover { color: var(--c-chrome-text); }
 .finder__lucky:disabled { color: var(--c-text-disabled); cursor: default; }
 .finder__lucky-text { white-space: nowrap; }
-/* phones: the dice alone, the label stays for screen readers */
+/* phones keep the label, just tighter; only the narrowest ones get the dice alone */
 @media (max-width: 40rem) {
+  .finder__lucky { padding-inline: 0.625rem; gap: var(--s-1); font-size: var(--fs-14); }
+  .finder__clear { padding-inline: var(--s-2); font-size: var(--fs-14); white-space: nowrap; }
+  .finder__foot { gap: var(--s-1); }
+  .finder__lucky svg { display: none; }
+  .finder__foot-end { gap: var(--s-1); }
+  .finder__done { padding-inline: 1rem; font-size: var(--fs-15); }
+}
+@media (max-width: 23rem) {
   .finder__lucky { padding-inline: 0.875rem; }
-  .finder__lucky svg { width: 1.375rem; height: 1.375rem; }
+  .finder__lucky svg { display: block; width: 1.375rem; height: 1.375rem; }
   .finder__lucky-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 }
 .finder__done {
@@ -680,8 +691,9 @@ hr { border: 0; border-top: var(--border); }
 @media (max-width: 40rem) {
   .finder { margin-top: var(--s-4); max-height: calc(100dvh - var(--s-8)); border-radius: 22px; }
   .finder__body { grid-template-columns: 1fr; gap: var(--s-2); }
-  .finder__facets { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-1); }
-  .finder__facet { justify-content: center; gap: var(--s-2); min-width: 0; padding-inline: var(--s-2); font-size: var(--fs-15); }
+  /* sized by their words (not three equal thirds), so "Platform" is never cut off */
+  .finder__facets { display: flex; gap: var(--s-1); }
+  .finder__facet { flex: 1 1 auto; justify-content: center; gap: var(--s-1); padding-inline: var(--s-2); font-size: var(--fs-14); white-space: nowrap; }
   .finder__facet svg { display: none; }
   .finder__facet-count { margin-left: 0; }
 }
@@ -786,7 +798,8 @@ hr { border: 0; border-top: var(--border); }
   justify-content: space-between;
   gap: var(--s-4) var(--s-8);
 }
-.site-footer a { color: var(--c-text-2); transition: color var(--dur-fast) var(--ease); }
+.site-footer a { display: inline-block; padding-block: var(--s-1); color: var(--c-text-2); transition: color var(--dur-fast) var(--ease); }
+@media (pointer: coarse) { .site-footer a { padding-block: var(--s-2); } }
 .site-footer a:hover { color: var(--c-text); }
 
 
@@ -997,7 +1010,10 @@ hr { border: 0; border-top: var(--border); }
   box-shadow: var(--shadow-shot);
   will-change: transform;
   backface-visibility: hidden;
+  transition: opacity var(--dur) var(--ease);
 }
+/* a shot passing behind the text fades out instead of showing through it */
+.collage__item.is-covered { opacity: 0; }
 .collage__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 /* before the script runs (or without it) only the panel shows */
 .hero-panel:not(.is-live) .collage__item { visibility: hidden; }
@@ -1122,7 +1138,8 @@ hr { border: 0; border-top: var(--border); }
 /* left corner: "New" (white, the few newest sites only) or "Viewed" (dark) */
 .card__badge--new,
 .card__badge--seen { right: auto; left: var(--s-3); }
-.card__badge--new { background: var(--c-text); color: var(--c-text-invert); }
+/* white on white screenshots would vanish: a ring in the page color keeps the edge */
+.card__badge--new { background: var(--c-text); color: var(--c-text-invert); outline: 2px solid var(--c-bg); }
 .card__badge--seen { color: var(--c-text-2); }
 .card-wrap.is-seen .card__badge--new { display: none; }
 .card-wrap.is-seen .card__name { color: var(--c-text-2); }
@@ -1399,6 +1416,10 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
   transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
 }
 .wall__item:hover .wall__label, .wall__item:focus-visible .wall__label { opacity: 1; transform: none; }
+/* touch screens have no hover: names are always there, a little smaller */
+@media (hover: none) {
+  .wall__label { opacity: 1; transform: none; left: var(--s-2); bottom: var(--s-2); max-width: calc(100% - var(--s-4)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fs-13); padding: 2px var(--s-2); }
+}
 .wall__item:focus-visible { outline-offset: -3px; }
 .wall__hint {
   position: fixed;
@@ -1466,8 +1487,10 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 @media (min-width: 60rem) {
   .plans { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; align-items: stretch; }
   .plan:first-child { border-right: 0; border-radius: var(--r-hero) 0 0 var(--r-hero); }
-  .plan:last-child { border-left: 0; border-radius: 0 var(--r-hero) var(--r-hero) 0; }
+  .plan:last-child:not(.plan--raised) { border-left: 0; border-radius: 0 var(--r-hero) var(--r-hero) 0; }
   .plan--raised { margin-block: calc(var(--s-3) * -1); }
+  /* side by side: reserve two lines for the subtitle so the rules line up across columns */
+  .plan__sub { min-height: 2lh; }
 }
 .plan {
   position: relative;
@@ -1533,8 +1556,16 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .field { display: grid; gap: var(--s-2); }
 .field__label { font-size: var(--fs-14); font-weight: var(--fw-medium); }
 .field__hint  { font-size: var(--fs-13); color: var(--c-text-3); }
+/* file picker: the native input stays for keyboards and screen readers, the label is the button */
+.file { display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
+.file__input { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.file__input:focus-visible + .file__btn { outline: 2px solid var(--c-focus); outline-offset: 2px; }
+.file__btn { flex: none; cursor: pointer; }
+.file__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .field__error { font-size: var(--fs-13); color: var(--c-signal); }
 .checkbox { width: 1rem; height: 1rem; accent-color: var(--c-text); }
+/* WCAG 2.5.8: at least 24 px where fingers are */
+@media (pointer: coarse), (max-width: 48rem) { .checkbox { width: 1.5rem; height: 1.5rem; flex: none; } }
 
 .input, .textarea, .select {
   width: 100%;
@@ -1739,7 +1770,8 @@ fieldset.field { border: 0; padding: 0; margin: 0; min-width: 0; }
 
 /* pro */
 @media (min-width: 48rem) {
-  .plans.plans--two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 52rem; }
+  /* left-aligned like the heading above it, not centered in the column */
+  .plans.plans--two { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 52rem; margin-inline: 0; }
 }
 
 /* comments */
@@ -1751,6 +1783,10 @@ fieldset.field { border: 0; padding: 0; margin: 0; min-width: 0; }
 button.link { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
 
 /* api */
+/* endpoint list: the path is long, so label and description stack instead of sharing a 6rem column */
+.meta--stack .meta__row { grid-template-columns: minmax(0, 1fr); gap: var(--s-1); }
+.meta--stack dt { overflow-wrap: anywhere; color: var(--c-text); }
+.meta--stack dd { color: var(--c-text-3); }
 .code {
   margin: 0; padding: var(--s-4); overflow: auto;
   border: var(--border); border-radius: var(--r-md); background: var(--c-surface);

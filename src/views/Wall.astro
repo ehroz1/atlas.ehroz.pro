@@ -24,10 +24,11 @@ const t = useTranslations(lang);
 const entry = await getPage('wall');
 
 const tools = (await getTools()).filter((x) => shotFor(x.id));
-const COLS = 8;
-const ROWS = 8; // keep even so the brick offset repeats cleanly
-// Step through the list with a row offset so neighbours vary between rows.
-const pick = (r: number, c: number) => tools[(r * COLS + c + r * 3) % tools.length];
+// One block holds every site exactly once (a few repeat only when the count
+// doesn't fill the last row). Rows stay even so the brick offset repeats cleanly.
+const COLS = 11;
+const ROWS = 2 * Math.ceil(tools.length / (2 * COLS));
+const pick = (r: number, c: number) => tools[(r * COLS + c) % tools.length];
 const seen = new Set<string>();
 ---
 <Base lang={lang} entry={entry} flush bare>
@@ -74,6 +75,8 @@ const seen = new Set<string>();
       a.setAttribute('aria-hidden', 'true');
       a.tabIndex = -1;
       a.removeAttribute('aria-label');
+      // copies are only filler: don't fetch or decode them until they scroll near
+      a.querySelectorAll('img').forEach((img) => { img.loading = 'lazy'; img.decoding = 'async'; });
     });
     return el;
   };

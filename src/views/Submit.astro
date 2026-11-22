@@ -62,7 +62,11 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
 
         <div class="field">
           <label class="field__label" for="photos">{t('submit.photos')} <span class="field__optional">{t('submit.optional')}</span></label>
-          <input class="input" id="photos" name="photos" type="file" accept="image/*" multiple />
+          <div class="file">
+            <input class="file__input" id="photos" name="photos" type="file" accept="image/*" multiple />
+            <label class="btn btn--sm file__btn" for="photos">{t('submit.photosChoose')}</label>
+            <span class="file__name t-meta" data-file-name data-empty={t('submit.photosNone')}>{t('submit.photosNone')}</span>
+          </div>
           <span class="field__hint">{BACKEND.enabled ? t('submit.photosHintDirect') : t('submit.photosHint')}</span>
         </div>
 
@@ -116,6 +120,12 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
     urlInput.setCustomValidity(ok ? '' : urlInput.dataset.invalid ?? 'Invalid link');
     urlInput.setAttribute('aria-invalid', String(!ok));
   };
+  // the browser's own file control is unstyled and in the browser's language: a label does its job
+  const photos = form?.querySelector<HTMLInputElement>('#photos');
+  const fileName = form?.querySelector<HTMLElement>('[data-file-name]');
+  photos?.addEventListener('change', () => {
+    if (fileName) fileName.textContent = photos.files?.length ? Array.from(photos.files, (f) => f.name).join(', ') : fileName.dataset.empty ?? '';
+  });
   urlInput?.addEventListener('blur', normalizeUrl);
   urlInput?.addEventListener('input', () => { urlInput.setCustomValidity(''); urlInput.removeAttribute('aria-invalid'); });
   form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>

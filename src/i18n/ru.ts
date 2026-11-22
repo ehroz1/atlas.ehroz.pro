@@ -25,7 +25,10 @@ export const ru: Record<UIKey, string> = {
   'lang.switch': 'English',
   'lang.switchLabel': 'Read in English',
 
-  'hero.title': '{count} сайтов, отобранных вручную',
+  'hero.title.one': '{count} сайт, отобранный вручную',
+  'hero.title.few': '{count} сайта, отобранных вручную',
+  'hero.title.many': '{count} сайтов, отобранных вручную',
+  'hero.title.other': '{count} сайта, отобранных вручную',
   'hero.sub': 'Полезные сайты и инструменты для дизайнеров, разработчиков и любопытных.',
   'hero.cta': 'Предложить сайт',
 
@@ -119,7 +122,7 @@ export const ru: Record<UIKey, string> = {
 
   'about.title': 'О проекте {brand}: как сайты попадают в каталог',
   'about.description': 'Что такое {brand}, кто его делает, как сайт попадает в каталог и чего здесь нет: платных мест, а партнёрские ссылки всегда помечены.',
-  'about.h1': 'Полезные сайты, отобранные<br />чтобы помогать делать вещи',
+  'about.h1': 'Полезные сайты, отобранные,<br />чтобы помогать делать вещи',
   'about.lead': '{brand} — каталог сайтов и инструментов для работы, отобранных вручную. Каждым сайтом сначала пользуются какое-то время, и никто не платит за место в списке.',
   'about.updated': 'Обновлено {date}',
   'about.plan1.name': 'Вручную',
@@ -184,6 +187,8 @@ export const ru: Record<UIKey, string> = {
   'submit.emailPh': 'Чтобы сказать спасибо',
   'submit.optional': '(необязательно)',
   'submit.photos': 'Фото',
+  'submit.photosChoose': 'Выбрать фото',
+  'submit.photosNone': 'Файлы не выбраны',
   'submit.photosHint': 'На телефоне фото прикрепятся сами. На компьютере прикрепите их в открывшемся чате или письме.',
   'submit.maker': 'Это мой проект',
   'submit.send': 'Отправить',

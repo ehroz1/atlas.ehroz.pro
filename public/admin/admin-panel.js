@@ -61,6 +61,13 @@ async function db(path, { method = 'GET', body, prefer } = {}) {
 }
 const rpc = (name, args = {}) => db(`/rest/v1/rpc/${name}`, { method: 'POST', body: args });
 
+/** Header: which site account is signed in (separate from the GitHub login). */
+async function paintSiteAccount(admin) {
+  const s = await session().catch(() => null);
+  $('#who-site').textContent = !s ? 'не вошли' : admin === false ? `${s.user?.email || 'аккаунт'} (не админ)` : s.user?.email || 'вошли';
+  $('#sb-logout').hidden = !s;
+}
+
 /** null = not signed in, false = signed in but not admin, object = admin profile */
 async function whoIsAdmin() {
   const s = await session();
@@ -97,7 +104,7 @@ async function openTab(name) {
   $('#sb-gate').hidden = true;
 
   if (NEEDS_DB.has(name)) {
-    if (panel.admin === null || panel.admin === false) panel.admin = await whoIsAdmin().catch(() => null);
+    if (panel.admin === null || panel.admin === false) { panel.admin = await whoIsAdmin().catch(() => null); paintSiteAccount(panel.admin); }
     if (!panel.admin) {
       $('#tab-' + name).hidden = true;
       $('#sb-gate').hidden = false;
@@ -186,7 +193,7 @@ async function renderSubs() {
         r.email ? el('span', {}, ' · ', el('a', { href: `mailto:${r.email}?subject=${encodeURIComponent('Atlas: ' + r.name)}` }, r.email)) : null),
       photos.length ? el('div', { class: 'photos' }, ...photos.map((u) => el('a', { href: u, target: '_blank', rel: 'noopener' }, el('img', { src: u, alt: '' })))) : null,
       el('div', { class: 'actions' },
-        r.status !== 'added' ? el('button', { class: 'btn primary', type: 'button', onclick: () => addFromSubmission(r) }, 'Добавить в каталог') : null,
+        r.status !== 'added' ? el('button', { class: 'btn', type: 'button', onclick: () => addFromSubmission(r) }, 'Добавить в каталог') : null,
         r.status !== 'rejected' ? el('button', { class: 'btn', type: 'button', onclick: (e) => setStatus('rejected', e.target) }, 'Отклонить') : null,
         r.status !== 'new' ? el('button', { class: 'btn', type: 'button', onclick: (e) => setStatus('new', e.target) }, 'Вернуть в новые') : null,
         el('span', { class: 'grow' }),
@@ -203,9 +210,28 @@ async function renderSubs() {
   })));
 }
 
+/**
+ * "Add to catalog" from a submission. The catalog lives in GitHub, so without a
+ * token the submission is remembered, the login is shown, and the form is
+ * filled the moment the token is accepted (onGithubLogin below).
+ */
 function addFromSubmission(r) {
+  panel.pending = r;
   location.hash = '#sites';
-  if (!state.token) { toast('Сначала войдите GitHub-токеном — каталог хранится в репозитории.', 'bad'); return; }
+  if (!state.token) {
+    $('#login-pending').textContent = `Заявка «${r.name}» ждёт. Войдите токеном GitHub — форма заполнится из неё сама.`;
+    $('#login-pending').hidden = false;
+    $('#token').focus();
+    toast('Нужен вход в GitHub. Заявка сохранена: после входа форма заполнится.');
+    return;
+  }
+  fillFromSubmission();
+}
+function fillFromSubmission() {
+  const r = panel.pending;
+  if (!r) return;
+  panel.pending = null;
+  $('#login-pending').hidden = true;
   openForm(null);
   const fm = $('#tool-form').elements;
   fm.url.value = r.url;
@@ -217,6 +243,7 @@ function addFromSubmission(r) {
   panel.fromSubmission = r.id;
   toast('Форма заполнена из заявки. Допишите описания и сохраните — заявка отметится «добавлена».');
 }
+window.onGithubLogin = () => { if (panel.pending) fillFromSubmission(); };
 
 window.onToolSaved = async () => {
   panel.tools = null;
@@ -234,7 +261,7 @@ async function renderComments() {
   await siteTools().catch(() => {});
   const list = $('#comments-list');
   list.dataset.ids = rows.map((r) => r.id).join(',');
-  if (!rows.length) { list.replaceChildren(el('p', { class: 'muted' }, status === 'pending' ? 'Всё проверено 🎉' : 'Комментариев нет.')); return; }
+  if (!rows.length) { list.replaceChildren(el('p', { class: 'muted' }, status === 'pending' ? 'Всё проверено.' : 'Комментариев нет.')); return; }
   const set = async (ids, st, btn) => {
     busy(btn, true);
     try {
@@ -252,7 +279,7 @@ async function renderComments() {
       el('span', { class: 'muted' }, fmtDate(r.created_at))),
     el('p', { class: 'item__body' }, r.body),
     el('div', { class: 'actions' },
-      r.status !== 'approved' ? el('button', { class: 'btn primary', type: 'button', onclick: (e) => set([r.id], 'approved', e.target) }, 'Одобрить') : null,
+      r.status !== 'approved' ? el('button', { class: 'btn', type: 'button', onclick: (e) => set([r.id], 'approved', e.target) }, 'Одобрить') : null,
       r.status !== 'rejected' ? el('button', { class: 'btn', type: 'button', onclick: (e) => set([r.id], 'rejected', e.target) }, 'Скрыть') : null,
       el('span', { class: 'grow' }),
       el('button', { class: 'btn danger', type: 'button', onclick: async (e) => {
@@ -276,8 +303,7 @@ async function renderUsers(reload = true) {
   const list = usersCache.filter((u) => !q || [u.email, u.display_name].join(' ').toLowerCase().includes(q));
   $('#users-count').textContent = `Всего: ${usersCache.length}` + (list.length !== usersCache.length ? ` · найдено ${list.length}` : '');
   const isPro = (u) => u.plan === 'pro' && (!u.plan_until || new Date(u.plan_until) > new Date());
-  $('#users-list').replaceChildren(...list.map((u) => el('div', { class: 'row users-row' },
-    el('span'),
+  $('#users-list').replaceChildren(...list.map((u) => el('div', { class: 'row row--plain' },
     el('div', { class: 'main' },
       el('div', { class: 'name' }, u.email || '—', u.is_admin ? el('span', { class: 'badge' }, 'админ') : null),
       el('div', { class: 'sub' }, [u.display_name, 'с ' + new Date(u.created_at).toLocaleDateString('ru'), u.lang].filter(Boolean).join(' · '))),
@@ -374,11 +400,9 @@ async function renderServices() {
     const r = await fetch(`${SB}/auth/v1/settings`, { headers: { apikey: SB_KEY } });
     google = (await r.json()).external?.google;
   } catch {}
-  const row = (name, note, href, state_) => el('div', { class: 'row' },
-    el('span'),
+  const row = (name, note, href, state_) => el('div', { class: 'row row--plain' },
     el('div', { class: 'main' }, el('div', { class: 'name' }, name, state_ != null ? el('span', { class: 'badge ' + (state_ ? 'ok' : 'warn') }, state_ ? 'включено' : 'не настроено') : null),
       el('div', { class: 'sub' }, note)),
-    el('span'),
     el('div', { class: 'ops' }, el('a', { class: 'btn', href, target: '_blank', rel: 'noopener' }, 'Открыть ↗')));
   $('#services').replaceChildren(
     row('Supabase — база, аккаунты', 'Пользователи, комментарии, заявки, SQL', 'https://supabase.com/dashboard/project/uqfsxipvbccporjtsfoi'),
@@ -397,9 +421,18 @@ window.onSitesReady = () => {
   const go = () => openTab(location.hash.slice(1) || 'overview');
   window.addEventListener('hashchange', go);
   go();
-  whoIsAdmin().then((a) => { panel.admin = a; updateCounts(); }).catch(() => {});
+  whoIsAdmin().then((a) => { panel.admin = a; paintSiteAccount(a); updateCounts(); }).catch(() => paintSiteAccount(null));
 };
 document.addEventListener('DOMContentLoaded', () => {
+  $('#sb-logout').addEventListener('click', async () => {
+    const s = readSession();
+    try { if (s?.access_token) await fetch(`${SB}/auth/v1/logout`, { method: 'POST', headers: { apikey: SB_KEY, Authorization: `Bearer ${s.access_token}` } }); } catch {}
+    try { localStorage.removeItem(SB_STORE); } catch {}
+    panel.admin = null;
+    paintSiteAccount(null);
+    document.querySelectorAll('[data-count]').forEach((n) => (n.textContent = ''));
+    openTab(current);
+  });
   $('#subs-filter').addEventListener('change', () => renderSubs().catch(fail));
   $('#comments-filter').addEventListener('change', () => renderComments().catch(fail));
   $('#users-q').addEventListener('input', () => renderUsers(false));

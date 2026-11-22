@@ -145,7 +145,7 @@ const humanError = (e) =>
 
 function show(id) {
   for (const s of ['login', 'list', 'edit']) $('#' + s).hidden = s !== id;
-  $('#logout').hidden = id === 'login';
+  $('#logout').hidden = !state.token;
   window.scrollTo(0, 0);
 }
 
@@ -158,9 +158,11 @@ async function start(token) {
     $('#who').textContent = me.login;
     renderList();
     show('list');
+    window.onGithubLogin?.();
     return true;
   } catch (e) {
     state.token = '';
+    $('#who').textContent = 'не вошли';
     $('#login-error').textContent = humanError(e);
     show('login');
     return false;
@@ -168,6 +170,12 @@ async function start(token) {
 }
 
 /* ---------- list ---------- */
+/** Google's favicon service; if it fails (blocked, offline) a letter stands in, never a broken image. */
+function favicon(t) {
+  const img = el('img', { class: 'row__icon', src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainOf(t.url))}&sz=64`, alt: '', loading: 'lazy' });
+  img.addEventListener('error', () => img.replaceWith(el('span', { class: 'row__icon row__icon--fallback', 'aria-hidden': 'true' }, (t.name || '?').charAt(0))), { once: true });
+  return img;
+}
 function renderList() {
   const q = $('#q').value.trim().toLowerCase();
   const cat = $('#cat-filter').value;
@@ -182,7 +190,7 @@ function renderList() {
   $('#count').textContent = `Сайтов: ${state.tools.length}` + (list.length !== state.tools.length ? ` · показано ${list.length}` : '');
   $('#rows').replaceChildren(...list.map((t) =>
     el('div', { class: 'row' },
-      el('img', { src: `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainOf(t.url))}&sz=64`, alt: '', loading: 'lazy' }),
+      favicon(t),
       el('div', { class: 'main', onclick: () => openForm(t) },
         el('div', { class: 'name' }, t.name),
         el('div', { class: 'sub' }, `${domainOf(t.url)} · ${catName(t.category)} · ${t.added}`)),
@@ -194,7 +202,7 @@ function renderList() {
         el('button', { class: 'btn', type: 'button', onclick: () => openForm(t) }, 'Изменить'),
         el('button', { class: 'btn danger', type: 'button', onclick: () => removeTool(t) }, 'Удалить')),
     )));
-  if (!list.length) $('#rows').replaceChildren(el('div', { class: 'row' }, el('span'), el('span', { class: 'muted' }, 'Ничего не найдено')));
+  if (!list.length) $('#rows').replaceChildren(el('div', { class: 'row row--plain row--empty' }, el('div', { class: 'main' }, 'Ничего не найдено')));
 }
 
 /* ---------- form ---------- */
@@ -241,6 +249,8 @@ function openForm(tool) {
   f('name').value = t.name || '';
   f('id').value = t.id || '';
   f('id').readOnly = !!tool;
+  $('#id-hint').textContent = tool ? 'Менять нельзя: от ID зависит адрес страницы сайта.' : 'Только латиница, цифры и дефис. Подставится сам из названия.';
+  $('#shot-name').textContent = 'Файл не выбран';
   f('id').dataset.auto = tool ? '' : '1';
   f('category').value = t.category || '';
   f('pricing').value = t.pricing || 'free';
@@ -459,7 +469,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const t = $('#token').value.trim();
     if (await start(t)) { store.set(t, $('#remember').checked); $('#token').value = ''; }
   });
-  $('#logout').addEventListener('click', () => { store.clear(); state.token = ''; show('login'); });
+  $('#logout').addEventListener('click', () => { store.clear(); state.token = ''; $('#who').textContent = 'не вошли'; show('login'); });
 
   $('#q').addEventListener('input', renderList);
   $('#cat-filter').addEventListener('change', renderList);
@@ -500,6 +510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('#shot-file').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     state.shotBlob = null;
+    $('#shot-name').textContent = file ? file.name : 'Файл не выбран';
     if (!file) return;
     try {
       state.shotBlob = await toShotJpeg(file);

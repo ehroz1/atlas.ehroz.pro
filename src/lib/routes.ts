@@ -5,7 +5,7 @@
  */
 import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type Category } from '~/lib/data';
 import { fitTitle, fitDescription } from '~/lib/seo';
-import { useTranslations, loc, langs, type Lang } from '~/i18n';
+import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 
 export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api';
@@ -67,7 +67,7 @@ async function build(): Promise<PageEntry[]> {
     updated: allUpdated,
     title: per((l) => fitTitle(T[l]('site.title'))),
     description: per((l) => fitDescription(T[l]('site.description'))),
-    heading: per((l) => T[l]('hero.title', { count: tools.length })),
+    heading: per((l) => T[l](`hero.title.${plural(l, tools.length)}`, { count: tools.length })),
     text: per((l) => T[l]('hero.sub', { categories: categories.length })),
     og: per((l) => `og/${l}/home`),
   });

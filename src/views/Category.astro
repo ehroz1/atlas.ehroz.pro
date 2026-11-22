@@ -1,5 +1,4 @@
 ---
-import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories, type Category } from '~/lib/data';
@@ -15,7 +14,6 @@ const [all, categories, entry] = await Promise.all([getTools(), getCategories(),
 const tools = all.filter((x) => x.data.category === category.id);
 const name = loc(category.data.name, lang);
 const url = absUrl(entry.path, lang);
-const others = categories.filter((c) => c.id !== category.id);
 ---
 <Base
   lang={lang}
@@ -34,12 +32,5 @@ const others = categories.filter((c) => c.id !== category.id);
     <div class="section section--follow">
       <Gallery tools={tools} categories={categories} current={category.id} lang={lang} />
     </div>
-
-    <nav class="section--more" aria-labelledby="other-categories">
-      <h2 class="t-title" id="other-categories">{t('category.others')}</h2>
-      <ul class="chips mt-4" role="list">
-        {others.map((c) => <li><a class="chip" href={u(`/category/${c.id}`, lang)}>{loc(c.data.name, lang)}</a></li>)}
-      </ul>
-    </nav>
   </div>
 </Base>
