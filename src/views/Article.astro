@@ -38,14 +38,14 @@ const initials = AUTHOR.name.slice(0, 1);
   lang={lang}
   entry={entry}
   crumbs={[{ name: t('nav.blog'), path: '/blog' }, { name: d.title, path: entry.path }]}
-  crumbsContainer="container"
+  crumbsContainer="container container--article"
   nodes={[blogPosting(url, entry, lang)]}
   pageExtra={{ mainEntity: { '@id': url + '#article' } }}
 >
   <div class="reading-progress" aria-hidden="true"></div>
 
   <article class="article" data-article={article.slug}>
-    <div class="container">
+    <div class="container container--article">
       <header class="article-head">
         <ul class="article-head__cats" role="list">
           {article.categories.map((c) => <li><a class="chip" href={u(`/category/${c}`, lang)}>{names.get(c)}</a></li>)}
@@ -68,25 +68,15 @@ const initials = AUTHOR.name.slice(0, 1);
 
       <ArticleCover article={article} lang={lang} size="hero" eager />
 
-      <div class="article-layout">
-        <aside class="article-aside">
-          {toc.length > 1 && (
-            <nav class="article-toc" aria-labelledby="toc-h">
-              <p class="article-aside__label" id="toc-h">{t('article.toc')}</p>
-              <ol role="list">
-                {toc.map((h) => <li><a href={`#${h.id}`} data-toc-link>{h.text}</a></li>)}
-              </ol>
-            </nav>
-          )}
-          <div class="article-share">
-            <p class="article-aside__label">{t('article.share')}</p>
-            <div class="cluster" style="--gap: var(--s-2)">
-              {share.map((s) => <a class="chip" href={s.href} target="_blank" rel="noopener nofollow">{s.name}</a>)}
-              <button class="chip" type="button" data-copy-link data-done={t('article.copied')}>{t('article.copy')}</button>
-            </div>
-          </div>
-        </aside>
-
+      <div class="article-col">
+        {toc.length > 2 && (
+          <details class="article-toc">
+            <summary>{t('article.toc')} <span class="t-meta">· {toc.length}</span></summary>
+            <ol role="list">
+              {toc.map((h) => <li><a href={`#${h.id}`}>{h.text}</a></li>)}
+            </ol>
+          </details>
+        )}
         <div class="article-body">
           <div class="prose prose--article" set:html={article.html[lang]} />
 
@@ -112,6 +102,12 @@ const initials = AUTHOR.name.slice(0, 1);
               </p>
             </div>
           </section>
+
+          <div class="article-share">
+            <span class="t-meta">{t('article.share')}</span>
+            {share.map((sh) => <a class="chip" href={sh.href} target="_blank" rel="noopener nofollow">{sh.name}</a>)}
+            <button class="chip" type="button" data-copy-link data-done={t('article.copied')}>{t('article.copy')}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -128,7 +124,7 @@ const initials = AUTHOR.name.slice(0, 1);
     </section>
   </div>
 
-  <div class="container">
+  <div class="container container--article">
     <div class="article-comments">
       <Comments toolId={`blog-${article.slug}`} lang={lang} next={`blog/${article.slug}/`} />
     </div>
@@ -178,23 +174,4 @@ const initials = AUTHOR.name.slice(0, 1);
     }
   });
 
-  // table of contents: mark the section being read
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
-  if (links.length && 'IntersectionObserver' in window) {
-    const byId = new Map(links.map((a) => [decodeURIComponent(a.hash.slice(1)), a]));
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          links.forEach((a) => a.removeAttribute('aria-current'));
-          byId.get(e.target.id)?.setAttribute('aria-current', 'true');
-        }
-      },
-      { rootMargin: '0px 0px -70% 0px' },
-    );
-    for (const id of byId.keys()) {
-      const h = document.getElementById(id);
-      if (h) io.observe(h);
-    }
-  }
 </script>

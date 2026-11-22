@@ -13,7 +13,9 @@ import { getPages, type PageEntry } from '~/lib/routes';
 import { getTools, domainOf } from '~/lib/data';
 import { cutByWord } from '~/lib/seo';
 import { SITE } from '~/site.config';
-import { langs, loc, type Lang } from '~/i18n';
+import { langs, loc, useTranslations, type Lang } from '~/i18n';
+import { renderCover } from '~/lib/cover';
+import { getCategories } from '~/lib/data';
 
 type Item = { kind: 'tool' | 'page'; page: PageEntry; lang: Lang };
 
@@ -116,6 +118,13 @@ async function pageCard(page: PageEntry, lang: Lang) {
 
 export const GET: APIRoute = async ({ props }) => {
   const { kind, page, lang } = props as Item;
+  if (page.kind === 'article' && page.article) {
+    const a = page.article;
+    const cat = (await getCategories()).find((c) => c.id === a.categories[0]);
+    const t = useTranslations(lang);
+    const png = await renderCover({ title: a.entry[lang].data.title, category: a.categories[0], categoryName: cat ? loc(cat.data.name, lang) : '', section: t('nav.blog') }, 1200, 630);
+    return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
+  }
   const tree = kind === 'tool' ? await toolCard(page, lang) : await pageCard(page, lang);
   // satori boxes are content-box: 1072×502 + 64px padding = 1200×630
   const svg = await satori(tree as any, { width: 1200, height: 630, fonts: await loadFonts() });

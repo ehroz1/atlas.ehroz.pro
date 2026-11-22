@@ -190,7 +190,7 @@ function openArticle(a) {
   drawToolChips(); drawCats(); counters();
   $('#art-cover-preview').hidden = true;
   $('#art-cover-remove').hidden = !art.coverPath;
-  $('#art-cover-note').textContent = art.coverPath ? 'Обложка есть. Можно заменить или убрать.' : 'Без обложки статья покажет коллаж из скриншотов выбранных сайтов.';
+  $('#art-cover-note').textContent = art.coverPath ? 'Обложка есть. Можно заменить или убрать.' : 'Без обложки статья покажет фирменную обложку (цвет категории, заголовок, крупная цифра).';
   if (art.coverPath) loadCoverPreview(art.coverPath);
   artShow('art-edit');
   af(a ? 'title_ru' : 'title_ru').focus();
@@ -469,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     art.cover = null; art.coverRemoved = true;
     $('#art-cover-preview').hidden = true;
     $('#art-cover-remove').hidden = true;
-    $('#art-cover-note').textContent = 'Обложка будет убрана: статья покажет коллаж из скриншотов.';
+    $('#art-cover-note').textContent = 'Обложка будет убрана: статья покажет фирменную обложку.';
   });
   $('#art-img-file').addEventListener('change', async (e) => {
     const file = e.target.files[0];
