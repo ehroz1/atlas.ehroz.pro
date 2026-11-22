@@ -257,3 +257,35 @@ a.stat[href]:hover { border-color: var(--c-line-strong); background: var(--c-fil
 .photos { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-3); }
 .photos img { width: 10rem; height: 6.25rem; object-fit: cover; object-position: top; border-radius: var(--r-xs); background: var(--c-fill); }
 @media (pointer: coarse) { .link, .tabs a, .chip { min-height: 2.5rem; display: inline-flex; align-items: center; } }
+
+/* skeleton: grey blocks with a moving shimmer while data is loading */
+.sk {
+  display: block; border-radius: 6px;
+  background: var(--c-surface) linear-gradient(100deg, transparent 30%, rgba(255,255,255,.06) 50%, transparent 70%) no-repeat;
+  background-size: 250% 100%;
+  animation: sk 1.4s ease-in-out infinite;
+}
+@keyframes sk { from { background-position: 120% 0; } to { background-position: -20% 0; } }
+.sk-line { height: 12px; }
+.sk-line.lg { height: 15px; margin-bottom: 7px; }
+/* uneven line lengths so the placeholder list looks like real names */
+.sk-line.lg { width: 22%; }
+.sk-line { width: 48%; }
+.row:nth-child(3n) .sk-line.lg { width: 15%; }
+.row:nth-child(3n+1) .sk-line.lg { width: 28%; }
+.row:nth-child(4n) .sk-line:not(.lg) { width: 36%; }
+.row:nth-child(4n+1) .sk-line:not(.lg) { width: 58%; }
+/* inside cards the card itself is --c-surface, so the blocks go one step lighter */
+:is(.item, .stat) .sk { background-color: var(--c-fill); }
+.stat .sk-line { width: 60%; }
+.sk-stat { height: 1.6rem; width: 3rem; margin-bottom: 4px; }
+.sk-para { width: 80%; margin-top: 10px; }
+.sk-para.short { width: 55%; margin-bottom: 14px; }
+.sk-wrap .actions { margin-top: 0; }
+.sk-pill { height: 22px; width: 64px; border-radius: 999px; }
+.sk-btn { height: 30px; width: 84px; border-radius: 999px; }
+.rows.loading .row:hover { background: none; }
+.sk-count { height: 14px; width: 140px; margin: 15px 0; }
+#shot-skeleton { width: 15rem; aspect-ratio: 16/10; border-radius: var(--r-xs); }
+@media (prefers-reduced-motion: reduce) { .sk { animation: none; } }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

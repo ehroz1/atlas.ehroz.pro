@@ -114,7 +114,7 @@
     <button class="btn primary" id="add">+ Добавить сайт</button>
   </div>
   <p class="muted" id="count"></p>
-  <div id="rows" class="rows"></div>
+  <div id="rows" class="rows" aria-live="polite"></div>
 </section>
 
 <!-- форма -->
@@ -200,6 +200,7 @@
       <legend>Скриншот</legend>
       <div class="shot-row">
         <img id="shot-preview" alt="" hidden>
+        <span id="shot-skeleton" class="sk" aria-hidden="true" hidden></span>
         <div>
           <p class="muted" id="shot-note">Если не загружать картинку, скриншот снимется автоматически при публикации.</p>
           <div class="file-row">

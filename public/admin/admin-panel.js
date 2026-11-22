@@ -94,6 +94,34 @@ function busy(btn, on, text) {
 }
 const fail = (e) => toast(e.status === 401 || e.status === 403 ? 'Нет прав. Войдите на сайте под аккаунтом администратора.' : 'Ошибка: ' + e.message, 'bad');
 
+/* ---------- skeletons ---------- */
+/* Placeholders shaped like each tab's content, shown until its data arrives.
+   Every placeholder node has .sk-wrap, so a failed load can clear them. */
+const times = (n, fn) => Array.from({ length: n }, fn);
+const loadingLabel = () => el('span', { class: 'visually-hidden sk-wrap' }, 'Загрузка…');
+const skeleton = {
+  stats: () => $('#stats').replaceChildren(loadingLabel(), ...times(8, () =>
+    el('div', { class: 'stat sk-wrap', 'aria-hidden': 'true' }, el('span', { class: 'sk sk-stat' }), el('span', { class: 'sk sk-line' })))),
+  cards: (box) => box.replaceChildren(loadingLabel(), ...times(3, () =>
+    el('div', { class: 'item sk-wrap', 'aria-hidden': 'true' },
+      el('span', { class: 'sk sk-line lg' }), el('span', { class: 'sk sk-line sk-para' }), el('span', { class: 'sk sk-line sk-para short' }),
+      el('div', { class: 'actions' }, el('span', { class: 'sk sk-btn' }), el('span', { class: 'sk sk-btn' }))))),
+  rows: (box) => box.replaceChildren(loadingLabel(), ...times(8, () =>
+    el('div', { class: 'row row--plain sk-wrap', 'aria-hidden': 'true' },
+      el('div', { class: 'main' }, el('span', { class: 'sk sk-line lg' }), el('span', { class: 'sk sk-line' })),
+      el('div', { class: 'tags' }, el('span', { class: 'sk sk-pill' })),
+      el('div', { class: 'ops' }, el('span', { class: 'sk sk-btn' }))))),
+};
+/** Shows the tab's skeleton on the first visit (later visits keep the old data on screen while it refreshes). */
+function skeletonFor(name) {
+  const box = { overview: '#stats', subs: '#subs-list', comments: '#comments-list', users: '#users-list' }[name];
+  if (!box || $(box).children.length) return;
+  if (name === 'overview') skeleton.stats();
+  else if (name === 'users') skeleton.rows($(box));
+  else skeleton.cards($(box));
+}
+const clearSkeletons = () => document.querySelectorAll('.sk-wrap').forEach((n) => n.remove());
+
 /* ---------- tabs ---------- */
 let current = '';
 async function openTab(name) {
@@ -104,6 +132,7 @@ async function openTab(name) {
   $('#sb-gate').hidden = true;
 
   if (NEEDS_DB.has(name)) {
+    skeletonFor(name);
     if (panel.admin === null || panel.admin === false) { panel.admin = await whoIsAdmin().catch(() => null); paintSiteAccount(panel.admin); }
     if (!panel.admin) {
       $('#tab-' + name).hidden = true;
@@ -122,7 +151,7 @@ async function openTab(name) {
     if (name === 'users') await renderUsers();
     if (name === 'newsletter') await renderNewsletter();
     if (name === 'services') await renderServices();
-  } catch (e) { fail(e); }
+  } catch (e) { clearSkeletons(); fail(e); }
 }
 
 async function updateCounts() {
@@ -433,8 +462,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-count]').forEach((n) => (n.textContent = ''));
     openTab(current);
   });
-  $('#subs-filter').addEventListener('change', () => renderSubs().catch(fail));
-  $('#comments-filter').addEventListener('change', () => renderComments().catch(fail));
+  $('#subs-filter').addEventListener('change', () => { skeleton.cards($('#subs-list')); renderSubs().catch((e) => { clearSkeletons(); fail(e); }); });
+  $('#comments-filter').addEventListener('change', () => { skeleton.cards($('#comments-list')); renderComments().catch((e) => { clearSkeletons(); fail(e); }); });
   $('#users-q').addEventListener('input', () => renderUsers(false));
   $('#nl-month').addEventListener('change', async () => loadPicks(await siteTools()));
   $('#nl-input').addEventListener('change', async () => {
