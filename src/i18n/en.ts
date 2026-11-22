@@ -129,7 +129,7 @@ export const en = {
   'badge.lead': 'If your site is in {brand}, you can show it. The badge is free, has no tracking and links to your page in the index.',
   'badge.preview': 'Preview',
   'badge.code': 'Code to paste',
-  'badge.codeHint': 'Replace {tool} with the id of your page, for example figma, and paste this where you want the badge.',
+  'badge.codeHint': 'Replace YOUR-ID with the id of your page in the address, for example figma, and paste this where you want the badge.',
   'badge.copy': 'Copy code',
   'badge.copied': 'Copied',
   'badge.notListed': 'Not listed yet? Suggest your site, it is free and nobody pays to get in.',
