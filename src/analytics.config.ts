@@ -17,9 +17,9 @@ export const SEARCH_VERIFICATION = {
   /** Google Search Console, HTML tag "content" value (not needed for a DNS-verified domain property) */
   google: '',
   /** Yandex Webmaster, "Метатег" tab, the content value */
-  yandex: '',
+  yandex: '6a8b554db1ca875b',
   /** Bing Webmaster, msvalidate.01 content value */
-  bing: '',
+  bing: '9D1F8EDD4BBDBC71259A119F269010ED',
 };
 
 /** IndexNow key; the matching file is public/<key>.txt */
