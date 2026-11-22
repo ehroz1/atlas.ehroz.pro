@@ -209,7 +209,9 @@ const jsonLd =
             var on = saved.indexOf(b.getAttribute('data-save-page')) >= 0;
             b.setAttribute('aria-pressed', on ? 'true' : 'false');
             b.classList.toggle('is-on', on);
-            b.textContent = b.getAttribute(on ? 'data-label-saved' : 'data-label-save');
+            var lab = b.getAttribute(on ? 'data-label-saved' : 'data-label-save');
+            if (b.hasAttribute('data-icon')) { b.setAttribute('aria-label', lab); b.setAttribute('title', lab); }
+            else b.textContent = lab;
           });
           document.querySelectorAll('[data-saved-toggle]').forEach(function (b) {
             b.hidden = false;
