@@ -1,0 +1,55 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import { getPage } from '~/lib/routes';
+import { absUrl } from '~/lib/seo';
+import { SITE } from '~/site.config';
+import { useTranslations, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const entry = await getPage('badge');
+const badge = absUrl('/badges/featured-on-atlas.svg');
+const code = `<a href="${absUrl('/tool/YOUR-ID/', lang)}"><img src="${badge}" width="200" height="48" alt="${t('badge.alt')}"></a>`;
+---
+<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.badge'), path: '/badge' }]} crumbsContainer="container container--narrow">
+  <div class="container container--narrow">
+    <div class="section" style="padding-bottom: 0">
+      <div class="stack" style="--gap: var(--s-3)">
+        <h1 class="t-statement">{t('badge.h1')}</h1>
+        <p class="t-secondary">{t('badge.lead')}</p>
+      </div>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="preview">
+        <h2 class="t-title" id="preview">{t('badge.preview')}</h2>
+        <p><img src={u('/badges/featured-on-atlas.svg')} width="200" height="48" alt={t('badge.alt')} /></p>
+      </section>
+
+      <section class="mt-12 stack" style="--gap: var(--s-3)" aria-labelledby="code">
+        <h2 class="t-title" id="code">{t('badge.code')}</h2>
+        <p class="t-secondary">{t('badge.codeHint')}</p>
+        <pre class="t-small" style="white-space: pre-wrap; word-break: break-all; padding: var(--s-4); border: 1px solid var(--line, #333); border-radius: 12px"><code id="badge-code">{code}</code></pre>
+        <p><button class="btn" type="button" data-copy-code data-label-done={t('badge.copied')}>{t('badge.copy')}</button></p>
+      </section>
+
+      <p class="mt-12 t-secondary">
+        {t('badge.notListed')} <a class="link" href={u('/submit', lang)}>{t('nav.submit')}</a>
+      </p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy-code]');
+  btn?.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(document.getElementById('badge-code')?.textContent ?? '');
+      btn.textContent = btn.dataset.labelDone ?? 'Copied';
+      setTimeout(() => (btn.textContent = label), 1600);
+    } catch {
+      /* clipboard blocked: the code is selectable on the page */
+    }
+  });
+</script>

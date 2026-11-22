@@ -9,7 +9,7 @@ import { useTranslations, loc, langs, type Lang } from '~/i18n';
 import { SITE } from '~/site.config';
 import { alternativesOf } from '~/lib/related';
 
-export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'about' | 'contact' | 'submit' | 'wall';
+export type PageKind = 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'about' | 'contact' | 'submit' | 'wall';
 
 export interface PageEntry {
   key: string;
@@ -35,6 +35,7 @@ export const PAGE_UPDATED = {
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
+  badge: '2026-11-22',
 };
 
 const per = <T,>(fn: (lang: Lang) => T) => Object.fromEntries(langs.map((l) => [l, fn(l)])) as Record<Lang, T>;
@@ -159,7 +160,7 @@ async function build(): Promise<PageEntry[]> {
     });
   }
 
-  const simple = (key: 'about' | 'contact' | 'submit' | 'wall', h1: string, body: (l: Lang) => string) =>
+  const simple = (key: 'about' | 'contact' | 'submit' | 'wall' | 'badge', h1: string, body: (l: Lang) => string) =>
     pages.push({
       key,
       kind: key,
@@ -176,6 +177,7 @@ async function build(): Promise<PageEntry[]> {
   simple('contact', 'contact.h1', (l) => T[l]('contact.description'));
   simple('submit', 'submit.h1', (l) => T[l]('submit.description'));
   simple('wall', 'wall.h1', (l) => T[l]('wall.description'));
+  simple('badge', 'badge.h1', (l) => T[l]('badge.lead'));
 
   return pages;
 }
