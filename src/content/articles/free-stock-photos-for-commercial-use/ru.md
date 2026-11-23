@@ -4,12 +4,14 @@ description: "Где взять бесплатные фото и изображ�
 type: listicle
 primaryKeyword: "бесплатные фото для коммерческого использования"
 secondaryKeywords: ["бесплатные фотобанки", "фото без авторских прав", "картинки для коммерческого использования"]
-tools: [unsplash, picta, freepik, smithsonian-open-access, met-open-access, pd-image-archive, public-work, texturelabs]
-categories: [assets, museums]
+tools: ["unsplash", "picta", "freepik", "smithsonian-open-access", "met-open-access", "pd-image-archive", "public-work", "texturelabs"]
+categories: ["assets", "museums"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Вечнозелёный запрос со стабильным спросом на обоих языках; написана вручную"
 sources: ["https://unsplash.com/license", "https://unsplash.com/plus/license"]
+cover: "./cover.jpg"
+coverAlt: "Коллаж в стиле тёмной ризографии с архивными фото на чёрном фоне: фрагмент 35-мм фотоплёнки, античный бюст, фасад модернистского здания и ботанический лист с коралловыми акцентами"
 ---
 
 Бесплатные фото, которые можно брать в коммерческие проекты без указания автора, проще всего искать на [Unsplash](/tool/unsplash/). Чтобы искать сразу по нескольким бесплатным фотобанкам, есть [Picta](/tool/picta/). Старые картины, гравюры и исторические снимки лежат в музейных архивах в общественном достоянии: [Smithsonian Open Access](/tool/smithsonian-open-access/), [The Met Open Access](/tool/met-open-access/) и [Public Domain Image Archive](/tool/pd-image-archive/).
