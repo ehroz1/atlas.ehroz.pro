@@ -26,5 +26,6 @@
   { "about": "Mockups", "ids": ["shots", "the-mockup-club", "mockup-world"] },
   { "about": "Color tools", "ids": ["coolors", "adobe-color", "color-review", "khroma"] },
   { "about": "Animated UI components", "ids": ["originkit", "smoothui", "osmo-supply", "nav-supply"] },
-  { "about": "SaaS website galleries", "ids": ["saaspo", "webinspoo"] }
+  { "about": "SaaS website galleries", "ids": ["saaspo", "webinspoo"] },
+  { "about": "MotionSites", "ids": ["motionsites", "osmo-supply", "smoothui"] }
 ]
