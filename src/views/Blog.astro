@@ -17,6 +17,10 @@ const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const url = absUrl(entry.path, lang);
 const iso = (x: Date) => x.toISOString().slice(0, 10);
 const [lead, ...rest] = articles;
+// topics used by at least one article, most used first; the filter row shows when there are 2+
+const used = [...new Set(articles.flatMap((a) => a.categories))]
+  .map((id) => ({ id, name: names.get(id)!, n: articles.filter((a) => a.categories.includes(id)).length }))
+  .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name, lang));
 const list = {
   '@type': 'ItemList',
   '@id': url + '#itemlist',
@@ -46,8 +50,14 @@ const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.
     </section>
 
     <div class="section section--follow">
+      {used.length > 1 && (
+        <div class="chips blog-filter" role="group" aria-label={t('blog.topics')} data-blog-filter>
+          <button class="chip" type="button" aria-pressed="true" data-topic="">{t('blog.all')}</button>
+          {used.map((c) => <button class="chip" type="button" aria-pressed="false" data-topic={c.id}>{c.name}<span class="chip__count">{c.n}</span></button>)}
+        </div>
+      )}
       {lead && (
-        <article class="post-lead">
+        <article class="post-lead" data-topics={lead.categories.join(' ')}>
           <a class="post-lead__cover" href={u(`/blog/${lead.slug}`, lang)} tabindex="-1" aria-hidden="true">
             <ArticleCover article={lead} lang={lang} size="hero" eager />
           </a>
@@ -66,7 +76,7 @@ const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.
       {rest.length > 0 && (
         <ul class="post-grid mt-16" role="list">
           {rest.map((a) => (
-            <li class="post-card">
+            <li class="post-card" data-topics={a.categories.join(' ')}>
               <a class="post-card__link" href={u(`/blog/${a.slug}`, lang)}>
                 <ArticleCover article={a} lang={lang} />
                 <span class="post-card__cat t-meta">{a.categories.map((c) => names.get(c)).join(' · ')}</span>
@@ -88,4 +98,20 @@ const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.
 <script>
   import { showViews } from '~/scripts/views';
   showViews();
+
+  // topic filter: hides the articles outside the chosen topic
+  const bar = document.querySelector<HTMLElement>('[data-blog-filter]');
+  if (bar) {
+    const items = [...document.querySelectorAll<HTMLElement>('[data-topics]')];
+    const grid = document.querySelector<HTMLElement>('.post-grid');
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-topic]');
+      if (!btn) return;
+      const topic = btn.dataset.topic!;
+      for (const b of bar.querySelectorAll('[data-topic]')) b.setAttribute('aria-pressed', String(b === btn));
+      for (const el of items) el.hidden = !!topic && !el.dataset.topics!.split(' ').includes(topic);
+      // with the lead hidden, the grid moves up to where the lead was
+      grid?.classList.toggle('mt-16', !items[0]?.matches('.post-lead') || !items[0].hidden);
+    });
+  }
 </script>

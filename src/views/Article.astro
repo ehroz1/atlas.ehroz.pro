@@ -70,6 +70,16 @@ const initials = AUTHOR.name.slice(0, 1);
 
       <div class="article-col">
         {toc.length > 2 && (
+          <aside class="article-rail" aria-labelledby="rail-h">
+            <nav class="article-rail__nav" aria-labelledby="rail-h" data-toc>
+              <p class="article-aside__label" id="rail-h">{t('article.toc')}</p>
+              <ol role="list">
+                {toc.map((h) => <li><a href={`#${h.id}`} data-toc-link={h.id}>{h.text}</a></li>)}
+              </ol>
+            </nav>
+          </aside>
+        )}
+        {toc.length > 2 && (
           <details class="article-toc">
             <summary>{t('article.toc')} <span class="t-meta">· {toc.length}</span></summary>
             <ol role="list">
@@ -109,6 +119,10 @@ const initials = AUTHOR.name.slice(0, 1);
             {share.map((sh) => <a class="chip" href={sh.href} target="_blank" rel="noopener nofollow">{sh.name}</a>)}
             <button class="chip" type="button" data-copy-link data-done={t('article.copied')}>{t('article.copy')}</button>
           </div>
+
+          <div class="article-comments">
+            <Comments toolId={`blog-${article.slug}`} lang={lang} next={`blog/${article.slug}/`} />
+          </div>
         </div>
       </div>
     </div>
@@ -123,12 +137,6 @@ const initials = AUTHOR.name.slice(0, 1);
         {tools.map((x) => <ToolCard tool={x} categoryName={names.get(x.data.category)!} lang={lang} />)}
       </div>
     </section>
-  </div>
-
-  <div class="container container--article">
-    <div class="article-comments">
-      <Comments toolId={`blog-${article.slug}`} lang={lang} next={`blog/${article.slug}/`} />
-    </div>
   </div>
 
   {others.length > 0 && (
@@ -161,6 +169,38 @@ const initials = AUTHOR.name.slice(0, 1);
 
   const art = document.querySelector<HTMLElement>('[data-article]');
   if (art) hitArticle(art.dataset.article!);
+
+  // reading progress for browsers without scroll-driven animations
+  const bar = document.querySelector<HTMLElement>('.reading-progress');
+  if (bar && !CSS.supports('animation-timeline: scroll()')) {
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
+    paint();
+  }
+
+  // side contents: highlight the section being read
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  const heads = links.map((a) => document.getElementById(a.dataset.tocLink!)).filter((x): x is HTMLElement => !!x);
+  if (heads.length) {
+    let ticking = false;
+    const mark = () => {
+      ticking = false;
+      const line = innerHeight * 0.3;
+      let cur = '';
+      for (const h of heads) if (h.getBoundingClientRect().top <= line) cur = h.id;
+      for (const a of links) {
+        if (a.dataset.tocLink === cur) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      }
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(mark); } }, { passive: true });
+    mark();
+  }
 
   // copy link
   const copy = document.querySelector<HTMLButtonElement>('[data-copy-link]');

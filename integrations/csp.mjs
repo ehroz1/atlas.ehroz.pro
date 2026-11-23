@@ -36,7 +36,8 @@ export function policyHosts({ ga4, metrika, goatcounter, preview, supabase }) {
   }
   if (metrika) {
     h.script.push('https://mc.yandex.ru', 'https://mc.yandex.com', 'https://yastatic.net');
-    h.img.push('https://mc.yandex.ru', 'https://mc.yandex.com');
+    // yandex.ru/an/mapuid/…: Metrika's cookie-sync pixel
+    h.img.push('https://mc.yandex.ru', 'https://mc.yandex.com', 'https://yandex.ru', 'https://yandex.com');
     h.connect.push('https://mc.yandex.ru', 'https://mc.yandex.com');
     h.frame.push('blob:', 'https://mc.yandex.ru', 'https://mc.yandex.com');
   }

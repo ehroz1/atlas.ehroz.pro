@@ -54,6 +54,12 @@ const index = {
     thumb: thumbs.get(tool.id) ?? '',
     domain: domainOf(tool.data.url),
   })),
+  articles: articles.map((a) => ({
+    slug: a.slug,
+    title: a.entry[lang].data.title,
+    meta: a.categories.map((c) => names.get(c)).join(' · '),
+    text: [a.entry[lang].data.title, a.entry[lang].data.description, ...a.categories.map((c) => names.get(c) ?? '')].join(' '),
+  })),
   facets: {
     category: categories.map((c) => ({ id: c.id, label: loc(c.data.name, lang), count: count(tools, (x) => x.data.category === c.id) })),
     pricing: [
@@ -71,6 +77,8 @@ const index = {
     placeholder: t('search.placeholder'),
     tabSites: t('search.sites'),
     tabCategories: t('nav.categories'),
+    tabArticles: t('nav.blog'),
+    noArticles: t('search.noArticles'),
     noCategories: t('search.noCategories'),
     filtersOne: t('search.filters.one'),
     filtersFew: t('search.filters.few'),
@@ -249,7 +257,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   };
   type Option = { id: string; label: string; count: number };
   type FacetKey = 'category' | 'pricing' | 'platform';
-  type Index = { tools: Tool[]; facets: Record<FacetKey, Option[]>; strings: Record<string, string> };
+  type Post = { slug: string; title: string; meta: string; text: string };
+  type Tab = 'sites' | 'categories' | 'articles';
+  type Index = { tools: Tool[]; articles: Post[]; facets: Record<FacetKey, Option[]>; strings: Record<string, string> };
   type State = { q: string } & Record<FacetKey, Set<string>>;
 
   const data: Index = JSON.parse(document.getElementById('search-index')!.textContent!);
@@ -353,7 +363,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   }
 
   let active = -1;
-  let resultTab: 'sites' | 'categories' = 'sites';
+  let resultTab: Tab = 'sites';
+  // on the blog, typing looks in the articles first
+  const onBlog = /\/blog(\/|$)/.test(location.pathname);
   const xBtn = document.querySelector<HTMLButtonElement>('[data-finder-x]')!;
   function renderPane() {
     document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.facet === facet)));
@@ -364,7 +376,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
       const hits = data.tools.filter(matches);
       const words = wordsOf(state.q);
       const cats = data.facets.category.filter((c) => hasWords(c.label, words));
-      const tab = (id: 'sites' | 'categories', label: string, n: number) =>
+      const posts = data.articles.filter((a) => hasWords(a.text, words));
+      const tab = (id: Tab, label: string, n: number) =>
         `<button class="finder__tab" type="button" role="tab" aria-selected="${resultTab === id}" data-tab="${id}">${esc(label)}<span class="finder__tab-count">${n}</span></button>`;
       let list = '';
       if (resultTab === 'sites') {
@@ -379,6 +392,16 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
               )
               .join('')
           : `<p class="finder__empty">${esc(S.none)}</p>`;
+      } else if (resultTab === 'articles') {
+        list = posts.length
+          ? posts
+              .map(
+                (a) => `<a class="finder__result finder__result--cat" href="${pageUrl('blog/' + a.slug)}" aria-selected="false">
+                  <span class="finder__result-text"><span class="finder__result-name">${esc(a.title)}</span>
+                  <span class="finder__result-meta">${esc(a.meta)}</span></span></a>`,
+              )
+              .join('')
+          : `<p class="finder__empty">${esc(S.noArticles)}</p>`;
       } else {
         list = cats.length
           ? cats
@@ -390,7 +413,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
           : `<p class="finder__empty">${esc(S.noCategories)}</p>`;
       }
       pane.removeAttribute('aria-label');
-      pane.innerHTML = `<div class="finder__tabs" role="tablist">${tab('sites', S.tabSites, hits.length)}${tab('categories', S.tabCategories, cats.length)}</div>${list}`;
+      pane.innerHTML = `<div class="finder__tabs" role="tablist">${tab('sites', S.tabSites, hits.length)}${tab('categories', S.tabCategories, cats.length)}${data.articles.length ? tab('articles', S.tabArticles, posts.length) : ''}</div>${list}`;
       active = -1;
       return;
     }
@@ -480,7 +503,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     pending = undefined;
     if (state.q === input.value) return;
     state.q = input.value;
-    resultTab = 'sites';
+    resultTab = onBlog && data.articles.some((a) => hasWords(a.text, wordsOf(state.q))) ? 'articles' : 'sites';
     update();
     const q = state.q.trim();
     if (q.length >= 2 && q !== lastTracked) {
@@ -504,7 +527,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   pane.addEventListener('click', (e) => {
     const tab = (e.target as HTMLElement).closest<HTMLElement>('[data-tab]');
     if (!tab) return;
-    resultTab = tab.dataset.tab as 'sites' | 'categories';
+    resultTab = tab.dataset.tab as Tab;
     renderPane();
   });
   input.addEventListener('keydown', (e) => {

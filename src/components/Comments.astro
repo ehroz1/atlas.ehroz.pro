@@ -42,9 +42,9 @@ const msg = {
         <span class="t-meta" data-comments-status aria-live="polite"></span>
       </div>
     </form>
-    <p class="t-small t-secondary" data-comments-login hidden>
-      <a class="link" href={u('/account', lang) + `?next=${next}`}>{t('comments.signIn')}</a>
-    </p>
+    <div class="comments__login" data-comments-login hidden>
+      <a class="btn" href={u('/account', lang) + `?next=${next}`}>{t('comments.signIn')}</a>
+    </div>
   </section>
 )}
 

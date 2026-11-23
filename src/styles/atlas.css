@@ -85,7 +85,7 @@
   --gray-750: #2a2a2a;   /* strong lines */
   --gray-700: #3a3a3a;   /* strong lines */
   --gray-500: #6f6f6f;   /* disabled */
-  --gray-400: #8c8c8c;   /* muted text */
+  --gray-400: #9b9b9b;   /* muted text (≈7:1 on the page) */
   --gray-300: #b0b0b0;   /* secondary text */
   --gray-100: #ededed;
   --gray-0:   #ffffff;   /* text */
@@ -400,6 +400,23 @@ hr { border: 0; border-top: var(--border); }
   padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 .site-header__inner > * { pointer-events: auto; }
+/* Scrim under the floating pills: content scrolling up fades out behind
+   the bar instead of showing through the gaps between the pills. The blur
+   is masked with the same gradient, so the bottom edge has no hard line. */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--bar-top) + var(--bar-h) + var(--s-6));
+  background: linear-gradient(to bottom, rgb(13 13 13 / 0.92) 0%, rgb(13 13 13 / 0.6) 65%, transparent 100%);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+@media print { .site-header::before { display: none; } }
 .bar-group { display: flex; align-items: center; gap: var(--s-2); min-width: 0; }
 .bar-group--end { justify-content: flex-end; }
 
@@ -800,7 +817,7 @@ hr { border: 0; border-top: var(--border); }
   gap: var(--s-4) var(--s-8);
 }
 .site-footer a { display: inline-block; padding-block: var(--s-1); color: var(--c-text-2); transition: color var(--dur-fast) var(--ease); }
-@media (pointer: coarse) { .site-footer a { padding-block: var(--s-2); } }
+@media (pointer: coarse), (max-width: 40rem) { .site-footer a { padding-block: 0.75rem; } }
 .site-footer a:hover { color: var(--c-text); }
 
 
@@ -1140,6 +1157,7 @@ hr { border: 0; border-top: var(--border); }
 }
 .card__actions[hidden] { display: none; }
 .card__act {
+  position: relative;
   pointer-events: auto;
   display: inline-grid;
   place-items: center;
@@ -1153,6 +1171,8 @@ hr { border: 0; border-top: var(--border); }
   transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .card__act[hidden] { display: none; }
+/* 32px button, 44px target: the extra ring is invisible */
+.card__act::after { content: ""; position: absolute; inset: -6px; border-radius: inherit; }
 .card__act:hover { background: var(--c-scrim-hover); }
 .card__act svg { width: 1.05rem; height: 1.05rem; }
 .card__act:disabled { opacity: 0.4; cursor: default; }
@@ -1166,7 +1186,7 @@ hr { border: 0; border-top: var(--border); }
   .crumbs a { display: inline-block; padding-block: var(--s-2); }
 }
 @media (hover: hover) {
-  .card__act--save[aria-pressed="false"] { opacity: 0; }
+  .card__act--save[aria-pressed="false"] { opacity: 0.45; }
   .card-wrap:hover .card__act--save,
   .card-wrap:focus-within .card__act--save { opacity: 1; }
 }
@@ -1770,6 +1790,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .crumbs__item + .crumbs__item::before { content: "/"; color: var(--c-text-disabled); }
 .crumbs a { color: var(--c-text-2); transition: color var(--dur-fast) var(--ease); }
 .crumbs a:hover { color: var(--c-text); }
+@media (max-width: 40rem) { .crumbs a { display: inline-block; padding-block: 0.75rem; } }
 .crumbs [aria-current="page"] { color: var(--c-text-3); overflow-wrap: anywhere; }
 
 .consent {
@@ -1806,7 +1827,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
    as it paints, and nothing else on the card has to know about loading.
    Only opacity is animated: it runs on the compositor, so 100+ pulsing
    placeholders cost no layout or paint (a moving background-position did). */
-.skel :is(.card__shot, .tile__shot, .collage__item img, .wall__item img, .edge-shots__item img, .finder__thumb img):not(.is-loaded) {
+.skel :is(.card__shot, .tile__shot, .collage__item img, .wall__item img, .edge-shots__item img, .finder__thumb img, .article-figure img, .article-cover img):not(.is-loaded) {
   background-color: var(--c-surface);
   animation: skeleton 1.4s ease-in-out infinite alternate;
 }
@@ -1983,7 +2004,36 @@ button.link { background: none; border: 0; padding: 0; font: inherit; cursor: po
 .article-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .article-cover--hero { margin-top: var(--s-8); }
 
-.article-col { margin-top: var(--s-10); }
+.article-col { position: relative; margin-top: var(--s-10); }
+/* Contents beside the text on wide screens: it sits in the empty space to
+   the right of the reading column and sticks under the top bar. Narrower
+   screens keep the folding list above the text. */
+.article-rail { display: none; }
+@media (min-width: 80rem) {
+  .article-rail {
+    display: block;
+    position: absolute;
+    top: 0; bottom: 0;
+    left: calc(100% + var(--s-10));
+    width: min(15rem, (100vw - 44rem) / 2 - var(--s-10) - var(--s-6));
+  }
+  .article-rail + .article-toc { display: none; }
+  .article-rail__nav {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-4));
+    max-height: calc(100vh - var(--header-h) - var(--s-8));
+    overflow-y: auto;
+    font-size: var(--fs-14);
+  }
+  .article-rail__nav ol { display: grid; gap: var(--s-1); margin-top: var(--s-3); padding: 0; list-style: none; border-left: var(--border); }
+  .article-rail__nav a {
+    display: block; margin-left: -1px; padding: var(--s-1) 0 var(--s-1) var(--s-3);
+    border-left: 2px solid transparent; color: var(--c-text-3); line-height: var(--lh-snug);
+    transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  }
+  .article-rail__nav a:hover { color: var(--c-text); }
+  .article-rail__nav a[aria-current] { color: var(--c-text); border-left-color: var(--c-accent); }
+}
 .article-toc { margin-bottom: var(--s-10); padding: var(--s-4) var(--s-5); border: var(--border); border-radius: var(--r-md); }
 .article-toc summary { cursor: pointer; font-weight: var(--fw-medium); }
 .article-toc ol { display: grid; gap: var(--s-2); margin-top: var(--s-3); padding-left: 1.4em; list-style: decimal; color: var(--c-text-3); }
@@ -2025,8 +2075,13 @@ button.link { background: none; border: 0; padding: 0; font: inherit; cursor: po
 .article-share { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); margin-top: var(--s-6); }
 .article-share .t-meta { margin-right: var(--s-2); }
 .article-share .chip { font-size: var(--fs-13); cursor: pointer; }
+@media (pointer: coarse), (max-width: 40rem) {
+  .article-share .chip { height: 2.75rem; min-width: 2.75rem; justify-content: center; padding-inline: 1rem; }
+}
 
 .article-comments { margin-top: var(--s-4); }
+.comments__login { margin-top: var(--s-2); }
+.comments__login .btn { min-height: 2.75rem; }
 
 /* lists of articles */
 .post-lead { display: grid; gap: var(--s-6) var(--s-12); align-items: center; }
@@ -2044,7 +2099,8 @@ button.link { background: none; border: 0; padding: 0; font: inherit; cursor: po
 .post-card__link:hover .post-card__title { color: var(--c-signal); }
 .post-card__cat { margin-top: var(--s-1); }
 .post-card__title { font-size: var(--fs-20); font-weight: var(--fw-medium); line-height: var(--lh-snug); letter-spacing: var(--ls-snug); text-wrap: balance; }
-.post-card__desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.post-card__desc { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
+.blog-filter { margin-bottom: var(--s-10); }
 
 /* author page */
 .author-head { display: flex; align-items: center; gap: var(--s-5); padding-top: clamp(var(--s-6), 4vw, var(--s-12)); }
