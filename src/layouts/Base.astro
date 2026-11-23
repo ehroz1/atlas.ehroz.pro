@@ -140,6 +140,9 @@ const jsonLd =
     {IS_PROD && SEARCH_VERIFICATION.bing && <meta name="msvalidate.01" content={SEARCH_VERIFICATION.bing} />}
     <link rel="sitemap" type="application/xml" href={u('/sitemap-index.xml')} />
     <link rel="alternate" type="application/rss+xml" title={t('rss.title')} href={u('/rss.xml')} />
+    {(entry?.kind === 'blog' || entry?.kind === 'article' || entry?.kind === 'author') && (
+      <link rel="alternate" type="application/rss+xml" title={`${t('blog.rss')} · ${SITE.name}`} href={u('/blog/rss.xml', lang)} />
+    )}
     {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
     <slot name="head" />
   </head>

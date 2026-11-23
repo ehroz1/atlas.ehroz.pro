@@ -4,7 +4,7 @@ import Base from '~/layouts/Base.astro';
 import ArticleCover from '~/components/ArticleCover.astro';
 import { getArticles, type Article } from '~/lib/articles';
 import { getCategories } from '~/lib/data';
-import { getPage } from '~/lib/routes';
+import { getPage, AUTHOR_SLUG } from '~/lib/routes';
 import { absUrl } from '~/lib/seo';
 import { AUTHOR } from '~/site.config';
 import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
@@ -42,6 +42,7 @@ const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.
     <section class="hero hero--page">
       <h1 class="t-statement">{t('blog.h1')}</h1>
       <p class="t-secondary mt-2 hero__lead">{t('blog.lead')}</p>
+      <p class="t-small mt-4"><a class="link" href={u('/blog/rss.xml', lang)} type="application/rss+xml">{t('blog.rss')}</a> · <a class="link" href={u(`/author/${AUTHOR_SLUG}`, lang)}>{AUTHOR.name}</a></p>
     </section>
 
     <div class="section section--follow">

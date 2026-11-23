@@ -1,0 +1,65 @@
+---
+import { u } from '~/lib/url';
+import Base from '~/layouts/Base.astro';
+import ArticleCover from '~/components/ArticleCover.astro';
+import { getArticles } from '~/lib/articles';
+import { getPage } from '~/lib/routes';
+import { ids } from '~/lib/schema';
+import { AUTHOR, SITE } from '~/site.config';
+import { useTranslations, formatDate, type Lang } from '~/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const [articles, entry] = await Promise.all([getArticles(), getPage('author')]);
+const name = entry.heading[lang];
+const iso = (x: Date) => x.toISOString().slice(0, 10);
+const links = [
+  { label: 'ehroz.pro', href: AUTHOR.url },
+  ...AUTHOR.sameAs.map((href) => ({ label: new URL(href).hostname.replace(/^www\./, '') + new URL(href).pathname.replace(/\/$/, ''), href })),
+];
+---
+<Base
+  lang={lang}
+  entry={entry}
+  crumbs={[{ name: t('nav.blog'), path: '/blog' }, { name, path: entry.path }]}
+  crumbsContainer="container container--article"
+  pageExtra={{ mainEntity: { '@id': ids.person() } }}
+>
+  <div class="container container--article">
+    <header class="author-head">
+      <span class="avatar avatar--xl" aria-hidden="true">{AUTHOR.name.slice(0, 1)}</span>
+      <div class="stack" style="--gap: var(--s-2)">
+        <h1 class="article-head__title">{name}</h1>
+        <p class="t-secondary">{AUTHOR.jobTitle[lang]} · {AUTHOR.city[lang]}</p>
+      </div>
+    </header>
+    <p class="article-head__lead mt-6">{t('article.authorBio')}</p>
+
+    <section class="mt-12" aria-labelledby="links-h">
+      <h2 class="t-title" id="links-h">{t('author.links')}</h2>
+      <ul class="cluster mt-4" style="--gap: var(--s-2)" role="list">
+        {links.map((l) => <li><a class="chip" href={l.href} rel="me noopener">{l.label}</a></li>)}
+        <li><a class="chip" href={u('/about', lang)}>{SITE.name}</a></li>
+        <li><a class="chip" href={u('/blog/rss.xml', lang)} type="application/rss+xml">{t('blog.rss')}</a></li>
+      </ul>
+    </section>
+
+    <section class="mt-12" aria-labelledby="articles-h">
+      <h2 class="t-title" id="articles-h">{t('author.articles')} <span class="t-muted">{articles.length}</span></h2>
+      <ul class="author-list mt-6" role="list">
+        {articles.map((a) => (
+          <li>
+            <a class="author-list__item" href={u(`/blog/${a.slug}`, lang)}>
+              <ArticleCover article={a} lang={lang} />
+              <span class="stack" style="--gap: var(--s-1)">
+                <span class="post-card__title">{a.entry[lang].data.title}</span>
+                <span class="t-meta"><time datetime={iso(a.published)}>{formatDate(a.published, lang)}</time> · {t('article.minutes', { n: a.minutes[lang] })}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</Base>

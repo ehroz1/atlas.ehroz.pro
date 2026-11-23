@@ -6,7 +6,7 @@ import Comments from '~/components/Comments.astro';
 import ArticleCover from '~/components/ArticleCover.astro';
 import { getTools, getCategories, domainOf } from '~/lib/data';
 import { getArticles, type Article } from '~/lib/articles';
-import { getPage } from '~/lib/routes';
+import { getPage, AUTHOR_SLUG } from '~/lib/routes';
 import { blogPosting } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
 import { AUTHOR, SITE } from '~/site.config';
@@ -53,7 +53,7 @@ const initials = AUTHOR.name.slice(0, 1);
         <h1 class="article-head__title">{d.title}</h1>
         <p class="article-head__lead">{d.description}</p>
         <div class="article-meta">
-          <a class="article-meta__author" href={AUTHOR.url} rel="author">
+          <a class="article-meta__author" href={u(`/author/${AUTHOR_SLUG}`, lang)} rel="author">
             <span class="avatar" aria-hidden="true">{initials}</span>
             <span>{AUTHOR.name}</span>
           </a>
@@ -96,7 +96,8 @@ const initials = AUTHOR.name.slice(0, 1);
               <p class="t-medium">{AUTHOR.name}</p>
               <p class="t-secondary t-small">{t('article.authorBio')}</p>
               <p class="cluster t-small" style="--gap: var(--s-2) var(--s-4)">
-                <a class="link" href={AUTHOR.url} rel="author">{t('article.authorSite')}</a>
+                <a class="link" href={u(`/author/${AUTHOR_SLUG}`, lang)} rel="author">{t('author.all', { name: AUTHOR.name })}</a>
+                <a class="link" href={AUTHOR.url}>{t('article.authorSite')}</a>
                 <a class="link" href={AUTHOR.telegram.url} rel="noopener">Telegram</a>
                 <a class="link" href={u('/about', lang)}>{SITE.name}</a>
               </p>

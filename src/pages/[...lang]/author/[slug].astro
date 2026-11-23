@@ -1,0 +1,13 @@
+---
+import View from '~/views/Author.astro';
+import { getArticles } from '~/lib/articles';
+import { AUTHOR_SLUG } from '~/lib/routes';
+import { langParams, type Lang } from '~/i18n';
+// the page exists once there is at least one article
+export async function getStaticPaths() {
+  if (!(await getArticles()).length) return [];
+  return langParams().map(({ params, props }) => ({ params: { ...params, slug: AUTHOR_SLUG }, props }));
+}
+const { lang } = Astro.props as { lang: Lang };
+---
+<View lang={lang} />

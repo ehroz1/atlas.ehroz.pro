@@ -88,6 +88,7 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   disclaimer: 'WebPage',
   blog: 'CollectionPage',
   article: 'WebPage',
+  author: 'ProfilePage',
 };
 
 export function webPage(entry: PageEntry, lang: Lang, url: string, image: string, hasCrumbs: boolean, extra: Node = {}): Node {

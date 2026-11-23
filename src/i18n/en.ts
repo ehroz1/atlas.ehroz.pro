@@ -532,6 +532,12 @@ export const en = {
   'article.authorSite': 'Website',
   'article.coverAlt': 'Screenshots: {names}',
   'article.related': 'Read next',
+  'blog.rss': 'Articles RSS',
+  'author.title': 'Ehroz — designer and developer, author of {brand}',
+  'author.description': 'Ehroz, a designer and developer from Astana, runs {brand}, a hand-picked catalog of useful sites. Articles, links and contacts.',
+  'author.articles': 'Articles',
+  'author.links': 'Elsewhere',
+  'author.all': 'All articles by {name}',
   'tool.articles': 'Articles about {name}',
 } as const;
 

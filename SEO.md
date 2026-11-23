@@ -64,3 +64,12 @@
 - ✅ `uptime.yml` — каждый час; `seo-monitor.yml` — раз в неделю; `indexnow.yml` — после деплоя.
 - 👤 Включить уведомления Vercel о неудачных деплоях (после переезда).
 - 👤 Не держать Attack Challenge Mode включённым постоянно.
+
+## Статьи и Google Discover / News
+
+- ✅ RSS статей с полным текстом и обложкой: `/blog/rss.xml` (en), `/ru/blog/rss.xml` (ru);
+  `<link rel="alternate">` на страницах блога, статей и автора.
+- ✅ Страница автора `/author/ehroz/` (ProfilePage + Person), на неё ведут подпись и блок «Об авторе» в статьях.
+- ✅ Новостной sitemap `/sitemap-news.xml` (статьи за последние 2 дня), подключён в `sitemap-index.xml`.
+- ✅ Обложки ≥ 1200 px, `max-image-preview:large` — требование Discover.
+- 👤 Search Console → «Эффективность» → «Discover»: раздел появится, когда статьи начнут показываться в ленте.

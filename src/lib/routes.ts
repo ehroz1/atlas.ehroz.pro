@@ -6,7 +6,10 @@
 import { getTools, getCategories, toolUpdated, latest, domainOf, type Tool, type Category } from '~/lib/data';
 import { fitTitle, fitDescription } from '~/lib/seo';
 import { useTranslations, loc, langs, plural, type Lang } from '~/i18n';
-import { SITE } from '~/site.config';
+import { SITE, AUTHOR } from '~/site.config';
+
+/** /author/<slug>/: the author's page */
+export const AUTHOR_SLUG = 'ehroz';
 import { alternativesOf } from '~/lib/related';
 import { tagCounts } from '~/lib/tags';
 import { getArticles, type Article } from '~/lib/articles';
@@ -16,7 +19,7 @@ import { privacy, cookies, disclaimer, supportFaq, type Section } from '~/lib/te
 export type PageKind =
   | 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api'
   | 'search' | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer'
-  | 'blog' | 'article';
+  | 'blog' | 'article' | 'author';
 
 export interface PageEntry {
   key: string;
@@ -261,6 +264,17 @@ async function build(): Promise<PageEntry[]> {
       heading: per((l) => T[l]('blog.h1')),
       text: per((l) => articles.map((a) => `- ${a.entry[l].data.title}: ${a.entry[l].data.description}`).join('\n')),
       og: per((l) => `og/${l}/blog`),
+    });
+    pages.push({
+      key: 'author',
+      kind: 'author',
+      path: `/author/${AUTHOR_SLUG}/`,
+      updated: latest(articles.map((a) => a.updated)),
+      title: per((l) => fitTitle(T[l]('author.title'))),
+      description: per((l) => fitDescription(T[l]('author.description'))),
+      heading: per((l) => (l === 'ru' ? AUTHOR.alternateName[0] : AUTHOR.name)),
+      text: per((l) => `${T[l]('article.authorBio')}\n` + articles.map((a) => `- ${a.entry[l].data.title}`).join('\n')),
+      og: per((l) => `og/${l}/author`),
     });
     for (const a of articles) {
       pages.push({

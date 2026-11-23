@@ -532,5 +532,11 @@ export const ru: Record<UIKey, string> = {
   'article.authorSite': 'Сайт',
   'article.coverAlt': 'Скриншоты: {names}',
   'article.related': 'Читайте также',
+  'blog.rss': 'RSS статей',
+  'author.title': 'Эхроз — дизайнер и разработчик, автор {brand}',
+  'author.description': 'Эхроз — дизайнер и разработчик из Астаны, автор {brand}, каталога полезных сайтов. Статьи, ссылки и контакты.',
+  'author.articles': 'Статьи',
+  'author.links': 'Где ещё найти',
+  'author.all': 'Все статьи автора',
   'tool.articles': 'Статьи про {name}',
 };
