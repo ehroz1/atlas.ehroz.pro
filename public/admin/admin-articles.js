@@ -174,7 +174,8 @@ function openArticle(a) {
   af('type').value = d.type || 'listicle';
   af('published').value = d.published || today();
   af('draft').checked = !!(ru.data.draft || en.data.draft);
-  af('coverAlt').value = d.coverAlt || '';
+  af('coverAlt_ru').value = ru.data.coverAlt || '';
+  af('coverAlt_en').value = en.data.coverAlt || '';
   for (const [lang, m] of [['ru', ru], ['en', en]]) {
     af(`title_${lang}`).value = m.data.title || '';
     af(`description_${lang}`).value = m.data.description || '';
@@ -350,7 +351,7 @@ function readArticle() {
         categories: [...art.cats],
         published: af('published').value || today(),
         updated: textChanged ? today() : (prev.updated || today()),
-        coverAlt: af('coverAlt').value.trim() || undefined,
+        coverAlt: af(`coverAlt_${lang}`).value.trim() || undefined,
         draft: draft || undefined,
       },
       body,

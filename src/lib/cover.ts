@@ -1,11 +1,11 @@
 /**
  * Article covers, drawn at build time (satori → resvg → PNG).
  *
- * One style for every article: a solid colour field chosen by the
- * article's first category, fine hairline grid like the site's frame,
- * the brand line on top, a large numeral (the number from the title,
- * e.g. "8 сайтов" → 8, or the first letter) and the title set big at
- * the bottom. Same picture for the page cover, list cards and og:image.
+ * Used when an article has no cover of its own. Same look as the
+ * illustrated covers: black field, cream "paper", one accent colour by
+ * category, halftone dots, crosshairs, rulers and a globe mark; the title
+ * sits on a tilted paper card, the number from the title (or its first
+ * letter) is printed big and slightly out of register.
  */
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -13,28 +13,16 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { SITE } from '~/site.config';
 
-/** Category → [background, numeral tint]. Deep, muted, readable with white text. */
-const PALETTE: Record<string, [string, string]> = {
-  ai: ['#23224a', '#4b47a8'],
-  design: ['#3b1f2b', '#8a3b5a'],
-  'design-generators': ['#3d2a14', '#9a6a2c'],
-  development: ['#102a33', '#2b6c80'],
-  productivity: ['#1d2f22', '#4a7a55'],
-  'video-audio': ['#341a1a', '#8a3a33'],
-  '3d-motion': ['#1b2440', '#3f5aa6'],
-  typography: ['#2a2418', '#8a7442'],
-  inspiration: ['#33203a', '#7d4a8c'],
-  'web-galleries': ['#1a2b3a', '#3d6f96'],
-  branding: ['#3a1e14', '#a34a2a'],
-  assets: ['#16302c', '#2f7a6c'],
-  'icons-illustrations': ['#2c2a14', '#7f7a2c'],
-  mockups: ['#24242a', '#5a5a6e'],
-  museums: ['#2e2419', '#86643c'],
-  utilities: ['#1c2a2a', '#467070'],
-  'file-converters': ['#202436', '#4c5788'],
-  learning: ['#1f2d1a', '#5b7d3c'],
+/** One accent per category, from the four the reference covers use. */
+const GREEN = '#3dbb78', BLUE = '#2f5cff', CORAL = '#f06a5a', AMBER = '#f0a830';
+const ACCENT: Record<string, string> = {
+  ai: GREEN, development: GREEN, productivity: GREEN, utilities: GREEN, learning: GREEN, 'file-converters': GREEN,
+  typography: BLUE, design: BLUE, '3d-motion': BLUE, 'web-galleries': BLUE, inspiration: BLUE,
+  assets: CORAL, museums: CORAL, 'video-audio': CORAL, branding: CORAL, mockups: CORAL,
+  'design-generators': AMBER, 'icons-illustrations': AMBER,
 };
-const FALLBACK: [string, string] = ['#1a1f2e', '#3a4670'];
+const INK = '#111111';
+const PAPER = '#efe8d8';
 
 let fonts: Promise<{ name: string; data: Buffer; weight: 400 | 600; style: 'normal' }[]> | undefined;
 const loadFonts = () =>
@@ -57,42 +45,62 @@ export interface CoverInput {
   minutes?: string; // "3 мин чтения"
 }
 
+const svg = (w: number, h: number, body: string) =>
+  'data:image/svg+xml;base64,' + Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" fill="none">${body}</svg>`).toString('base64');
+const globe = (c: string) => svg(96, 96, `<g stroke="${c}" stroke-width="3"><circle cx="48" cy="48" r="44"/><ellipse cx="48" cy="48" rx="20" ry="44"/><path d="M4 48h88M10 26h76M10 70h76M48 4v88"/></g>`);
+const cross = (c: string) => svg(64, 64, `<g stroke="${c}" stroke-width="2.5"><circle cx="32" cy="32" r="16"/><path d="M32 4v56M4 32h56"/></g>`);
+const ruler = (c: string, w: number) =>
+  svg(w, 40, `<g stroke="${c}" stroke-width="2.5"><path d="M0 38h${w}"/>${Array.from({ length: Math.floor(w / 18) + 1 }, (_, i) => `<path d="M${i * 18 + 1} 38v${i % 5 === 0 ? -34 : -18}"/>`).join('')}</g>`);
+const dots = (c: string, w: number, h: number, step = 14) => {
+  // halftone: dots shrink from left to right
+  let b = '';
+  for (let y = step / 2; y < h; y += step) for (let x = step / 2; x < w; x += step) {
+    const r = (step / 2) * (1 - x / w) * 0.95;
+    if (r > 0.6) b += `<circle cx="${x}" cy="${y}" r="${r.toFixed(2)}" fill="${c}"/>`;
+  }
+  return svg(w, h, b);
+};
+
 export async function renderCover({ title, category, categoryName, section, minutes }: CoverInput, width = 1600, height = 900) {
-  const [bg, tint] = PALETTE[category] ?? FALLBACK;
-  const k = width / 1600; // everything is designed at 1600 wide
-  const pad = 88 * k;
-  const numeral = title.match(/\d+/)?.[0] ?? title.trim().charAt(0).toUpperCase();
+  const accent = ACCENT[category] ?? GREEN;
+  const k = width / 1600; // designed at 1600×900
+  const glyph = title.match(/\d+/)?.[0] ?? title.trim().charAt(0).toUpperCase();
   const len = title.length;
-  const titleSize = (len > 60 ? 76 : len > 40 ? 88 : 100) * k;
+  const titleSize = (len > 60 ? 58 : len > 40 ? 66 : 76) * k;
+  const img = (src: string, style: Record<string, unknown>) => ({ type: 'img', props: { src, style: { position: 'absolute', ...style } } });
+  const abs = (style: Record<string, unknown>, children?: unknown) => h('div', { position: 'absolute', display: 'flex', ...style }, children);
 
-  // hairline grid: vertical lines every 1/6 of the width
-  const lines = Array.from({ length: 5 }, (_, i) =>
-    h('div', { position: 'absolute', top: 0, bottom: 0, left: ((i + 1) * width) / 6, width: 1, background: 'rgba(255,255,255,0.07)' }),
-  );
+  const tree = h('div', { width, height, display: 'flex', position: 'relative', background: INK, fontFamily: 'Medeo Sans', overflow: 'hidden' }, [
+    // marks: globe, crosshairs, rulers
+    img(globe(PAPER), { left: 56 * k, top: 52 * k, width: 96 * k, height: 96 * k }),
+    img(cross(PAPER), { left: 760 * k, top: 40 * k, width: 64 * k, height: 64 * k }),
+    img(cross(accent), { left: 300 * k, top: 150 * k, width: 64 * k, height: 64 * k }),
+    img(cross(PAPER), { left: 52 * k, top: 430 * k, width: 64 * k, height: 64 * k }),
+    img(cross(PAPER), { right: 52 * k, top: 430 * k, width: 64 * k, height: 64 * k }),
+    img(cross(PAPER), { left: 52 * k, bottom: 40 * k, width: 64 * k, height: 64 * k }),
+    img(cross(PAPER), { right: 52 * k, bottom: 40 * k, width: 64 * k, height: 64 * k }),
+    img(ruler(PAPER, 320), { right: 64 * k, top: 52 * k, width: 320 * k, height: 40 * k }),
+    img(ruler(PAPER, 280), { left: 170 * k, bottom: 52 * k, width: 280 * k, height: 40 * k }),
 
-  const tree = h('div', { width, height, display: 'flex', position: 'relative', background: bg, fontFamily: 'Medeo Sans', color: '#fff', overflow: 'hidden' }, [
-    ...lines,
-    // big numeral, bleeding off the right edge
-    h('div', {
-      position: 'absolute', right: -30 * k, bottom: -210 * k, display: 'flex',
-      fontSize: (numeral.length > 1 ? 620 : 760) * k, fontWeight: 600, lineHeight: 1, letterSpacing: -30 * k, color: tint,
-    }, numeral),
-    h('div', { position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: pad }, [
-      h('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 30 * k }, [
-        h('div', { display: 'flex', alignItems: 'center', gap: 16 * k }, [
-          h('div', { width: 26 * k, height: 26 * k, borderRadius: '50%', border: `${5 * k}px solid #1268ff`, background: '#fff' }),
-          h('div', { display: 'flex', fontWeight: 600 }, SITE.name),
-          h('div', { display: 'flex', opacity: 0.6 }, `/ ${section}`),
-        ]),
-        h('div', { display: 'flex', padding: `${10 * k}px ${22 * k}px`, border: '2px solid rgba(255,255,255,0.35)', borderRadius: 999, fontSize: 26 * k }, categoryName),
+    // halftone field in the accent colour, behind the glyph
+    img(dots(accent, 560, 520), { right: 150 * k, top: 170 * k, width: 560 * k, height: 520 * k, opacity: 0.85 }),
+
+    // big glyph, printed twice slightly out of register
+    abs({ right: 200 * k, top: 120 * k, fontSize: (glyph.length > 1 ? 500 : 600) * k, fontWeight: 600, lineHeight: 1, letterSpacing: -20 * k, color: accent }, glyph),
+    abs({ right: 216 * k, top: 108 * k, fontSize: (glyph.length > 1 ? 500 : 600) * k, fontWeight: 600, lineHeight: 1, letterSpacing: -20 * k, color: PAPER }, glyph),
+
+    // the title on a paper card with an accent shadow
+    abs({ left: 186 * k, top: 326 * k, width: 800 * k, height: 400 * k, background: accent, transform: 'rotate(-2.5deg)' }),
+    abs({ left: 160 * k, top: 300 * k, width: 800 * k, minHeight: 400 * k, background: PAPER, transform: 'rotate(-1.5deg)', flexDirection: 'column', justifyContent: 'space-between', padding: 44 * k, color: INK }, [
+      h('div', { display: 'flex', justifyContent: 'space-between', fontSize: 24 * k, letterSpacing: 1, textTransform: 'uppercase' }, [
+        h('div', { display: 'flex' }, `${SITE.name} / ${section}`),
+        h('div', { display: 'flex' }, categoryName),
       ]),
-      h('div', { display: 'flex', flexDirection: 'column', gap: 28 * k, maxWidth: 1080 * k }, [
-        h('div', { display: 'flex', fontSize: titleSize, fontWeight: 600, lineHeight: 1.04, letterSpacing: -2.5 * k }, title),
-        minutes ? h('div', { display: 'flex', fontSize: 28 * k, opacity: 0.65 }, minutes) : null,
-      ].filter(Boolean)),
+      h('div', { display: 'flex', fontSize: titleSize, fontWeight: 600, lineHeight: 1.04, letterSpacing: -1.5 * k, marginTop: 24 * k }, title),
+      minutes ? h('div', { display: 'flex', fontSize: 24 * k, marginTop: 24 * k, opacity: 0.7 }, minutes) : h('div', { display: 'flex' }),
     ]),
   ]);
 
-  const svg = await satori(tree as any, { width, height, fonts: await loadFonts() });
-  return new Resvg(svg, { fitTo: { mode: 'width', value: width } }).render().asPng();
+  const out = await satori(tree as any, { width, height, fonts: await loadFonts() });
+  return new Resvg(out, { fitTo: { mode: 'width', value: width } }).render().asPng();
 }

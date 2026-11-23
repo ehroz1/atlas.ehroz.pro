@@ -24,6 +24,7 @@ npm run articles   # write articles from trends with Claude (needs ANTHROPIC_API
 - [PAGE-STANDARD.md](PAGE-STANDARD.md) — rules and checklist for every new page
 - [FEATURES.md](FEATURES.md) — accounts (Google / email), recommendations, collections, monthly newsletter, Pro subscription, API, author notes, partner links: how they work and how to switch them on (RU)
 - [DECISIONS.md](DECISIONS.md) — decisions taken without asking
+- [docs/COVER-STYLE.md](docs/COVER-STYLE.md) — article cover style and image prompt
 - [docs/AI-ARTICLES-PLAN.md](docs/AI-ARTICLES-PLAN.md) — articles (/blog/): the trend → Claude → pull request pipeline
 - [docs/DESIGN.md](docs/DESIGN.md) — design rules
 

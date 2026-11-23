@@ -11,7 +11,7 @@ updated: 2026-11-23
 trendSource: "Evergreen query with steady demand in both languages; written by hand"
 sources: ["https://unsplash.com/license", "https://unsplash.com/plus/license"]
 cover: "./cover.jpg"
-coverAlt: "Коллаж в стиле тёмной ризографии с архивными фото на чёрном фоне: фрагмент 35-мм фотоплёнки, античный бюст, фасад модернистского здания и ботанический лист с коралловыми акцентами"
+coverAlt: "A dark risograph-style collage of archive images on black: a strip of 35 mm film, a classical bust, a modernist facade and a botanical leaf with coral accents"
 ---
 
 For free photos you can use in commercial work without credit, start with [Unsplash](/tool/unsplash/). To search several free libraries at once, use [Picta](/tool/picta/). For old artworks, prints and historical photos, go to museum archives in the public domain: [Smithsonian Open Access](/tool/smithsonian-open-access/), [The Met Open Access](/tool/met-open-access/) and [Public Domain Image Archive](/tool/pd-image-archive/).

@@ -10,7 +10,7 @@ published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Evergreen query; written by hand to set the format of the section"
 cover: "./cover.jpg"
-coverAlt: "Типографический коллаж в стиле тёмной ризографии с крупными буквами Aa и Ә, растровыми шрифтовыми вырезками и синими акцентами на чёрном фоне"
+coverAlt: "A dark risograph-style type collage: large “Aa” and “Ә”, halftone letter cut-outs and blue accents on black"
 ---
 
 Free fonts that are safe for commercial work are easiest to find on [Google Fonts](/tool/google-fonts/), [Fontshare](/tool/fontshare/) and [Font Squirrel](/tool/font-squirrel/): all three only list fonts you can use in paid projects. For Cyrillic, look at [Shriftoteka](/tool/shriftoteka/) and [Uprock Fonts](/tool/uprock-fonts/), which show the licence of every font; for Kazakh, [ärip](/tool/arip/).

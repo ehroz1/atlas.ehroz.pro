@@ -120,6 +120,16 @@ export const GET: APIRoute = async ({ props }) => {
   const { kind, page, lang } = props as Item;
   if (page.kind === 'article' && page.article) {
     const a = page.article;
+    // the article's own cover, cropped to 1200×630
+    const cover = a.entry[lang].data.cover;
+    if (cover) {
+      const dir = path.join(root, 'src/content/articles', a.slug);
+      const file = (await fs.readdir(dir)).find((f) => f === path.basename(cover.src.split('?')[0]) || /^cover\.(jpe?g|png|webp|avif)$/.test(f));
+      if (file) {
+        const png = await sharp(path.join(dir, file)).resize(1200, 630, { fit: 'cover' }).png().toBuffer();
+        return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
+      }
+    }
     const cat = (await getCategories()).find((c) => c.id === a.categories[0]);
     const t = useTranslations(lang);
     const png = await renderCover({ title: a.entry[lang].data.title, category: a.categories[0], categoryName: cat ? loc(cat.data.name, lang) : '', section: t('nav.blog') }, 1200, 630);
