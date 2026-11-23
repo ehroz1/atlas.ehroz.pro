@@ -4,11 +4,13 @@ description: "Где найти бесплатные шрифты для ком�
 type: listicle
 primaryKeyword: "бесплатные шрифты для коммерческого использования"
 secondaryKeywords: ["шрифты для коммерческого использования", "бесплатные кириллические шрифты", "где скачать шрифты бесплатно"]
-tools: [google-fonts, fontshare, font-squirrel, uncut-wtf, shriftoteka, uprock-fonts, arip, fontsinuse]
-categories: [typography]
+tools: ["google-fonts", "fontshare", "font-squirrel", "uncut-wtf", "shriftoteka", "uprock-fonts", "arip", "fontsinuse"]
+categories: ["typography"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Вечнозелёный запрос; написана вручную, чтобы задать формат раздела"
+cover: "./cover.jpg"
+coverAlt: "Типографический коллаж в стиле тёмной ризографии с крупными буквами Aa и Ә, растровыми шрифтовыми вырезками и синими акцентами на чёрном фоне"
 ---
 
 Бесплатные шрифты, которые можно спокойно брать в коммерческие проекты, проще всего искать на [Google Fonts](/tool/google-fonts/), [Fontshare](/tool/fontshare/) и [Font Squirrel](/tool/font-squirrel/): все три публикуют только шрифты, разрешённые для платных работ. Для кириллицы есть [Шрифтотека](/tool/shriftoteka/) и [Uprock Fonts](/tool/uprock-fonts/) с лицензией у каждого шрифта, для казахского — [ärip](/tool/arip/).

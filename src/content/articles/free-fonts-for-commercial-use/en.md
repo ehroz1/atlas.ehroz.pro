@@ -4,11 +4,13 @@ description: "Where to find free fonts you can use in client and commercial work
 type: listicle
 primaryKeyword: "free fonts for commercial use"
 secondaryKeywords: ["free commercial fonts", "cyrillic fonts free", "where to download free fonts"]
-tools: [google-fonts, fontshare, font-squirrel, uncut-wtf, shriftoteka, uprock-fonts, arip, fontsinuse]
-categories: [typography]
+tools: ["google-fonts", "fontshare", "font-squirrel", "uncut-wtf", "shriftoteka", "uprock-fonts", "arip", "fontsinuse"]
+categories: ["typography"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Evergreen query; written by hand to set the format of the section"
+cover: "./cover.jpg"
+coverAlt: "Типографический коллаж в стиле тёмной ризографии с крупными буквами Aa и Ә, растровыми шрифтовыми вырезками и синими акцентами на чёрном фоне"
 ---
 
 Free fonts that are safe for commercial work are easiest to find on [Google Fonts](/tool/google-fonts/), [Fontshare](/tool/fontshare/) and [Font Squirrel](/tool/font-squirrel/): all three only list fonts you can use in paid projects. For Cyrillic, look at [Shriftoteka](/tool/shriftoteka/) and [Uprock Fonts](/tool/uprock-fonts/), which show the licence of every font; for Kazakh, [ärip](/tool/arip/).
