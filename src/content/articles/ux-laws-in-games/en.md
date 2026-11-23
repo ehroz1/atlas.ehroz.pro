@@ -11,8 +11,8 @@ updated: 2026-11-23
 trendSource: "Topic idea; steady search demand for laws of UX from designers"
 sources:
   - "https://lawsofux.com/"
-  - "https://www.nngroup.com/articles/jakobs-law/"
   - "https://www.interfaceingame.com/"
+  - "https://mobbin.com/"
 steps:
   - name: "Pick the relevant UX laws"
     text: "Open Laws of UX and choose two or three principles that match the problem on your screen (choice overload, button placement, or perceived speed)."

@@ -11,8 +11,8 @@ updated: 2026-11-23
 trendSource: "Идея из обсуждения тем; запрос «законы ux» стабильно ищут дизайнеры"
 sources:
   - "https://lawsofux.com/"
-  - "https://www.nngroup.com/articles/jakobs-law/"
   - "https://www.interfaceingame.com/"
+  - "https://mobbin.com/"
 steps:
   - name: "Выберите подходящие законы UX"
     text: "Откройте Laws of UX и выберите два-три принципа, которые ближе всего к проблеме вашего экрана (перегрузка выбором, размер кнопок или скорость отклика)."
