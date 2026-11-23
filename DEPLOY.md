@@ -31,21 +31,26 @@
 - **GitHub Pages:** Actions → Deploy to GitHub Pages → открыть прошлый успешный запуск →
   **Re-run all jobs** (соберётся тот же коммит), либо `git revert` плохого коммита в `main`.
 
-## Переезд на Vercel (когда решите)
+## Переезд на Vercel (пошагово)
 
-1. vercel.com → **Add New… → Project** → импортировать `ehroz1/atlas.ehroz.pro`.
-   Framework определится как Astro, настройки берутся из `vercel.json`. Переменные окружения не нужны.
+Дефолтная ветка репозитория `ehroz1/atlas.ehroz.pro` уже переключена на `main`, а `vercel.json` полностью настроен (включая `buildCommand: "node scripts/popular.mjs && npm run build && npm run check:seo"`, 301-редиректы удалённых карточек, CORS для `/api/v1/*`, `X-Robots-Tag` для технических страниц и заголовки безопасности). Для автоматического обновления скриншотов новых сайтов и `popular.json` добавлен воркфлоу `.github/workflows/catalog-sync.yml`, который коммитит обновления в `main` и триггерит деплой на Vercel.
+
+1. vercel.com → **Add New… → Project** → импортировать `ehroz1/atlas.ehroz.pro` (ветка `main`).
+   Framework определится как Astro, все настройки подтянутся из `vercel.json`.
+   По желанию в **Environment Variables** можно добавить `GOATCOUNTER_TOKEN` (чтобы `node scripts/popular.mjs` обновлял статистику прямо во время сборки на Vercel).
 2. Project → **Settings → Domains** → добавить `atlas.ehroz.pro` и `www.atlas.ehroz.pro`
-   (www — с редиректом на основной).
-3. У регистратора поменять DNS: `atlas` → `CNAME cname.vercel-dns.com` (Vercel покажет точное значение).
-   **Это смена DNS — делаете вы.**
-4. Project → **Analytics → Enable** (Web Analytics).
+   (www — с 301-редиректом на основной `atlas.ehroz.pro`).
+3. У регистратора домена `ehroz.pro` поменять DNS-запись:
+   `atlas` → `CNAME cname.vercel-dns.com` (или значение, которое покажет Vercel в панели Domains).
+   **Это смена DNS — выполняется владельцем домена.**
+4. Project → **Analytics → Enable** (включить Vercel Web Analytics).
 5. Settings → Git → включить уведомления; аккаунт → **Settings → Notifications** →
    отметить **Deployment Failed** (почта/приложение).
 6. Firewall → **Attack Challenge Mode** включать только во время атаки, не держать постоянно:
    он закрывает сайт от поисковых роботов.
-7. После переезда выключить `deploy.yml` (Actions → Deploy to GitHub Pages → ⋯ → Disable workflow)
-   и Settings → Pages → Source: None.
+7. После переезда и проверки SSL-сертификата на Vercel:
+   выключить `.github/workflows/deploy.yml` (Actions → Deploy to GitHub Pages → ⋯ → Disable workflow, при этом `catalog-sync.yml`, `ci.yml`, `indexnow.yml`, `uptime.yml` и `seo-monitor.yml` остаются включёнными)
+   и в Settings → Pages → Source выбрать `None`.
 
 ## Google Search Console
 
@@ -55,17 +60,16 @@
    Альтернатива без DNS: ресурс **С префиксом в URL** `https://atlas.ehroz.pro/` →
    способ **HTML-тег** → значение `content` вписать в `SEARCH_VERIFICATION.google`
    в `src/analytics.config.ts` → задеплоить → **Подтвердить**.
-2. Слева **Файлы Sitemap** → вписать **полный адрес** `https://atlas.ehroz.pro/sitemap-index.xml` → **Отправить**.
+2. Слева **Файлы Sitemap** → отправить `https://atlas.ehroz.pro/sitemap-index.xml` (он включает `/sitemap-pages.xml`, `/sitemap-categories.xml`, `/sitemap-tools.xml`, `/sitemap-articles.xml`, `/sitemap-news.xml`).
 3. **Проверка URL** → главная → **Запросить индексирование**.
 
 ## Яндекс Вебмастер
 
 1. https://webmaster.yandex.ru → **Добавить сайт** → `https://atlas.ehroz.pro/`.
-2. Вкладка **«Метатег»** → скопировать значение `content` → вписать в
-   `SEARCH_VERIFICATION.yandex` в `src/analytics.config.ts` → задеплоить → **Проверить**.
+2. Метатег уже прописан в `src/analytics.config.ts` (`SEARCH_VERIFICATION.yandex: '623648db38a27ec0'`). Нажать **Проверить**.
 3. **Индексирование → Файлы Sitemap** → `https://atlas.ehroz.pro/sitemap-index.xml` → **Добавить**.
 4. **Индексирование → Переобход страниц** → главная `https://atlas.ehroz.pro/` и русская `https://atlas.ehroz.pro/ru/`.
-5. **Настройки → Привязка к Метрике** → выбрать счётчик (после создания Метрики).
+5. **Настройки → Привязка к Метрике** → привязать счётчик `114501614`.
 6. IndexNow уже настроен: ключ лежит в `public/<ключ>.txt`, workflow `IndexNow` шлёт изменённые страницы.
 
 ## Bing Webmaster
@@ -74,41 +78,15 @@ https://www.bing.com/webmasters → **Import your sites from GSC** → выбр�
 (подтверждение и sitemap подтянутся). Без GSC: вкладка **Meta tag** → значение в
 `SEARCH_VERIFICATION.bing`.
 
-## Google Analytics 4
+## Google Analytics 4 и Яндекс Метрика
 
-1. https://analytics.google.com → **Администратор → Создать → Ресурс** → название `Atlas`,
-   часовой пояс, валюта → **Далее** → бизнес-данные → **Создать**.
-2. **Сбор данных → Веб** → URL `https://atlas.ehroz.pro`, имя потока `atlas` → **Создать поток**.
-3. Скопировать **Идентификатор потока данных** `G-XXXXXXXXXX` → `analytics.ga4` в `src/analytics.config.ts`.
-4. Задеплоить. Появится плашка согласия; счётчик грузится только после «Разрешить».
-
-## Яндекс Метрика
-
-1. https://metrika.yandex.ru → **Добавить счётчик** → адрес `atlas.ehroz.pro`,
-   принять условия → **Создать счётчик**. Вебвизор можно не включать
-   (он управляется флажком `analytics.webvisor`).
-2. Номер счётчика → `analytics.metrika` в `src/analytics.config.ts`.
-   Стандартный код в `<head>` **не вставлять**: Метрика грузится из скрипта согласия.
+Счётчики уже подключены в `src/analytics.config.ts` (`ga4: 'G-VMHW04TWE8'`, `metrika: '114501614'`) и загружаются строго после согласия пользователя в баннере cookies.
 
 ## Счётчик посещений GoatCounter (страница «Популярное»)
 
-Считает просмотры без cookies, поэтому плашка согласия не нужна. Из его данных
-собирается `/popular/`: при каждом деплое (и раз в сутки по расписанию)
-`scripts/popular.mjs` забирает просмотры страниц сайтов за 30 дней в `src/data/popular.json`.
-Пока кода или токена нет, страница пишет, что данных ещё нет, и показывает сайты с `featured`.
-
-1. https://www.goatcounter.com/signup → **Code** — например `atlas-ehroz`
-   (адрес станет `atlas-ehroz.goatcounter.com`), почта, пароль → **Sign up**.
-   Использование бесплатно для некоммерческих сайтов.
-2. Код вписать в `analytics.goatcounter` в `src/analytics.config.ts` → задеплоить.
-   Скрипт со стороннего домена не грузится: страница отправляет один запрос-картинку
-   на `<код>.goatcounter.com/count`, адрес уже разрешён в CSP.
-3. GoatCounter → **Settings → API** → **New API key**, отметить только
-   **Read statistics** → скопировать ключ.
-4. GitHub → репозиторий → **Settings → Secrets and variables → Actions → New repository secret**:
-   имя `GOATCOUNTER_TOKEN`, значение — ключ из шага 3.
-5. Через день-два, когда накопятся просмотры: Actions → **Deploy to GitHub Pages** →
-   **Run workflow** (или дождаться ночного запуска). Локально: `GOATCOUNTER_TOKEN=… npm run popular`.
+Считает просмотры без cookies (`goatcounter: 'atlas-ehroz'`). Из его данных собирается `/popular/`:
+при каждом деплое на Vercel (`buildCommand`), а также раз в сутки через `.github/workflows/catalog-sync.yml`
+скрипт `scripts/popular.mjs` забирает просмотры за 30 дней в `src/data/popular.json`.
 
 ## События: ключевые в GA4 и цели в Метрике
 
@@ -118,7 +96,15 @@ https://www.bing.com/webmasters → **Import your sites from GSC** → выбр�
 |---|---|---|---|
 | `outbound_click` | переход на внешний сайт из каталога | **ключевое** | **цель** (JavaScript-событие) |
 | `contact_click` | клик по почте/Telegram/GitHub на «Контактах», отправка формы «Предложить сайт» | **ключевое** | **цель** |
+| `read_complete` | дочитывание статьи в блоге до конца текста | **ключевое** | **цель** |
+| `newsletter_subscribe` | отправка формы подписки на рассылку | **ключевое** | **цель** |
+| `pro_checkout_click` | переход к оформлению Atlas Pro | **ключевое** | **цель** |
+| `sign_in` | отправка формы входа по magic-ссылке | обычное / ключевое | цель по желанию |
+| `collection_create` | создание пользовательской подборки | обычное | цель по желанию |
+| `bookmark_click` | добавление карточки в закладки | обычное | цель по желанию |
+| `share_click` | нажатие кнопки «Поделиться» / копирование ссылки в карточке | обычное | — |
 | `search` | поиск по каталогу (2+ символа) | обычное | цель по желанию |
+| `filter_use` | фильтрация по тегу, цене, цвету или теме блога | обычное | — |
 | `internal_click` | переход по внутренней ссылке | обычное | — |
 | `scroll_depth` | прокрутка 25/50/75/90 % | обычное | — |
 | `language_switch` | переключение RU/EN | обычное | — |
@@ -126,9 +112,5 @@ https://www.bing.com/webmasters → **Import your sites from GSC** → выбр�
 | `js_error` | ошибка JavaScript (до 5 на страницу) | обычное | — |
 
 - GA4: **Администратор → События** → дождаться появления события → переключатель
-  **Отметить как ключевое событие** у `outbound_click` и `contact_click`.
-- Метрика: **Цели → Добавить цель → JavaScript-событие** → идентификатор `outbound_click`;
-  то же для `contact_click`.
-
-`download_click`, `open_app_click`, `order_click` и `read_complete` не используются: на сайте
-нет загрузок, приложений, заказов и статей.
+  **Отметить как ключевое событие** у `outbound_click`, `contact_click`, `read_complete`, `newsletter_subscribe`, `pro_checkout_click`.
+- Метрика: **Цели → Добавить цель → JavaScript-событие** → идентификатор соответствующего события.

@@ -100,8 +100,9 @@ const items = Array.from({ length: COUNT }, (_, i) => withShots[Math.floor((i * 
       draw();
       requestAnimationFrame(frame);
     };
+    const noMotion = () => reduced.matches || document.documentElement.classList.contains('no-motion');
     const start = () => {
-      if (running || !visible || reduced.matches) return;
+      if (running || !visible || noMotion()) return;
       running = true;
       last = performance.now();
       requestAnimationFrame(frame);
@@ -124,6 +125,7 @@ const items = Array.from({ length: COUNT }, (_, i) => withShots[Math.floor((i * 
       visible && ready ? start() : stop();
     }).observe(panel);
     document.fonts?.ready.then(() => { measure(); draw(); });
-    reduced.addEventListener('change', () => (reduced.matches ? stop() : ready && start()));
+    reduced.addEventListener('change', () => (noMotion() ? stop() : ready && start()));
+    document.addEventListener('atlas:motion', () => (noMotion() ? stop() : ready && start()));
   }
 </script>

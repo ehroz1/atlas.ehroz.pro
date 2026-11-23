@@ -50,6 +50,7 @@ const msg = {
             </button>
             <p class="t-meta">{t('account.or')}</p>
             <form class="form" data-email-form style="--gap: var(--s-3)">
+              <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
               <div class="field">
                 <label class="field__label" for="acc-email">{t('account.email')}</label>
                 <input class="input" id="acc-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
@@ -188,13 +189,17 @@ const msg = {
     if (urlError) status.textContent = fill(msg.error, { msg: urlError });
 
     $('[data-google]')!.addEventListener('click', async () => {
+      (window as any).atlasTrack?.('sign_in', { method: 'google' });
       const { error } = await (await sb()).auth.signInWithOAuth({ provider: 'google', options: { redirectTo: here + location.search } });
       if (error) fail(error);
     });
 
     $<HTMLFormElement>('[data-email-form]')!.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = String(new FormData(e.target as HTMLFormElement).get('email') ?? '').trim();
+      const fd = new FormData(e.target as HTMLFormElement);
+      const email = String(fd.get('email') ?? '').trim();
+      if (fd.get('website')) { status.textContent = fill(msg.sent, { email }); return; }
+      (window as any).atlasTrack?.('sign_in', { method: 'email' });
       const { error } = await (await sb()).auth.signInWithOtp({
         email,
         options: { emailRedirectTo: here + location.search, data: { lang, newsletter: params.get('subscribe') === '1' } },
@@ -275,7 +280,10 @@ const msg = {
 
       const nl = $<HTMLInputElement>('[data-newsletter]')!;
       nl.checked = profile.newsletter;
-      nl.onchange = () => updateProfile({ newsletter: nl.checked }).catch(fail);
+      nl.onchange = () => {
+        if (nl.checked) (window as any).atlasTrack?.('newsletter_subscribe', { source: 'account' });
+        updateProfile({ newsletter: nl.checked }).catch(fail);
+      };
 
       // local prefs → account on first sign-in, account → local afterwards
       const local = readPrefs();

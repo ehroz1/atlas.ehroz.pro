@@ -14,10 +14,10 @@ import { alternativesOf } from '~/lib/related';
 import { tagCounts } from '~/lib/tags';
 import { getArticles, type Article } from '~/lib/articles';
 import { getPopular } from '~/lib/popular';
-import { privacy, cookies, disclaimer, supportFaq, type Section } from '~/lib/texts';
+import { privacy, cookies, disclaimer, editorial, supportFaq, type Section } from '~/lib/texts';
 
 export type PageKind =
-  | 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api'
+  | 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'editorial' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api'
   | 'search' | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer'
   | 'blog' | 'article' | 'author';
 
@@ -43,6 +43,7 @@ export interface PageEntry {
 /** Dates the hand-written pages last changed. Update when you edit their text. */
 export const PAGE_UPDATED = {
   about: '2026-11-13',
+  editorial: '2026-11-23',
   contact: '2026-11-13',
   submit: '2026-11-13',
   wall: '2026-11-13',
@@ -53,8 +54,8 @@ export const PAGE_UPDATED = {
   api: '2026-11-21',
   search: '2026-11-22',
   support: '2026-11-22',
-  privacy: '2026-11-22',
-  cookies: '2026-11-22',
+  privacy: '2026-11-23',
+  cookies: '2026-11-23',
   disclaimer: '2026-11-22',
 };
 
@@ -248,6 +249,7 @@ async function build(): Promise<PageEntry[]> {
   });
 
   simple('support', 'support.h1', (l) => supportFaq(l).map((f) => `${f.q}\n${f.a}`).join('\n\n'));
+  simple('editorial', 'editorial.h1', (l) => `${T[l]('editorial.lead')}\n\n${sectionsText(editorial(l))}`);
   simple('privacy', 'privacy.h1', (l) => `${T[l]('privacy.lead')}\n\n${sectionsText(privacy(l))}`);
   simple('cookies', 'cookies.h1', (l) => `${T[l]('cookies.lead')}\n\n${sectionsText(cookies(l))}`);
   simple('disclaimer', 'disclaimer.h1', (l) => `${T[l]('disclaimer.lead')}\n\n${sectionsText(disclaimer(l))}`);

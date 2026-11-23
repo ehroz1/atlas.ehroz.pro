@@ -2,8 +2,9 @@
 /**
  * npm run check:a11y — axe-core (WCAG 2 A/AA) on the key pages of dist/,
  * in light and dark color-scheme, at 1280 px and 375 px. Also fails on
- * horizontal scroll at 375 px. Needs Playwright with Chromium.
+ * horizontal scroll at 375 px. Needs Playwright with Chromium or Chrome.
  */
+import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { serve } from './serve.mjs';
 
@@ -12,10 +13,16 @@ const { chromium } = require('playwright');
 const axePath = require.resolve('axe-core/axe.min.js');
 
 const PORT = 4399;
-const PAGES = ['/', '/ru/', '/en/', '/categories/', '/category/design/', '/ru/category/ai/', '/tool/figma/', '/ru/tool/claude/', '/about/', '/ru/about/', '/contact/', '/ru/contact/', '/submit/', '/wall/', '/alternatives/claude/', '/ru/alternatives/claude/', '/badge/', '/ru/badge/', '/for-makers/', '/ru/for-makers/', '/search/', '/ru/search/', '/tags/', '/popular/', '/ru/popular/', '/support/', '/ru/support/', '/privacy/', '/ru/privacy/', '/cookies/', '/disclaimer/', '/author/ehroz/', '/ru/author/ehroz/', '/blog/', '/ru/blog/', '/blog/free-fonts-for-commercial-use/', '/ru/blog/free-fonts-for-commercial-use/', '/no-such-page/'];
+const PAGES = ['/', '/ru/', '/en/', '/categories/', '/category/design/', '/ru/category/ai/', '/tool/figma/', '/ru/tool/claude/', '/about/', '/ru/about/', '/editorial/', '/ru/editorial/', '/contact/', '/ru/contact/', '/submit/', '/wall/', '/alternatives/claude/', '/ru/alternatives/claude/', '/badge/', '/ru/badge/', '/for-makers/', '/ru/for-makers/', '/search/', '/ru/search/', '/tags/', '/popular/', '/ru/popular/', '/support/', '/ru/support/', '/privacy/', '/ru/privacy/', '/cookies/', '/disclaimer/', '/author/ehroz/', '/ru/author/ehroz/', '/blog/', '/ru/blog/', '/blog/free-fonts-for-commercial-use/', '/ru/blog/free-fonts-for-commercial-use/', '/blog/web-design-2026-vs-2019/', '/410.html', '/no-such-page/'];
 
 const server = await serve('dist', PORT);
-const browser = await chromium.launch();
+let browser;
+try {
+  browser = await chromium.launch();
+} catch {
+  const executablePath = ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => fs.existsSync(p));
+  browser = await chromium.launch({ executablePath });
+}
 let total = 0;
 try {
   for (const scheme of ['light', 'dark']) {

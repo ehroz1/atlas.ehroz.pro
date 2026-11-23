@@ -1,0 +1,60 @@
+# Keeps the catalog in sync on both Vercel and GitHub Pages:
+# 1. When a site is added via /admin/ without a screenshot, captures it with
+#    Playwright and commits it to `main` (triggering a Vercel / Pages deploy).
+# 2. Daily at 03:17 UTC, refreshes src/data/popular.json from GoatCounter
+#    (when GOATCOUNTER_TOKEN is set) and commits if the numbers changed.
+name: Catalog sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/data/tools.json'
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - id: missing
+        run: |
+          ids=$(node -e "const fs=require('fs');const t=require('./src/data/tools.json');const since=Date.now()-14*864e5;console.log(t.filter(x=>new Date(x.added)>=since&&!['jpg','jpeg','png','webp'].some(e=>fs.existsSync('src/assets/shots/'+x.id+'.'+e))).map(x=>x.id).join(' '))")
+          echo "ids=$ids" >> "$GITHUB_OUTPUT"
+      - name: Capture missing screenshots
+        if: steps.missing.outputs.ids != ''
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+          npm run shots -- ${{ steps.missing.outputs.ids }}
+      - name: Update popular.json from GoatCounter
+        if: github.event_name != 'push'
+        continue-on-error: true
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: node scripts/popular.mjs
+      - name: Commit changes back to main
+        run: |
+          git add src/assets/shots src/data/popular.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Sync catalog assets and popular stats"
+            git pull --rebase origin main && git push origin HEAD:main
+          fi

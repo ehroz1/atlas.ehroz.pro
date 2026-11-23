@@ -7,10 +7,10 @@
  *  - title missing, longer than 60 or duplicated; description outside 50–160 or duplicated
  *  - not exactly one h1; heading levels that skip (h2 → h4)
  *  - missing Open Graph / Twitter Card tags, canonical, hreflang
- *  - sitemap ↔ pages mismatch, missing lastmod
+ *  - sitemap ↔ pages mismatch, missing lastmod, missing split sitemaps or image targets
  *  - JSON-LD: invalid JSON, not exactly one @graph, duplicate @id, @id references that don't resolve
  *  - orphan pages and pages deeper than 3 clicks from the home page
- *  - 404 without noindex or with a canonical
+ *  - 404 / 410 without noindex or with a canonical
  *  - articles (/blog/<slug>/): fewer than 3 links to catalog pages in the text, no BlogPosting
  */
 import fs from 'node:fs';
@@ -30,14 +30,26 @@ if (!fs.existsSync(DIST)) {
 
 // ---- sitemap: tells us the origin + base the site was built for ----------
 const read = (p) => fs.readFileSync(path.join(DIST, p), 'utf8');
-const sitemapXml = read('sitemap-0.xml');
 const sitemapIndex = read('sitemap-index.xml');
-const sitemap = [...sitemapXml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => ({
-  loc: m[1].match(/<loc>(.*?)<\/loc>/)?.[1],
-  lastmod: m[1].match(/<lastmod>(.*?)<\/lastmod>/)?.[1],
-}));
-if (!sitemap.length) err('sitemap-0.xml', 'no <url> entries');
-if (!/<loc>.*sitemap-0\.xml<\/loc>/.test(sitemapIndex)) err('sitemap-index.xml', 'does not list sitemap-0.xml');
+const CONTENT_MAPS = ['sitemap-pages.xml', 'sitemap-categories.xml', 'sitemap-tools.xml', 'sitemap-articles.xml'];
+for (const m of [...CONTENT_MAPS, 'sitemap-news.xml']) {
+  if (!new RegExp(`<loc>[^<]*${m.replace('.', '\\.')}<\\/loc>`).test(sitemapIndex))
+    err('sitemap-index.xml', `does not list ${m}`);
+  if (!fs.existsSync(path.join(DIST, m))) err(m, 'missing from dist/');
+}
+if (!fs.existsSync(path.join(DIST, 'sitemap-0.xml'))) err('sitemap-0.xml', 'missing from dist/');
+
+const parseUrls = (xml, source) =>
+  [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => ({
+    source,
+    loc: m[1].match(/<loc>(.*?)<\/loc>/)?.[1],
+    lastmod: m[1].match(/<lastmod>(.*?)<\/lastmod>/)?.[1],
+    images: [...m[1].matchAll(/<image:loc>(.*?)<\/image:loc>/g)].map((im) => im[1]),
+  }));
+
+const sitemap = CONTENT_MAPS.flatMap((m) => (fs.existsSync(path.join(DIST, m)) ? parseUrls(read(m), m) : []));
+if (!sitemap.length) err('sitemap', 'no <url> entries across split sitemaps');
+
 const robotsTxt = read('robots.txt');
 // previews / github.io builds close robots.txt and put noindex on every page
 const NONPROD = /User-agent: \*\s*\nDisallow: \/\s*$/m.test(robotsTxt);
@@ -80,14 +92,15 @@ for (const file of files) {
   const url = pageUrlOf(file);
   const meta = (sel) => doc.querySelector(sel)?.getAttribute('content') ?? null;
   const robots = meta('meta[name="robots"]') ?? '';
+  const isErrorPage = /\/(404|410)(\.html)?$/.test(url);
   pages.set(url, {
     file,
     url,
     doc,
     html,
-    is404: /\/404(\.html)?$/.test(url),
+    is404: isErrorPage,
     // on a non-production build every page is noindex on purpose; check the rest as if indexable
-    noindex: /\/404(\.html)?$/.test(url) || (!NONPROD && /noindex/.test(robots)),
+    noindex: isErrorPage || (!NONPROD && /noindex/.test(robots)),
     robotsMeta: robots,
     canonicalRaw: doc.querySelector('link[rel="canonical"]')?.getAttribute('href') ?? null,
     title: doc.querySelector('title')?.text.trim() ?? '',
@@ -116,8 +129,8 @@ for (const p of pages.values()) {
 
   if (NONPROD && !/noindex/.test(p.robotsMeta)) err(url, 'non-production build but the page is indexable');
   if (p.is404) {
-    if (!/noindex/.test(p.robotsMeta)) err(url, '404 page must be noindex');
-    if (p.canonical) err(url, '404 page must not have a canonical');
+    if (!/noindex/.test(p.robotsMeta)) err(url, 'error page (404/410) must be noindex');
+    if (p.canonical) err(url, 'error page (404/410) must not have a canonical');
   }
 
   // title / description
@@ -230,7 +243,7 @@ for (const p of pages.values()) {
       (body?.querySelectorAll('a[href]') ?? []).map((a) => a.getAttribute('href')).filter((h) => /\/(tool|category|alternatives)\/[^/]+\/$/.test(h)),
     );
     if (catalogLinks.size < 3) err(url, `article links to ${catalogLinks.size} catalog pages in its text (need at least 3)`);
-    if (!/"@type":"BlogPosting"/.test(p.html)) err(url, 'article without BlogPosting JSON-LD');
+    if (!/"@type":(?:"BlogPosting"|\[[^\]]*"BlogPosting")/.test(p.html)) err(url, 'article without BlogPosting JSON-LD');
     const words = (body?.text ?? '').split(/\s+/).filter(Boolean).length;
     if (words < 300) warn(url, `article is short: ${words} words`);
     if (/<!--\s*AUTHOR/.test(p.html)) warn(url, 'article still has the <!-- AUTHOR --> placeholder: add your own experience');
@@ -248,15 +261,20 @@ for (const [d, urls] of descs) if (urls.length > 1) err(urls.join(', '), `duplic
 
 // ---- sitemap ↔ pages ---------------------------------------------------
 const inSitemap = new Set();
-for (const { loc, lastmod } of sitemap) {
+for (const { source, loc, lastmod, images } of sitemap) {
   const u = new URL(loc);
-  if (u.origin !== ORIGIN) err('sitemap', `foreign URL ${loc}`);
+  if (u.origin !== ORIGIN) err(source, `foreign URL ${loc}`);
+  if (inSitemap.has(u.pathname)) err(source, `duplicate URL across split sitemaps: ${loc}`);
   inSitemap.add(u.pathname);
   const page = pages.get(u.pathname);
-  if (!page) err('sitemap', `URL without a page: ${loc}`);
-  else if (page.noindex) err('sitemap', `noindex page in sitemap: ${loc}`);
-  if (!lastmod) err('sitemap', `no lastmod: ${loc}`);
-  else if (!/^\d{4}-\d{2}-\d{2}/.test(lastmod)) err('sitemap', `bad lastmod ${lastmod}: ${loc}`);
+  if (!page) err(source, `URL without a page: ${loc}`);
+  else if (page.noindex) err(source, `noindex page in sitemap: ${loc}`);
+  if (!lastmod) err(source, `no lastmod: ${loc}`);
+  else if (!/^\d{4}-\d{2}-\d{2}/.test(lastmod)) err(source, `bad lastmod ${lastmod}: ${loc}`);
+  for (const imgUrl of images) {
+    const im = new URL(imgUrl);
+    if (im.origin !== ORIGIN || !fileFor(im.pathname)) err(source, `missing sitemap image ${imgUrl} on ${loc}`);
+  }
 }
 for (const p of pages.values()) if (!p.noindex && !p.alias && !inSitemap.has(p.url)) err(p.url, 'indexable page missing from sitemap');
 
@@ -292,12 +310,15 @@ for (const p of pages.values()) {
 
 // ---- robots / llms -----------------------------------------------------
 if (NONPROD) warn('robots.txt', 'non-production build: robots.txt closes the site and every page is noindex');
-else if (!/^Sitemap: /m.test(robotsTxt)) err('robots.txt', 'no Sitemap line');
+else {
+  if (!/^Sitemap: /m.test(robotsTxt)) err('robots.txt', 'no Sitemap line');
+  if (!/^Clean-param: /m.test(robotsTxt)) err('robots.txt', 'no Clean-param line for Yandex');
+}
 for (const f of ['llms.txt', 'llms-full.txt']) if (!fs.existsSync(path.join(DIST, f))) err(f, 'missing');
 
 // ---- report ------------------------------------------------------------
 const indexable = [...pages.values()].filter((p) => !p.noindex).length;
-console.log(`check:seo — ${pages.size} HTML pages (${indexable} indexable${NONPROD ? ' if this were production' : ''}), ${sitemap.length} sitemap URLs, origin ${ORIGIN}${BASE}`);
+console.log(`check:seo — ${pages.size} HTML pages (${indexable} indexable${NONPROD ? ' if this were production' : ''}), ${sitemap.length} sitemap URLs across ${CONTENT_MAPS.length} sitemaps, origin ${ORIGIN}${BASE}`);
 if (warnings.length) {
   console.log(`\n${warnings.length} warning(s):`);
   for (const w of warnings.slice(0, 50)) console.log('  ⚠ ' + w);

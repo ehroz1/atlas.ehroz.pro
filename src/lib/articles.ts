@@ -84,7 +84,8 @@ async function load(): Promise<Article[]> {
     for (const l of langs) {
       const raw = entry[l].rendered?.html ?? '';
       html[l] = figures(await localImages(slug, await screenshots(localizeLinks(raw, l, slug, toolIds, catIds), l, slug, tools)));
-      text[l] = plain(entry[l].body ?? '');
+      const faqText = entry[l].data.faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join('\n\n');
+      text[l] = [plain(entry[l].body ?? ''), faqText].filter(Boolean).join('\n\n');
       // ~200 words a minute in English, a bit slower in Russian (longer words)
       const words = text[l].split(/\s+/).filter(Boolean).length;
       minutes[l] = Math.max(1, Math.round(words / (l === 'ru' ? 170 : 200)));

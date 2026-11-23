@@ -65,7 +65,7 @@ const seen = new Set<string>();
   const hint = document.querySelector<HTMLElement>('[data-wall-hint]');
   const COLS = Number(wall.dataset.cols);
   const ROWS = Number(wall.dataset.rows);
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isReduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('no-motion');
   document.documentElement.classList.add('is-wall');
 
   // 1. Tile the block 3 × 3: triple every row, then triple the rows.
@@ -125,7 +125,7 @@ const seen = new Set<string>();
       vy *= decay;
       if (Math.hypot(vx, vy) < 8) vx = vy = 0;
     }
-    const k = reduced || dragging ? 1 : 1 - Math.exp(-dt * 14); // ease toward target
+    const k = isReduced() || dragging ? 1 : 1 - Math.exp(-dt * 14); // ease toward target
     x += (tx - x) * k;
     y += (ty - y) * k;
     draw();
@@ -193,7 +193,7 @@ const seen = new Set<string>();
       const a = samples[0];
       const b = samples[samples.length - 1];
       const dt = (b.t - a.t) / 1000;
-      if (!reduced && dt > 0 && performance.now() - b.t < 80) {
+      if (!isReduced() && dt > 0 && performance.now() - b.t < 80) {
         vx = -(b.px - a.px) / dt;
         vy = -(b.py - a.py) / dt;
       }

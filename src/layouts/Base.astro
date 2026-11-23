@@ -75,10 +75,14 @@ const crumbItems: schema.Crumb[] | undefined = crumbs && [
   ...crumbs.map((c) => ({ name: c.name, url: absUrl(c.path, lang), href: u(c.path, lang) })),
 ];
 
+const ogType = entry?.kind === 'article' || entry?.kind === 'tool' ? 'article' : entry?.kind === 'author' ? 'profile' : 'website';
+const published = entry?.article ? entry.article.published.toISOString() : entry?.tool ? entry.tool.data.added.toISOString() : undefined;
+
 const jsonLd =
   entry &&
   schema.graph([
     schema.website(),
+    schema.organization(lang),
     schema.person(lang),
     schema.webPage(entry, lang, canonical!, ogImage, !!crumbItems, pageExtra),
     schema.imageObject(canonical!, ogImage, entry.title[lang]),
@@ -107,11 +111,13 @@ const jsonLd =
         that finished (or failed) with .is-loaded, which stops the shimmer.
         Runs in <head>, before any <img> exists, so no load event is missed;
         `load` doesn't bubble, hence the capture listener. Without JavaScript
-        there is no .skel class and no shimmer, just the plain grey box. */}
+        there is no .skel class and no shimmer, just the plain grey box.
+        Also applies the user's saved motion preference (`atlas:motion`). */}
     <script is:inline>
       (function () {
         var d = document.documentElement;
         d.classList.add('skel');
+        try { if (localStorage.getItem('atlas:motion') === 'off') d.classList.add('no-motion'); } catch (e) {}
         var done = function (e) { var t = e.target; if (t && t.tagName === 'IMG') t.classList.add('is-loaded'); };
         document.addEventListener('load', done, true);
         document.addEventListener('error', done, true);
@@ -119,7 +125,7 @@ const jsonLd =
     </script>
     <meta name="theme-color" content="#0d0d0d" />
     <meta name="color-scheme" content="dark" />
-    <meta property="og:type" content={entry?.kind === 'tool' ? 'article' : 'website'} />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:locale" content={ogLocale} />
     {otherLocales.map((l) => <meta property="og:locale:alternate" content={l} />)}
@@ -131,10 +137,15 @@ const jsonLd =
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={title} />
     {updated && <meta property="og:updated_time" content={updated} />}
+    {ogType === 'article' && published && <meta property="article:published_time" content={published} />}
+    {ogType === 'article' && updated && <meta property="article:modified_time" content={updated} />}
+    {entry?.article && <meta property="article:author" content={absUrl('/author/ehroz/', lang)} />}
+    {entry?.article?.categories.map((c) => <meta property="article:section" content={c} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
     {IS_PROD && SEARCH_VERIFICATION.google && <meta name="google-site-verification" content={SEARCH_VERIFICATION.google} />}
     {IS_PROD && SEARCH_VERIFICATION.yandex && <meta name="yandex-verification" content={SEARCH_VERIFICATION.yandex} />}
     {IS_PROD && SEARCH_VERIFICATION.bing && <meta name="msvalidate.01" content={SEARCH_VERIFICATION.bing} />}
@@ -239,12 +250,55 @@ const jsonLd =
           var id = btn.hasAttribute('data-save-page') ? btn.getAttribute('data-save-page') : card && card.getAttribute('data-id');
           if (!id) return;
           var rest = saved.filter(function (x) { return x !== id; });
-          if (btn.hasAttribute('data-save-up')) saved = [id].concat(rest);
-          else saved = saved.indexOf(id) >= 0 ? rest : [id].concat(rest);
+          var act = 'save';
+          if (btn.hasAttribute('data-save-up')) { saved = [id].concat(rest); act = 'move_up'; }
+          else if (saved.indexOf(id) >= 0) { saved = rest; act = 'remove'; }
+          else { saved = [id].concat(rest); act = 'save'; }
           persist(); paint();
+          if (window.atlasTrack) window.atlasTrack('bookmark_click', { tool: id, action: act });
           document.dispatchEvent(new CustomEvent('atlas:saved', { detail: { ids: saved.slice() } }));
         });
         paint();
+      })();
+      /* User-controlled animation toggle (`atlas:motion` in localStorage)
+         and scroll position restoration when navigating back (`atlas:scroll`
+         in sessionStorage). */
+      (function () {
+        var MKEY = 'atlas:motion';
+        var d = document.documentElement;
+        var paintMotion = function () {
+          var off = d.classList.contains('no-motion');
+          document.querySelectorAll('[data-motion-toggle]').forEach(function (b) {
+            b.setAttribute('aria-pressed', off ? 'true' : 'false');
+            b.textContent = b.getAttribute(off ? 'data-label-off' : 'data-label-on');
+          });
+        };
+        document.addEventListener('click', function (e) {
+          var b = e.target.closest && e.target.closest('[data-motion-toggle]');
+          if (!b) return;
+          var off = !d.classList.contains('no-motion');
+          d.classList.toggle('no-motion', off);
+          try { off ? localStorage.setItem(MKEY, 'off') : localStorage.removeItem(MKEY); } catch (err) {}
+          paintMotion();
+          document.dispatchEvent(new CustomEvent('atlas:motion', { detail: { off: off } }));
+        });
+        paintMotion();
+
+        var SKEY = 'atlas:scroll';
+        var pathKey = location.pathname + location.search;
+        var readScroll = function () { try { return JSON.parse(sessionStorage.getItem(SKEY) || '{}') || {}; } catch (e) { return {}; } };
+        var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'back_forward' && !location.hash) {
+          var y = Number(readScroll()[pathKey]);
+          if (y > 0) window.scrollTo(0, y);
+        }
+        addEventListener('pagehide', function () {
+          try {
+            var map = readScroll();
+            map[pathKey] = Math.round(window.scrollY);
+            sessionStorage.setItem(SKEY, JSON.stringify(map));
+          } catch (e) {}
+        });
       })();
     </script>
     <Analytics lang={lang} />

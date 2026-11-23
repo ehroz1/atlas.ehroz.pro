@@ -9,6 +9,17 @@ categories: ["web-galleries", "design"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Topic idea; people search for web design trends before a redesign"
+sources:
+  - "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout"
+  - "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme"
+  - "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scroll-driven_animations"
+faq:
+  - q: "What is a bento grid in modern web design?"
+    a: "A bento grid is a CSS Grid layout built from cards of unequal widths and heights—like compartments in a Japanese bento box—where each cell presents one focused proof point such as a live UI snippet, a metric or a short clip."
+  - q: "Which web design galleries record motion and scroll animations as video?"
+    a: "Godly and landinglove record websites as short video loops rather than static screenshots, making it possible to inspect scroll transitions, micro-interactions and page choreography."
+  - q: "How should websites handle motion for visitors who prefer reduced animation?"
+    a: "Respect the CSS media query prefers-reduced-motion: reduce and offer a manual motion toggle so visitors can pause continuous loops or scroll-driven effects without losing any content."
 cover: "./cover.jpg"
 coverAlt: "A risograph-style collage: a globe made of dots and crosses, warped grids and halftone waves on black with amber accents"
 ---
@@ -16,6 +27,16 @@ coverAlt: "A risograph-style collage: a globe made of dots and crosses, warped g
 A 2019 website usually gives itself away on the first screen: a stock photo or a flat illustration of long-limbed people, a centred headline, three feature icons underneath. A 2026 one more often opens with big type, the real product interface and motion that explains something. Here are seven differences I see when browsing galleries, and where each is easiest to study.
 
 These are observations, not rules: a good 2019 site can work better than a fashionable one. But if a site is due for a refresh, this list is a place to start.
+
+| Element | Typical 2019 website | Typical 2026 website | Where to study examples |
+|---|---|---|---|
+| Hero visual | Flat vector illustration or stock photo | Real product UI, interactive or animated | [Saaspo](/tool/saaspo/) |
+| Typography | Medium headline supporting an image | Oversized variable display type holding the grid | [Minimal Gallery](/tool/minimal-gallery/), [Siteinspire](/tool/siteinspire/) |
+| Motion | Generic fade-in on every scroll block | Narrative motion showing how the product works | [Godly](/tool/godly/), [landinglove](/tool/landing-love/) |
+| Colour scheme | Light theme only | Native dark theme or adaptive colour tokens | [Dark Design](/tool/dark-design/) |
+| Feature layout | Three identical icon-and-text columns | Asymmetric bento grid with live mini-demos | [Saaspo](/tool/saaspo/), [Minimal Gallery](/tool/minimal-gallery/) |
+| Navigation bar | Full-width bar with 6–8 text links | Compact floating pill or visual mega-menu | [Navbar Gallery](/tool/navbar-gallery/) |
+| Surface finish | Smooth gradients and glossy drop shadows | Film grain, halftone, paper texture and crisp borders | [Siteinspire](/tool/siteinspire/), [Godly](/tool/godly/) |
 
 ## 1. The product instead of illustrations
 

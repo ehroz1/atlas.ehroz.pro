@@ -288,7 +288,11 @@ export const en = {
   'nav.privacy': 'Privacy',
   'nav.cookies': 'Cookies',
   'nav.disclaimer': 'Disclaimer',
+  'nav.editorial': 'Editorial policy',
   'nav.legal': 'Legal',
+  'footer.motionOn': 'Motion: on',
+  'footer.motionOff': 'Motion: off',
+  'footer.motionLabel': 'Toggle page animations',
 
   'searchPage.title': 'Search {brand}: sites and tools by task',
   'searchPage.description': 'Search every site in {brand} by name, task or tag, and filter by category, price and platform. Results update as you type.',
@@ -345,6 +349,11 @@ export const en = {
   'disclaimer.description': '{brand} is a hand-picked list, not a guarantee: we are not affiliated with the listed sites and are not responsible for them.',
   'disclaimer.h1': 'Disclaimer',
   'disclaimer.lead': 'What you can and can’t expect from the index and the sites in it.',
+
+  'editorial.title': 'Editorial policy of {brand}',
+  'editorial.description': 'How {brand} selects and tests websites, checks facts and licences in articles, labels partner links and corrects mistakes.',
+  'editorial.h1': 'Editorial policy',
+  'editorial.lead': 'How sites are chosen for the catalog, how articles are fact-checked and reviewed, and how we keep editorial decisions independent.',
 
   'legal.updated': 'Last updated {date}',
   'legal.key': 'Key',

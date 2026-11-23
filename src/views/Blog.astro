@@ -108,6 +108,7 @@ const meta = (a: Article) => ({ date: formatDate(a.published, lang), iso: iso(a.
       const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-topic]');
       if (!btn) return;
       const topic = btn.dataset.topic!;
+      if (topic) (window as any).atlasTrack?.('filter_use', { facet: 'blog_topic', value: topic });
       for (const b of bar.querySelectorAll('[data-topic]')) b.setAttribute('aria-pressed', String(b === btn));
       for (const el of items) el.hidden = !!topic && !el.dataset.topics!.split(' ').includes(topic);
       // with the lead hidden, the grid moves up to where the lead was

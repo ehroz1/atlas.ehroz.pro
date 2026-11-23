@@ -7,7 +7,7 @@ import ArticleCover from '~/components/ArticleCover.astro';
 import { getTools, getCategories, domainOf } from '~/lib/data';
 import { getArticles, type Article } from '~/lib/articles';
 import { getPage, AUTHOR_SLUG } from '~/lib/routes';
-import { blogPosting } from '~/lib/schema';
+import { blogPosting, faqPage, howTo } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
 import { AUTHOR, SITE } from '~/site.config';
 import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
@@ -33,13 +33,18 @@ const share = [
   { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}` },
 ];
 const initials = AUTHOR.name.slice(0, 1);
+const extraNodes = [
+  blogPosting(url, entry, lang),
+  ...(d.faq.length ? [faqPage(url, d.faq)] : []),
+  ...(d.steps.length ? [howTo(url, d.title, d.description, d.steps)] : []),
+];
 ---
 <Base
   lang={lang}
   entry={entry}
   crumbs={[{ name: t('nav.blog'), path: '/blog' }, { name: d.title, path: entry.path }]}
   crumbsContainer="container container--article"
-  nodes={[blogPosting(url, entry, lang)]}
+  nodes={extraNodes}
   pageExtra={{ mainEntity: { '@id': url + '#article' } }}
 >
   <div class="reading-progress" aria-hidden="true"></div>
@@ -87,8 +92,22 @@ const initials = AUTHOR.name.slice(0, 1);
             </ol>
           </details>
         )}
-        <div class="article-body">
+        <div class="article-body" data-article-body>
           <div class="prose prose--article" set:html={article.html[lang]} />
+
+          {d.faq.length > 0 && (
+            <section class="article-faq mt-12" aria-labelledby="faq-h">
+              <h2 class="t-title" id="faq-h">{t('support.faq')}</h2>
+              <div class="faq mt-4">
+                {d.faq.map((f, i) => (
+                  <details class="faq__item" open={i === 0}>
+                    <summary class="faq__q">{f.q}</summary>
+                    <p class="faq__a">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
 
           {d.sources.length > 0 && (
             <section class="article-sources" aria-labelledby="sources">
@@ -109,14 +128,15 @@ const initials = AUTHOR.name.slice(0, 1);
                 <a class="link" href={u(`/author/${AUTHOR_SLUG}`, lang)} rel="author">{t('author.all', { name: AUTHOR.name })}</a>
                 <a class="link" href={AUTHOR.url}>{t('article.authorSite')}</a>
                 <a class="link" href={AUTHOR.telegram.url} rel="noopener">Telegram</a>
+                <a class="link" href={u('/editorial', lang)}>{t('nav.editorial')}</a>
                 <a class="link" href={u('/about', lang)}>{SITE.name}</a>
               </p>
             </div>
           </section>
 
-          <div class="article-share">
+          <div class="article-share" data-article-share>
             <span class="t-meta">{t('article.share')}</span>
-            {share.map((sh) => <a class="chip" href={sh.href} target="_blank" rel="noopener nofollow">{sh.name}</a>)}
+            {share.map((sh) => <a class="chip" href={sh.href} target="_blank" rel="noopener nofollow" data-share-channel={sh.name}>{sh.name}</a>)}
             <button class="chip" type="button" data-copy-link data-done={t('article.copied')}>{t('article.copy')}</button>
           </div>
 
@@ -168,7 +188,8 @@ const initials = AUTHOR.name.slice(0, 1);
   import { hitArticle } from '~/scripts/views';
 
   const art = document.querySelector<HTMLElement>('[data-article]');
-  if (art) hitArticle(art.dataset.article!);
+  const slug = art?.dataset.article ?? '';
+  if (slug) hitArticle(slug);
 
   // reading progress for browsers without scroll-driven animations
   const bar = document.querySelector<HTMLElement>('.reading-progress');
@@ -181,6 +202,20 @@ const initials = AUTHOR.name.slice(0, 1);
     };
     addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
     paint();
+  }
+
+  // track article read completion when the reader reaches the end of the article text
+  const shareBlock = document.querySelector<HTMLElement>('[data-article-share]');
+  if (shareBlock && slug) {
+    let readSent = false;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !readSent) {
+        readSent = true;
+        io.disconnect();
+        (window as any).atlasTrack?.('read_complete', { article: slug });
+      }
+    });
+    io.observe(shareBlock);
   }
 
   // side contents: highlight the section being read
@@ -202,9 +237,16 @@ const initials = AUTHOR.name.slice(0, 1);
     mark();
   }
 
-  // copy link
+  // share & copy link tracking
+  document.querySelectorAll<HTMLAnchorElement>('[data-share-channel]').forEach((a) => {
+    a.addEventListener('click', () => {
+      (window as any).atlasTrack?.('share_click', { method: a.dataset.shareChannel, article: slug });
+    });
+  });
+
   const copy = document.querySelector<HTMLButtonElement>('[data-copy-link]');
   copy?.addEventListener('click', async () => {
+    (window as any).atlasTrack?.('share_click', { method: 'copy_link', article: slug });
     try {
       await navigator.clipboard.writeText(location.origin + location.pathname);
       const label = copy.textContent;
@@ -214,5 +256,4 @@ const initials = AUTHOR.name.slice(0, 1);
       /* clipboard blocked */
     }
   });
-
 </script>

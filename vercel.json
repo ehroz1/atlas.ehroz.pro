@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
-  "buildCommand": "npm run build",
+  "buildCommand": "node scripts/popular.mjs && npm run build && npm run check:seo",
   "outputDirectory": "dist",
   "trailingSlash": true,
   "redirects": [
@@ -13,6 +13,126 @@
     },
     { "source": "/index.html", "destination": "/", "statusCode": 301 },
     { "source": "/:path*/index.html", "destination": "/:path*/", "statusCode": 301 },
+    {
+      "source": "/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/?",
+      "destination": "/category/museums/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/?",
+      "destination": "/:lang/category/museums/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/?",
+      "destination": "/category/assets/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/?",
+      "destination": "/:lang/category/assets/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/?",
+      "destination": "/category/web-galleries/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/?",
+      "destination": "/:lang/category/web-galleries/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/?",
+      "destination": "/category/design-generators/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/?",
+      "destination": "/:lang/category/design-generators/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/?",
+      "destination": "/category/typography/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/?",
+      "destination": "/:lang/category/typography/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(blush|sapiens)/?",
+      "destination": "/category/icons-illustrations/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(blush|sapiens)/?",
+      "destination": "/:lang/category/icons-illustrations/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(iloveimg)/?",
+      "destination": "/category/file-converters/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(iloveimg)/?",
+      "destination": "/:lang/category/file-converters/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(copilot)/?",
+      "destination": "/category/ai/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(copilot)/?",
+      "destination": "/:lang/category/ai/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(background-removal-hf)/?",
+      "destination": "/category/design/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(background-removal-hf)/?",
+      "destination": "/:lang/category/design/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(excalidraw|google-translate)/?",
+      "destination": "/category/productivity/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(excalidraw|google-translate)/?",
+      "destination": "/:lang/category/productivity/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(temp-mail|regex101)/?",
+      "destination": "/category/utilities/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(temp-mail|regex101)/?",
+      "destination": "/:lang/category/utilities/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:kind(tool|alternatives)/:id(caniuse)/?",
+      "destination": "/category/development/",
+      "statusCode": 301
+    },
+    {
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(caniuse)/?",
+      "destination": "/:lang/category/development/",
+      "statusCode": 301
+    },
     { "source": "/:path((?:[^/]+/)*[^/.]+)", "destination": "/:path/", "statusCode": 301 }
   ],
   "headers": [
@@ -25,7 +145,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains" }
+        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
       ]
     },
     {
@@ -34,19 +154,35 @@
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {
+      "source": "/(ru/|en/)?(admin|account|collection)/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(404|410)(\\.html|/)?",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/api/v1/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, HEAD, OPTIONS" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
       "source": "/assets/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "source": "/(favicon.svg|favicon-32.png|apple-touch-icon.png)",
+      "source": "/(favicon.svg|favicon-32.png|apple-touch-icon.png|badges/.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
     },
     {
-      "source": "/og/(.*)",
+      "source": "/(og|cover)/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     },
     {
-      "source": "/(robots.txt|sitemap-index.xml|sitemap-0.xml|llms.txt|llms-full.txt)",
+      "source": "/(robots.txt|sitemap-index.xml|sitemap-0.xml|sitemap-pages.xml|sitemap-categories.xml|sitemap-tools.xml|sitemap-articles.xml|sitemap-news.xml|rss.xml|blog/rss.xml|ru/blog/rss.xml|llms.txt|llms-full.txt)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     }
   ]

@@ -14,6 +14,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 export const ids = {
   website: () => absUrl('/', defaultLang) + '#website',
+  organization: () => absUrl('/', defaultLang) + '#organization',
   person: () => AUTHOR.id,
   page: (url: string) => url + '#webpage',
   breadcrumb: (url: string) => url + '#breadcrumb',
@@ -21,6 +22,34 @@ export const ids = {
   list: (url: string) => url + '#itemlist',
   tool: (url: string) => url + '#software',
 };
+
+export function organization(lang: Lang): Node {
+  const logoUrl = absUrl('/apple-touch-icon.png', defaultLang);
+  return {
+    '@type': 'Organization',
+    '@id': ids.organization(),
+    name: SITE.name,
+    alternateName: SITE.host,
+    url: absUrl('/', defaultLang),
+    logo: {
+      '@type': 'ImageObject',
+      '@id': absUrl('/', defaultLang) + '#logo',
+      url: logoUrl,
+      contentUrl: logoUrl,
+      width: 180,
+      height: 180,
+      caption: SITE.name,
+    },
+    founder: { '@id': ids.person() },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: AUTHOR.email,
+      url: absUrl('/contact/', lang),
+      availableLanguage: [...langs],
+    },
+    sameAs: [...AUTHOR.sameAs],
+  };
+}
 
 export function website(): Node {
   return {
@@ -30,7 +59,7 @@ export function website(): Node {
     alternateName: SITE.host,
     url: absUrl('/', defaultLang),
     inLanguage: langs.map((l) => langTag[l]),
-    publisher: { '@id': ids.person() },
+    publisher: { '@id': ids.organization() },
     author: { '@id': ids.person() },
     potentialAction: {
       '@type': 'SearchAction',
@@ -48,6 +77,7 @@ export function person(lang: Lang): Node {
     alternateName: [...AUTHOR.alternateName],
     jobTitle: AUTHOR.jobTitle[lang],
     url: AUTHOR.url,
+    worksFor: { '@id': ids.organization() },
     address: { '@type': 'PostalAddress', addressLocality: AUTHOR.city.en, addressCountry: AUTHOR.country },
     sameAs: [...AUTHOR.sameAs],
   };
@@ -73,6 +103,7 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   badge: 'WebPage',
   'for-makers': 'WebPage',
   about: 'AboutPage',
+  editorial: 'WebPage',
   contact: 'ContactPage',
   submit: 'WebPage',
   wall: 'CollectionPage',
@@ -91,7 +122,8 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   author: 'ProfilePage',
 };
 
-export function webPage(entry: PageEntry, lang: Lang, url: string, image: string, hasCrumbs: boolean, extra: Node = {}): Node {
+export function webPage(entry: PageEntry, lang: Lang, url: string, _image: string, hasCrumbs: boolean, extra: Node = {}): Node {
+  const published = entry.article ? entry.article.published : entry.tool ? entry.tool.data.added : undefined;
   return {
     '@type': PAGE_TYPE[entry.kind],
     '@id': ids.page(url),
@@ -100,7 +132,9 @@ export function webPage(entry: PageEntry, lang: Lang, url: string, image: string
     description: entry.description[lang],
     inLanguage: langTag[lang],
     isPartOf: { '@id': ids.website() },
+    publisher: { '@id': ids.organization() },
     author: { '@id': ids.person() },
+    ...(published ? { datePublished: iso(published) } : {}),
     dateModified: iso(entry.updated),
     primaryImageOfPage: { '@id': ids.image(url) },
     image: { '@id': ids.image(url) },
@@ -173,7 +207,7 @@ export function graph(nodes: Node[]) {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes }).replace(/</g, '\\u003c');
 }
 
-/** FAQPage node. Answers must be built from real catalog data, never invented. */
+/** FAQPage node. Answers must be built from real catalog or article data, never invented. */
 export function faqPage(url: string, qa: { q: string; a: string }[]): Node {
   return {
     '@type': 'FAQPage',
@@ -187,12 +221,29 @@ export function faqPage(url: string, qa: { q: string; a: string }[]): Node {
   };
 }
 
-/** BlogPosting for an article page. Dates and names come from the article's frontmatter. */
+/** HowTo node for instructional articles with ordered steps visible on the page. */
+export function howTo(url: string, name: string, description: string, steps: { name: string; text: string }[]): Node {
+  return {
+    '@type': 'HowTo',
+    '@id': url + '#howto',
+    name,
+    description,
+    step: steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
+/** BlogPosting / Article / NewsArticle for an article page. Dates and names come from the article's frontmatter. */
 export function blogPosting(url: string, entry: PageEntry, lang: Lang): Node {
   const a = entry.article!;
   const d = a.entry[lang].data;
+  const words = a.text[lang].split(/\s+/).filter(Boolean).length;
   return {
-    '@type': 'BlogPosting',
+    '@type': d.type === 'news' ? ['NewsArticle', 'BlogPosting'] : ['BlogPosting', 'Article'],
     '@id': url + '#article',
     headline: d.title,
     description: d.description,
@@ -202,8 +253,10 @@ export function blogPosting(url: string, entry: PageEntry, lang: Lang): Node {
     datePublished: iso(a.published),
     dateModified: iso(a.updated),
     author: { '@id': ids.person() },
-    publisher: { '@id': ids.person() },
+    publisher: { '@id': ids.organization() },
     image: { '@id': ids.image(url) },
+    wordCount: words,
+    timeRequired: `PT${a.minutes[lang]}M`,
     keywords: [d.primaryKeyword, ...d.secondaryKeywords].join(', '),
     isPartOf: { '@id': ids.website() },
   };

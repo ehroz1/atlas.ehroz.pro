@@ -470,6 +470,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   document.addEventListener('atlas:facet', (e) => {
     const { facet: f, id, on } = (e as CustomEvent<{ facet: FacetKey; id: string; on: boolean }>).detail;
     on ? state[f].add(id) : state[f].delete(id);
+    if (on) (window as any).atlasTrack?.('filter_use', { facet: f, value: id });
     renderBar();
     if (dialog.open) renderPane();
     emit();
@@ -567,7 +568,11 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     if (!opt) return;
     const set = state[facet];
     const id = opt.dataset.option!;
-    set.has(id) ? set.delete(id) : set.add(id);
+    if (set.has(id)) set.delete(id);
+    else {
+      set.add(id);
+      (window as any).atlasTrack?.('filter_use', { facet, value: id });
+    }
     renderBar();
     opt.setAttribute('aria-pressed', String(set.has(id)));
     if (inPlace()) emit();

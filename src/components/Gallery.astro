@@ -140,9 +140,24 @@ const sorts = [
     (function () {
       if (ordered) return;
       var grid = document.currentScript.previousElementSibling;
+      var seed = 0;
+      try {
+        seed = Number(sessionStorage.getItem('atlas:seed')) || 0;
+        if (!seed) {
+          seed = Math.floor(Math.random() * 2147483646) + 1;
+          sessionStorage.setItem('atlas:seed', String(seed));
+        }
+      } catch (e) {
+        seed = Math.floor(Math.random() * 2147483646) + 1;
+      }
+      var s = seed;
+      var rand = function () {
+        s = (s * 16807) % 2147483647;
+        return (s - 1) / 2147483646;
+      };
       var shuffle = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
+          var j = Math.floor(rand() * (i + 1));
           var t = a[i]; a[i] = a[j]; a[j] = t;
         }
         return a;
@@ -385,6 +400,7 @@ const sorts = [
           sortBy(sortMode);
           writeSort();
           apply();
+          (window as any).atlasTrack?.('filter_use', { facet: 'sort', value: sortMode });
         } else {
           const on = el.getAttribute('aria-pressed') !== 'true';
           document.dispatchEvent(new CustomEvent('atlas:facet', { detail: { facet: el.dataset.facetOpt, id: el.dataset.id, on } }));

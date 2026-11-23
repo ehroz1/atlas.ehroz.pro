@@ -9,6 +9,18 @@ categories: ["typography"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Evergreen query; written by hand to set the format of the section"
+sources:
+  - "https://scripts.sil.org/OFL"
+  - "https://fonts.google.com/knowledge/glossary/licensing"
+  - "https://www.fontshare.com/terms"
+  - "https://www.fontsquirrel.com/faq"
+faq:
+  - q: "Can I use SIL Open Font License (OFL) fonts in a commercial logo or client website?"
+    a: "Yes. The SIL Open Font License (OFL 1.1) permits using, modifying and bundling the font in commercial websites, printed materials, logos and apps without royalties. The only restriction is that you cannot sell the font file by itself."
+  - q: "Are all fonts on Google Fonts and Fontshare cleared for commercial use?"
+    a: "Yes. Every font family on Google Fonts is published under an open licence (primarily SIL OFL 1.1 or Apache 2.0), and all fonts on Fontshare are 100% free for personal and commercial use under the Indian Type Foundry licence."
+  - q: "Where can I find free commercial fonts with Cyrillic and Kazakh letters?"
+    a: "Filter Google Fonts by Cyrillic script, browse Shriftoteka and Uprock Fonts (both indicate the licence of each Cyrillic typeface), or use ärip for around 40 commercial-free typefaces with full Kazakh glyph support."
 cover: "./cover.jpg"
 coverAlt: "A dark risograph-style type collage: large “Aa” and “Ә”, halftone letter cut-outs and blue accents on black"
 ---

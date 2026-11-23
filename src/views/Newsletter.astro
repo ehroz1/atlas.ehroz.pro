@@ -42,6 +42,7 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
 
       {BACKEND.enabled ? (
         <form class="newsletter-form mt-8" data-newsletter-form data-msg={JSON.stringify(msg)} data-lang={lang}>
+          <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
           <label class="visually-hidden" for="nl-email">{t('newsletter.email')}</label>
           <input class="input" id="nl-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
           <button class="btn btn--solid" type="submit">{t('newsletter.subscribe')}</button>
@@ -98,7 +99,10 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = String(new FormData(form).get('email') ?? '').trim();
+      const fd = new FormData(form);
+      const email = String(fd.get('email') ?? '').trim();
+      if (fd.get('website')) { status.textContent = fill(msg.sent, { email }); return; }
+      (window as any).atlasTrack?.('newsletter_subscribe', { source: 'newsletter_page' });
       try {
         const p = maybeSignedIn() ? await getProfile() : null;
         if (p && p.email === email) {

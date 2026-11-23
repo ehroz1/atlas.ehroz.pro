@@ -9,6 +9,24 @@ categories: ["learning", "inspiration"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Topic idea; steady search demand for laws of UX from designers"
+sources:
+  - "https://lawsofux.com/"
+  - "https://www.nngroup.com/articles/jakobs-law/"
+  - "https://www.interfaceingame.com/"
+steps:
+  - name: "Pick the relevant UX laws"
+    text: "Open Laws of UX and choose two or three principles that match the problem on your screen (choice overload, button placement, or perceived speed)."
+  - name: "Inspect how games solve the pattern"
+    text: "Browse Interface In Game by UI element (menu, HUD, inventory) to see how games keep that interaction fast under pressure."
+  - name: "Verify in shipped web and mobile apps"
+    text: "Check the same UI flow on Mobbin in real production apps before drawing your own layout."
+faq:
+  - q: "How many items should a main navigation menu have according to Hick's law?"
+    a: "Keep top-level navigation to 5–7 items and group the rest into submenus, filters or search. Limiting simultaneous choices reduces decision time."
+  - q: "What is the minimum touch target size for mobile buttons under Fitts's law?"
+    a: "Interactive buttons and chips on touch screens should be at least 44×44 CSS pixels (or 40 px minimum for secondary chips) and placed within thumb reach in the lower half of the viewport."
+  - q: "Why is 400 milliseconds important in the Doherty threshold?"
+    a: "When an interface responds in under 400 ms—with an active button state, skeleton shimmer or progress bar—users stay in flow instead of feeling that the page has frozen."
 cover: "./cover.jpg"
 coverAlt: "A risograph-style collage: a radar, a crosshair cursor, a game pad cross and website wireframes on black with green accents"
 ---

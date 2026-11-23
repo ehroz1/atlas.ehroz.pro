@@ -172,6 +172,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     btn.title = text;
   };
   btn?.addEventListener('click', async () => {
+    (window as any).atlasTrack?.('share_click', { method: 'copy_link', tool: document.body.dataset.tool || '' });
     try {
       await navigator.clipboard.writeText(location.origin + location.pathname);
       btn.classList.add('is-done');

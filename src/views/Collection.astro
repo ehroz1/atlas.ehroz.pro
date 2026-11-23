@@ -300,6 +300,7 @@ const msg = {
 
     $('[data-copy-link]')!.addEventListener('click', async (e) => {
       const btn = e.currentTarget as HTMLButtonElement;
+      (window as any).atlasTrack?.('share_click', { method: 'copy_collection_link' });
       await navigator.clipboard?.writeText($<HTMLInputElement>('[data-link]')!.value).catch(() => {});
       btn.textContent = msg.copied;
       setTimeout(() => (btn.textContent = msg.copy), 1600);
@@ -310,6 +311,7 @@ const msg = {
       e.preventDefault();
       const v = values();
       if (!v) return;
+      (window as any).atlasTrack?.('collection_create', { type: 'link', count: v.ids.length });
       const h = new URLSearchParams({ t: v.title, ...(v.note ? { n: v.note } : {}), ids: v.ids.join(',') });
       result(`${pageUrl}#${h.toString()}`, v.title);
     });
@@ -335,6 +337,7 @@ const msg = {
       if (!v) return;
       const s = maybeSignedIn() ? await getSession() : null;
       if (!s) { location.href = sitePath('account/?next=collection/'); return; }
+      (window as any).atlasTrack?.('collection_create', { type: 'cloud', count: v.ids.length });
       const row = { title: v.title, note: v.note || null, tool_ids: v.ids, is_public: !$<HTMLInputElement>('[data-private]')?.checked };
       const client = await sb();
       const q = editId

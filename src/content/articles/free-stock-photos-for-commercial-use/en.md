@@ -9,7 +9,19 @@ categories: ["assets", "museums"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Evergreen query with steady demand in both languages; written by hand"
-sources: ["https://unsplash.com/license", "https://unsplash.com/plus/license"]
+sources:
+  - "https://unsplash.com/license"
+  - "https://unsplash.com/plus/license"
+  - "https://www.si.edu/openaccess"
+  - "https://www.metmuseum.org/about-the-met/policies-and-documents/open-access"
+  - "https://creativecommons.org/publicdomain/zero/1.0/"
+faq:
+  - q: "Do I need to give credit when using Unsplash or CC0 museum images commercially?"
+    a: "No. Both the Unsplash Licence and the Creative Commons Zero (CC0) dedication used by Smithsonian Open Access and The Met Open Access allow commercial use without attribution, though crediting the photographer or museum is appreciated."
+  - q: "Can I use a free stock photo showing a person or a brand logo in paid advertising?"
+    a: "Only if the photo includes a signed model release or property release. Copyright permission from a stock library does not waive personality rights or trademark rights of people and brands visible in the frame."
+  - q: "When does Freepik require attribution?"
+    a: "On Freepik's free plan you must include an attribution line next to the image. If you are designing packaging, print ads or UI where a credit line cannot be placed, you need a paid Freepik subscription or a CC0 / Unsplash source."
 cover: "./cover.jpg"
 coverAlt: "A dark risograph-style collage of archive images on black: a strip of 35 mm film, a classical bust, a modernist facade and a botanical leaf with coral accents"
 ---

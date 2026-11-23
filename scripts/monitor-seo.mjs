@@ -53,12 +53,22 @@ let urls = [];
 if (!idx.ok) err(`sitemap-index.xml → ${idx.status}`);
 else {
   const maps = [...(await idx.text()).matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+  const seenUrls = new Set();
   for (const m of maps) {
     const r = await get(m);
     if (!r.ok) err(`${m} → ${r.status}`);
-    else urls.push(...[...(await r.text()).matchAll(/<loc>(.*?)<\/loc>/g)].map((x) => x[1]));
+    else {
+      const body = await r.text();
+      for (const [, block] of body.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+        const loc = block.match(/<loc>(.*?)<\/loc>/)?.[1];
+        if (loc && !seenUrls.has(loc)) {
+          seenUrls.add(loc);
+          urls.push(loc);
+        }
+      }
+    }
   }
-  ok(`${urls.length} URLs in sitemap`);
+  ok(`${urls.length} URLs across ${maps.length} sitemaps`);
   if (urls.length < MIN_PAGES) err(`only ${urls.length} URLs in sitemap (expected ≥ ${MIN_PAGES})`);
 }
 

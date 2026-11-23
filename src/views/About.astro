@@ -127,7 +127,10 @@ const icon = {
         <p class="t-secondary mt-2">
           {authorBefore}<a class="link" href={AUTHOR.url}>ehroz.pro</a>{authorAfter}
         </p>
-        <p class="mt-4"><a class="btn btn--sm" href={u('/contact', lang)}>{t('about.author.contact')}</a></p>
+        <p class="cluster mt-4" style="--gap: var(--s-3)">
+          <a class="btn btn--sm" href={u('/contact', lang)}>{t('about.author.contact')}</a>
+          <a class="btn btn--sm" href={u('/editorial', lang)}>{t('nav.editorial')}</a>
+        </p>
       </section>
     </div>
   </div>
@@ -136,6 +139,7 @@ const icon = {
 <script>
   const box = document.querySelector<HTMLElement>('[data-edge-shots]');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const noMotion = () => reduced.matches || document.documentElement.classList.contains('no-motion');
   if (box) {
     const items = Array.from(box.querySelectorAll<HTMLElement>('.edge-shots__item'));
     const lefts = items.filter((el) => el.dataset.side === 'left');
@@ -180,7 +184,7 @@ const icon = {
       requestAnimationFrame(frame);
     };
     const start = () => {
-      if (running || !visible || reduced.matches || !box.offsetWidth) return;
+      if (running || !visible || noMotion() || !box.offsetWidth) return;
       running = true;
       last = performance.now();
       requestAnimationFrame(frame);
@@ -191,5 +195,6 @@ const icon = {
     start();
     new ResizeObserver(() => { measure(); draw(); start(); }).observe(box);
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : (running = false); }).observe(box);
+    document.addEventListener('atlas:motion', () => (noMotion() ? (running = false) : start()));
   }
 </script>

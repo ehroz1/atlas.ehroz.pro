@@ -54,8 +54,11 @@ function storage(lang: Lang): { k: string; v: string }[] {
     { k: 'atlas:seen', v: ru ? 'Сайты, которые вы уже открывали, — для отметки «Смотрели». Пока вы не очистите данные сайта.' : 'Sites you have opened, for the “Viewed” mark. Until you clear site data.' },
     { k: 'atlas:prefs', v: ru ? 'Ваши настройки рекомендаций (со страницы аккаунта). Пока вы их не измените.' : 'Your recommendation settings (from the account page). Until you change them.' },
     { k: 'atlas:lang', v: ru ? 'Язык, который вы выбрали вручную. Пока вы не очистите данные сайта.' : 'The language you picked by hand. Until you clear site data.' },
+    { k: 'atlas:motion', v: ru ? 'Настройка анимаций (включены или выключены). Пока вы её не измените.' : 'Your animation setting (on or off). Until you change it.' },
     { k: 'atlas:visits', v: ru ? 'Номер вашего визита: от него зависит порядок карточек на главной. Пока вы не очистите данные сайта.' : 'Your visit number; it shapes the card order on the home page. Until you clear site data.' },
     { k: 'atlas:visit', v: ru ? 'То же для текущей вкладки (sessionStorage). До закрытия вкладки.' : 'The same for the current tab (sessionStorage). Until the tab closes.' },
+    { k: 'atlas:seed', v: ru ? 'Порядок карточек в текущей вкладке (sessionStorage), чтобы сетка не перемешивалась при возврате назад. До закрытия вкладки.' : 'Card order for the current tab (sessionStorage), so the grid stays in place when you go back. Until the tab closes.' },
+    { k: 'atlas:scroll', v: ru ? 'Позиция прокрутки страницы (sessionStorage) для возврата назад. До закрытия вкладки.' : 'Scroll position (sessionStorage) restored when you navigate back. Until the tab closes.' },
     ...(has.backend
       ? [{ k: authKey, v: ru ? 'Только если вы вошли в аккаунт: ключ сессии, чтобы не входить заново. До выхода из аккаунта.' : 'Only if you signed in: the session key, so you stay signed in. Until you sign out.' }]
       : []),
@@ -343,6 +346,91 @@ export function disclaimer(lang: Lang): Section[] {
     {
       h: 'If you own a listed site',
       p: [`Found a mistake in the description, want a new screenshot or the site removed? Write to ${AUTHOR.email} and we’ll fix or remove it.`],
+    },
+  ];
+}
+
+export function editorial(lang: Lang): Section[] {
+  if (lang === 'ru') {
+    return [
+      {
+        h: 'Как сайты попадают в каталог',
+        p: [
+          `${SITE.name} курирует и ведёт ${AUTHOR.name} (${AUTHOR.jobTitle.ru}, ${AUTHOR.city.ru}). Каждый сайт перед добавлением проверяется вручную в реальной работе.`,
+        ],
+        list: [
+          'Сервис решает свою задачу лучше или проще привычного выбора.',
+          'Суть и условия понятны в первую минуту, без обязательной регистрации только ради просмотра.',
+          'На сайте нет ложных таймеров, навязчивых всплывающих окон и скрытых подписок.',
+        ],
+      },
+      {
+        h: 'Проверка фактов, тарифов и лицензий',
+        p: [
+          'Описания карточек и обзоры в разделе «Статьи» пишутся по данным самих сервисов и официальным текстам лицензий (SIL Open Font License, Creative Commons CC0, условия конкретных площадок).',
+          'В конце аналитических и справочных статей указываются прямые ссылки на первоисточники, а у каждой страницы и карточки стоит реальная дата публикации и последнего обновления содержимого.',
+        ],
+      },
+      {
+        h: 'Авторство и использование ИИ',
+        p: [
+          'У всех материалов на сайте есть конкретный автор и редактор. Искусственный интеллект может использоваться для анализа поисковых трендов и подготовки черновиков, но ни одна статья не публикуется автоматически.',
+          'Перед публикацией человек вычитывает оба языковых варианта, сверяет тарифы, лимиты и лицензии с первоисточниками и дополняет материал личным опытом работы с инструментами.',
+        ],
+      },
+      {
+        h: 'Независимость и партнёрские ссылки',
+        p: [
+          'Места в каталоге, позиции в подборках и упоминания в статьях не продаются. Мы не публикуем платные обзоры и не закупаем ссылочную массу.',
+          'Если у сайта в каталоге есть партнёрская ссылка, она явно помечена бейджем «Партнёр» / «Партнёрская ссылка» и атрибутом rel="sponsored". Наличие партнёрской программы никогда не влияет на то, попадёт ли сайт в каталог и как он описан.',
+        ],
+      },
+      {
+        h: 'Исправления и удаление материалов',
+        p: [
+          `Если сервис изменил тарифы, закрылся или в описании нашлась неточность — напишите на ${AUTHOR.email} или в Telegram ${AUTHOR.telegram.handle}. Мы проверим информацию, обновим текст и дату изменения либо удалим карточку.`,
+        ],
+      },
+    ];
+  }
+  return [
+    {
+      h: 'How sites enter the catalog',
+      p: [
+        `${SITE.name} is curated and edited by ${AUTHOR.name} (${AUTHOR.jobTitle.en}, ${AUTHOR.city.en}). Every website is tested by hand in real work before it is listed.`,
+      ],
+      list: [
+        'The tool solves one job better or more cleanly than the default pick.',
+        'What it does and what it costs are clear within a minute, without a forced sign-up wall.',
+        'No fake countdowns, deceptive pop-ups or dark-pattern subscriptions.',
+      ],
+    },
+    {
+      h: 'Fact-checking, pricing and licences',
+      p: [
+        'Catalog descriptions and articles are verified against the service’s own documentation and official licence texts (such as SIL Open Font License 1.1, Creative Commons CC0 and platform terms).',
+        'Articles cite primary sources at the bottom of the page, and every entry carries its real publication and content-update dates.',
+      ],
+    },
+    {
+      h: 'Authorship and use of AI',
+      p: [
+        'Every page and article has a named human author and editor. AI tools may assist with trend research and initial drafting, but nothing is published automatically.',
+        'Before any article goes live, the editor reviews both languages, checks every fact, price and licence against primary sources, and adds first-hand experience.',
+      ],
+    },
+    {
+      h: 'Editorial independence and partner links',
+      p: [
+        'Placements in the index, rankings and article mentions are never for sale. We do not publish paid reviews or buy link schemes.',
+        'When a listed tool uses an affiliate link, it is visibly marked “Partner” / “Partner link” and carries rel="sponsored". Partner programs never decide whether a site is included or how it is described.',
+      ],
+    },
+    {
+      h: 'Corrections, updates and removals',
+      p: [
+        `If a service changes its pricing, shuts down, or you spot an error, write to ${AUTHOR.email} or on Telegram ${AUTHOR.telegram.handle}. We verify the report, update the text and its modified date, or remove the listing.`,
+      ],
     },
   ];
 }

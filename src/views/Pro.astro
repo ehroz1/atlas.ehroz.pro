@@ -100,6 +100,9 @@ const check = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke
           url.searchParams.set('checkout[custom][user_id]', p.id);
         }
         a.href = url.href;
+        a.addEventListener('click', () => {
+          (window as any).atlasTrack?.('pro_checkout_click', { href: a.href });
+        });
       });
       buy.hidden = false;
     });

@@ -2,18 +2,18 @@
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import { getPage } from '~/lib/routes';
-import { privacy, cookies, disclaimer, type Section } from '~/lib/texts';
+import { privacy, cookies, disclaimer, editorial, type Section } from '~/lib/texts';
 import { useTranslations, formatDate, type Lang } from '~/i18n';
 
-/* One view for the three legal pages. The text is in src/lib/texts.ts and
-   follows the build's real settings (counters on or off, host). */
-type Kind = 'privacy' | 'cookies' | 'disclaimer';
+/* One view for the legal and editorial policy pages. The text is in
+   src/lib/texts.ts and follows the build's real settings (counters on or off, host). */
+type Kind = 'privacy' | 'cookies' | 'disclaimer' | 'editorial';
 interface Props { lang: Lang; kind: Kind }
 const { lang, kind } = Astro.props;
 const t = useTranslations(lang);
 const entry = await getPage(kind);
-const sections: Section[] = { privacy, cookies, disclaimer }[kind](lang);
-const others = (['privacy', 'cookies', 'disclaimer'] as const).filter((k) => k !== kind);
+const sections: Section[] = { privacy, cookies, disclaimer, editorial }[kind](lang);
+const others = (['editorial', 'privacy', 'cookies', 'disclaimer'] as const).filter((k) => k !== kind);
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t(`nav.${kind}`), path: `/${kind}` }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">

@@ -19,6 +19,7 @@ const updated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.da
 const year = updated.getUTCFullYear();
 const other = langs.find((l) => l !== lang)!;
 const legal = [
+  ['/editorial', t('nav.editorial')],
   ['/privacy', t('nav.privacy')],
   ['/cookies', t('nav.cookies')],
   ['/disclaimer', t('nav.disclaimer')],
@@ -26,7 +27,7 @@ const legal = [
 // link columns
 const groups = [
   { title: t('footer.catalog'), links: [['/', t('nav.sites')], ['/search', t('nav.search')], ['/popular', t('nav.popular')], ['/categories', t('nav.categories')], ['/tags', t('nav.tags')], ...(articles.length ? [['/blog', t('nav.blog')]] : []), ['/wall', t('nav.wall')]] },
-  { title: t('footer.project'), links: [['/about', t('nav.about')], ['/for-makers', t('nav.makers')], ['/badge', t('nav.badge')], ['/pro', t('nav.pro')], ['/api', t('nav.api')], ['/contact', t('nav.contact')]] },
+  { title: t('footer.project'), links: [['/about', t('nav.about')], ['/editorial', t('nav.editorial')], ['/for-makers', t('nav.makers')], ['/badge', t('nav.badge')], ['/pro', t('nav.pro')], ['/api', t('nav.api')], ['/contact', t('nav.contact')]] },
   { title: t('footer.more'), links: [['/submit', t('nav.submit')], ['/collection', t('nav.collection')], ['/newsletter', t('nav.newsletter')], ['/support', t('nav.support')]] },
 ] as const;
 ---
@@ -53,6 +54,10 @@ const groups = [
       <span>© {year} {SITE.name} · {t('footer.note')}</span>
       <nav class="cluster" style="--gap: var(--s-1) var(--s-5)" aria-label={t('nav.legal')}>
         {legal.map(([path, label]) => <a href={u(path, lang)}>{label}</a>)}
+        <button class="foot-btn" type="button" data-motion-toggle aria-pressed="false"
+          data-label-on={t('footer.motionOn')} data-label-off={t('footer.motionOff')}>
+          {t('footer.motionOn')}
+        </button>
         <a href={switchHref} hreflang={other} lang={other} data-lang-switch>{languages[other]}</a>
         <a href={u('/rss.xml')} type="application/rss+xml">{t('footer.rss')}</a>
       </nav>

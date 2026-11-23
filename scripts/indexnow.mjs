@@ -30,8 +30,8 @@ for (const [, map] of idx.matchAll(/<loc>(.*?)<\/loc>/g)) {
     entries.push({ loc: block.match(/<loc>(.*?)<\/loc>/)[1], lastmod: block.match(/<lastmod>(.*?)<\/lastmod>/)?.[1] });
 }
 const since = Date.now() - DAYS * 86400000;
-const urls = entries.filter((e) => process.env.ALL || (e.lastmod && Date.parse(e.lastmod) >= since)).map((e) => e.loc);
-console.log(`${entries.length} URLs in sitemap, ${urls.length} to submit${process.env.ALL ? ' (ALL)' : ` (changed in the last ${DAYS} days)`}`);
+const urls = [...new Set(entries.filter((e) => process.env.ALL || (e.lastmod && Date.parse(e.lastmod) >= since)).map((e) => e.loc))];
+console.log(`${entries.length} URLs in sitemaps, ${urls.length} unique URLs to submit${process.env.ALL ? ' (ALL)' : ` (changed in the last ${DAYS} days)`}`);
 if (!urls.length) process.exit(0);
 
 const host = new URL(SITE).host;

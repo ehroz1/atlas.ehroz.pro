@@ -69,6 +69,10 @@ const articles = defineCollection({
     trendSource: z.string().optional(),
     /** pages used for fact-checking */
     sources: z.array(z.url()).default([]),
+    /** FAQ shown at the end of the article and emitted as FAQPage JSON-LD */
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
+    /** Ordered steps for HowTo JSON-LD on instructional articles */
+    steps: z.array(z.object({ name: z.string(), text: z.string() })).default([]),
     /** set by the person who reviewed and merged it */
     reviewedBy: z.string().optional(),
     /** drafts are not built */
