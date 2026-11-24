@@ -14,122 +14,122 @@
     { "source": "/index.html", "destination": "/", "statusCode": 301 },
     { "source": "/:path*/index.html", "destination": "/:path*/", "statusCode": 301 },
     {
-      "source": "/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/?",
+      "source": "/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/",
       "destination": "/category/museums/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/",
       "destination": "/:lang/category/museums/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/?",
+      "source": "/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/",
       "destination": "/category/assets/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(pixabay|pexels|wikimedia-commons)/",
       "destination": "/:lang/category/assets/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/?",
+      "source": "/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/",
       "destination": "/category/web-galleries/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(hoverstates|land-book|onepagelove|refero)/",
       "destination": "/:lang/category/web-galleries/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/?",
+      "source": "/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/",
       "destination": "/category/design-generators/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/",
       "destination": "/:lang/category/design-generators/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/?",
+      "source": "/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/",
       "destination": "/category/typography/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(wakamai-fondue|collletttivo)/",
       "destination": "/:lang/category/typography/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(blush|sapiens)/?",
+      "source": "/:kind(tool|alternatives)/:id(blush|sapiens)/",
       "destination": "/category/icons-illustrations/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(blush|sapiens)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(blush|sapiens)/",
       "destination": "/:lang/category/icons-illustrations/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(iloveimg)/?",
+      "source": "/:kind(tool|alternatives)/:id(iloveimg)/",
       "destination": "/category/file-converters/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(iloveimg)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(iloveimg)/",
       "destination": "/:lang/category/file-converters/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(copilot)/?",
+      "source": "/:kind(tool|alternatives)/:id(copilot)/",
       "destination": "/category/ai/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(copilot)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(copilot)/",
       "destination": "/:lang/category/ai/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(background-removal-hf)/?",
+      "source": "/:kind(tool|alternatives)/:id(background-removal-hf)/",
       "destination": "/category/design/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(background-removal-hf)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(background-removal-hf)/",
       "destination": "/:lang/category/design/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(excalidraw|google-translate)/?",
+      "source": "/:kind(tool|alternatives)/:id(excalidraw|google-translate)/",
       "destination": "/category/productivity/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(excalidraw|google-translate)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(excalidraw|google-translate)/",
       "destination": "/:lang/category/productivity/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(temp-mail|regex101)/?",
+      "source": "/:kind(tool|alternatives)/:id(temp-mail|regex101)/",
       "destination": "/category/utilities/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(temp-mail|regex101)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(temp-mail|regex101)/",
       "destination": "/:lang/category/utilities/",
       "statusCode": 301
     },
     {
-      "source": "/:kind(tool|alternatives)/:id(caniuse)/?",
+      "source": "/:kind(tool|alternatives)/:id(caniuse)/",
       "destination": "/category/development/",
       "statusCode": 301
     },
     {
-      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(caniuse)/?",
+      "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(caniuse)/",
       "destination": "/:lang/category/development/",
       "statusCode": 301
     },
@@ -154,11 +154,15 @@
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {
-      "source": "/(ru/|en/)?(admin|account|collection)/(.*)",
+      "source": "/(admin|account|collection)/(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {
-      "source": "/(404|410)(\\.html|/)?",
+      "source": "/(ru|en)/(admin|account|collection)/(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(404|410|404.html|410.html)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {
