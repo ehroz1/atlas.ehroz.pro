@@ -1,0 +1,5 @@
+dist/
+.astro/
+node_modules/
+newsletter-preview/
+content-pipeline/

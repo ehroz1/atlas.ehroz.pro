@@ -10,3 +10,5 @@ newsletter-preview/
 
 # article pipeline working files (trends, briefs, reports)
 content-pipeline/
+.vercel
+.env*
