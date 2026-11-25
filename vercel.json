@@ -6,9 +6,9 @@
   "trailingSlash": true,
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.atlas.ehroz.pro" }],
-      "destination": "https://atlas.ehroz.pro/:path*",
+      "destination": "https://atlas.ehroz.pro/$1",
       "statusCode": 301
     },
     { "source": "/index.html", "destination": "/", "statusCode": 301 },
