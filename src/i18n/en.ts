@@ -93,7 +93,7 @@ export const en = {
   'card.saved': 'Remove {name} from saved',
   'card.up': 'Move {name} to the top of saved',
   'card.more': 'More for {name}',
-  'card.menu.open': 'Open site in a new tab',
+  'card.menu.open': 'Open',
   'card.menu.copy': 'Copy link',
   'card.menu.copied': 'Link copied',
   'card.menu.hide': 'Hide',
