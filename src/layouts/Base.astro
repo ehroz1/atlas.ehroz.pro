@@ -260,6 +260,96 @@ const jsonLd =
         });
         paint();
       })();
+      /* Card "⋯" menu: open the site, copy its link, hide the card.
+         Hidden sites, per browser: localStorage `atlas:hidden` = [ids]. They
+         stay in the grid but move to its end (Gallery.astro listens to
+         `atlas:hidden`); "Unhide" in the same menu brings a card back. */
+      (function () {
+        var KEY = 'atlas:hidden', hidden = [];
+        try { hidden = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+        if (!Array.isArray(hidden)) hidden = [];
+        window.__atlasHidden = function () { return hidden.slice(); };
+        var paint = function () {
+          document.querySelectorAll('[data-card]').forEach(function (card) {
+            var on = hidden.indexOf(card.getAttribute('data-id')) >= 0;
+            card.classList.toggle('is-dismissed', on);
+            var b = card.querySelector('[data-card-hide] span');
+            if (b) b.textContent = b.parentNode.getAttribute(on ? 'data-label-undo' : 'data-label');
+          });
+        };
+        var openMenu = null;
+        var close = function (focusBtn) {
+          if (!openMenu) return;
+          var wrap = openMenu.closest('[data-card]');
+          openMenu.hidden = true;
+          wrap.classList.remove('menu-open');
+          var btn = wrap.querySelector('[data-card-more]');
+          btn.setAttribute('aria-expanded', 'false');
+          if (focusBtn) btn.focus();
+          openMenu = null;
+        };
+        document.addEventListener('click', function (e) {
+          if (!e.target.closest) return;
+          var more = e.target.closest('[data-card-more]');
+          if (more) {
+            var menu = more.parentNode.querySelector('[data-card-menu]');
+            var was = openMenu === menu;
+            close();
+            if (was) return;
+            menu.hidden = false;
+            more.setAttribute('aria-expanded', 'true');
+            more.closest('[data-card]').classList.add('menu-open');
+            openMenu = menu;
+            var first = menu.querySelector('[role=menuitem]');
+            if (first) first.focus({ preventScroll: true });
+            return;
+          }
+          var copy = e.target.closest('[data-card-copy]');
+          if (copy) {
+            var url = copy.getAttribute('data-card-copy');
+            var label = copy.querySelector('span');
+            var ok = function () {
+              label.textContent = copy.getAttribute('data-label-done');
+              setTimeout(function () { close(); label.textContent = copy.getAttribute('data-label'); }, 900);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(ok, function () { close(); });
+            else close();
+            if (window.atlasTrack) window.atlasTrack('copy_link', { tool: copy.closest('[data-card]').getAttribute('data-id') });
+            return;
+          }
+          var hide = e.target.closest('[data-card-hide]');
+          if (hide) {
+            var id = hide.closest('[data-card]').getAttribute('data-id');
+            var was2 = hidden.indexOf(id) >= 0;
+            hidden = hidden.filter(function (x) { return x !== id; });
+            if (!was2) hidden.push(id);
+            try { localStorage.setItem(KEY, JSON.stringify(hidden)); } catch (e2) {}
+            close();
+            paint();
+            if (window.atlasTrack) window.atlasTrack('hide_click', { tool: id, action: was2 ? 'unhide' : 'hide' });
+            document.dispatchEvent(new CustomEvent('atlas:hidden', { detail: { ids: hidden.slice() } }));
+            return;
+          }
+          if (e.target.closest('[data-card-menu] a')) close();
+        });
+        document.addEventListener('pointerdown', function (e) {
+          if (openMenu && !openMenu.parentNode.contains(e.target)) close();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (!openMenu) return;
+          if (e.key === 'Escape') { e.preventDefault(); close(true); return; }
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            var items = Array.prototype.slice.call(openMenu.querySelectorAll('[role=menuitem]'));
+            var i = items.indexOf(document.activeElement);
+            e.preventDefault();
+            items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length].focus();
+          }
+        });
+        document.addEventListener('focusin', function (e) {
+          if (openMenu && !openMenu.parentNode.contains(e.target)) close();
+        });
+        paint();
+      })();
       /* User-controlled animation toggle (`atlas:motion` in localStorage)
          and scroll position restoration when navigating back (`atlas:scroll`
          in sessionStorage). */

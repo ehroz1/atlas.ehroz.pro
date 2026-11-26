@@ -223,6 +223,13 @@ const sorts = [
         var top = saved.filter(function (id) { return byId[id]; }).map(function (id) { return byId[id]; });
         cards = top.concat(cards.filter(function (c) { return top.indexOf(c) < 0; }));
       }
+      // sites hidden from the card menu (localStorage atlas:hidden) go last
+      var hid = [];
+      try { hid = JSON.parse(localStorage.getItem('atlas:hidden') || '[]'); } catch (e) {}
+      if (Array.isArray(hid) && hid.length) {
+        var isHid = function (c) { return hid.indexOf(c.getAttribute('data-id')) >= 0; };
+        cards = cards.filter(function (c) { return !isHid(c); }).concat(cards.filter(isHid));
+      }
 
       cards.forEach(function (c) { grid.appendChild(c); });
       cards.slice(0, 3).forEach(function (c) {
@@ -297,7 +304,15 @@ const sorts = [
         card.hidden = !match;
         if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
       }
-      grid.append(...pinned(lead), ...pinned(rest), ...order.filter((c) => c.hidden));
+      // cards hidden from the "⋯" menu: still listed, but after all the others
+      const dismissed: string[] = grid.hasAttribute('data-ordered') ? [] : ((window as any).__atlasHidden?.() ?? []);
+      const kept = (c: HTMLElement) => !dismissed.includes(c.dataset.id!);
+      grid.append(
+        ...pinned(lead.filter(kept)),
+        ...pinned(rest.filter(kept)),
+        ...[...lead, ...rest].filter((c) => !kept(c)),
+        ...order.filter((c) => c.hidden),
+      );
       const shown = lead.length + rest.length;
       document.dispatchEvent(new CustomEvent('atlas:shown', { detail: shown }));
       let countText = '';
@@ -423,6 +438,7 @@ const sorts = [
       sync();
     }
     document.addEventListener('atlas:saved', () => apply());
+    document.addEventListener('atlas:hidden', () => apply());
     document.addEventListener('atlas:filter', (e) => apply((e as CustomEvent).detail));
     document.querySelector('[data-search-reset]')?.addEventListener('click', () => {
       document.dispatchEvent(new Event('atlas:reset'));

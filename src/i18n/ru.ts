@@ -91,6 +91,12 @@ export const ru: Record<UIKey, string> = {
   'card.save': 'Сохранить {name}',
   'card.saved': 'Убрать {name} из сохранённых',
   'card.up': 'Поднять {name} вверх в сохранённых',
+  'card.more': 'Ещё для {name}',
+  'card.menu.open': 'Открыть сайт в новой вкладке',
+  'card.menu.copy': 'Скопировать ссылку',
+  'card.menu.copied': 'Ссылка скопирована',
+  'card.menu.hide': 'Скрыть',
+  'card.menu.unhide': 'Вернуть на место',
 
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Открыть {domain}',

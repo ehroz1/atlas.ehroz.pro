@@ -1183,11 +1183,58 @@ hr { border: 0; border-top: var(--border); }
   .tag { display: inline-flex; align-items: center; min-height: 2rem; }
   .crumbs a { display: inline-block; padding-block: var(--s-2); }
 }
+/* With a mouse the corner stays clean: an unsaved bookmark and the "⋯"
+   button appear only while the card is hovered or focused (a saved
+   bookmark stays, so you can see it's saved). */
 @media (hover: hover) {
-  .card__act--save[aria-pressed="false"] { opacity: 0.45; }
-  .card-wrap:hover .card__act--save,
-  .card-wrap:focus-within .card__act--save { opacity: 1; }
+  .card__act--save[aria-pressed="false"],
+  .card__act--more { opacity: 0; }
+  .card-wrap:hover .card__act,
+  .card-wrap:focus-within .card__act,
+  .card-wrap.menu-open .card__act { opacity: 1; }
 }
+/* "⋯" menu: opens upward, over the picture (the card clips what falls
+   outside it while content-visibility is on, so it's turned off while open) */
+.card__more { position: relative; pointer-events: auto; }
+.card-wrap.menu-open { content-visibility: visible; z-index: 2; }
+.card__act--more svg { width: 1.15rem; height: 1.15rem; }
+.card__menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--s-2));
+  min-width: 15.5rem;
+  padding: var(--s-1);
+  border-radius: 18px;
+  background: var(--c-panel);
+  color: var(--c-chrome-text);
+  box-shadow: var(--shadow-float);
+  animation: card-menu-in var(--dur-fast) var(--ease);
+}
+.card__menu[hidden] { display: none; }
+@keyframes card-menu-in { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .card__menu { animation: none; } }
+.card__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  min-height: 2.5rem;
+  padding: var(--s-2) var(--s-3);
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--fs-15);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.card__menu-item svg { flex: none; width: 1.125rem; height: 1.125rem; color: var(--c-chrome-muted); }
+.card__menu-item:hover, .card__menu-item:focus-visible { background: var(--c-chrome-hover); outline: none; }
+/* hidden from the menu: moved to the end of the grid and dimmed */
+.card-wrap.is-dismissed .card { opacity: 0.45; transition: opacity var(--dur) var(--ease); }
+.card-wrap.is-dismissed:hover .card, .card-wrap.is-dismissed:focus-within .card { opacity: 1; }
 .card {
   display: flex;
   flex-direction: column;

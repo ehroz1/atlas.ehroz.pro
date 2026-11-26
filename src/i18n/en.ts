@@ -92,6 +92,12 @@ export const en = {
   'card.save': 'Save {name}',
   'card.saved': 'Remove {name} from saved',
   'card.up': 'Move {name} to the top of saved',
+  'card.more': 'More for {name}',
+  'card.menu.open': 'Open site in a new tab',
+  'card.menu.copy': 'Copy link',
+  'card.menu.copied': 'Link copied',
+  'card.menu.hide': 'Hide',
+  'card.menu.unhide': 'Unhide',
 
   'tool.title': '{name}: {summary}',
   'tool.visit': 'Open {domain}',
