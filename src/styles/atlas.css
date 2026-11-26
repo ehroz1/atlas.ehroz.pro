@@ -1225,7 +1225,7 @@ button.menu__item[hidden] { display: none; }
   white-space: nowrap;
   cursor: pointer;
 }
-.card__menu-item svg { flex: none; width: 1.125rem; height: 1.125rem; color: var(--c-chrome-muted); }
+.card__menu-item svg { flex: none; order: 2; margin-left: auto; width: 1.125rem; height: 1.125rem; color: var(--c-chrome-muted); }
 .card__menu-item:hover, .card__menu-item:focus-visible { background: var(--c-chrome-hover); outline: none; }
 /* hidden from the menu: moved to the end of the grid and dimmed */
 .card-wrap.is-dismissed .card { opacity: 0.45; transition: opacity var(--dur) var(--ease); }
