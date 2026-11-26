@@ -142,7 +142,7 @@ const seen = new Set<string>();
   draw();
 
   // 4. Wheel / trackpad — both axes at once, no rails.
-  const blocked = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.finder, .menu') || !!document.querySelector('dialog[open]');
+  const blocked = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.finder, .menu') || !!document.querySelector('dialog[open], .finder:not([hidden])');
   addEventListener('wheel', (e) => {
     if (e.ctrlKey || blocked(e.target)) return; // leave pinch-zoom alone
     e.preventDefault();

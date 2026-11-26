@@ -3,7 +3,8 @@ import { u, pagePath } from '~/lib/url';
 /**
  * Floating top bar: brand · Sites|Wall · search & filter · Submit · menu.
  *
- * The search pill opens the finder dialog (search field + facets).
+ * The search pill is the input; focusing it drops the finder panel (facets,
+ * results, Clear/Lucky/Done) right under it — no modal, no backdrop.
  * State: { q, category[], pricing[], platform[] }, mirrored in the URL.
  * - On pages with a grid (home, category) results filter in place: the
  *   header fires `atlas:filter` with the matching ids; Gallery listens.
@@ -108,15 +109,54 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
       </nav>
     </div>
 
-    <div class="bar-search">
-      <button class="bar-search__field" type="button" aria-haspopup="dialog" aria-controls="finder" data-finder-open>
+    <div class="bar-search" data-finder-root>
+      <form class="bar-search__field" role="search" data-finder-form>
         <svg class="bar-search__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
           <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
         </svg>
-        <span class="bar-search__label" data-finder-label>{t('search.placeholder')}</span>
+        <label class="visually-hidden" for="finder-input">{t('search.label')}</label>
+        <input class="bar-search__input" id="finder-input" type="search" placeholder={t('search.placeholder')}
+          autocomplete="off" spellcheck="false" enterkeyhint="search" role="combobox"
+          aria-expanded="false" aria-controls="finder" aria-autocomplete="list" data-finder-input />
         <span class="bar-search__badge" data-finder-badge hidden></span>
+        <button class="bar-search__x" type="button" aria-label={t('search.clear')} data-finder-x hidden>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
         <kbd class="kbd" aria-hidden="true">/</kbd>
-      </button>
+      </form>
+      <div class="finder" id="finder" role="region" aria-label={t('search.label')} hidden data-finder>
+        <div class="finder__body">
+          <div class="finder__facets" role="tablist" aria-label={t('search.filters')}>
+            <button class="finder__facet" type="button" role="tab" aria-selected="true" data-facet="category">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 15.5h3"/><circle cx="9" cy="9" r="1.2"/></svg>
+              {t('search.facet.category')}<span class="finder__facet-count" data-facet-count="category"></span>
+            </button>
+            <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="pricing">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5V5h7.5L20 13.5 13.5 20 4 12.5Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>
+              {t('search.facet.pricing')}<span class="finder__facet-count" data-facet-count="pricing"></span>
+            </button>
+            <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="platform">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="11" rx="1.8"/><path d="M9 19.5h6M12 16v3.5"/></svg>
+              {t('search.facet.platform')}<span class="finder__facet-count" data-facet-count="platform"></span>
+            </button>
+          </div>
+          <div class="finder__pane" role="tabpanel" data-finder-pane></div>
+        </div>
+        <div class="finder__foot">
+          <button class="finder__clear" type="button" data-finder-clear hidden>{t('search.clearAll')}</button>
+          <div class="finder__foot-end">
+            <button class="finder__lucky" type="button" title={t('search.luckyHint')} data-finder-lucky>
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3.5" y="3.5" width="13" height="13" rx="3"/>
+                <circle cx="7.4" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.6" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
+                <circle cx="12.6" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="7.4" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
+              </svg>
+              <span class="finder__lucky-text">{t('search.lucky')}</span>
+            </button>
+            <button class="finder__done" type="button" data-finder-done>{t('search.done')}</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="bar-group bar-group--end">
@@ -203,50 +243,6 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   </div>
 </header>
 
-<dialog class="finder" id="finder" aria-label={t('search.label')} data-finder>
-  <form class="finder__field" role="search" method="dialog" data-finder-form>
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-      <circle cx="8.6" cy="8.6" r="6"/><path d="m13.2 13.2 4.3 4.3"/>
-    </svg>
-    <label class="visually-hidden" for="finder-input">{t('search.label')}</label>
-    <input class="finder__input" id="finder-input" type="search" placeholder={t('search.input')}
-      autocomplete="off" spellcheck="false" enterkeyhint="search" data-finder-input />
-    <button class="finder__x" type="button" aria-label={t('search.clear')} data-finder-x hidden>
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
-    </button>
-  </form>
-  <div class="finder__body">
-    <div class="finder__facets" role="tablist" aria-label={t('search.filters')}>
-      <button class="finder__facet" type="button" role="tab" aria-selected="true" data-facet="category">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 15.5h3"/><circle cx="9" cy="9" r="1.2"/></svg>
-        {t('search.facet.category')}<span class="finder__facet-count" data-facet-count="category"></span>
-      </button>
-      <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="pricing">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5V5h7.5L20 13.5 13.5 20 4 12.5Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>
-        {t('search.facet.pricing')}<span class="finder__facet-count" data-facet-count="pricing"></span>
-      </button>
-      <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="platform">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="11" rx="1.8"/><path d="M9 19.5h6M12 16v3.5"/></svg>
-        {t('search.facet.platform')}<span class="finder__facet-count" data-facet-count="platform"></span>
-      </button>
-    </div>
-    <div class="finder__pane" role="tabpanel" data-finder-pane></div>
-  </div>
-  <div class="finder__foot">
-    <button class="finder__clear" type="button" data-finder-clear hidden>{t('search.clearAll')}</button>
-    <div class="finder__foot-end">
-      <button class="finder__lucky" type="button" title={t('search.luckyHint')} data-finder-lucky>
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3.5" y="3.5" width="13" height="13" rx="3"/>
-          <circle cx="7.4" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="12.6" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
-          <circle cx="12.6" cy="7.4" r="0.9" fill="currentColor" stroke="none"/><circle cx="7.4" cy="12.6" r="0.9" fill="currentColor" stroke="none"/>
-        </svg>
-        <span class="finder__lucky-text">{t('search.lucky')}</span>
-      </button>
-      <button class="finder__done" type="button" data-finder-done>{t('search.done')}</button>
-    </div>
-  </div>
-</dialog>
 
 <script is:inline type="application/json" id="search-index" set:html={JSON.stringify(index).replace(/</g, '\\u003c')} />
 
@@ -266,13 +262,12 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const S = data.strings;
   const FACETS: FacetKey[] = ['category', 'pricing', 'platform'];
 
-  const dialog = document.querySelector<HTMLDialogElement>('[data-finder]')!;
+  const panel = document.querySelector<HTMLElement>('[data-finder]')!;
+  const root = document.querySelector<HTMLElement>('[data-finder-root]')!;
   const input = document.querySelector<HTMLInputElement>('[data-finder-input]')!;
   const pane = document.querySelector<HTMLElement>('[data-finder-pane]')!;
   const clearBtn = document.querySelector<HTMLButtonElement>('[data-finder-clear]')!;
   const luckyBtn = document.querySelector<HTMLButtonElement>('[data-finder-lucky]')!;
-  const openBtn = document.querySelector<HTMLButtonElement>('[data-finder-open]')!;
-  const label = document.querySelector<HTMLElement>('[data-finder-label]')!;
   const badge = document.querySelector<HTMLElement>('[data-finder-badge]')!;
 
   /* URLs are built from the logo's href, which already carries the site's
@@ -347,8 +342,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   // ---- rendering -----------------------------------------------------
   function renderBar() {
     const n = filterCount();
-    label.textContent = state.q.trim() || S.placeholder;
-    openBtn.classList.toggle('is-active', !!state.q.trim() || n > 0);
+    root.classList.toggle('is-active', !!state.q.trim() || n > 0);
     badge.hidden = n === 0;
     badge.textContent = String(n);
     const cat = new Intl.PluralRules(S.lang).select(n);
@@ -369,7 +363,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const xBtn = document.querySelector<HTMLButtonElement>('[data-finder-x]')!;
   function renderPane() {
     document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.facet === facet)));
-    dialog.classList.toggle('is-searching', !!state.q.trim());
+    panel.classList.toggle('is-searching', !!state.q.trim());
     xBtn.hidden = !input.value;
     if (state.q.trim()) {
       // Typing: tabs with counts, then results with thumbnails.
@@ -434,16 +428,40 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   }
 
   // ---- events --------------------------------------------------------
+  const isOpen = () => !panel.hidden;
+  // Centre the panel under the pill, but keep it inside the page gutters.
+  function place() {
+    const bar = root.parentElement!;
+    const cs = getComputedStyle(bar);
+    const minX = bar.getBoundingClientRect().left + parseFloat(cs.paddingLeft);
+    const maxX = bar.getBoundingClientRect().right - parseFloat(cs.paddingRight);
+    const r = root.getBoundingClientRect();
+    const w = Math.min(768, maxX - minX);
+    const x = Math.max(minX, Math.min(r.left + r.width / 2 - w / 2, maxX - w));
+    panel.style.width = w + 'px';
+    panel.style.left = x - r.left + 'px';
+  }
+  addEventListener('resize', () => isOpen() && place());
   function open() {
-    input.value = state.q;
+    if (isOpen()) return;
     renderPane();
-    if (!dialog.open) dialog.showModal();
-    input.focus();
-    input.select();
+    place();
+    panel.hidden = false;
+    root.classList.add('is-open');
+    input.setAttribute('aria-expanded', 'true');
+  }
+  // Close the panel; filters already applied in place stay applied.
+  function close() {
+    if (!isOpen()) return;
+    flush();
+    panel.hidden = true;
+    root.classList.remove('is-open');
+    input.setAttribute('aria-expanded', 'false');
   }
   function done() {
     flush();
-    dialog.close();
+    close();
+    input.blur();
     if (inPlace()) {
       emit();
       if (state.q.trim() || filterCount()) document.getElementById('sites')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -452,7 +470,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     }
   }
 
-  openBtn.addEventListener('click', open);
+  input.addEventListener('focus', open);
+  input.addEventListener('click', open);
   document.querySelector('[data-finder-form]')!.addEventListener('submit', (e) => e.preventDefault());
   document.querySelector('[data-finder-done]')!.addEventListener('click', done);
   clearBtn.addEventListener('click', () => {
@@ -472,7 +491,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     on ? state[f].add(id) : state[f].delete(id);
     if (on) (window as any).atlasTrack?.('filter_use', { facet: f, value: id });
     renderBar();
-    if (dialog.open) renderPane();
+    if (isOpen()) renderPane();
     emit();
   });
   document.addEventListener('atlas:facets-clear', () => {
@@ -514,6 +533,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   };
   let lastTracked = '';
   input.addEventListener('input', () => {
+    open();
     xBtn.hidden = !input.value;
     clearTimeout(pending);
     // clearing the field shows the filters again straight away
@@ -534,7 +554,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       e.preventDefault();
-      done();
+      close();
+      input.blur();
       return;
     }
     if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowUp') flush();
@@ -577,22 +598,30 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     opt.setAttribute('aria-pressed', String(set.has(id)));
     if (inPlace()) emit();
   });
-  // click on the dimmed backdrop closes like Done
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) done();
+  // A click outside the search, or tabbing out of it, folds the panel away.
+  document.addEventListener('pointerdown', (e) => {
+    if (isOpen() && !root.contains(e.target as Node)) close();
   });
-  dialog.addEventListener('cancel', (e) => {
-    e.preventDefault();
-    done();
+  root.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as Node | null;
+    if (next && !root.contains(next)) close();
+  });
+  panel.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      close();
+      input.focus();
+    }
   });
 
   // "/" opens search from anywhere
   document.addEventListener('keydown', (e) => {
     const el = e.target as HTMLElement;
     const typing = el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName);
-    if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey && !dialog.open) {
+    if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
-      open();
+      input.focus();
+      input.select();
     }
   });
 
@@ -621,6 +650,8 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   });
 
   // ---- initial -------------------------------------------------------
+  input.value = state.q;
+  xBtn.hidden = !input.value;
   renderBar();
   if (inPlace() && (state.q || filterCount())) emit();
 </script>
