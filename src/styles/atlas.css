@@ -739,6 +739,12 @@ hr { border: 0; border-top: var(--border); }
 .menu__item svg { flex: none; width: 19px; height: 19px; }
 .menu__item:hover, .menu__item:focus-visible { background: var(--c-chrome-hover); }
 .menu__item[aria-current="page"] { background: var(--c-chrome-active); }
+/* "Saved sites" is a button (it toggles the saved view on the grid) */
+button.menu__item { width: 100%; border: 0; background: none; color: inherit; font: inherit; font-size: var(--fs-17); text-align: left; cursor: pointer; }
+button.menu__item[hidden] { display: none; }
+.menu__item--saved[aria-pressed="true"] { background: var(--c-chrome-active); }
+.menu__item--saved[aria-pressed="true"] svg { fill: currentColor; }
+.menu__count { margin-left: auto; font-size: var(--fs-14); color: var(--c-chrome-muted); font-variant-numeric: tabular-nums; }
 .menu__sep { margin: var(--s-2) var(--s-3); border: 0; border-top: 1px solid var(--c-chrome-active); }
 .menu__note { display: flex; align-items: center; gap: var(--s-2); padding: var(--s-2) var(--s-3) var(--s-1); font-size: var(--fs-14); color: var(--c-chrome-muted); }
 
@@ -767,17 +773,6 @@ hr { border: 0; border-top: var(--border); }
 .bar-icon svg { width: 22px; height: 22px; }
 
 .btn.is-on { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-on-accent); }
-.bar-saved { position: relative; }
-.bar-saved[hidden] { display: none; }
-.bar-saved[aria-pressed="true"] { background: var(--c-accent); }
-.bar-saved[aria-pressed="true"] svg { fill: currentColor; }
-.bar-saved__n {
-  position: absolute; top: 2px; right: 2px;
-  min-width: 1.05rem; height: 1.05rem; padding-inline: 3px;
-  border-radius: var(--r-pill); background: var(--c-text); color: var(--c-text-invert);
-  font-size: 11px; line-height: 1.05rem; text-align: center;
-}
-.bar-saved__n:empty { display: none; }
 
 .only-wide { display: inline; }
 .only-narrow { display: none; }
