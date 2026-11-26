@@ -163,11 +163,6 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
       <a class="btn btn--bar btn--chrome bar-submit" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
         <span class="only-wide">{t('nav.submit')}</span><span class="only-narrow">{t('nav.submitShort')}</span>
       </a>
-      <button class="bar-icon bar-saved" type="button" aria-pressed="false" data-saved-toggle
-        data-href={u('/', lang) + '?saved=1'} aria-label={t('nav.saved')} title={t('nav.saved')} hidden>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
-        <span class="bar-saved__n" data-saved-count aria-hidden="true"></span>
-      </button>
       {enabled && (
         <a class="bar-icon bar-account" href={u('/account', lang)} data-account-btn
           aria-label={t('nav.account')} title={t('nav.account')} data-label-in={t('nav.accountIn')}
@@ -183,6 +178,14 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
           </svg>
         </button>
         <nav class="menu" id="site-menu" aria-label={t('nav.menu')} hidden data-menu>
+          {/* Saved sites (localStorage, see Base.astro): filters the grid in
+              place, or opens the home page with ?saved=1. Shown once JS runs. */}
+          <button class="menu__item menu__item--saved" type="button" aria-pressed="false" data-saved-toggle
+            data-href={u('/', lang) + '?saved=1'} hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
+            {t('nav.saved')}
+            <span class="menu__count" data-saved-count></span>
+          </button>
           <a class="menu__item" href={u('/about', lang)} aria-current={path === '/about' ? 'page' : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
             {t('nav.about')}
@@ -639,6 +642,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     if (!menu.hidden && next && !menu.parentElement!.contains(next)) setMenu(false);
   });
   menuBtn.addEventListener('click', () => setMenu(menu.hidden));
+  menu.querySelector('[data-saved-toggle]')?.addEventListener('click', () => setMenu(false));
   document.addEventListener('pointerdown', (e) => {
     if (!menu.hidden && !menu.parentElement!.contains(e.target as Node)) setMenu(false);
   });
