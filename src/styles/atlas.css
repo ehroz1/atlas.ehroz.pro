@@ -1084,22 +1084,20 @@ button.menu__item[hidden] { display: none; }
 .hero-intro__btn--secondary { border: 1px solid var(--c-line); background: var(--c-fill); color: var(--c-text); font-family: var(--font-mono); }
 .hero-intro__btn--secondary:hover { background: var(--c-fill-hover); border-color: var(--c-line-strong); }
 
-.hero-intro__card { display: block; }
-.hero-intro__shot {
+/* the caption reuses the gallery card's .card__caption/__row/__name/__category/__summary,
+   and the card lifts on hover the same way */
+.hero-intro__card { display: flex; flex-direction: column; gap: var(--s-3); color: inherit; transition: transform var(--dur) var(--ease); }
+.hero-intro__card:hover, .hero-intro__card:focus-visible { transform: translateY(-6px); }
+.hero-intro__card:focus-visible { outline-offset: 4px; }
+.hero-intro__card:hover .card__name { color: var(--c-signal); }
+.hero-intro__shot {   /* same frame as .card__media */
   display: block;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  border: 1px solid var(--c-line);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-card);
   background: var(--c-surface);
-  box-shadow: var(--shadow-shot);
 }
-.hero-intro__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform var(--dur-slow) var(--ease); }
-.hero-intro__card:hover .hero-intro__shot img { transform: scale(1.02); }
-.hero-intro__meta { display: flex; justify-content: space-between; gap: var(--s-4); margin-top: var(--s-3); font-family: var(--font-mono); font-size: var(--fs-13); }
-.hero-intro__name { color: var(--c-text-2); }
-.hero-intro__label { color: var(--c-text-3); }
-.hero-intro__card:hover .hero-intro__name { color: var(--c-text); }
+.hero-intro__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 
 /* desktop only: the column is kept empty until the script drops a card in,
    so the title doesn't jump sideways */
@@ -1110,7 +1108,7 @@ button.menu__item[hidden] { display: none; }
   .hero-intro__side { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-intro__shot img { transition: none; }
+  .hero-intro__card { transition: none; }
 }
 
 /* 13. TILES & CARDS ---------------------------------------------------------

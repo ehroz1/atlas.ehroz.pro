@@ -51,9 +51,12 @@ const categories = new Map((await getCategories()).map((c) => [c.id, loc(c.data.
         <span class="hero-intro__shot">
           <Image src={shotFor(pick.id)!} alt="" widths={[640, 960]} sizes="32rem" format="webp" quality={80} loading="eager" />
         </span>
-        <span class="hero-intro__meta">
-          <span class="hero-intro__name">{pick.data.name}<span class="visually-hidden">: {loc(pick.data.summary, lang)}</span></span>
-          <span class="hero-intro__label">{categories.get(pick.data.category)}</span>
+        <span class="card__caption">
+          <span class="card__row">
+            <span class="card__name">{pick.data.name}</span>
+            <span class="card__category">{categories.get(pick.data.category)}</span>
+          </span>
+          <span class="card__summary">{loc(pick.data.summary, lang)}</span>
         </span>
       </a>
     ))}
