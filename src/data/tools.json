@@ -2541,5 +2541,24 @@
       "en": "A library of prompts for animated landing pages and hero sections: copy a prompt and paste it into Lovable, Bolt, v0, Cursor or Claude. Most prompts are free, with full access on a paid plan.",
       "ru": "Библиотека промптов для анимированных лендингов и hero-секций: копируешь промпт и вставляешь в Lovable, Bolt, v0, Cursor или Claude. Большая часть промптов бесплатная, полный доступ — по подписке. На английском."
     }
+  },
+  {
+    "id": "vocal-remover",
+    "name": "Vocal Remover",
+    "url": "https://vocalremover.org",
+    "category": "video-audio",
+    "pricing": "free",
+    "platforms": ["Web"],
+    "tags": ["vocal remover", "stems", "karaoke", "audio tools", "pitch"],
+    "added": "2026-11-27",
+    "updated": "2026-11-27",
+    "summary": {
+      "en": "Split a song into vocals and music in the browser.",
+      "ru": "Разделяет песню на голос и музыку прямо в браузере."
+    },
+    "description": {
+      "en": "Upload a track and get the vocals and the instrumental as separate files. The same site has a stem splitter, pitch changer, key and BPM finder, cutter, joiner, recorder and a karaoke mode.",
+      "ru": "Загружаете трек и получаете голос и минус отдельными файлами. На том же сайте есть разделение на дорожки, смена тональности, определение тональности и темпа, нарезка, склейка, запись и режим караоке."
+    }
   }
 ]
