@@ -20,13 +20,13 @@
     "@resvg/resvg-js": "^2.6.2",
     "@supabase/supabase-js": "^2.119.2",
     "@vercel/analytics": "^2.0.1",
-    "astro": "^7.4.12",
+    "astro": "^7.4.13",
     "satori": "^0.63.2",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^1.12.0",
-    "axe-core": "^4.14.0",
+    "@anthropic-ai/sdk": "^1.13.0",
+    "axe-core": "^4.14.1",
     "node-html-parser": "^9.0.7"
   }
 }
