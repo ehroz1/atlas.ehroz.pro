@@ -1,0 +1,45 @@
+---
+/**
+ * Home hero: a large uppercase statement on the left with two actions
+ * under it, and on the right one card that shows the newest site in the
+ * catalogue (screenshot, then its name and a "New" label underneath).
+ */
+import { Image } from 'astro:assets';
+import { shotFor } from '~/lib/shots';
+import { u } from '~/lib/url';
+import type { Tool } from '~/lib/data';
+import { useTranslations, plural, loc, defaultLang, type Lang } from '~/i18n';
+
+interface Props { tools: Tool[]; categoryCount: number; lang?: Lang }
+const { tools, categoryCount, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+
+const pick = tools
+  .filter((tool) => shotFor(tool.id))
+  .sort((a, b) => b.data.added.getTime() - a.data.added.getTime())[0];
+---
+<section class="hero-intro" aria-labelledby="hero-title">
+  <div class="hero-intro__main">
+    <h1 class="hero-intro__title" id="hero-title">{t(`hero.title.${plural(lang, tools.length)}`, { count: tools.length }).replaceAll('-', '\u2011')}</h1>
+    <p class="hero-intro__sub">{t('hero.sub', { categories: categoryCount })}</p>
+    <div class="hero-intro__actions">
+      <a class="hero-intro__btn hero-intro__btn--primary" href={u('/newsletter', lang)}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        {t('hero.picks')}
+      </a>
+      <a class="hero-intro__btn hero-intro__btn--secondary" href={u('/submit', lang)}>{t('hero.cta')}</a>
+    </div>
+  </div>
+
+  {pick && (
+    <a class="hero-intro__card" href={u(`/tool/${pick.id}`, lang)}>
+      <span class="hero-intro__shot">
+        <Image src={shotFor(pick.id)!} alt="" widths={[480, 720, 960]} sizes="(min-width: 60rem) 34vw, 100vw" format="webp" quality={78} loading="eager" fetchpriority="high" />
+      </span>
+      <span class="hero-intro__meta">
+        <span class="hero-intro__name">{pick.data.name}<span class="visually-hidden">: {loc(pick.data.summary, lang)}</span></span>
+        <span class="hero-intro__label">{t('hero.newest')}</span>
+      </span>
+    </a>
+  )}
+</section>

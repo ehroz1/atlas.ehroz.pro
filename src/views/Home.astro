@@ -1,6 +1,6 @@
 ---
 import Base from '~/layouts/Base.astro';
-import HeroCollage from '~/components/HeroCollage.astro';
+import HeroIntro from '~/components/HeroIntro.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
 import { getPage } from '~/lib/routes';
@@ -15,7 +15,7 @@ const url = absUrl('/', lang);
 ---
 <Base lang={lang} entry={entry} nodes={[itemList(url, entry.heading[lang], tools, lang)]} pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }} scenicFooter>
   <div class="container container--wide">
-    <HeroCollage tools={tools} categoryCount={categories.length} lang={lang} />
+    <HeroIntro tools={tools} categoryCount={categories.length} lang={lang} />
     <div class="home-grid">
       <Gallery tools={tools} categories={categories} filters={false} promote lang={lang} />
     </div>
