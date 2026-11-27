@@ -28,7 +28,7 @@ const ids = picksFor(flat, key, overrides as Record<string, string[]>);
 const picks = ids.map((id) => tools.find((x) => x.id === id)!);
 const [y, m] = key.split('-').map(Number);
 const month = new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m - 1, 1)));
-const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('account.error'), unsubscribed: t('newsletter.unsubscribed'), unsubFailed: t('newsletter.unsubFailed') };
+const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('account.error'), rateLimit: t('account.rateLimit'), unsubscribed: t('newsletter.unsubscribed'), unsubFailed: t('newsletter.unsubFailed') };
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.newsletter'), path: '/newsletter' }]}>
   <div class="container">
@@ -97,12 +97,15 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
       });
     }
 
+    let sending = false; // a second click while the first is in flight would send a second email
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (sending) return;
       const fd = new FormData(form);
       const email = String(fd.get('email') ?? '').trim();
       if (fd.get('website')) { status.textContent = fill(msg.sent, { email }); return; }
       (window as any).atlasTrack?.('newsletter_subscribe', { source: 'newsletter_page' });
+      sending = true;
       try {
         const p = maybeSignedIn() ? await getProfile() : null;
         if (p && p.email === email) {
@@ -120,7 +123,10 @@ const msg = { sent: t('newsletter.sent'), on: t('newsletter.on'), error: t('acco
         if (error) throw error;
         status.textContent = fill(msg.sent, { email });
       } catch (err) {
-        status.textContent = fill(msg.error, { msg: (err as Error).message });
+        // the server's own wording stays out of sight; rate limits get a plain hint
+        status.textContent = /rate limit|seconds|too many/i.test((err as Error)?.message ?? '') ? msg.rateLimit : msg.error;
+      } finally {
+        sending = false;
       }
     });
   }

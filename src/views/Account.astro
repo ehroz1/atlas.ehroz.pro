@@ -26,7 +26,14 @@ const msg = {
   signedAs: t('account.signedAs'),
   none: t('collections.none'),
   del: t('collections.delete'),
+  delLabel: t('collections.deleteLabel'),
+  delConfirm: t('collections.deleteConfirm'),
+  delFailed: t('collections.deleteFailed'),
   priv: t('collections.private'),
+  rateLimit: t('account.rateLimit'),
+  linkExpired: t('account.linkExpired'),
+  nameFailed: t('account.nameFailed'),
+  newsletterFailed: t('account.newsletterFailed'),
 };
 ---
 <Base lang={lang} title={t('account.title')} description={t('account.lead')} noindex
@@ -83,7 +90,8 @@ const msg = {
                 <button class="btn" type="submit">{t('prefs.save')}</button>
               </div>
             </form>
-            <p data-admin-link hidden><a class="btn btn--sm" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'}>Админка ↗</a></p>
+            <p class="t-meta" data-account-status aria-live="polite"></p>
+            <p data-admin-link hidden><a class="btn btn--sm" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'}>{t('account.admin')}</a></p>
             <label class="cluster t-small" style="--gap: var(--s-2)">
               <input class="checkbox" type="checkbox" data-newsletter />
               <span>{t('account.newsletter')} <span class="t-muted">· {t('account.newsletterHint')}</span></span>
@@ -182,11 +190,15 @@ const msg = {
     const status = $('[data-auth-status]')!;
     const here = location.origin + location.pathname;
     const params = new URLSearchParams(location.search);
-    const fail = (e: unknown) => (status.textContent = fill(msg.error, { msg: (e as Error)?.message ?? String(e) }));
+    // the server's own wording stays out of sight; rate limits get a plain hint, everything else a generic retry
+    const explain = (e: unknown) => (/rate limit|seconds|too many/i.test((e as Error)?.message ?? '') ? msg.rateLimit : msg.error);
+    const fail = (e: unknown) => (status.textContent = explain(e));
+    // result of name / newsletter / delete actions: visible while signed in
+    const notice = $('[data-account-status]')!;
 
     // error coming back from Google / an expired link
     const urlError = params.get('error_description') || new URLSearchParams(location.hash.slice(1)).get('error_description');
-    if (urlError) status.textContent = fill(msg.error, { msg: urlError });
+    if (urlError) status.textContent = msg.linkExpired;
 
     $('[data-google]')!.addEventListener('click', async () => {
       (window as any).atlasTrack?.('sign_in', { method: 'google' });
@@ -194,16 +206,19 @@ const msg = {
       if (error) fail(error);
     });
 
+    let sending = false;
     $<HTMLFormElement>('[data-email-form]')!.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (sending) return;
       const fd = new FormData(e.target as HTMLFormElement);
       const email = String(fd.get('email') ?? '').trim();
       if (fd.get('website')) { status.textContent = fill(msg.sent, { email }); return; }
       (window as any).atlasTrack?.('sign_in', { method: 'email' });
+      sending = true;
       const { error } = await (await sb()).auth.signInWithOtp({
         email,
         options: { emailRedirectTo: here + location.search, data: { lang, newsletter: params.get('subscribe') === '1' } },
-      });
+      }).finally(() => { sending = false; });
       if (error) fail(error);
       else status.textContent = fill(msg.sent, { email });
     });
@@ -233,8 +248,18 @@ const msg = {
         del.className = 'btn btn--sm btn--ghost';
         del.type = 'button';
         del.textContent = msg.del;
+        del.setAttribute('aria-label', fill(msg.delLabel, { title: c.title }));
         del.addEventListener('click', async () => {
-          await (await sb()).from('collections').delete().eq('id', c.id);
+          // a native confirm: keyboard and screen-reader friendly, and the name says what goes
+          if (!confirm(fill(msg.delConfirm, { title: c.title }))) return;
+          notice.textContent = '';
+          try {
+            const { error } = await (await sb()).from('collections').delete().eq('id', c.id);
+            if (error) throw error;
+          } catch {
+            notice.textContent = fill(msg.delFailed, { title: c.title });
+            return;
+          }
           renderCollections(uid);
         });
         li.append(a, meta, del);
@@ -261,8 +286,12 @@ const msg = {
 
       // came from the newsletter form: turn the flag on
       if (params.get('subscribe') === '1' && !profile.newsletter) {
-        await updateProfile({ newsletter: true }).catch(fail);
-        profile.newsletter = true;
+        try {
+          await updateProfile({ newsletter: true });
+          profile.newsletter = true;
+        } catch {
+          notice.textContent = msg.newsletterFailed;
+        }
       }
       const nameForm = $<HTMLFormElement>('[data-name-form]')!;
       const nameInput = nameForm.querySelector<HTMLInputElement>('input')!;
@@ -271,10 +300,8 @@ const msg = {
         e.preventDefault();
         const v = nameInput.value.trim();
         const { error } = await (await sb()).from('profiles').update({ display_name: v || null }).eq('id', profile.id);
-        const b = nameForm.querySelector<HTMLButtonElement>('button')!;
-        const label = b.textContent;
-        b.textContent = error ? '×' : msg.saved;
-        setTimeout(() => (b.textContent = label), 1600);
+        // announced through the live region; the button keeps its name
+        notice.textContent = error ? msg.nameFailed : msg.saved;
       };
       $('[data-admin-link]')!.hidden = !(profile as any).is_admin;
 
@@ -282,7 +309,13 @@ const msg = {
       nl.checked = profile.newsletter;
       nl.onchange = () => {
         if (nl.checked) (window as any).atlasTrack?.('newsletter_subscribe', { source: 'account' });
-        updateProfile({ newsletter: nl.checked }).catch(fail);
+        notice.textContent = '';
+        const wanted = nl.checked;
+        updateProfile({ newsletter: wanted }).catch(() => {
+          // the save failed: show the real state again and say so
+          nl.checked = !wanted;
+          notice.textContent = msg.newsletterFailed;
+        });
       };
 
       // local prefs → account on first sign-in, account → local afterwards
