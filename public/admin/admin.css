@@ -26,6 +26,7 @@
   --c-on-accent: #ffffff;
   --c-accent: #1268ff;
   --c-accent-hover: #2a78ff;
+  --c-accent-hover-bg: #0f5ce6;
   --c-signal: #ff6b5e;
   --c-success: #4cc27a;
   --c-panel: #202020;
@@ -101,7 +102,7 @@ code { background: var(--c-fill); padding: 1px var(--s-2); border-radius: var(--
 }
 .pill:hover, .btn:hover { background: var(--c-fill-hover); }
 .btn.primary { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-on-accent); }
-.btn.primary:hover { background: var(--c-accent-hover); border-color: var(--c-accent-hover); }
+.btn.primary:hover { background: var(--c-accent-hover-bg); border-color: var(--c-accent-hover-bg); }
 .btn.danger { color: var(--c-signal); border-color: color-mix(in srgb, var(--c-signal) 40%, transparent); background: transparent; }
 .btn.danger:hover { background: color-mix(in srgb, var(--c-signal) 12%, transparent); }
 .btn:disabled { opacity: .5; cursor: progress; }

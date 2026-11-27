@@ -51,6 +51,7 @@ Use semantic tokens (`--c-text`, `--c-surface`), never the raw scale
 | `--c-chrome` | `#1c1c1c` | top-bar pills, search panel |
 | `--c-chrome-hover` / `--c-chrome-active` | `#242424` / `#2c2c2c` | pill hover, current segment, highlighted result |
 | `--c-accent` | `#1268ff` | **one primary button per screen** (hero "Submit a site") |
+| `--c-accent-hover-bg` | `#0f5ce6` | hover fill of the blue button (white text on it is 5.7:1) |
 | `--c-ink-blue` | `#5b8cff` | **illustrations only** |
 | `--c-signal` | `#ff6b5e` | hover on card/category names, errors |
 | `--c-on-accent` | `#fff` | text on blue or red fills |
@@ -78,6 +79,8 @@ don't use it without a reason.
 | `.t-small` | 14px | 400 | secondary UI |
 | `.t-meta` | 13px | 400, grey | dates, captions |
 | `.t-mono` | 13px | mono | keys, numbers |
+
+Fields keep the global 2px `--c-focus` ring on keyboard focus, on top of the filled-field change.
 
 Weights in use are **400** and **500**. Bold (700) is not used anywhere.
 Headings are never all-caps, and letter-spacing is only tightened, never
@@ -128,7 +131,7 @@ put them together.
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Home hero | `.hero-intro`, `.hero-intro__title/__sub/__actions/__btn--primary/__btn--secondary/__card/__shot/__meta` | uppercase statement left with two buttons (newsletter, submit); desktop only: random site from the `SHOWCASE` list on the right (screenshot, name, category), hidden on phones. Markup in `HeroIntro.astro` |
+| Home hero | `.hero-intro`, `.hero-intro__title/__sub/__actions/__btn--primary/__btn--secondary/__card/__shot/__meta` | statement left (sentence case, never all-caps) with two buttons (newsletter, submit); desktop only: random site from the `SHOWCASE` list on the right (screenshot, name, category), hidden on phones. Markup in `HeroIntro.astro` |
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |

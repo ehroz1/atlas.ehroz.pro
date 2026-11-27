@@ -92,6 +92,7 @@
 
   --blue-500: #1268ff;   /* primary button */
   --blue-450: #2a78ff;
+  --blue-550: #0f5ce6;   /* button hover: white on it is 5.7:1 */
   --blue-400: #5b8cff;   /* illustrations on dark */
   --red-400:  #ff6b5e;
   --green-400:#4cc27a;
@@ -116,7 +117,8 @@
 
   --c-ink-blue:      var(--blue-400);
   --c-accent:        var(--blue-500);
-  --c-accent-hover:  var(--blue-450);
+  --c-accent-hover:  var(--blue-450);   /* blue as text/icon on dark */
+  --c-accent-hover-bg: var(--blue-550); /* blue button hover fill */
   --c-signal:        var(--red-400);
   --c-success:       var(--green-400);
 
@@ -783,7 +785,7 @@ button.menu__item[hidden] { display: none; }
 .btn.btn--bar { --_h: var(--bar-h); padding-inline: 1.4rem; font-size: var(--fs-15); }
 .btn.btn--accent { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-on-accent); }
 @media (hover: hover) {
-  .btn.btn--accent:hover { background: var(--c-accent-hover); border-color: var(--c-accent-hover); }
+  .btn.btn--accent:hover { background: var(--c-accent-hover-bg); border-color: var(--c-accent-hover-bg); }
 }
 .btn.btn--accent:active { background: var(--c-accent); }
 .btn.btn--chrome { background: var(--c-chrome); border-color: var(--c-chrome); color: var(--c-chrome-text); }
@@ -1118,7 +1120,6 @@ button.menu__item[hidden] { display: none; }
   font-weight: var(--fw-medium);
   line-height: 0.98;
   letter-spacing: -0.035em;
-  text-transform: uppercase;
   text-wrap: balance;
 }
 .hero-intro__sub { max-width: 32rem; margin-top: var(--s-5); font-size: var(--fs-17); color: var(--c-text-3); }
@@ -1139,7 +1140,7 @@ button.menu__item[hidden] { display: none; }
 .hero-intro__btn svg { flex: none; }
 .hero-intro__btn--primary { background: var(--c-accent); color: var(--c-on-accent); }
 @media (hover: hover) {
-  .hero-intro__btn--primary:hover { background: var(--c-accent-hover); }
+  .hero-intro__btn--primary:hover { background: var(--c-accent-hover-bg); }
 }
 .hero-intro__btn--secondary { border: 1px solid var(--c-line); background: var(--c-fill); color: var(--c-text); font-family: var(--font-mono); }
 @media (hover: hover) {
@@ -1847,7 +1848,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
   .textarea:hover,
   .select:hover { background: var(--c-fill-hover); }
 }
-.input:focus, .textarea:focus, .select:focus { outline: none; background: var(--c-bg); border-color: var(--c-line-active); }
+.input:focus, .textarea:focus, .select:focus { background: var(--c-bg); border-color: var(--c-line-active); }
 .input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--c-signal); }
 .textarea { min-height: 7.5rem; resize: vertical; line-height: var(--lh-body); }
 .select {
@@ -1994,8 +1995,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
   padding-inline: 0.45rem;
   border: 1px solid var(--c-line-strong);
   border-radius: var(--r-pill);
-  font-size: 11px;
-  letter-spacing: 0.02em;
+  font-size: var(--fs-13);
   color: var(--c-text-2);
   white-space: nowrap;
 }

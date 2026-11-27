@@ -78,6 +78,13 @@
       "skillPath": "skills/build-design/SKILL.md",
       "computedHash": "78b640694e568d796dd9044256889d8b28853d98f3349dd08305ae9aeea4aaac"
     },
+    "design-auditor": {
+      "source": "borghei/Claude-Skills",
+      "commit": "0337fda04757d4454db974e3d8f81d0fae31664e",
+      "sourceType": "github",
+      "skillPath": "engineering/design-auditor/SKILL.md",
+      "computedHash": "81d631efe41c7ce43912ee7b24c0aa34f1c6ec043ea6f060c0e01d36d7018df6"
+    },
     "explain-interface": {
       "source": "jakubkrehel/skills",
       "commit": "672ae44ace6aaed65b86cbb1e2fd6fbea0e79578",
