@@ -166,21 +166,13 @@ const APP_CATEGORY: Record<string, string> = {
   ai: 'BusinessApplication',
   design: 'DesignApplication',
   development: 'DeveloperApplication',
-  productivity: 'BusinessApplication',
   'video-audio': 'MultimediaApplication',
-  '3d-motion': 'DesignApplication',
   typography: 'DesignApplication',
   inspiration: 'DesignApplication',
   assets: 'MultimediaApplication',
   utilities: 'UtilitiesApplication',
-  learning: 'EducationalApplication',
   'web-galleries': 'DesignApplication',
   branding: 'DesignApplication',
-  museums: 'MultimediaApplication',
-  mockups: 'DesignApplication',
-  'icons-illustrations': 'DesignApplication',
-  'file-converters': 'UtilitiesApplication',
-  'design-generators': 'DesignApplication',
 };
 
 /** The site a tool page is about. WebApplication when it only runs in the browser. */

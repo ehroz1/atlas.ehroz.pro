@@ -5,7 +5,7 @@ type: howto
 primaryKeyword: "laws of ux"
 secondaryKeywords: ["laws of ux examples", "hick's law", "fitts's law", "game ui design"]
 tools: ["laws-of-ux", "interface-in-game", "mobbin"]
-categories: ["learning", "inspiration"]
+categories: ["development", "inspiration"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Topic idea; steady search demand for laws of UX from designers"
@@ -89,4 +89,4 @@ When a system responds in under about 400 milliseconds, people stay in the flow.
 2. Look at how games solve it on [Interface In Game](/tool/interface-in-game/), by element: menu, inventory, HUD.
 3. Check the same pattern in apps on [Mobbin](/tool/mobbin/), and only then draw your own version.
 
-More resources for learning design are in the [Learning](/category/learning/) category.
+More resources for learning design are in the [Development & Learning](/category/development/) category.

@@ -243,6 +243,7 @@ const jsonLd =
           else location.href = t.getAttribute('data-href');
         });
         window.__atlasSaved = function () { return saved.slice(); };
+        window.__atlasPaintSaved = paint; // Gallery.astro: after it builds the buttons of newly shown cards
         document.addEventListener('click', function (e) {
           var btn = e.target.closest && e.target.closest('[data-save], [data-save-up], [data-save-page]');
           if (!btn) return;
@@ -269,6 +270,7 @@ const jsonLd =
         try { hidden = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
         if (!Array.isArray(hidden)) hidden = [];
         window.__atlasHidden = function () { return hidden.slice(); };
+        window.__atlasPaintHidden = function () { paint(); };
         var paint = function () {
           document.querySelectorAll('[data-card]').forEach(function (card) {
             var on = hidden.indexOf(card.getAttribute('data-id')) >= 0;

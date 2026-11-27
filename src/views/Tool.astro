@@ -33,7 +33,18 @@ if (!d.affiliateUrl) outbound.searchParams.set('ref', SITE.ref);
 const rel = d.affiliateUrl ? 'sponsored noopener' : 'noopener';
 const url = absUrl(entry.path, lang);
 
-const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+const pricingOf = (x: Tool) => [t(`pricing.${x.data.pricing}`), x.data.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+const pricing = pricingOf(tool);
+
+// Catches the pricing badge doesn't say: the author's own lines first; without them, what the data already tells us
+const webOnly = d.platforms.length > 0 && d.platforms.every((p) => p === 'Web');
+const limits = [
+  ...d.limits.map((l) => loc(l, lang)),
+  ...(d.limits.length === 0 && d.pricing !== 'free' ? [t(d.pricing === 'paid' ? 'tool.limit.paid' : 'tool.limit.freemium')] : []),
+  ...(webOnly ? [t('tool.limit.web')] : []),
+  ...(d.openSource ? [t('tool.limit.open')] : []),
+];
+const hasNotes = d.altNotes && alternatives.some((a) => d.altNotes[a.id]);
 ---
 <Base
   lang={lang}
@@ -67,6 +78,9 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
             <svg class="i-done" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 10.5l3.5 3.5 7.5-8"/></svg>
           </button>
         </div>
+        {d.own && (
+          <p class="tool-own"><span class="card__partner">{t('card.own')}</span> {t('tool.own')}</p>
+        )}
         {d.affiliateUrl && (
           <p class="partner-note t-meta"><span class="card__partner">{t('tool.partner')}</span> {t('tool.partnerHint')}</p>
         )}
@@ -118,6 +132,31 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
       )}
     </a>
 
+    {(d.why || d.forWho || limits.length > 0) && (
+      <div class="tool-notes">
+        {d.why && (
+          <section class="tool-notes__block" aria-labelledby="why">
+            <h2 id="why">{t('tool.why')}</h2>
+            <p>{loc(d.why, lang)}</p>
+          </section>
+        )}
+        {d.forWho && (
+          <section class="tool-notes__block" aria-labelledby="forwho">
+            <h2 id="forwho">{t('tool.forWho')}</h2>
+            <p>{loc(d.forWho, lang)}</p>
+          </section>
+        )}
+        {limits.length > 0 && (
+          <section class="tool-notes__block" aria-labelledby="limits">
+            <h2 id="limits">{t('tool.limits')}</h2>
+            <ul class="tool-notes__list" role="list">
+              {limits.map((l) => <li>{l}</li>)}
+            </ul>
+          </section>
+        )}
+      </div>
+    )}
+
     <Comments toolId={tool.id} lang={lang} />
 
     {articles.length > 0 && (
@@ -144,7 +183,30 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
             <a class="link t-small" href={u(`/alternatives/${tool.id}`, lang)}>{t('tool.allAlternatives', { name: d.name })}</a>
           )}
         </div>
-        <div class="cards">
+        <div class="compare-wrap">
+          <table class="compare">
+            <caption class="visually-hidden">{t('tool.compare')}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{t('tool.compare.site')}</th>
+                <th scope="col">{t('tool.pricing')}</th>
+                <th scope="col">{t('tool.platforms')}</th>
+                {hasNotes && <th scope="col">{t('tool.compare')}</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {[tool, ...alternatives].map((r) => (
+                <tr>
+                  <th scope="row">{r.id === tool.id ? r.data.name : <a class="link" href={u(`/tool/${r.id}`, lang)}>{r.data.name}</a>}</th>
+                  <td>{pricingOf(r)}</td>
+                  <td>{r.data.platforms.join(', ')}</td>
+                  {hasNotes && <td>{r.id === tool.id ? '' : (d.altNotes[r.id] ? loc(d.altNotes[r.id], lang) : '')}</td>}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div class="cards mt-6">
           {alternatives.map((r) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} />)}
         </div>
       </section>

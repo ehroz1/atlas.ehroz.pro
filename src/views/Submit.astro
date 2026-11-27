@@ -1,7 +1,7 @@
 ---
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
-import { getCategories } from '~/lib/data';
+import { getCategories, getTools, domainOf } from '~/lib/data';
 import { getPage } from '~/lib/routes';
 import { SITE } from '~/site.config';
 import { BACKEND } from '~/lib/backend';
@@ -10,13 +10,15 @@ import { loc, useTranslations, type Lang } from '~/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [categories, entry] = await Promise.all([getCategories(), getPage('submit')]);
+const [categories, entry, tools] = await Promise.all([getCategories(), getPage('submit'), getTools()]);
+// what is already in the catalogue, to say so before the form is sent
+const known = tools.map((x) => ({ id: x.id, name: x.data.name, host: domainOf(x.data.url) }));
 /* Submissions open the visitor's mail app with a prefilled letter.
    PUBLIC_SUBMIT_EMAIL in .env overrides the receiving address. */
 const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
 const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
 const phone = SITE.submitPhone;
-const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('submit.tooMany'), sending: t('submit.sending'), thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
+const msg = { errUrl: t('submit.err.url.required'), errWhy: t('submit.err.why'), errEmail: t('submit.err.email'), dupe: t('submit.dupe', { name: '{name}' }), dupeOpen: t('submit.dupe.open'), errors: t('submit.errors'), sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('submit.tooMany'), sending: t('submit.sending'), thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
@@ -28,12 +30,15 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
         </p>
       </div>
 
-      <form class="form mt-12" data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)} data-lang={lang} data-backend={BACKEND.enabled ? '' : undefined}>
+      <script is:inline type="application/json" id="known-sites" set:html={JSON.stringify(known).replace(/</g, '\\u003c')} />
+      <form class="form mt-12" novalidate data-submit-form data-email={email} data-phone={phone} data-msg={JSON.stringify(msg)} data-lang={lang} data-backend={BACKEND.enabled ? '' : undefined}>
         {/* bots fill every field; people never see this one */}
         <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
         <div class="field">
           <label class="field__label" for="url">{t('submit.url')}</label>
-          <input class="input" id="url" name="url" type="text" placeholder="figma.com" required inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" data-invalid={t('submit.urlInvalid')} />
+          <input class="input" id="url" name="url" type="text" placeholder="figma.com" required aria-required="true" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" aria-describedby="url-error url-note" data-invalid={t('submit.urlInvalid')} />
+          <p class="field__error" id="url-error" hidden></p>
+          <p class="field__note" id="url-note" hidden aria-live="polite"></p>
         </div>
 
         <div class="field">
@@ -51,13 +56,15 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
 
         <div class="field">
           <label class="field__label" for="why">{t('submit.why')}</label>
-          <textarea class="textarea" id="why" name="why" placeholder={t('submit.whyPh')} required></textarea>
-          <span class="field__hint">{t('submit.whyHint')}</span>
+          <textarea class="textarea" id="why" name="why" placeholder={t('submit.whyPh')} required aria-required="true" aria-describedby="why-hint why-error"></textarea>
+          <span class="field__hint" id="why-hint">{t('submit.whyHint')}</span>
+          <p class="field__error" id="why-error" hidden></p>
         </div>
 
         <div class="field">
           <label class="field__label" for="email">{t('submit.email')} <span class="field__optional">{t('submit.optional')}</span></label>
-          <input class="input" id="email" name="email" type="email" placeholder={t('submit.emailPh')} autocomplete="email" />
+          <input class="input" id="email" name="email" type="text" inputmode="email" placeholder={t('submit.emailPh')} autocomplete="email" autocapitalize="off" aria-describedby="email-error" />
+          <p class="field__error" id="email-error" hidden></p>
         </div>
 
         <div class="field">
@@ -75,6 +82,7 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
           {t('submit.maker')}
         </label>
 
+        <p class="form-errors" role="alert" hidden data-form-errors></p>
         {BACKEND.enabled ? (
           <div class="stack" style="--gap: var(--s-4)">
             <div class="cluster" style="--gap: var(--s-4)">
@@ -111,28 +119,91 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
   let channel = form?.hasAttribute('data-backend') ? 'atlas' : 'mail';
   // "figma.com" → "https://figma.com"; then check it looks like an address
   const urlInput = form?.querySelector<HTMLInputElement>('#url');
-  const normalizeUrl = () => {
-    if (!urlInput) return;
+  const whyInput = form?.querySelector<HTMLTextAreaElement>('#why');
+  const mailInput = form?.querySelector<HTMLInputElement>('#email');
+  const msgs = JSON.parse(form?.dataset.msg ?? '{}');
+  const known: { id: string; name: string; host: string }[] = JSON.parse(document.getElementById('known-sites')?.textContent ?? '[]');
+  const errorsBox = form?.querySelector<HTMLElement>('[data-form-errors]');
+  const urlNote = document.getElementById('url-note');
+
+  /* Our own messages, in the page's language, under each field. The browser's
+     built-in ones come in the browser's language and show one field at a time. */
+  const setError = (input: HTMLElement | null | undefined, text: string) => {
+    if (!input) return;
+    const box = document.getElementById(input.id + '-error');
+    if (box) { box.textContent = text; box.hidden = !text; }
+    text ? input.setAttribute('aria-invalid', 'true') : input.removeAttribute('aria-invalid');
+  };
+  const hostOf = (v: string) => {
+    try { return new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : 'https://' + v).hostname.replace(/^www\./, '').toLowerCase(); } catch { return ''; }
+  };
+  const checkUrl = () => {
+    if (!urlInput) return true;
     const v = urlInput.value.trim();
     if (v && !/\s/.test(v) && !/^[a-z][a-z0-9+.-]*:\/\//i.test(v)) urlInput.value = 'https://' + v.replace(/^\/+/, '');
+    if (!v) { setError(urlInput, msgs.errUrl); return false; }
     let ok = true;
-    try { ok = !urlInput.value || new URL(urlInput.value).hostname.includes('.'); } catch { ok = false; }
-    urlInput.setCustomValidity(ok ? '' : urlInput.dataset.invalid ?? 'Invalid link');
-    urlInput.setAttribute('aria-invalid', String(!ok));
+    try { ok = new URL(urlInput.value).hostname.includes('.'); } catch { ok = false; }
+    setError(urlInput, ok ? '' : urlInput.dataset.invalid ?? 'Invalid link');
+    return ok;
   };
+  /* "This site is already in Atlas", before the form is sent */
+  const checkKnown = () => {
+    if (!urlNote || !urlInput) return;
+    const host = hostOf(urlInput.value.trim());
+    const hit = host ? known.find((k) => k.host === host) : undefined;
+    urlNote.replaceChildren();
+    urlNote.hidden = !hit;
+    if (!hit) return;
+    const a = document.createElement('a');
+    a.href = location.pathname.replace(/submit\/?(index\.html)?$/, '') + 'tool/' + hit.id + '/';
+    a.textContent = msgs.dupeOpen;
+    urlNote.append(String(msgs.dupe).replace('{name}', hit.name) + ' ', a);
+  };
+  const checkWhy = () => {
+    const ok = !!whyInput?.value.trim();
+    setError(whyInput, ok ? '' : msgs.errWhy);
+    return ok;
+  };
+  const checkMail = () => {
+    const v = mailInput?.value.trim() ?? '';
+    const ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    setError(mailInput, ok ? '' : msgs.errEmail);
+    return ok;
+  };
+  const validate = () => {
+    // run every check (no short-circuit) so all the problems show at once
+    const results: [boolean, HTMLElement | null | undefined][] = [[checkUrl(), urlInput], [checkWhy(), whyInput], [checkMail(), mailInput]];
+    const bad = results.filter(([ok]) => !ok);
+    if (errorsBox) { errorsBox.textContent = bad.length ? msgs.errors : ''; errorsBox.hidden = bad.length === 0; }
+    bad[0]?.[1]?.focus();
+    return bad.length === 0;
+  };
+  const normalizeUrl = checkUrl;
+  // arriving from "Can't find it? Suggest a site": the search word is the name (or the link, if it looks like one)
+  const pre = new URLSearchParams(location.search);
+  const preName = (pre.get('url') || pre.get('name') || '').trim();
+  if (preName) {
+    if (pre.get('url') || (/^[^\s]+\.[a-z]{2,}(\/\S*)?$/i.test(preName))) { if (urlInput) { urlInput.value = preName; checkKnown(); } }
+    else { const n = form?.querySelector<HTMLInputElement>('#name'); if (n) n.value = preName; }
+  }
   // the browser's own file control is unstyled and in the browser's language: a label does its job
   const photos = form?.querySelector<HTMLInputElement>('#photos');
   const fileName = form?.querySelector<HTMLElement>('[data-file-name]');
   photos?.addEventListener('change', () => {
     if (fileName) fileName.textContent = photos.files?.length ? Array.from(photos.files, (f) => f.name).join(', ') : fileName.dataset.empty ?? '';
   });
-  urlInput?.addEventListener('blur', normalizeUrl);
-  urlInput?.addEventListener('input', () => { urlInput.setCustomValidity(''); urlInput.removeAttribute('aria-invalid'); });
+  urlInput?.addEventListener('blur', () => { if (urlInput.value.trim()) normalizeUrl(); });
+  urlInput?.addEventListener('input', () => { setError(urlInput, ''); checkKnown(); });
+  whyInput?.addEventListener('input', () => { if (whyInput.value.trim()) setError(whyInput, ''); });
+  mailInput?.addEventListener('blur', checkMail);
+  mailInput?.addEventListener('input', () => { if (mailInput.getAttribute('aria-invalid')) checkMail(); });
   form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>
-    b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; normalizeUrl(); }));
+    b.addEventListener('click', () => { channel = b.dataset.channel ?? 'mail'; }));
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!status) return;
+    if (!validate()) return;
     const msg = JSON.parse(form.dataset.msg ?? '{}');
     const d = new FormData(form);
     const g = (k: string) => String(d.get(k) ?? '').trim();

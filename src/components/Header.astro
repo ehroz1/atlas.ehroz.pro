@@ -12,7 +12,8 @@ import { u, pagePath } from '~/lib/url';
  *   typed queries list matching sites to jump to directly.
  */
 import { getImage } from 'astro:assets';
-import { getTools, getCategories, searchText, domainOf } from '~/lib/data';
+import { getTools, getCategories, searchFields, domainOf } from '~/lib/data';
+import { tagCounts } from '~/lib/tags';
 import { getArticles } from '~/lib/articles';
 import { shotFor } from '~/lib/shots';
 import { SITE } from '~/site.config';
@@ -41,20 +42,29 @@ for (const tool of tools) {
   if (shot) thumbs.set(tool.id, (await getImage({ src: shot, width: 240, format: 'webp', quality: 70 })).src);
 }
 
+const bothNames = (id: string) => {
+  const c = categories.find((x) => x.id === id)!;
+  return Object.values(c.data.name).join(' ');
+};
 const index = {
-  tools: tools.map((tool) => ({
-    id: tool.id,
-    name: tool.data.name,
-    category: tool.data.category,
-    categoryName: names.get(tool.data.category),
-    pricing: tool.data.pricing,
-    open: tool.data.openSource,
-    platforms: tool.data.platforms,
-    summary: loc(tool.data.summary, lang),
-    text: searchText(tool, names.get(tool.data.category)!, lang),
-    thumb: thumbs.get(tool.id) ?? '',
-    domain: domainOf(tool.data.url),
-  })),
+  tools: tools.map((tool) => {
+    const f = searchFields(tool, bothNames(tool.data.category));
+    return {
+      id: tool.id,
+      name: tool.data.name,
+      category: tool.data.category,
+      categoryName: names.get(tool.data.category),
+      pricing: tool.data.pricing,
+      open: tool.data.openSource,
+      platforms: tool.data.platforms,
+      summary: loc(tool.data.summary, lang),
+      // weighted search fields: name > tags > category > summary > description
+      f: [f.name, f.tags, f.cat, f.summary, f.description],
+      thumb: thumbs.get(tool.id) ?? '',
+      domain: domainOf(tool.data.url),
+    };
+  }),
+  tags: tagCounts(tools).map((x) => x.tag),
   articles: articles.map((a) => ({
     slug: a.slug,
     title: a.entry[lang].data.title,
@@ -62,7 +72,7 @@ const index = {
     text: [a.entry[lang].data.title, a.entry[lang].data.description, ...a.categories.map((c) => names.get(c) ?? '')].join(' '),
   })),
   facets: {
-    category: categories.map((c) => ({ id: c.id, label: loc(c.data.name, lang), count: count(tools, (x) => x.data.category === c.id) })),
+    category: categories.map((c) => ({ id: c.id, label: loc(c.data.name, lang), alt: Object.values(c.data.name).join(' '), count: count(tools, (x) => x.data.category === c.id) })),
     pricing: [
       ...(['free', 'freemium', 'paid'] as const).map((p) => ({ id: p, label: t(`pricing.${p}`), count: count(tools, (x) => x.data.pricing === p) })),
       { id: 'open', label: t('pricing.openSource'), count: count(tools, (x) => x.data.openSource) },
@@ -75,6 +85,9 @@ const index = {
     platform: t('search.facet.platform'),
     sites: t('search.sites'),
     none: t('search.none'),
+    emptyCats: t('search.empty.cats'),
+    emptyTry: t('search.empty.try'),
+    suggest: t('search.empty.suggest'),
     placeholder: t('search.placeholder'),
     tabSites: t('search.sites'),
     tabCategories: t('nav.categories'),
@@ -178,66 +191,78 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
           </svg>
         </button>
         <nav class="menu" id="site-menu" aria-label={t('nav.menu')} hidden data-menu>
-          {/* Saved sites (localStorage, see Base.astro): filters the grid in
-              place, or opens the home page with ?saved=1. Shown once JS runs. */}
-          <button class="menu__item menu__item--saved" type="button" aria-pressed="false" data-saved-toggle
-            data-href={u('/', lang) + '?saved=1'} hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
-            {t('nav.saved')}
-            <span class="menu__count" data-saved-count></span>
-          </button>
-          <a class="menu__item" href={u('/about', lang)} aria-current={path === '/about' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
-            {t('nav.about')}
-          </a>
-          <a class="menu__item" href={u('/contact', lang)} aria-current={path === '/contact' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
-            {t('nav.contact')}
-          </a>
-          <a class="menu__item" href={u('/popular', lang)} aria-current={path === '/popular' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19V13M12 19V5M19 19v-9"/></svg>
-            {t('nav.popular')}
-          </a>
-          <a class="menu__item" href={u('/categories', lang)} aria-current={path === '/categories' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
-            {t('nav.categories')}
-          </a>
-          {articles.length > 0 && (
-            <a class="menu__item" href={u('/blog', lang)} aria-current={path.startsWith('/blog') ? 'page' : undefined}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h12v15H6z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></svg>
-              {t('nav.blog')}
+          {/* Three groups. Wall, Submit and the account icon already sit in the bar:
+              on wide screens they are not repeated here, and the --wall / --submit /
+              --account items only appear once the bar has no room for them. */}
+          <div class="menu__group" role="group" aria-labelledby="menu-catalog">
+            <p class="menu__title" id="menu-catalog">{t('menu.catalog')}</p>
+            <a class="menu__item menu__item--wall" href={u('/wall', lang)} aria-current={path === '/wall' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="7" height="5" rx="1"/><rect x="13.5" y="5" width="7" height="5" rx="1"/><rect x="7.5" y="14" width="9" height="5" rx="1"/></svg>
+              {t('nav.wall')}
             </a>
-          )}
-          <a class="menu__item" href={u('/wall', lang)} aria-current={path === '/wall' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="7" height="5" rx="1"/><rect x="13.5" y="5" width="7" height="5" rx="1"/><rect x="7.5" y="14" width="9" height="5" rx="1"/></svg>
-            {t('nav.wall')}
-          </a>
-          <a class="menu__item" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-            {t('nav.submit')}
-          </a>
-          <a class="menu__item" href={u('/collection', lang)} aria-current={path === '/collection' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h9l3 3v12H6z"/><path d="M9 11h6M9 14.5h6"/></svg>
-            {t('nav.collection')}
-          </a>
-          <a class="menu__item" href={u('/newsletter', lang)} aria-current={path === '/newsletter' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h16v11H4z"/><path d="M4 10h16"/></svg>
-            {t('nav.newsletter')}
-          </a>
-          {enabled && (
-            <a class="menu__item" href={u('/account', lang)} aria-current={path === '/account' ? 'page' : undefined}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="3.6"/><path d="M5.2 19.3c1.3-3 3.8-4.6 6.8-4.6s5.5 1.6 6.8 4.6"/></svg>
-              {t('nav.accountIn')}
+            <a class="menu__item" href={u('/popular', lang)} aria-current={path === '/popular' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19V13M12 19V5M19 19v-9"/></svg>
+              {t('nav.popular')}
             </a>
-          )}
-          <a class="menu__item" href={u('/support', lang)} aria-current={path === '/support' ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17v.1"/></svg>
-            {t('nav.support')}
-          </a>
-          <a class="menu__item" href={switchHref} hreflang={other} lang={other} data-lang-switch>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
-            {languages[other]}
-          </a>
+            <a class="menu__item" href={u('/categories', lang)} aria-current={path === '/categories' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>
+              {t('nav.categories')}
+            </a>
+            {articles.length > 0 && (
+              <a class="menu__item" href={u('/blog', lang)} aria-current={path.startsWith('/blog') ? 'page' : undefined}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h12v15H6z"/><path d="M9 8.5h6M9 12h6M9 15.5h3.5"/></svg>
+                {t('nav.blog')}
+              </a>
+            )}
+          </div>
+          <div class="menu__group" role="group" aria-labelledby="menu-project">
+            <p class="menu__title" id="menu-project">{t('menu.project')}</p>
+            <a class="menu__item menu__item--submit" href={u('/submit', lang)} aria-current={path === '/submit' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+              {t('nav.submit')}
+            </a>
+            <a class="menu__item" href={u('/about', lang)} aria-current={path === '/about' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5"/><path d="M12 7.8v.1"/></svg>
+              {t('nav.about')}
+            </a>
+            <a class="menu__item" href={u('/newsletter', lang)} aria-current={path === '/newsletter' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h16v11H4z"/><path d="M4 10h16"/></svg>
+              {t('nav.newsletter')}
+            </a>
+            <a class="menu__item" href={u('/contact', lang)} aria-current={path === '/contact' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
+              {t('nav.contact')}
+            </a>
+            <a class="menu__item" href={u('/support', lang)} aria-current={path === '/support' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 17v.1"/></svg>
+              {t('nav.support')}
+            </a>
+          </div>
+          <div class="menu__group" role="group" aria-labelledby="menu-account">
+            <p class="menu__title" id="menu-account">{t('menu.account')}</p>
+            {/* Saved sites (localStorage, see Base.astro): filters the grid in
+                place, or opens the home page with ?saved=1. Shown once JS runs. */}
+            <button class="menu__item menu__item--saved" type="button" aria-pressed="false" data-saved-toggle
+              data-href={u('/', lang) + '?saved=1'} hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5h10v15l-5-3.6-5 3.6v-15Z"/></svg>
+              {t('nav.saved')}
+              <span class="menu__count" data-saved-count></span>
+            </button>
+            {enabled && (
+              <a class="menu__item menu__item--account" href={u('/account', lang)} aria-current={path === '/account' ? 'page' : undefined}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="9" r="3.6"/><path d="M5.2 19.3c1.3-3 3.8-4.6 6.8-4.6s5.5 1.6 6.8 4.6"/></svg>
+                {t('nav.accountIn')}
+              </a>
+            )}
+            <a class="menu__item" href={u('/collection', lang)} aria-current={path === '/collection' ? 'page' : undefined}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M6 4.5h9l3 3v12H6z"/><path d="M9 11h6M9 14.5h6"/></svg>
+              {t('nav.collection')}
+            </a>
+            <a class="menu__item" href={switchHref} hreflang={other} lang={other} data-lang-switch>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.7 5.4 3.7 8.5s-1.2 5.9-3.7 8.5c-2.5-2.6-3.7-5.4-3.7-8.5s1.2-5.9 3.7-8.5Z"/></svg>
+              {languages[other]}
+            </a>
+          </div>
           <hr class="menu__sep only-keyboard" />
           <p class="menu__note only-keyboard"><kbd class="kbd">/</kbd> {t('menu.shortcut')}</p>
         </nav>
@@ -252,13 +277,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
 <script>
   type Tool = {
     id: string; name: string; category: string; categoryName: string; pricing: string;
-    open: boolean; platforms: string[]; summary: string; text: string; thumb: string; domain: string;
+    open: boolean; platforms: string[]; summary: string; f: string[]; thumb: string; domain: string;
   };
-  type Option = { id: string; label: string; count: number };
+  type Option = { id: string; label: string; alt?: string; count: number };
   type FacetKey = 'category' | 'pricing' | 'platform';
   type Post = { slug: string; title: string; meta: string; text: string };
   type Tab = 'sites' | 'categories' | 'articles';
-  type Index = { tools: Tool[]; articles: Post[]; facets: Record<FacetKey, Option[]>; strings: Record<string, string> };
+  type Index = { tools: Tool[]; tags: string[]; articles: Post[]; facets: Record<FacetKey, Option[]>; strings: Record<string, string> };
   type State = { q: string } & Record<FacetKey, Set<string>>;
 
   const data: Index = JSON.parse(document.getElementById('search-index')!.textContent!);
@@ -306,13 +331,71 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const filterCount = () =>
     FACETS.reduce((n, f) => n + state[f].size, 0) - (scope && state.category.size === 1 && state.category.has(scope) ? 1 : 0);
 
-  function matches(tool: Tool) {
-    if (!hasWords(tool.text, wordsOf(state.q))) return false;
+  /* Ranking. Every query word has to match somewhere; where it matches
+     decides the score: the name beats tags, tags beat the category, the
+     category beats the one-line summary, and that beats the description.
+     Fields hold both languages, so Russian words find sites on the English
+     page and the other way round. */
+  const WEIGHTS: [number, number][] = [[100, 70], [40, 30], [20, 15], [12, 10], [5, 4]]; // [whole word, word start]
+  const wordCache = new Map<string, string[][]>();
+  const fieldWords = (tool: Tool) => {
+    let w = wordCache.get(tool.id);
+    if (!w) { w = tool.f.map(wordsOf); wordCache.set(tool.id, w); }
+    return w;
+  };
+  /** -1 = no match; otherwise higher is better (0 when there is no query) */
+  function score(tool: Tool, words: string[]) {
+    if (!words.length) return 0;
+    const fields = fieldWords(tool);
+    let total = 0;
+    for (const w of words) {
+      let best = 0;
+      fields.forEach((list, i) => {
+        for (const x of list) {
+          if (x === w) { best = Math.max(best, WEIGHTS[i][0]); break; }
+          if (x.startsWith(w)) best = Math.max(best, WEIGHTS[i][1]);
+        }
+      });
+      if (!best) return -1;
+      total += best;
+    }
+    // the whole query is the start of the name: "fig" → Figma first
+    if (normalize(tool.name).startsWith(normalize(state.q))) total += 40;
+    return total;
+  }
+  const facetsOk = (tool: Tool) => {
     if (state.category.size && !state.category.has(tool.category)) return false;
     if (state.pricing.size && !(state.pricing.has(tool.pricing) || (state.pricing.has('open') && tool.open))) return false;
     if (state.platform.size && !tool.platforms.some((p) => state.platform.has(p))) return false;
     return true;
+  };
+  function matches(tool: Tool) {
+    return facetsOk(tool) && score(tool, wordsOf(state.q)) >= 0;
   }
+  /** matching sites, best match first (the catalogue order when there is no query) */
+  function ranked() {
+    const words = wordsOf(state.q);
+    const list = data.tools
+      .map((tool, i) => ({ tool, i, s: facetsOk(tool) ? score(tool, words) : -1 }))
+      .filter((x) => x.s >= 0);
+    if (words.length) list.sort((a, b) => b.s - a.s || a.i - b.i);
+    return list.map((x) => x.tool);
+  }
+
+  /** Words close to what was typed, from the tag vocabulary: "fotos" → photo… */
+  function similarQueries(q: string) {
+    const w = normalize(q);
+    if (!w) return [];
+    const near = (a: string, b: string) => {
+      if (a.includes(b) || b.includes(a)) return true;
+      const k = Math.min(3, a.length, b.length);
+      return k >= 3 && a.slice(0, k) === b.slice(0, k);
+    };
+    const found = data.tags.filter((tag) => wordsOf(tag).some((x) => near(x, w)) && normalize(tag) !== w);
+    return (found.length ? found : data.tags).slice(0, 4);
+  }
+  (window as any).__atlasSimilar = similarQueries;
+  (window as any).__atlasPopularCats = () => [...data.facets.category].sort((a, b) => b.count - a.count).slice(0, 6);
 
   // Filtering in place works when the page has a grid and, on a category
   // page, the category selection is still just that category.
@@ -331,8 +414,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   (window as any).__atlasFacets = facetsNow;
 
   function emit() {
-    const ids = new Set(data.tools.filter(matches).map((x) => x.id));
-    const detail = { ids, q: state.q, filters: filterCount(), facets: facetsNow() };
+    const list = ranked();
+    const ids = new Set(list.map((x) => x.id));
+    const detail = { ids, order: state.q.trim() ? list.map((x) => x.id) : [], q: state.q, filters: filterCount(), facets: facetsNow() };
     (window as any).__atlasFilter = detail;
     document.dispatchEvent(new CustomEvent('atlas:filter', { detail }));
     try {
@@ -359,6 +443,20 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     }
   }
 
+  /* A dead end becomes a way on: popular categories, near-miss queries and
+     a link that turns the missing site into a submission. */
+  function emptyHtml(q: string) {
+    const tries = similarQueries(q);
+    const cats = data.facets.category.slice().sort((a, b) => b.count - a.count).slice(0, 5);
+    return `<div class="finder__empty">
+      <p>${esc(S.none)}</p>
+      ${tries.length ? `<p class="finder__empty-label">${esc(S.emptyTry)}</p><p class="finder__empty-chips">${tries.map((x) => `<button class="chip" type="button" data-try="${esc(x)}">${esc(x)}</button>`).join('')}</p>` : ''}
+      <p class="finder__empty-label">${esc(S.emptyCats)}</p>
+      <p class="finder__empty-chips">${cats.map((c) => `<a class="chip" href="${pageUrl('category/' + c.id)}">${esc(c.label)}</a>`).join('')}</p>
+      <p class="finder__empty-suggest"><a class="link" href="${pageUrl('submit', '?name=' + encodeURIComponent(q.trim()))}">${esc(S.suggest)}</a></p>
+    </div>`;
+  }
+
   let active = -1;
   let resultTab: Tab = 'sites';
   // on the blog, typing looks in the articles first
@@ -370,9 +468,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     xBtn.hidden = !input.value;
     if (state.q.trim()) {
       // Typing: tabs with counts, then results with thumbnails.
-      const hits = data.tools.filter(matches);
+      const hits = ranked();
       const words = wordsOf(state.q);
-      const cats = data.facets.category.filter((c) => hasWords(c.label, words));
+      const cats = data.facets.category.filter((c) => hasWords(c.alt ?? c.label, words));
       const posts = data.articles.filter((a) => hasWords(a.text, words));
       const tab = (id: Tab, label: string, n: number) =>
         `<button class="finder__tab" type="button" role="tab" aria-selected="${resultTab === id}" data-tab="${id}">${esc(label)}<span class="finder__tab-count">${n}</span></button>`;
@@ -388,7 +486,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
                   <span class="finder__result-meta">${esc(h.categoryName)} · ${esc(h.summary)}</span></span></a>`,
               )
               .join('')
-          : `<p class="finder__empty">${esc(S.none)}</p>`;
+          : emptyHtml(state.q);
       } else if (resultTab === 'articles') {
         list = posts.length
           ? posts
@@ -499,6 +597,16 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     if (isOpen()) renderPane();
     emit();
   });
+  // The catalogue bar under the hero replaces a whole facet at once: { facet, ids }.
+  document.addEventListener('atlas:set-facet', (e) => {
+    const { facet: f, ids } = (e as CustomEvent<{ facet: FacetKey; ids: string[] }>).detail;
+    state[f].clear();
+    ids.forEach((id) => state[f].add(id));
+    if (ids.length) (window as any).atlasTrack?.('filter_use', { facet: f, value: ids.join(',') });
+    renderBar();
+    if (isOpen()) renderPane();
+    emit();
+  });
   document.addEventListener('atlas:facets-clear', () => {
     for (const f of FACETS) state[f].clear();
     if (scope) state.category.add(scope);
@@ -551,6 +659,13 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     input.focus();
   });
   pane.addEventListener('click', (e) => {
+    const tryBtn = (e.target as HTMLElement).closest<HTMLElement>('[data-try]');
+    if (tryBtn) {
+      input.value = tryBtn.dataset.try!;
+      flush();
+      input.focus();
+      return;
+    }
     const tab = (e.target as HTMLElement).closest<HTMLElement>('[data-tab]');
     if (!tab) return;
     resultTab = tab.dataset.tab as Tab;
@@ -650,7 +765,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const setMenu = (show: boolean) => {
     menu.hidden = !show;
     menuBtn.setAttribute('aria-expanded', String(show));
-    if (show) menu.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+    if (show) Array.from(menu.querySelectorAll<HTMLElement>('a, button')).find((el) => el.offsetParent)?.focus({ preventScroll: true });
   };
   // Tabbing out of the menu closes it, like clicking outside.
   menu.parentElement!.addEventListener('focusout', (e) => {

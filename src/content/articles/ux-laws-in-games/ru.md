@@ -5,7 +5,7 @@ type: howto
 primaryKeyword: "законы ux"
 secondaryKeywords: ["законы ux примеры", "закон хика", "закон фиттса", "ux в играх"]
 tools: ["laws-of-ux", "interface-in-game", "mobbin"]
-categories: ["learning", "inspiration"]
+categories: ["development", "inspiration"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Идея из обсуждения тем; запрос «законы ux» стабильно ищут дизайнеры"
@@ -89,4 +89,4 @@ coverAlt: "Коллаж в стиле ризографии: радар, курс
 2. Найдите, как это решено в играх, на [Interface In Game](/tool/interface-in-game/): по элементу «меню», «инвентарь», «HUD».
 3. Проверьте, как тот же паттерн выглядит в приложениях, на [Mobbin](/tool/mobbin/), и только потом рисуйте свой вариант.
 
-Больше ресурсов для изучения дизайна — в категории [«Обучение»](/category/learning/).
+Больше ресурсов для изучения дизайна — в категории [«Разработка и обучение»](/category/development/).

@@ -13,14 +13,30 @@
     },
     { "source": "/index.html", "destination": "/", "statusCode": 301 },
     { "source": "/:path*/index.html", "destination": "/:path*/", "statusCode": 301 },
+    { "source": "/category/design-generators/", "destination": "/category/design/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/design-generators/", "destination": "/:lang/category/design/", "statusCode": 301 },
+    { "source": "/category/learning/", "destination": "/category/development/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/learning/", "destination": "/:lang/category/development/", "statusCode": 301 },
+    { "source": "/category/productivity/", "destination": "/category/utilities/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/productivity/", "destination": "/:lang/category/utilities/", "statusCode": 301 },
+    { "source": "/category/file-converters/", "destination": "/category/utilities/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/file-converters/", "destination": "/:lang/category/utilities/", "statusCode": 301 },
+    { "source": "/category/3d-motion/", "destination": "/category/video-audio/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/3d-motion/", "destination": "/:lang/category/video-audio/", "statusCode": 301 },
+    { "source": "/category/mockups/", "destination": "/category/branding/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/mockups/", "destination": "/:lang/category/branding/", "statusCode": 301 },
+    { "source": "/category/museums/", "destination": "/category/assets/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/museums/", "destination": "/:lang/category/assets/", "statusCode": 301 },
+    { "source": "/category/icons-illustrations/", "destination": "/category/assets/", "statusCode": 301 },
+    { "source": "/:lang(ru|en)/category/icons-illustrations/", "destination": "/:lang/category/assets/", "statusCode": 301 },
     {
       "source": "/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/",
-      "destination": "/category/museums/",
+      "destination": "/category/assets/",
       "statusCode": 301
     },
     {
       "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(getty-open-content|nga-free-images|artic-open-access)/",
-      "destination": "/:lang/category/museums/",
+      "destination": "/:lang/category/assets/",
       "statusCode": 301
     },
     {
@@ -45,12 +61,12 @@
     },
     {
       "source": "/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/",
-      "destination": "/category/design-generators/",
+      "destination": "/category/design/",
       "statusCode": 301
     },
     {
       "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(haikei|pattern-monster|cubic-bezier)/",
-      "destination": "/:lang/category/design-generators/",
+      "destination": "/:lang/category/design/",
       "statusCode": 301
     },
     {
@@ -65,22 +81,22 @@
     },
     {
       "source": "/:kind(tool|alternatives)/:id(blush|sapiens)/",
-      "destination": "/category/icons-illustrations/",
+      "destination": "/category/assets/",
       "statusCode": 301
     },
     {
       "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(blush|sapiens)/",
-      "destination": "/:lang/category/icons-illustrations/",
+      "destination": "/:lang/category/assets/",
       "statusCode": 301
     },
     {
       "source": "/:kind(tool|alternatives)/:id(iloveimg)/",
-      "destination": "/category/file-converters/",
+      "destination": "/category/utilities/",
       "statusCode": 301
     },
     {
       "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(iloveimg)/",
-      "destination": "/:lang/category/file-converters/",
+      "destination": "/:lang/category/utilities/",
       "statusCode": 301
     },
     {
@@ -105,12 +121,12 @@
     },
     {
       "source": "/:kind(tool|alternatives)/:id(excalidraw|google-translate)/",
-      "destination": "/category/productivity/",
+      "destination": "/category/utilities/",
       "statusCode": 301
     },
     {
       "source": "/:lang(ru|en)/:kind(tool|alternatives)/:id(excalidraw|google-translate)/",
-      "destination": "/:lang/category/productivity/",
+      "destination": "/:lang/category/utilities/",
       "statusCode": 301
     },
     {

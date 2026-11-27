@@ -16,10 +16,9 @@ import { SITE } from '~/site.config';
 /** One accent per category, from the four the reference covers use. */
 const GREEN = '#3dbb78', BLUE = '#2f5cff', CORAL = '#f06a5a', AMBER = '#f0a830';
 const ACCENT: Record<string, string> = {
-  ai: GREEN, development: GREEN, productivity: GREEN, utilities: GREEN, learning: GREEN, 'file-converters': GREEN,
-  typography: BLUE, design: BLUE, '3d-motion': BLUE, 'web-galleries': BLUE, inspiration: BLUE,
-  assets: CORAL, museums: CORAL, 'video-audio': CORAL, branding: CORAL, mockups: CORAL,
-  'design-generators': AMBER, 'icons-illustrations': AMBER,
+  ai: GREEN, development: GREEN, utilities: GREEN,
+  typography: BLUE, design: BLUE, 'web-galleries': BLUE, inspiration: BLUE,
+  assets: CORAL, 'video-audio': CORAL, branding: AMBER,
 };
 const INK = '#111111';
 const PAPER = '#efe8d8';

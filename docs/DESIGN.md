@@ -24,7 +24,7 @@ do less.
 4. **Flat.** Two shadows exist: `--shadow-shot` under screenshots and
    `--shadow-float` under things that float (search panel, menu, cookie
    banner, admin toast). Cards, buttons, the bar pills and inputs have none.
-   No `backdrop-filter` blur: badges over screenshots sit on `--c-scrim`.
+   `backdrop-filter` blur is used in one place only: the backing under the floating top bar on phones (so cards don't show through between the pills). Badges over screenshots sit on `--c-scrim`.
 5. **Words are plain.** Write like you'd explain the site to a friend. No
    "supercharge", "unlock", "seamless", "revolutionary", "AI-powered" as an
    adjective, and no exclamation marks.

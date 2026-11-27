@@ -6,6 +6,7 @@
  */
 import ToolCard from './ToolCard.astro';
 import CategoryChips from './CategoryChips.astro';
+import CardActions from './CardActions.astro';
 import type { Tool, Category } from '~/lib/data';
 import { loc, useTranslations, plural, defaultLang, type Lang } from '~/i18n';
 import { u } from '~/lib/url';
@@ -25,8 +26,12 @@ interface Props {
   ordered?: boolean;
   /** one line under each card's summary, by site id (e.g. "Place 1 · 120 views") */
   notes?: Record<string, string>;
+  /** home: categories with counts, sort and price shortcuts above the grid */
+  catalog?: boolean;
+  /** show this many cards, the rest behind "Show more" (0 = all at once) */
+  pageSize?: number;
 }
-const { tools, categories, current, lang = defaultLang, filters = true, promote = false, controls = false, ordered = false, notes } = Astro.props;
+const { tools, categories, current, lang = defaultLang, filters = true, promote = false, controls = false, ordered = false, notes, catalog = false, pageSize = 0 } = Astro.props;
 const t = useTranslations(lang);
 const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
 const countText = (n: number) => t(`results.count.${plural(lang, n)}`, { count: n });
@@ -54,6 +59,19 @@ const facetGroups = [
   },
   { facet: 'platform', title: t('search.facet.platform'), options: platformList },
 ];
+const perCategory = new Map(categories.map((c) => [c.id, howMany((x) => x.data.category === c.id)]));
+const popularCategories = [...categories].sort((a, b) => perCategory.get(b.id)! - perCategory.get(a.id)!).slice(0, 6);
+const priceShortcuts = [
+  { id: '', label: t('catalog.price.all') },
+  { id: 'free', label: t('pricing.free') },
+  { id: 'freemium', label: t('pricing.freemium') },
+  { id: 'open', label: t('pricing.openSource') },
+];
+const sortShortcuts = [
+  { id: 'new', label: t('catalog.sort.new') },
+  { id: 'popular', label: t('catalog.sort.popular') },
+  { id: 'az', label: t('catalog.sort.az') },
+];
 const sorts = [
   { id: 'random', label: t('sort.random') },
   { id: 'new', label: t('sort.new') },
@@ -61,8 +79,35 @@ const sorts = [
 ];
 ---
 <section id="sites" aria-label={t('results.label')} data-scope-category={current}>
-  <div class={filters || controls ? 'toolbar' : 'visually-hidden'}>
+  <div class={catalog ? 'toolbar toolbar--catalog' : filters || controls ? 'toolbar' : 'visually-hidden'} data-catalog={catalog ? '' : undefined}>
     {filters && <CategoryChips categories={categories} current={current} lang={lang} />}
+    {catalog && (
+      <>
+        {/* Plain links, so it works without JavaScript; the script turns them into in-place filters. */}
+        <nav class="catalog__cats" aria-label={t('catalog.categories')}>
+          <ul class="chips chips--scroll" role="list">
+            <li><a class="chip" href={u('/', lang)} data-cat="" aria-current="true">{t('filter.all')}<span class="chip__count">{tools.length}</span></a></li>
+            {categories.map((c) => (
+              <li><a class="chip" href={u(`/category/${c.id}`, lang)} data-cat={c.id}>{loc(c.data.name, lang)}<span class="chip__count">{perCategory.get(c.id)}</span></a></li>
+            ))}
+          </ul>
+        </nav>
+        <div class="catalog__row" hidden data-catalog-row>
+          <div class="seg-group">
+            <span class="seg-group__label" id="seg-sort">{t('catalog.sort')}</span>
+            <div class="seg" role="group" aria-labelledby="seg-sort">
+              {sortShortcuts.map((o) => <button class="seg__btn" type="button" aria-pressed="false" data-sort-seg={o.id}>{o.label}</button>)}
+            </div>
+          </div>
+          <div class="seg-group">
+            <span class="seg-group__label" id="seg-price">{t('catalog.price')}</span>
+            <div class="seg" role="group" aria-labelledby="seg-price">
+              {priceShortcuts.map((o) => <button class="seg__btn" type="button" aria-pressed={o.id === '' ? 'true' : 'false'} data-price-seg={o.id}>{o.label}</button>)}
+            </div>
+          </div>
+        </div>
+      </>
+    )}
     <span class="toolbar__count t-tabular" data-count aria-live="polite"
       data-lang={lang} data-one={t('results.count.one')} data-few={t('results.count.few')}
       data-many={t('results.count.many')} data-other={t('results.count.other')}>
@@ -120,10 +165,11 @@ const sorts = [
       {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'}>{t('prefs.change')}</a>
     </p>
   )}
-  <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined} data-ordered={ordered ? '' : undefined}>
+  <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined} data-ordered={ordered ? '' : undefined}
+    data-page-size={pageSize > 0 ? pageSize : undefined}>
     {tools.map((tool, i) => (
       <ToolCard tool={tool} categoryName={names.get(tool.data.category)!} lang={lang} hideCategory={!!current}
-        eager={ordered && i < 3} rank={notes?.[tool.id]} />
+        eager={ordered && i < 3} rank={notes?.[tool.id]} lazyActions={pageSize > 0} />
     ))}
   </div>
   {/* Shuffle the cards for every visit. Inline and synchronous, so it runs
@@ -232,6 +278,9 @@ const sorts = [
       }
 
       cards.forEach(function (c) { grid.appendChild(c); });
+      // only the first page is shown (the rest sits behind "Show more")
+      var pageSize = Number(grid.getAttribute('data-page-size')) || 0;
+      if (pageSize) cards.forEach(function (c, i) { if (i >= pageSize) c.setAttribute('data-beyond', ''); });
       cards.slice(0, 3).forEach(function (c) {
         var img = c.querySelector('img');
         if (img) { img.loading = 'eager'; img.setAttribute('fetchpriority', 'high'); }
@@ -239,9 +288,33 @@ const sorts = [
     })();
   </script>
 
-  <div class="empty" data-empty hidden>
+  {pageSize > 0 && (
+    <div class="more" data-more-wrap hidden>
+      <p class="t-meta t-tabular" data-more-status aria-live="polite"
+        data-template={t('results.shown')}></p>
+      <button class="btn btn--lg" type="button" data-more>{t('results.more')}</button>
+    </div>
+  )}
+  {pageSize > 0 && (
+    <template data-card-actions-tpl>
+      <CardActions name="%name%" id="%id%" url="%url%" out="#" rel="%rel%" lang={lang} />
+    </template>
+  )}
+
+  <div class="empty empty--rich" data-empty hidden>
     <p class="empty__title">{t('results.empty.title')}</p>
     <p>{t('results.empty.body')}</p>
+    <div class="empty__group" data-empty-tries-wrap hidden>
+      <p class="empty__label">{t('search.empty.try')}</p>
+      <p class="empty__chips" data-empty-tries></p>
+    </div>
+    <div class="empty__group">
+      <p class="empty__label">{t('search.empty.cats')}</p>
+      <ul class="empty__chips" role="list">
+        {popularCategories.map((c) => <li><a class="chip" href={u(`/category/${c.id}`, lang)}>{loc(c.data.name, lang)}</a></li>)}
+      </ul>
+    </div>
+    <p class="empty__suggest"><a class="link" href={u('/submit', lang)} data-suggest>{t('search.empty.suggest')}</a></p>
     <button class="btn btn--sm mt-2" type="button" data-search-reset>{t('results.empty.reset')}</button>
   </div>
   <div class="empty" data-saved-empty hidden>
@@ -266,7 +339,7 @@ const sorts = [
 
     /* saved cards first, in saved order; the rest keep their order */
     const pinned = (list: HTMLElement[]) => {
-      if (grid.hasAttribute('data-ordered')) return list;
+      if (grid.hasAttribute('data-ordered') || (current.order?.length && normalize(current.q))) return list;
       const saved: string[] = (window as any).__atlasSaved?.() ?? [];
       const rank = (c: HTMLElement) => { const i = saved.indexOf(c.dataset.id!); return i < 0 ? Infinity : i; };
       return [...list].sort((a, b) => (rank(a) === Infinity && rank(b) === Infinity ? 0 : rank(a) - rank(b)));
@@ -279,20 +352,105 @@ const sorts = [
     let order = shuffled;
     const sortBy = (mode: string) => {
       if (mode === 'new') order = [...shuffled].sort((a, b) => (b.dataset.added ?? '').localeCompare(a.dataset.added ?? ''));
+      else if (mode === 'popular') {
+        // page views (src/data/popular.json) first, then the sites the author featured, then the newest
+        const num = (c: HTMLElement) => Number(c.dataset.views ?? 0);
+        const feat = (c: HTMLElement) => ('featured' in c.dataset ? 1 : 0);
+        order = [...shuffled].sort((a, b) => num(b) - num(a) || feat(b) - feat(a) || (b.dataset.added ?? '').localeCompare(a.dataset.added ?? ''));
+      }
       else if (mode === 'az') order = [...shuffled].sort((a, b) => (a.dataset.name ?? '').localeCompare(b.dataset.name ?? '', count?.dataset.lang));
       else order = shuffled;
     };
     let sortMode = new URLSearchParams(location.search).get('sort') ?? 'random';
-    if (!['random', 'new', 'az'].includes(sortMode)) sortMode = 'random';
+    if (!['random', 'new', 'popular', 'az'].includes(sortMode)) sortMode = 'random';
     sortBy(sortMode);
-    let current: { ids: Set<string>; q: string; filters?: number } = { ids: allIds, q: '', filters: 0 };
+    type Detail = { ids: Set<string>; order?: string[]; q: string; filters?: number; facets?: Record<string, string[]> };
+    let current: Detail = { ids: allIds, q: '', filters: 0 };
     const resultsBar = document.querySelector<HTMLElement>('[data-results-bar]');
     const barText = document.querySelector<HTMLElement>('[data-results-text]');
     /* "Saved" view: only the saved sites (header button, or ?saved=1) */
     let savedOnly = new URLSearchParams(location.search).get('saved') === '1';
     const savedEmpty = document.querySelector<HTMLElement>('[data-saved-empty]');
 
-    const apply = (detail?: { ids: Set<string>; q: string; filters?: number }) => {
+    const PAGE = Number(grid.dataset.pageSize) || 0;
+    let limit = PAGE;
+    let pageKey = '';
+    const moreWrap = document.querySelector<HTMLElement>('[data-more-wrap]');
+    const moreStatus = document.querySelector<HTMLElement>('[data-more-status]');
+    const tpl = document.querySelector<HTMLTemplateElement>('[data-card-actions-tpl]');
+
+    /* The save / "⋯" buttons are printed once, in a <template>, and filled
+       in for the cards that are actually shown. */
+    const hydrate = (card: HTMLElement) => {
+      const proto = tpl?.content.firstElementChild;
+      if (!proto || card.dataset.lazyActions === undefined || card.querySelector('[data-card-actions]')) return;
+      const vals: Record<string, string> = {
+        '%name%': card.dataset.title ?? '', '%id%': card.dataset.id ?? '', '%url%': card.dataset.url ?? '',
+        '%out%': card.dataset.out ?? '', '%rel%': card.dataset.rel ?? '',
+      };
+      const frag = proto.cloneNode(true) as HTMLElement;
+      for (const el of [frag, ...Array.from(frag.querySelectorAll<HTMLElement>('*'))]) {
+        for (const a of el.getAttributeNames()) {
+          const v = el.getAttribute(a)!;
+          if (v.includes('%')) el.setAttribute(a, v.replace(/%(name|id|url|out|rel)%/g, (m) => vals[m]));
+        }
+      }
+      const link = frag.querySelector<HTMLAnchorElement>('a[data-track-tool]');
+      if (link) link.href = vals['%out%'];
+      card.append(frag);
+    };
+
+    /* "Show more": cards past the limit get [data-more] (display: none). */
+    const paginate = (shown: number) => {
+      if (!PAGE) return;
+      const key = JSON.stringify([current.q, current.facets, sortMode, savedOnly]);
+      if (key !== pageKey) { pageKey = key; limit = PAGE; }
+      let i = 0;
+      let built = false;
+      for (const c of Array.from(grid.children) as HTMLElement[]) {
+        if (c.hidden) { c.removeAttribute('data-beyond'); continue; }
+        const beyond = i++ >= limit;
+        c.toggleAttribute('data-beyond', beyond);
+        if (!beyond && c.dataset.lazyActions !== undefined && !c.querySelector('[data-card-actions]')) { hydrate(c); built = true; }
+      }
+      if (built) { (window as any).__atlasPaintSaved?.(); (window as any).__atlasPaintHidden?.(); }
+      if (moreWrap && moreStatus) {
+        moreWrap.hidden = shown <= limit;
+        moreStatus.textContent = (moreStatus.dataset.template ?? '{shown}/{total}').replace('{shown}', String(Math.min(limit, shown))).replace('{total}', String(shown));
+      }
+    };
+    document.querySelector('[data-more]')?.addEventListener('click', () => {
+      const first = limit;
+      limit += PAGE;
+      apply();
+      // keyboard and screen-reader users land on the first new card
+      const fresh = Array.from(grid.children).filter((c) => !(c as HTMLElement).hidden)[first] as HTMLElement | undefined;
+      fresh?.querySelector<HTMLElement>('.card')?.focus({ preventScroll: false });
+    });
+
+    /* Dead end → ways on: near-miss queries, and a "suggest a site" link that carries the query. */
+    const fillEmpty = (q: string) => {
+      const wrap = document.querySelector<HTMLElement>('[data-empty-tries-wrap]');
+      const tries = document.querySelector<HTMLElement>('[data-empty-tries]');
+      const suggest = document.querySelector<HTMLAnchorElement>('[data-suggest]');
+      if (suggest) {
+        suggest.dataset.base ??= suggest.getAttribute('href') ?? '';
+        suggest.href = suggest.dataset.base + (q ? '?name=' + encodeURIComponent(q) : '');
+      }
+      const list: string[] = q ? ((window as any).__atlasSimilar?.(q) ?? []) : [];
+      if (!wrap || !tries) return;
+      wrap.hidden = list.length === 0;
+      tries.replaceChildren(...list.map((w) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip';
+        b.textContent = w;
+        b.addEventListener('click', () => document.dispatchEvent(new CustomEvent('atlas:query', { detail: w })));
+        return b;
+      }));
+    };
+
+    const apply = (detail?: Detail) => {
       if (detail) current = detail;
       const { ids, q } = current;
       const saved: string[] = (window as any).__atlasSaved?.() ?? [];
@@ -302,8 +460,11 @@ const sorts = [
       for (const card of order) {
         const match = ids.has(card.dataset.id!) && (!savedOnly || saved.includes(card.dataset.id!));
         card.hidden = !match;
-        if (match) (nq && card.dataset.name?.startsWith(nq) ? lead : rest).push(card);
+        if (match) rest.push(card);
       }
+      // a query: best match first (name before tags before description, see Header.astro)
+      const relevance = nq && current.order?.length ? new Map(current.order.map((id, i) => [id, i])) : null;
+      if (relevance) rest.sort((a, b) => (relevance.get(a.dataset.id!) ?? 1e9) - (relevance.get(b.dataset.id!) ?? 1e9));
       // cards hidden from the "⋯" menu: still listed, but after all the others
       const dismissed: string[] = grid.hasAttribute('data-ordered') ? [] : ((window as any).__atlasHidden?.() ?? []);
       const kept = (c: HTMLElement) => !dismissed.includes(c.dataset.id!);
@@ -314,6 +475,7 @@ const sorts = [
         ...order.filter((c) => c.hidden),
       );
       const shown = lead.length + rest.length;
+      paginate(shown);
       document.dispatchEvent(new CustomEvent('atlas:shown', { detail: shown }));
       let countText = '';
       if (count) {
@@ -325,6 +487,8 @@ const sorts = [
       // results bar: "12 sites for “fig”", "Saved · 3 sites", with Clear
       const q2 = q.trim();
       const active = !!q2 || !!current.filters || savedOnly;
+      (window as any).__atlasActive = active;
+      document.dispatchEvent(new CustomEvent('atlas:state', { detail: { active } }));
       if (resultsBar && barText) {
         resultsBar.hidden = !active || shown === 0;
         // the bar already says how many: don't repeat it in the toolbar
@@ -338,7 +502,10 @@ const sorts = [
       }
       const noSaved = savedOnly && saved.length === 0;
       if (savedEmpty) savedEmpty.hidden = !noSaved;
-      if (empty) empty.hidden = shown > 0 || noSaved;
+      if (empty) {
+        empty.hidden = shown > 0 || noSaved;
+        if (!empty.hidden) fillEmpty(q2);
+      }
       grid.hidden = shown === 0;
       document.querySelectorAll('[data-saved-toggle]').forEach((b) => b.setAttribute('aria-pressed', String(savedOnly)));
     };
@@ -355,11 +522,77 @@ const sorts = [
       if (savedOnly) setSavedOnly(false);
       if (current.q.trim() || current.filters) document.dispatchEvent(new Event('atlas:reset'));
     });
+    // ---- catalogue bar under the hero (home): categories, sort, price ------
+    const catalogEl = document.querySelector<HTMLElement>('[data-catalog]');
+    if (catalogEl) {
+      const row = catalogEl.querySelector<HTMLElement>('[data-catalog-row]');
+      if (row) row.hidden = false;
+      const facetsNow = () => (window as any).__atlasFacets?.() ?? { category: [], pricing: [], platform: [] };
+      const syncCatalog = () => {
+        const f = facetsNow();
+        catalogEl.querySelectorAll<HTMLElement>('[data-cat]').forEach((a) => {
+          const id = a.dataset.cat!;
+          const on = id === '' ? f.category.length === 0 : f.category.includes(id);
+          on ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current');
+        });
+        catalogEl.querySelectorAll<HTMLElement>('[data-price-seg]').forEach((b) => {
+          const id = b.dataset.priceSeg!;
+          b.setAttribute('aria-pressed', String(id === '' ? f.pricing.length === 0 : f.pricing.includes(id)));
+        });
+        catalogEl.querySelectorAll<HTMLElement>('[data-sort-seg]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sortSeg === sortMode)));
+      };
+      catalogEl.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const cat = target.closest<HTMLAnchorElement>('[data-cat]');
+        if (cat) {
+          // let ctrl/cmd/middle-click open the category page as a normal link
+          if ((e as MouseEvent).metaKey || (e as MouseEvent).ctrlKey || (e as MouseEvent).shiftKey || (e as MouseEvent).button) return;
+          e.preventDefault();
+          const id = cat.dataset.cat!;
+          const f = facetsNow();
+          const already = id === '' || (f.category.length === 1 && f.category[0] === id);
+          document.dispatchEvent(new CustomEvent('atlas:set-facet', { detail: { facet: 'category', ids: already ? [] : [id] } }));
+          return;
+        }
+        const price = target.closest<HTMLElement>('[data-price-seg]');
+        if (price) {
+          const id = price.dataset.priceSeg!;
+          const f = facetsNow();
+          const already = f.pricing.length === 1 && f.pricing[0] === id;
+          document.dispatchEvent(new CustomEvent('atlas:set-facet', { detail: { facet: 'pricing', ids: id && !already ? [id] : [] } }));
+          return;
+        }
+        const sort = target.closest<HTMLElement>('[data-sort-seg]');
+        if (sort) {
+          // pressing the current sort again goes back to the shuffled order
+          sortMode = sortMode === sort.dataset.sortSeg ? 'random' : sort.dataset.sortSeg!;
+          sortBy(sortMode);
+          try {
+            const url = new URL(location.href);
+            sortMode === 'random' ? url.searchParams.delete('sort') : url.searchParams.set('sort', sortMode);
+            history.replaceState(history.state, '', url);
+          } catch {}
+          apply();
+          syncCatalog();
+          (window as any).atlasTrack?.('filter_use', { facet: 'sort', value: sortMode });
+        }
+      });
+      document.addEventListener('atlas:filter', syncCatalog);
+      syncCatalog();
+    }
+    // chips in the "nothing found" block put a new query into the search field
+    document.addEventListener('atlas:query', (e) => {
+      const input = document.querySelector<HTMLInputElement>('[data-finder-input]');
+      if (!input) return;
+      input.value = (e as CustomEvent<string>).detail;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
     if (savedOnly) apply();
 
     const last = (window as any).__atlasFilter;
     if (last) apply(last);
-    else if (sortMode !== 'random') apply();
+    else apply();
 
     // ---- "Sort & filter" panel (home) ----------------------------------
     const bar = document.querySelector<HTMLElement>('[data-sortbar]');

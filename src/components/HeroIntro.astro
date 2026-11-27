@@ -1,9 +1,11 @@
 ---
 /**
  * Home hero: a large uppercase statement on the left with two actions
- * under it. On desktop the right side shows one site from the catalogue,
- * picked at random on every visit from a hand-made list of the most
- * striking screenshots (SHOWCASE). Phones don't get the card at all: the
+ * under it. On desktop the right side shows the "site of the week": one
+ * site from a hand-made list of the most striking screenshots (SHOWCASE),
+ * the same for everyone for a whole week, and it never swaps by itself.
+ * While a query or filter is active the hero folds down to the title
+ * (data-collapsed), so the results start right under the bar. Phones don't get the card at all: the
  * candidates sit in a <template>, so nothing is downloaded until the
  * script clones one in, and the script only does that on wide screens.
  */
@@ -48,6 +50,7 @@ const categories = new Map((await getCategories()).map((c) => [c.id, loc(c.data.
   <template data-hero-picks>
     {picks.map((pick) => (
       <a class="hero-intro__card" href={u(`/tool/${pick.id}`, lang)}>
+        <span class="hero-intro__label">{t('hero.week')}</span>
         <span class="hero-intro__shot">
           <Image src={shotFor(pick.id)!} alt="" widths={[640, 960]} sizes="32rem" format="webp" quality={80} loading="eager" />
         </span>
@@ -69,15 +72,32 @@ const categories = new Map((await getCategories()).map((c) => [c.id, loc(c.data.
   const picks = hero?.querySelector<HTMLTemplateElement>('[data-hero-picks]');
   const wide = matchMedia('(min-width: 60.0625rem)');
 
+  /* Site of the week: weeks counted from a Monday (1970-01-05), so it flips
+     for everyone at the same moment and stays put in between. */
   const show = () => {
     if (!hero || !slot || !picks || !wide.matches || slot.firstElementChild) return;
     const cards = picks.content.children;
     if (!cards.length) return;
-    const card = cards[Math.floor(Math.random() * cards.length)].cloneNode(true) as HTMLElement;
+    const week = Math.floor((Date.now() / 864e5 - 4) / 7);
+    const card = cards[week % cards.length].cloneNode(true) as HTMLElement;
     card.querySelector('img')?.setAttribute('fetchpriority', 'high');
     slot.append(card);
     hero.classList.add('has-card');
   };
   show();
   wide.addEventListener('change', show);
+
+  /* A query, a filter or the Saved view is active (Gallery.astro says so):
+     fold the hero. Whatever sits below keeps its place on the screen, so
+     nothing jumps under the pointer. */
+  const fold = (active: boolean) => {
+    if (!hero || hero.hasAttribute('data-collapsed') === active) return;
+    const anchor = document.querySelector<HTMLElement>('[data-catalog], #sites');
+    const before = anchor?.getBoundingClientRect().top ?? 0;
+    hero.toggleAttribute('data-collapsed', active);
+    const after = anchor?.getBoundingClientRect().top ?? 0;
+    if (after !== before && window.scrollY > 0) window.scrollBy(0, after - before);
+  };
+  document.addEventListener('atlas:state', (e) => fold((e as CustomEvent<{ active: boolean }>).detail.active));
+  if ((window as any).__atlasActive) fold(true);
 </script>

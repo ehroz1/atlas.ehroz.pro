@@ -4,6 +4,7 @@
   { "about": "AI video generation", "ids": ["kling", "pika", "higgsfield", "krea", "headai"] },
   { "about": "Prompt libraries", "ids": ["claude-prompt-library", "prompthero", "filatov-prompts"] },
   { "about": "Websites without code", "ids": ["framer", "lovable", "webflow"] },
+  { "about": "Photo editing in the browser", "ids": ["photopea", "photoroom", "pixelcut"] },
   { "about": "Background removal", "ids": ["photoroom", "pixelcut"] },
   { "about": "Photo upscaling", "ids": ["upscayl", "krea"] },
   { "about": "Free stock photos", "ids": ["unsplash", "freepik", "picta"] },

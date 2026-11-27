@@ -5,7 +5,7 @@ type: listicle
 primaryKeyword: "free stock photos for commercial use"
 secondaryKeywords: ["free images for commercial use", "royalty free photos", "public domain images"]
 tools: ["unsplash", "picta", "freepik", "smithsonian-open-access", "met-open-access", "pd-image-archive", "public-work", "texturelabs"]
-categories: ["assets", "museums"]
+categories: ["assets"]
 published: 2026-11-23
 updated: 2026-11-23
 trendSource: "Evergreen query with steady demand in both languages; written by hand"
@@ -84,4 +84,4 @@ Not every object in a museum's online collection is open access. Use the open-ac
 3. **Don't resell the image as is.** Most free licences allow using a photo in your design, not selling the photo itself, as a print, a template or a stock file.
 4. **Keep a record.** Save the link to the source page and the date you downloaded it. If a client asks where an image came from, you'll have the answer.
 
-More libraries are in the [Stock & Assets](/category/assets/) and [Museums & Archives](/category/museums/) categories.
+More libraries are in the [Stock, Icons & Archives](/category/assets/) category.

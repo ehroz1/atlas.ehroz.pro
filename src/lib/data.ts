@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { loc, type Lang } from '~/i18n';
+import type { Lang } from '~/i18n';
 
 export type Tool = CollectionEntry<'tools'>;
 export type Category = CollectionEntry<'categories'>;
@@ -30,12 +30,22 @@ export function domainOf(url: string) {
   return new URL(url).hostname.replace(/^www\./, '');
 }
 
-/** Lower-cased text the client-side search looks through (both languages, so either finds it). */
-export function searchText(tool: Tool, categoryName: string, lang: Lang) {
+/**
+ * What the client-side search looks through, split by weight so a match in
+ * the name ranks above one in the description. Both languages are always
+ * included: a Russian word finds a site on the English page and the other
+ * way round.
+ */
+export function searchFields(tool: Tool, categoryNames: Partial<Record<Lang, string>> | string) {
   const d = tool.data;
-  return [d.name, domainOf(d.url), categoryName, loc(d.summary, lang), loc(d.description, lang), d.summary.en, ...d.tags, ...d.platforms, d.pricing]
-    .join(' ')
-    .toLowerCase();
+  const cat = typeof categoryNames === 'string' ? categoryNames : Object.values(categoryNames).join(' ');
+  return {
+    name: [d.name, domainOf(d.url)].join(' '),
+    tags: [...d.tags, ...d.platforms, d.pricing, d.openSource ? 'open source' : ''].join(' '),
+    cat,
+    summary: [d.summary.en, d.summary.ru ?? ''].join(' '),
+    description: [d.description.en, d.description.ru ?? ''].join(' '),
+  };
 }
 
 /** Date the tool's page text last changed. */

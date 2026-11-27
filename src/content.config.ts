@@ -41,6 +41,14 @@ const tools = defineCollection({
     description: localized,
     /** the author's own short remark, shown on the card and the page; your voice, 1–2 sentences */
     note: localized.optional(),
+    /** "Why it's in Atlas": 2–3 sentences, the author's reasons for picking it (not a rewrite of the description) */
+    why: localized.optional(),
+    /** "Who it's for": who gets the most out of it, and for which job */
+    forWho: localized.optional(),
+    /** Catches that the pricing badge doesn't say: ads, an account, a watermark, export limits… One short line each. */
+    limits: z.array(localized).default([]),
+    /** For the alternatives table: id of another site → how it differs from this one, one sentence */
+    altNotes: z.record(z.string(), localized).default({}),
   }),
 });
 

@@ -1,9 +1,11 @@
 ---
 import { u } from '~/lib/url';
+import CardActions from './CardActions.astro';
 import { Image } from 'astro:assets';
 import { shotFor } from '~/lib/shots';
 import { domainOf, getTools, type Tool } from '~/lib/data';
 import { newIds, newUntil } from '~/lib/related';
+import popular from '~/data/popular.json';
 import { loc, useTranslations, defaultLang, type Lang } from '~/i18n';
 import { AUTHOR, SITE } from '~/site.config';
 
@@ -17,9 +19,12 @@ interface Props {
   hideCategory?: boolean;
   /** one grey line under the summary, e.g. "Place 1 · 120 views" on Popular */
   rank?: string;
+  /** leave the save / "⋯" buttons out of the HTML: the page builds them from one
+      shared template (Gallery.astro) for the cards it shows. Keeps the home page light. */
+  lazyActions?: boolean;
 }
 
-const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false, rank } = Astro.props;
+const { tool, categoryName, lang = defaultLang, eager = false, hideCategory = false, rank, lazyActions = false } = Astro.props;
 const shot = shotFor(tool.id);
 const d = tool.data;
 const t = useTranslations(lang);
@@ -27,6 +32,7 @@ const isNew = newIds(await getTools()).has(tool.id);
 // same outbound link as the tool page: a partner link as is, a normal one with ?ref=
 const outbound = new URL(d.affiliateUrl ?? d.url);
 if (!d.affiliateUrl) outbound.searchParams.set('ref', SITE.ref);
+const views = ((popular.views ?? {}) as Record<string, number>)[tool.id] ?? 0;
 const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`);
 ---
 <div
@@ -38,6 +44,14 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
   data-name={d.name.toLowerCase()}
   data-category={d.category}
   data-pricing={d.openSource && d.pricing === 'free' ? 'free' : d.pricing}
+  data-open={d.openSource ? '' : undefined}
+  data-views={views}
+  data-featured={d.featured ? '' : undefined}
+  data-title={lazyActions ? d.name : undefined}
+  data-url={lazyActions ? d.url : undefined}
+  data-out={lazyActions ? outbound.href : undefined}
+  data-rel={lazyActions ? (d.affiliateUrl ? 'sponsored noopener' : 'noopener') : undefined}
+  data-lazy-actions={lazyActions ? '' : undefined}
 >
 <a class="card" href={u(`/tool/${tool.id}`, lang)}>
   <div class="card__media">
@@ -67,6 +81,7 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
     <div class="card__row">
       <span class="card__name">{d.name}</span>
       {d.affiliateUrl && <span class="card__partner" title={t('tool.partner')}>{t('card.partner')}</span>}
+      {d.own && <span class="card__partner card__own">{t('card.own')}</span>}
       {!hideCategory && <span class="card__category">{categoryName}</span>}
     </div>
     <p class="card__summary">{loc(d.summary, lang)}</p>
@@ -76,43 +91,5 @@ const badge = d.openSource ? t('pricing.openSource') : t(`pricing.${d.pricing}`)
     {rank && <p class="card__rank t-tabular">{rank}</p>}
   </div>
 </a>
-  {/* Save / move to top / "⋯" menu. Siblings of the link (a button can't live inside
-      <a>). Local only: the script in Base.astro keeps ids in localStorage
-      `atlas:saved`. Without JavaScript the buttons stay hidden. */}
-  <div class="card__actions" hidden data-card-actions>
-    <button class="card__act card__act--up" type="button" data-save-up hidden
-      aria-label={t('card.up', { name: d.name })} title={t('card.up', { name: d.name })}>
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16V4M5 9l5-5 5 5"/></svg>
-    </button>
-    <button class="card__act card__act--save" type="button" data-save aria-pressed="false"
-      data-label-save={t('card.save', { name: d.name })} data-label-saved={t('card.saved', { name: d.name })}
-      aria-label={t('card.save', { name: d.name })} title={t('card.save', { name: d.name })}>
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h9v13L10 13.2l-4.5 3.3v-13Z"/></svg>
-    </button>
-    {/* "⋯": open the site, copy its link, hide the card (moves it to the end
-        of the grid; localStorage `atlas:hidden`, see Base.astro). */}
-    <div class="card__more">
-      <button class="card__act card__act--more" type="button" aria-haspopup="menu" aria-expanded="false"
-        aria-label={t('card.more', { name: d.name })} title={t('card.more', { name: d.name })} data-card-more>
-        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15.5" cy="10" r="1.6"/></svg>
-      </button>
-      <div class="card__menu" role="menu" hidden data-card-menu>
-        <a class="card__menu-item" role="menuitem" href={outbound.href} target="_blank"
-          rel={d.affiliateUrl ? 'sponsored noopener' : 'noopener'} data-track-tool={tool.id}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4h5v5M16 4l-7 7M14 11.5V15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h3.5"/></svg>
-          {t('card.menu.open')}
-        </a>
-        <button class="card__menu-item" role="menuitem" type="button" data-card-copy={d.url}
-          data-label={t('card.menu.copy')} data-label-done={t('card.menu.copied')}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.8.8M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.8-.8"/></svg>
-          <span>{t('card.menu.copy')}</span>
-        </button>
-        <button class="card__menu-item" role="menuitem" type="button" data-card-hide
-          data-label={t('card.menu.hide')} data-label-undo={t('card.menu.unhide')}>
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l14 14M8.3 5.2A8 8 0 0 1 10 5c4.5 0 7 5 7 5a12 12 0 0 1-2 2.6M12.1 12.2A3 3 0 0 1 7.8 7.9M5.4 6.6A12 12 0 0 0 3 10s2.5 5 7 5a7 7 0 0 0 2.9-.6"/></svg>
-          <span>{t('card.menu.hide')}</span>
-        </button>
-      </div>
-    </div>
-  </div>
+{!lazyActions && <CardActions name={d.name} id={tool.id} url={d.url} out={outbound.href} rel={d.affiliateUrl ? 'sponsored noopener' : 'noopener'} lang={lang} />}
 </div>

@@ -1,0 +1,54 @@
+---
+/**
+ * The save / move-to-top / "⋯" buttons on a card. Siblings of the card link
+ * (a button can't live inside <a>). Local only: the script in Base.astro keeps
+ * ids in localStorage. Without JavaScript the block stays hidden.
+ *
+ * On the home grid the real values are not printed 134 times: Gallery.astro
+ * renders this once inside a <template> with %name% / %id% / %url% / %out% /
+ * %rel% as the values, and fills it in for the cards it shows.
+ */
+import { useTranslations, defaultLang, type Lang } from '~/i18n';
+interface Props { name: string; id: string; url: string; out: string; rel: string; lang?: Lang }
+const { name, id, url: siteUrl, out, rel, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+---
+  {/* Save / move to top / "⋯" menu. Siblings of the link (a button can't live inside
+      <a>). Local only: the script in Base.astro keeps ids in localStorage
+      `atlas:saved`. Without JavaScript the buttons stay hidden. */}
+  <div class="card__actions" hidden data-card-actions>
+    <button class="card__act card__act--up" type="button" data-save-up hidden
+      aria-label={t('card.up', { name: name })} title={t('card.up', { name: name })}>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16V4M5 9l5-5 5 5"/></svg>
+    </button>
+    <button class="card__act card__act--save" type="button" data-save aria-pressed="false"
+      data-label-save={t('card.save', { name: name })} data-label-saved={t('card.saved', { name: name })}
+      aria-label={t('card.save', { name: name })} title={t('card.save', { name: name })}>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h9v13L10 13.2l-4.5 3.3v-13Z"/></svg>
+    </button>
+    {/* "⋯": open the site, copy its link, hide the card (moves it to the end
+        of the grid; localStorage `atlas:hidden`, see Base.astro). */}
+    <div class="card__more">
+      <button class="card__act card__act--more" type="button" aria-haspopup="menu" aria-expanded="false"
+        aria-label={t('card.more', { name: name })} title={t('card.more', { name: name })} data-card-more>
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="4.5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15.5" cy="10" r="1.6"/></svg>
+      </button>
+      <div class="card__menu" role="menu" hidden data-card-menu>
+        <a class="card__menu-item" role="menuitem" href={out} target="_blank"
+          rel={rel} data-track-tool={id}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4h5v5M16 4l-7 7M14 11.5V15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h3.5"/></svg>
+          {t('card.menu.open')}
+        </a>
+        <button class="card__menu-item" role="menuitem" type="button" data-card-copy={siteUrl}
+          data-label={t('card.menu.copy')} data-label-done={t('card.menu.copied')}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 11.5a3 3 0 0 0 4.2 0l2.6-2.6a3 3 0 0 0-4.2-4.2l-.8.8M11.5 8.5a3 3 0 0 0-4.2 0l-2.6 2.6a3 3 0 0 0 4.2 4.2l.8-.8"/></svg>
+          <span>{t('card.menu.copy')}</span>
+        </button>
+        <button class="card__menu-item" role="menuitem" type="button" data-card-hide
+          data-label={t('card.menu.hide')} data-label-undo={t('card.menu.unhide')}>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l14 14M8.3 5.2A8 8 0 0 1 10 5c4.5 0 7 5 7 5a12 12 0 0 1-2 2.6M12.1 12.2A3 3 0 0 1 7.8 7.9M5.4 6.6A12 12 0 0 0 3 10s2.5 5 7 5a7 7 0 0 0 2.9-.6"/></svg>
+          <span>{t('card.menu.hide')}</span>
+        </button>
+      </div>
+    </div>
+  </div>
