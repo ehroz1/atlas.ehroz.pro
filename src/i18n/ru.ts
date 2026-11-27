@@ -32,7 +32,6 @@ export const ru: Record<UIKey, string> = {
   'hero.sub': 'Полезные сайты и инструменты для дизайнеров, разработчиков и любопытных.',
   'hero.cta': 'Предложить сайт',
   'hero.picks': 'Получать подборку',
-  'hero.newest': 'Новинка',
 
   'search.label': 'Поиск по сайтам и инструментам',
   'search.placeholder': 'Поиск',

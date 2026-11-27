@@ -1,10 +1,14 @@
 ---
 /**
  * Home hero: a large uppercase statement on the left with two actions
- * under it, and on the right one card that shows the newest site in the
- * catalogue (screenshot, then its name and a "New" label underneath).
+ * under it. On desktop the right side shows one site from the catalogue,
+ * picked at random on every visit from a hand-made list of the most
+ * striking screenshots (SHOWCASE). Phones don't get the card at all: the
+ * candidates sit in a <template>, so nothing is downloaded until the
+ * script clones one in, and the script only does that on wide screens.
  */
 import { Image } from 'astro:assets';
+import { getCategories } from '~/lib/data';
 import { shotFor } from '~/lib/shots';
 import { u } from '~/lib/url';
 import type { Tool } from '~/lib/data';
@@ -14,13 +18,21 @@ interface Props { tools: Tool[]; categoryCount: number; lang?: Lang }
 const { tools, categoryCount, lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
-const pick = tools
-  .filter((tool) => shotFor(tool.id))
-  .sort((a, b) => b.data.added.getTime() - a.data.added.getTime())[0];
+/** Catalogue ids whose screenshots look best large. Order doesn't matter. */
+const SHOWCASE = [
+  'antlii', 'artcraft', 'artlist', 'ascii-magic', 'basement-studio', 'coolors',
+  'cosmos', 'davinci-resolve', 'dribbble', 'figma', 'fontshare', 'fontsinuse',
+  'gsap', 'hellohello', 'interface-in-game', 'khroma', 'landing-love', 'nav-supply',
+  'osmo-supply', 'pentagram', 'pika', 'raycast', 'rive', 'shots', 'snowpuff',
+  'tbc-ornaments', 'uncut-wtf',
+];
+const byId = new Map(tools.map((tool) => [tool.id, tool]));
+const picks = SHOWCASE.map((id) => byId.get(id)).filter((tool): tool is Tool => !!tool && !!shotFor(tool.id));
+const categories = new Map((await getCategories()).map((c) => [c.id, loc(c.data.name, lang)]));
 ---
-<section class="hero-intro" aria-labelledby="hero-title">
+<section class="hero-intro" aria-labelledby="hero-title" data-hero>
   <div class="hero-intro__main">
-    <h1 class="hero-intro__title" id="hero-title">{t(`hero.title.${plural(lang, tools.length)}`, { count: tools.length }).replaceAll('-', '\u2011')}</h1>
+    <h1 class="hero-intro__title" id="hero-title">{t(`hero.title.${plural(lang, tools.length)}`, { count: tools.length }).replaceAll('-', '‑')}</h1>
     <p class="hero-intro__sub">{t('hero.sub', { categories: categoryCount })}</p>
     <div class="hero-intro__actions">
       <a class="hero-intro__btn hero-intro__btn--primary" href={u('/newsletter', lang)}>
@@ -31,15 +43,38 @@ const pick = tools
     </div>
   </div>
 
-  {pick && (
-    <a class="hero-intro__card" href={u(`/tool/${pick.id}`, lang)}>
-      <span class="hero-intro__shot">
-        <Image src={shotFor(pick.id)!} alt="" widths={[480, 720, 960]} sizes="(min-width: 60rem) 34vw, 100vw" format="webp" quality={78} loading="eager" fetchpriority="high" />
-      </span>
-      <span class="hero-intro__meta">
-        <span class="hero-intro__name">{pick.data.name}<span class="visually-hidden">: {loc(pick.data.summary, lang)}</span></span>
-        <span class="hero-intro__label">{t('hero.newest')}</span>
-      </span>
-    </a>
-  )}
+  <div class="hero-intro__side" data-hero-slot></div>
+
+  <template data-hero-picks>
+    {picks.map((pick) => (
+      <a class="hero-intro__card" href={u(`/tool/${pick.id}`, lang)}>
+        <span class="hero-intro__shot">
+          <Image src={shotFor(pick.id)!} alt="" widths={[640, 960]} sizes="32rem" format="webp" quality={80} loading="eager" />
+        </span>
+        <span class="hero-intro__meta">
+          <span class="hero-intro__name">{pick.data.name}<span class="visually-hidden">: {loc(pick.data.summary, lang)}</span></span>
+          <span class="hero-intro__label">{categories.get(pick.data.category)}</span>
+        </span>
+      </a>
+    ))}
+  </template>
 </section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const slot = hero?.querySelector<HTMLElement>('[data-hero-slot]');
+  const picks = hero?.querySelector<HTMLTemplateElement>('[data-hero-picks]');
+  const wide = matchMedia('(min-width: 60.0625rem)');
+
+  const show = () => {
+    if (!hero || !slot || !picks || !wide.matches || slot.firstElementChild) return;
+    const cards = picks.content.children;
+    if (!cards.length) return;
+    const card = cards[Math.floor(Math.random() * cards.length)].cloneNode(true) as HTMLElement;
+    card.querySelector('img')?.setAttribute('fetchpriority', 'high');
+    slot.append(card);
+    hero.classList.add('has-card');
+  };
+  show();
+  wide.addEventListener('change', show);
+</script>

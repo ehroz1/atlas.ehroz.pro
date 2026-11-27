@@ -1045,8 +1045,8 @@ button.menu__item[hidden] { display: none; }
 .hero__aside a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 
 /* Home hero: a large uppercase statement on the left with two buttons
-   under it, and one card on the right with the newest site's screenshot
-   (name and a "New" label below it). No panel, no motion.              */
+   under it; on desktop, one random showcase site on the right
+   (screenshot, then name and category). No panel, no motion.          */
 .hero-intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
@@ -1101,9 +1101,13 @@ button.menu__item[hidden] { display: none; }
 .hero-intro__label { color: var(--c-text-3); }
 .hero-intro__card:hover .hero-intro__name { color: var(--c-text); }
 
+/* desktop only: the column is kept empty until the script drops a card in,
+   so the title doesn't jump sideways */
+.hero-intro__side { aspect-ratio: 16 / 10; }
+.hero-intro.has-card .hero-intro__side { aspect-ratio: auto; }
 @media (max-width: 60rem) {
   .hero-intro { grid-template-columns: 1fr; }
-  .hero-intro__card { max-width: 32rem; }
+  .hero-intro__side { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-intro__shot img { transition: none; }
