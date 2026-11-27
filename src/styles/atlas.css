@@ -1049,10 +1049,10 @@ button.menu__item[hidden] { display: none; }
    (screenshot, then name and category). No panel, no motion.          */
 .hero-intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
   align-items: center;
   gap: clamp(var(--s-8), 6vw, var(--s-24));
-  padding-block: clamp(var(--s-8), 5vw, var(--s-16));
+  padding-block: clamp(var(--s-6), 3vw, var(--s-10));
 }
 .hero-intro__title {
   max-width: 16ch;
