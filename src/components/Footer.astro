@@ -26,9 +26,9 @@ const legal = [
 ] as const;
 // link columns
 const groups = [
-  { title: t('footer.catalog'), links: [['/', t('nav.sites')], ['/search', t('nav.search')], ['/popular', t('nav.popular')], ['/categories', t('nav.categories')], ['/tags', t('nav.tags')], ...(articles.length ? [['/blog', t('nav.blog')]] : []), ['/wall', t('nav.wall')]] },
+  { title: t('footer.catalog'), links: [['/', t('nav.sites')], ['/popular', t('nav.popular')], ['/categories', t('nav.categories')], ['/tags', t('nav.tags')], ...(articles.length ? [['/blog', t('nav.blog')]] : []), ['/wall', t('nav.wall')]] },
   { title: t('footer.project'), links: [['/about', t('nav.about')], ['/editorial', t('nav.editorial')], ['/for-makers', t('nav.makers')], ['/badge', t('nav.badge')], ['/pro', t('nav.pro')], ['/api', t('nav.api')], ['/contact', t('nav.contact')]] },
-  { title: t('footer.more'), links: [['/submit', t('nav.submit')], ['/collection', t('nav.collection')], ['/newsletter', t('nav.newsletter')], ['/support', t('nav.support')]] },
+  { title: t('footer.more'), links: [['/submit', t('nav.submit')], ['/newsletter', t('nav.newsletter')], ['/support', t('nav.support')]] },
 ] as const;
 ---
 <footer class={scenic ? 'site-footer site-footer--cols site-footer--scenic' : 'site-footer site-footer--cols'}>

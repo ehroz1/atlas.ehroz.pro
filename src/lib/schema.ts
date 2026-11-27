@@ -110,7 +110,6 @@ const PAGE_TYPE: Record<PageEntry['kind'], string> = {
   newsletter: 'WebPage',
   pro: 'WebPage',
   api: 'WebPage',
-  search: 'SearchResultsPage',
   tags: 'CollectionPage',
   popular: 'CollectionPage',
   support: 'FAQPage',

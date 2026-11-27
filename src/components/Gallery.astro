@@ -117,7 +117,7 @@ const sorts = [
 
   {promote && (
     <p class="prefs-note t-small t-secondary" data-prefs-note hidden>
-      {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'}>{t('prefs.change')}</a>
+      {t('prefs.active')} <a class="link" href={u('/account', lang) + '#prefs'} rel="nofollow">{t('prefs.change')}</a>
     </p>
   )}
   <div class="cards" data-cards data-prefs-sort={promote ? '' : undefined} data-ordered={ordered ? '' : undefined}>

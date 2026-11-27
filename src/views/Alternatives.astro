@@ -25,6 +25,18 @@ const url = absUrl(entry.path, lang);
 const list = (xs: Tool[]) => xs.map((x) => x.data.name).join(', ');
 const free = alternatives.filter((x) => x.data.pricing !== 'paid');
 const open = alternatives.filter((x) => x.data.openSource);
+const pricingText = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+const platformsText = d.platforms.length ? d.platforms.join(', ') : 'Web';
+const overview = t('alt.overview', {
+  name: d.name,
+  pricing: pricingText,
+  platforms: platformsText,
+  summary: loc(d.description, lang),
+  count: alternatives.length,
+  freeCount: free.length,
+});
+const compareRows = [tool, ...alternatives];
+const siblingAlts = alternatives.filter((r) => alternativesOf(r, all).length >= 2);
 const faq = [
   { q: t('alt.q1', { name: d.name }), a: t('alt.a1', { name: d.name, names: list(alternatives) }) },
   free.length > 0 && { q: t('alt.q2', { name: d.name }), a: t('alt.a2', { names: list(free) }) },
@@ -45,31 +57,67 @@ const faq = [
   <div class="container container--wide">
     <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
       <h1 class="t-statement">{heading}</h1>
-      <p class="t-secondary mt-2" style="max-width: 34rem">{t('alt.lead', { name: d.name, count: alternatives.length })}</p>
+      <p class="t-secondary mt-2" style="max-width: 42rem">{overview}</p>
     </section>
 
-    <div class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))">
+    <section class="section--tight" style="padding-top: clamp(var(--s-10), 6vw, var(--s-16)); padding-bottom: 0" aria-labelledby="alt-compare">
+      <div class="section-head">
+        <h2 class="t-title" id="alt-compare">{t('alt.compare', { name: d.name })}</h2>
+      </div>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th scope="col">{t('compare.site')}</th>
+              <th scope="col">{t('compare.pricing')}</th>
+              <th scope="col">{t('compare.code')}</th>
+              <th scope="col">{t('compare.platforms')}</th>
+              <th scope="col">{t('compare.summary')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {compareRows.map((row) => (
+              <tr>
+                <td><a class="link" href={u(`/tool/${row.id}`, lang)}>{row.data.name}</a></td>
+                <td>{t(`pricing.${row.data.pricing}`)}</td>
+                <td>{row.data.openSource ? t('compare.open') : t('compare.closed')}</td>
+                <td>{row.data.platforms.length ? row.data.platforms.join(', ') : 'Web'}</td>
+                <td>{loc(row.data.summary, lang)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" style="padding-bottom: 0; padding-top: clamp(var(--s-12), 8vw, var(--s-20))" aria-labelledby="alt-cards">
+      <div class="section-head">
+        <h2 class="t-title" id="alt-cards">{t('alt.cards', { name: d.name })}</h2>
+      </div>
       <div class="cards">
         {alternatives.map((r, i) => <ToolCard tool={r} categoryName={names.get(r.data.category)!} lang={lang} eager={i < 3} />)}
       </div>
-    </div>
+    </section>
 
     <section class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-labelledby="faq">
       <h2 class="t-title" id="faq">{t('alt.faq')}</h2>
-      <dl class="stack mt-4" style="--gap: var(--s-5); max-width: 42rem">
-        {faq.map((f) => (
-          <div class="stack" style="--gap: var(--s-1)">
-            <dt class="t-small" style="font-weight: 600">{f.q}</dt>
-            <dd class="t-secondary">{f.a}</dd>
-          </div>
+      <div class="faq mt-4" style="max-width: 44rem">
+        {faq.map((f, i) => (
+          <details class="faq__item" open={i === 0}>
+            <summary class="faq__q">{f.q}</summary>
+            <p class="faq__a">{f.a}</p>
+          </details>
         ))}
-      </dl>
+      </div>
     </section>
 
-    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-label={d.name}>
+    <nav class="section--tight" style="padding-top: var(--s-20); padding-bottom: 0" aria-label={t('alt.related')}>
       <ul class="chips" role="list">
         <li><a class="chip" href={u(`/tool/${tool.id}`, lang)}>{t('alt.back', { name: d.name })}</a></li>
         <li><a class="chip" href={u(`/category/${category.id}`, lang)}>{t('alt.more', { category: names.get(d.category)! })}</a></li>
+        {siblingAlts.map((r) => (
+          <li><a class="chip" href={u(`/alternatives/${r.id}`, lang)}>{t('tool.alternatives', { name: r.data.name })}</a></li>
+        ))}
       </ul>
     </nav>
   </div>

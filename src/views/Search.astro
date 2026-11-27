@@ -3,21 +3,22 @@ import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
-import { getPage } from '~/lib/routes';
 import { tagCounts } from '~/lib/tags';
 import { useTranslations, type Lang } from '~/i18n';
 
 /* Results page for the search in the top bar. The bar's finder filters
    this grid in place (it reads ?q=&category=&pricing=&platform= on load),
-   so the page itself has no search field: one search per site. */
+   so the page itself has no search field: one search per site. Not indexed
+   (internal search UI, otherwise duplicates the home grid). */
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('search')]);
+const [tools, categories] = await Promise.all([getTools(), getCategories()]);
 const tags = tagCounts(tools).slice(0, 12);
 const tagHref = (tag: string) => u('/search', lang) + `?q=${encodeURIComponent(tag)}`;
 ---
-<Base lang={lang} entry={entry} crumbs={[{ name: t('nav.search'), path: '/search' }]} crumbsContainer="container container--wide">
+<Base lang={lang} title={t('searchPage.title')} description={t('searchPage.description')} noindex
+  crumbs={[{ name: t('nav.search'), path: '/search' }]} crumbsContainer="container container--wide">
   <div class="container container--wide">
     <section class="hero" style="padding-top: clamp(var(--s-8), 6vw, var(--s-20))">
       <h1 class="t-statement">{t('searchPage.h1')}</h1>
@@ -25,7 +26,7 @@ const tagHref = (tag: string) => u('/search', lang) + `?q=${encodeURIComponent(t
       <nav class="mt-6" aria-labelledby="try-tags">
         <h2 class="visually-hidden" id="try-tags">{t('searchPage.tags')}</h2>
         <ul class="chips" role="list" style="justify-content: center">
-          {tags.map((x) => <li><a class="chip" href={tagHref(x.tag)}>{x.tag}</a></li>)}
+          {tags.map((x) => <li><a class="chip" href={tagHref(x.tag)} rel="nofollow">{x.tag}</a></li>)}
           <li><a class="chip" href={u('/tags', lang)}>{t('searchPage.allTags')} →</a></li>
         </ul>
       </nav>

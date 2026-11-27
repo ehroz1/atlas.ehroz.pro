@@ -9,13 +9,21 @@ import type { PageEntry, PageKind } from '~/lib/routes';
 import { absUrl } from '~/lib/seo';
 import { langs, defaultLang, type Lang } from '~/i18n';
 
+import { getArticles } from '~/lib/articles';
+
+export const NEWS_WINDOW_MS = 2 * 864e5;
+
+export async function getFreshNewsArticles(now = Date.now()) {
+  return (await getArticles()).filter((a) => now - a.published.getTime() <= NEWS_WINDOW_MS);
+}
+
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export const SITEMAP_GROUPS: Record<'pages' | 'categories' | 'tools' | 'articles', Set<PageKind>> = {
   pages: new Set<PageKind>([
     'home', 'about', 'editorial', 'contact', 'submit', 'wall', 'badge', 'for-makers',
-    'newsletter', 'pro', 'api', 'search', 'tags', 'popular', 'support',
+    'newsletter', 'pro', 'api', 'tags', 'popular', 'support',
     'privacy', 'cookies', 'disclaimer', 'author',
   ]),
   categories: new Set<PageKind>(['categories', 'category']),
