@@ -495,7 +495,7 @@ hr { border: 0; border-top: var(--border); }
 .bar-search__field:hover { background: var(--c-chrome-hover); color: var(--c-chrome-text); }
 .bar-search.is-active .bar-search__field { color: var(--c-chrome-text); }
 .bar-search.is-open .bar-search__field,
-.bar-search__field:focus-within { background: var(--c-panel); box-shadow: inset 0 0 0 2px var(--c-chrome-line); }
+.bar-search__field:focus-within { background: var(--c-panel); box-shadow: inset 0 0 0 2px var(--c-line-active); }
 .bar-search__input {
   flex: 1;
   min-width: 0;
@@ -1057,7 +1057,7 @@ button.menu__item[hidden] { display: none; }
 .hero-intro__title {
   max-width: 16ch;
   font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
   line-height: 0.98;
   letter-spacing: -0.035em;
   text-transform: uppercase;
@@ -1087,9 +1087,11 @@ button.menu__item[hidden] { display: none; }
 /* the caption reuses the gallery card's .card__caption/__row/__name/__category/__summary,
    and the card lifts on hover the same way */
 .hero-intro__card { display: flex; flex-direction: column; gap: var(--s-3); color: inherit; transition: transform var(--dur) var(--ease); }
-.hero-intro__card:hover, .hero-intro__card:focus-visible { transform: translateY(-6px); }
-.hero-intro__card:focus-visible { outline-offset: 4px; }
-.hero-intro__card:hover .card__name { color: var(--c-signal); }
+.hero-intro__card:focus-visible { transform: translateY(-6px); outline-offset: 4px; }
+@media (hover: hover) {
+  .hero-intro__card:hover { transform: translateY(-6px); }
+  .hero-intro__card:hover .card__name { color: var(--c-signal); }
+}
 .hero-intro__shot {   /* same frame as .card__media */
   display: block;
   aspect-ratio: 16 / 10;
@@ -1120,7 +1122,7 @@ button.menu__item[hidden] { display: none; }
 
 .cards {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--grid-gap-y) var(--grid-gap);
 }
 @media (min-width: 40rem) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -1243,8 +1245,8 @@ button.menu__item[hidden] { display: none; }
 }
 /* hover: the whole card — picture, name, summary — lifts as one piece.
    Nothing inside scales, so nothing gets cropped. */
-.card:hover, .card:focus-visible { transform: translateY(-6px); }
-.card:focus-visible { outline-offset: 4px; }
+.card:focus-visible { transform: translateY(-6px); outline-offset: 4px; }
+@media (hover: hover) { .card:hover { transform: translateY(-6px); } }
 .card__media {
   position: relative;
   aspect-ratio: 16 / 10;
@@ -1290,11 +1292,11 @@ button.menu__item[hidden] { display: none; }
 .card__badge--seen { color: var(--c-text-2); }
 .card-wrap.is-seen .card__badge--new { display: none; }
 .card-wrap.is-seen .card__name { color: var(--c-text-2); }
-.card-wrap.is-seen .card:hover .card__name { color: var(--c-signal); }
+@media (hover: hover) { .card-wrap.is-seen .card:hover .card__name { color: var(--c-signal); } }
 .card__caption { display: flex; flex-direction: column; gap: 2px; padding-inline: 1px; }
 .card__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
 .card__name { font-size: var(--fs-15); font-weight: var(--fw-medium); }
-.card:hover .card__name { color: var(--c-signal); }
+@media (hover: hover) { .card:hover .card__name { color: var(--c-signal); } }
 .card__category { font-size: var(--fs-14); color: var(--c-text-3); white-space: nowrap; }
 .card__summary {
   font-size: var(--fs-14);

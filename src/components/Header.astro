@@ -127,15 +127,15 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
       <div class="finder" id="finder" role="region" aria-label={t('search.label')} hidden data-finder>
         <div class="finder__body">
           <div class="finder__facets" role="tablist" aria-label={t('search.filters')}>
-            <button class="finder__facet" type="button" role="tab" aria-selected="true" data-facet="category">
+            <button class="finder__facet" type="button" role="tab" aria-selected="true" tabindex="0" data-facet="category">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M8 15.5h3"/><circle cx="9" cy="9" r="1.2"/></svg>
               {t('search.facet.category')}<span class="finder__facet-count" data-facet-count="category"></span>
             </button>
-            <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="pricing">
+            <button class="finder__facet" type="button" role="tab" aria-selected="false" tabindex="-1" data-facet="pricing">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5V5h7.5L20 13.5 13.5 20 4 12.5Z"/><circle cx="8.5" cy="8.5" r="1.2"/></svg>
               {t('search.facet.pricing')}<span class="finder__facet-count" data-facet-count="pricing"></span>
             </button>
-            <button class="finder__facet" type="button" role="tab" aria-selected="false" data-facet="platform">
+            <button class="finder__facet" type="button" role="tab" aria-selected="false" tabindex="-1" data-facet="platform">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="11" rx="1.8"/><path d="M9 19.5h6M12 16v3.5"/></svg>
               {t('search.facet.platform')}<span class="finder__facet-count" data-facet-count="platform"></span>
             </button>
@@ -365,7 +365,7 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
   const onBlog = /\/blog(\/|$)/.test(location.pathname);
   const xBtn = document.querySelector<HTMLButtonElement>('[data-finder-x]')!;
   function renderPane() {
-    document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.facet === facet)));
+    document.querySelectorAll<HTMLElement>('[data-facet]').forEach((b) => { b.setAttribute('aria-selected', String(b.dataset.facet === facet)); b.tabIndex = b.dataset.facet === facet ? 0 : -1; });
     panel.classList.toggle('is-searching', !!state.q.trim());
     xBtn.hidden = !input.value;
     if (state.q.trim()) {
@@ -473,7 +473,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     }
   }
 
-  input.addEventListener('focus', open);
+  // Esc inside the panel refocuses the field; that must not reopen the panel.
+  let skipOpen = false;
+  input.addEventListener('focus', () => { if (!skipOpen) open(); });
   input.addEventListener('click', open);
   document.querySelector('[data-finder-form]')!.addEventListener('submit', (e) => e.preventDefault());
   document.querySelector('[data-finder-done]')!.addEventListener('click', done);
@@ -575,6 +577,18 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     }
   });
 
+  // Roving tabindex: Tab reaches the selected facet, arrows move between them.
+  document.querySelectorAll<HTMLButtonElement>('[data-facet]').forEach((b, i, all) =>
+    b.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      e.preventDefault();
+      const next = all[(i + step + all.length) % all.length];
+      next.focus();
+      next.click();
+      all.forEach((x) => { x.tabIndex = x === next ? 0 : -1; });
+    }),
+  );
   document.querySelectorAll<HTMLButtonElement>('[data-facet]').forEach((b) =>
     b.addEventListener('click', () => {
       facet = b.dataset.facet as FacetKey;
@@ -613,7 +627,9 @@ const section = path === '/wall' ? 'wall' : path === '/' || ['/tool/', '/categor
     if (e.key === 'Escape') {
       e.preventDefault();
       close();
+      skipOpen = true;
       input.focus();
+      skipOpen = false;
     }
   });
 
