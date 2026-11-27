@@ -2560,5 +2560,24 @@
       "en": "Upload a track and get the vocals and the instrumental as separate files. The same site has a stem splitter, pitch changer, key and BPM finder, cutter, joiner, recorder and a karaoke mode.",
       "ru": "Загружаете трек и получаете голос и минус отдельными файлами. На том же сайте есть разделение на дорожки, смена тональности, определение тональности и темпа, нарезка, склейка, запись и режим караоке."
     }
+  },
+  {
+    "id": "stagepeek",
+    "name": "StagePeek",
+    "url": "https://stagepeek.live",
+    "category": "3d-motion",
+    "pricing": "freemium",
+    "platforms": ["Web"],
+    "tags": ["3d", "venues", "concerts", "seat view", "interactive", "maps"],
+    "added": "2026-11-28",
+    "updated": "2026-11-28",
+    "summary": {
+      "en": "3D concert & theater seat-view preview across 201 venues.",
+      "ru": "3D-симулятор обзора сцены с мест на 201 площадке мира."
+    },
+    "description": {
+      "en": "Interactive 3D venue and seat-view simulator covering 201 global arenas, stadiums, and theaters with 1x-10x stage zoom and sightline comparison before buying tickets. Free anonymous browser previews work without login; Pro plans start at $4.99/week.",
+      "ru": "Интерактивный 3D-симулятор вида на сцену охватывает 201 арену, стадион и театр по всему миру с зумом 1x-10x и сравнением обзора перед покупкой билетов. Базовый просмотр работает в браузере бесплатно без регистрации; тариф Pro — от $4.99/неделю."
+    }
   }
 ]
