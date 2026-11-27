@@ -1,7 +1,8 @@
 ---
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
-import { getTools } from '~/lib/data';
+import CategoryChips from '~/components/CategoryChips.astro';
+import { getTools, getCategories } from '~/lib/data';
 import { getPage } from '~/lib/routes';
 import { tagCounts } from '~/lib/tags';
 import { useTranslations, plural, type Lang } from '~/i18n';
@@ -9,7 +10,7 @@ import { useTranslations, plural, type Lang } from '~/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const [tools, entry] = await Promise.all([getTools(), getPage('tags')]);
+const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('tags')]);
 const tags = tagCounts(tools);
 const n = t(`tags.n.${plural(lang, tags.length)}`, { count: tags.length });
 ---
@@ -20,11 +21,15 @@ const n = t(`tags.n.${plural(lang, tags.length)}`, { count: tags.length });
       <p class="t-secondary mt-2" style="max-width: 30rem">{t('tags.lead', { tags: n })}</p>
     </section>
 
-    <div class="section" style="padding-bottom: 0; padding-top: var(--s-12)">
+    <div class="section--tight" style="padding-top: var(--s-8); padding-bottom: 0">
+      <CategoryChips categories={categories} lang={lang} />
+    </div>
+
+    <div class="section" style="padding-bottom: 0; padding-top: var(--s-10)">
       <ul class="chips" role="list">
         {tags.map((x) => (
           <li>
-            <a class="chip" href={u('/search', lang) + `?q=${encodeURIComponent(x.tag)}`}>
+            <a class="chip" href={u('/search', lang) + `?q=${encodeURIComponent(x.tag)}`} rel="nofollow">
               {x.tag}<span class="chip__count">{x.count}</span>
             </a>
           </li>

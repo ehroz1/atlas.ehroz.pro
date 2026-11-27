@@ -5,17 +5,14 @@
  * https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap
  */
 import type { APIRoute } from 'astro';
-import { getArticles } from '~/lib/articles';
+import { getFreshNewsArticles } from '~/lib/sitemap';
 import { absUrl } from '~/lib/seo';
 import { xml } from '~/lib/feed';
 import { SITE } from '~/site.config';
 import { langs } from '~/i18n';
 
-const WINDOW = 2 * 864e5;
-
 export const GET: APIRoute = async () => {
-  const now = Date.now();
-  const fresh = (await getArticles()).filter((a) => now - a.published.getTime() <= WINDOW);
+  const fresh = await getFreshNewsArticles();
   const urls = fresh.flatMap((a) =>
     langs.map(
       (lang) => `  <url>

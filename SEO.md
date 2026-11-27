@@ -9,18 +9,18 @@
   а также 301-редиректы всех 25 удалённых/объединённых карточек сайтов (`/tool/<id>/`, `/alternatives/<id>/` на всех языках) на соответствующие категории.
   `http → https` делает хостинг (Vercel / GitHub Pages).
 - ✅ Дефолтная ветка GitHub переключена на `main` (чтобы Vercel и cron-воркфлоу всегда брали актуальный код).
-- 👤 Сейчас сайт на GitHub Pages: `vercel.json` начнёт работать после переезда на Vercel (см. DEPLOY.md).
+- ✅ Сайт работает на Vercel: применяются редиректы, кеш и заголовки безопасности из `vercel.json`.
 - ✅ Индексируется только продакшн: превью Vercel и github.io получают `noindex` (meta), закрытый `robots.txt`;
-  на `*.vercel.app`, а также для `/admin/*`, `/account/*`, `/collection/*`, `/404` и `/410` отдаётся заголовок `X-Robots-Tag: noindex, nofollow`.
+  на `*.vercel.app`, а также для `/admin/*`, `/account/*`, `/collection/*`, `/search/*`, `/404/` и `/410/` отдаётся заголовок `X-Robots-Tag: noindex, nofollow`.
 - ✅ canonical без параметров на каждой странице; hreflang `ru` / `en` / `x-default`.
 - ✅ Уникальные title ≤ 60 и description 50–160 символов (обрезка по слову, `src/lib/seo.ts`).
-- ✅ `robots.txt` из кода (`src/pages/robots.txt.ts`): поисковые и AI-поисковые роботы (`OAI-SearchBot`, `ChatGPT-User`, `PerplexityBot`, `Claude-SearchBot`, `GoogleOther`, `DuckAssistBot`, `YouBot`, `MistralAI-User`, `Meta-ExternalFetcher`) открыты,
-  обучающие — отдельной группой под флажком `ALLOW_AI_TRAINING` (`src/site.config.ts`), директива `Clean-param` для Яндекса (`utm_*`, `fbclid`, `gclid`, `yclid`, `ysclid`, `q`, `tag`, `price`, `sort`, `ref`), в конце Sitemap.
+- ✅ `robots.txt` из кода (`src/pages/robots.txt.ts`): поисковые и AI-поисковые роботы открыты, закрыты параметрические URL поиска и фильтров (`/*?q=*`, `/*?category=*`, `/*?pricing=*`, `/*?platform=*`, `/*?sort=*`, `/*?saved=*`, `/*?next=*`),
+  обучающие — отдельной группой под флажком `ALLOW_AI_TRAINING` (`src/site.config.ts`), директива `Clean-param` для Яндекса, в конце Sitemap.
 - ✅ Sitemap при каждой сборке разделён по типам контента (`/sitemap-index.xml`):
-  `/sitemap-pages.xml` (страницы), `/sitemap-categories.xml` (категории), `/sitemap-tools.xml` (карточки и альтернативы + `<image:image>` скриншотов и OG-обложек),
-  `/sitemap-articles.xml` (блог, статьи и автор + `<image:image>` обложек), `/sitemap-news.xml` (Google News), плюс полный `/sitemap-0.xml`.
-  Только канонические страницы со статусом 200, с hreflang и `lastmod` = реальная дата `updated` в данных.
-- ✅ 404 (`/404.html`) и 410 Gone (`/410.html`): `noindex`, без canonical, полезная навигация и поиск на обоих языках.
+  `/sitemap-pages.xml` (страницы), `/sitemap-categories.xml` (категории), `/sitemap-tools.xml` (карточки и альтернативы + `<image:image>` обложек),
+  `/sitemap-articles.xml` (блог, статьи и автор + `<image:image>` обложек), `/sitemap-news.xml` (Google News — включается в индекс только при наличии статей за последние 48 ч, чтобы не отдавать пустой `<urlset>`), плюс полный `/sitemap-0.xml`.
+  Только канонические страницы со статусом 200, с hreflang и `lastmod` = реальная дата обновления контента.
+- ✅ 404 (`/404.html`) и 410 Gone (`/410/`): `noindex`, без canonical, полезная навигация на обоих языках.
 - ✅ IndexNow: свой ключ `public/<ключ>.txt`, `scripts/indexnow.mjs`, workflow `indexnow.yml`.
 - ✅ Мета-теги подтверждения Google / Яндекса / Bing — только на продакшне и только если код задан.
 - 👤 Подтвердить домен и отправить sitemap в GSC, Вебмастере, Bing (DEPLOY.md).

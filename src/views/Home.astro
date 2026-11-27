@@ -1,16 +1,22 @@
 ---
+import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
 import HeroIntro from '~/components/HeroIntro.astro';
 import Gallery from '~/components/Gallery.astro';
 import { getTools, getCategories } from '~/lib/data';
+import { getArticles } from '~/lib/articles';
 import { getPage } from '~/lib/routes';
 import { itemList } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
-import type { Lang } from '~/i18n';
+import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const [tools, categories, entry] = await Promise.all([getTools(), getCategories(), getPage('home')]);
+const t = useTranslations(lang);
+const [tools, categories, articles, entry] = await Promise.all([getTools(), getCategories(), getArticles(), getPage('home')]);
+const names = new Map(categories.map((c) => [c.id, loc(c.data.name, lang)]));
+const countByCat = new Map(categories.map((c) => [c.id, tools.filter((x) => x.data.category === c.id).length]));
+const recentArticles = articles.slice(0, 4);
 const url = absUrl('/', lang);
 ---
 <Base lang={lang} entry={entry} nodes={[itemList(url, entry.heading[lang], tools, lang)]} pageExtra={{ mainEntity: { '@id': url + '#itemlist' } }} scenicFooter>
@@ -19,5 +25,44 @@ const url = absUrl('/', lang);
     <div class="home-grid">
       <Gallery tools={tools} categories={categories} filters={false} promote lang={lang} />
     </div>
+
+    {recentArticles.length > 0 && (
+      <section class="section--more" aria-labelledby="home-articles">
+        <div class="section-head">
+          <h2 class="t-title" id="home-articles">{t('home.articles')}</h2>
+          <a class="link t-small" href={u('/blog', lang)}>{t('article.all')}</a>
+        </div>
+        <ul class="post-grid" role="list">
+          {recentArticles.map((a) => (
+            <li class="post-card">
+              <a class="post-card__link" href={u(`/blog/${a.slug}`, lang)}>
+                <span class="post-card__cat t-meta">{a.categories.map((c) => names.get(c)).join(' · ')}</span>
+                <span class="post-card__title">{a.entry[lang].data.title}</span>
+              </a>
+              <p class="post-card__desc t-secondary t-small">{a.entry[lang].data.description}</p>
+              <p class="post-card__meta t-meta">
+                <time datetime={a.published.toISOString().slice(0, 10)}>{formatDate(a.published, lang)}</time> · {t('article.minutes', { n: a.minutes[lang] })}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <section class="section--more" aria-labelledby="home-categories">
+      <div class="section-head">
+        <h2 class="t-title" id="home-categories">{t('home.categories')}</h2>
+        <a class="link t-small" href={u('/categories', lang)}>{t('tool.seeAll')}</a>
+      </div>
+      <ul class="chips" role="list">
+        {categories.map((c) => (
+          <li>
+            <a class="chip" href={u(`/category/${c.id}`, lang)}>
+              {loc(c.data.name, lang)}<span class="chip__count">{countByCat.get(c.id)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   </div>
 </Base>

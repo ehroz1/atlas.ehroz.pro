@@ -18,7 +18,7 @@ import { privacy, cookies, disclaimer, editorial, supportFaq, type Section } fro
 
 export type PageKind =
   | 'home' | 'categories' | 'category' | 'tool' | 'alternatives' | 'badge' | 'for-makers' | 'about' | 'editorial' | 'contact' | 'submit' | 'wall' | 'newsletter' | 'pro' | 'api'
-  | 'search' | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer'
+  | 'tags' | 'popular' | 'support' | 'privacy' | 'cookies' | 'disclaimer'
   | 'blog' | 'article' | 'author';
 
 export interface PageEntry {
@@ -52,7 +52,6 @@ export const PAGE_UPDATED = {
   newsletter: '2026-11-21',
   pro: '2026-11-21',
   api: '2026-11-21',
-  search: '2026-11-22',
   support: '2026-11-22',
   privacy: '2026-11-23',
   cookies: '2026-11-23',
@@ -73,9 +72,11 @@ export async function getPage(key: string) {
   return page;
 }
 
+const CONTENT_UPDATED = new Date('2026-11-27');
+
 async function build(): Promise<PageEntry[]> {
   const [tools, categories, articles] = await Promise.all([getTools(), getCategories(), getArticles()]);
-  const allUpdated = latest([...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
+  const allUpdated = latest([CONTENT_UPDATED, ...tools.map(toolUpdated), ...categories.map((c) => c.data.updated)]);
   const pages: PageEntry[] = [];
   const T = per((l) => useTranslations(l));
   const catName = (id: string, l: Lang) => loc(categories.find((c) => c.id === id)!.data.name, l);
@@ -133,7 +134,7 @@ async function build(): Promise<PageEntry[]> {
       key: `tool/${tool.id}`,
       kind: 'tool',
       path: `/tool/${tool.id}/`,
-      updated: toolUpdated(tool),
+      updated: latest([CONTENT_UPDATED, toolUpdated(tool)]),
       title: per((l) => {
         const t = T[l]('tool.title', { name: d.name, summary: loc(d.summary, l).replace(/\.$/, '') });
         return fitTitle(brand(t), t);
@@ -161,7 +162,7 @@ async function build(): Promise<PageEntry[]> {
     const alts = alternativesOf(tool, tools);
     if (alts.length < 2) continue;
     const d = tool.data;
-    const lastmod = latest([toolUpdated(tool), ...alts.map(toolUpdated)]);
+    const lastmod = latest([CONTENT_UPDATED, toolUpdated(tool), ...alts.map(toolUpdated)]);
     pages.push({
       key: `alternatives/${tool.id}`,
       kind: 'alternatives',
@@ -206,18 +207,6 @@ async function build(): Promise<PageEntry[]> {
   simple('pro', 'pro.h1', (l) => T[l]('pro.lead'));
   simple('api', 'api.h1', (l) => T[l]('api.lead'));
 
-  pages.push({
-    key: 'search',
-    kind: 'search',
-    path: '/search/',
-    updated: allUpdated,
-    title: per((l) => fitTitle(T[l]('searchPage.title'))),
-    description: per((l) => fitDescription(T[l]('searchPage.description'))),
-    heading: per((l) => T[l]('searchPage.h1')),
-    text: per((l) => T[l]('searchPage.lead')),
-    og: per((l) => `og/${l}/search`),
-  });
-
   const tags = tagCounts(tools);
   pages.push({
     key: 'tags',
@@ -236,7 +225,7 @@ async function build(): Promise<PageEntry[]> {
     key: 'popular',
     kind: 'popular',
     path: '/popular/',
-    updated: popular.updated ?? new Date(PAGE_UPDATED.search),
+    updated: popular.updated ?? new Date('2026-11-22'),
     title: per((l) => fitTitle(T[l]('popular.title'))),
     description: per((l) => fitDescription(T[l]('popular.description'))),
     heading: per((l) => T[l]('popular.h1')),

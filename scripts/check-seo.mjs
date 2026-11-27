@@ -32,10 +32,17 @@ if (!fs.existsSync(DIST)) {
 const read = (p) => fs.readFileSync(path.join(DIST, p), 'utf8');
 const sitemapIndex = read('sitemap-index.xml');
 const CONTENT_MAPS = ['sitemap-pages.xml', 'sitemap-categories.xml', 'sitemap-tools.xml', 'sitemap-articles.xml'];
-for (const m of [...CONTENT_MAPS, 'sitemap-news.xml']) {
+for (const m of CONTENT_MAPS) {
   if (!new RegExp(`<loc>[^<]*${m.replace('.', '\\.')}<\\/loc>`).test(sitemapIndex))
     err('sitemap-index.xml', `does not list ${m}`);
   if (!fs.existsSync(path.join(DIST, m))) err(m, 'missing from dist/');
+}
+if (!fs.existsSync(path.join(DIST, 'sitemap-news.xml'))) err('sitemap-news.xml', 'missing from dist/');
+else {
+  const newsHasUrls = /<url>/.test(read('sitemap-news.xml'));
+  const newsListed = /<loc>[^<]*sitemap-news\.xml<\/loc>/.test(sitemapIndex);
+  if (newsHasUrls && !newsListed) err('sitemap-index.xml', 'does not list non-empty sitemap-news.xml');
+  if (!newsHasUrls && newsListed) err('sitemap-index.xml', 'lists empty sitemap-news.xml (triggers GSC empty sitemap error)');
 }
 if (!fs.existsSync(path.join(DIST, 'sitemap-0.xml'))) err('sitemap-0.xml', 'missing from dist/');
 

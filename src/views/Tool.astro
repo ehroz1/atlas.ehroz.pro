@@ -9,7 +9,7 @@ import { shotFor } from '~/lib/shots';
 import { alternativesOf, similarTo } from '~/lib/related';
 import { getPage } from '~/lib/routes';
 import { articlesWithTool } from '~/lib/articles';
-import { software } from '~/lib/schema';
+import { software, faqPage } from '~/lib/schema';
 import { absUrl } from '~/lib/seo';
 import { SITE, AUTHOR } from '~/site.config';
 import { useTranslations, loc, formatDate, type Lang } from '~/i18n';
@@ -33,13 +33,54 @@ if (!d.affiliateUrl) outbound.searchParams.set('ref', SITE.ref);
 const rel = d.affiliateUrl ? 'sponsored noopener' : 'noopener';
 const url = absUrl(entry.path, lang);
 
-const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+const priceLabel = (x: Tool) => [t(`pricing.${x.data.pricing}`), x.data.openSource ? t('pricing.openSource') : null].filter(Boolean).join(', ');
+const pricing = priceLabel(tool);
+const summaryText = loc(d.summary, lang);
+const descText = loc(d.description, lang);
+
+// Real catalog-derived FAQ for searchers & AI engines (no invented facts)
+const freeAlts = alternatives.filter((x) => x.data.pricing !== 'paid');
+const priceBase =
+  d.pricing === 'free'
+    ? t('tool.faq.aFree', { name: d.name, domain })
+    : d.pricing === 'freemium'
+      ? t('tool.faq.aFreemium', { name: d.name, domain })
+      : t('tool.faq.aPaid', { name: d.name, domain });
+const priceAnswer =
+  priceBase +
+  (d.openSource ? t('tool.faq.aOpen') : '') +
+  (d.pricing !== 'free' && freeAlts.length ? t('tool.faq.aFreeAlts', { names: freeAlts.slice(0, 5).map((x) => x.data.name).join(', ') }) : '');
+
+const webOnly = d.platforms.length === 0 || (d.platforms.length === 1 && d.platforms[0] === 'Web');
+const platformAnswer = webOnly
+  ? t('tool.faq.aPlatformsWeb', { name: d.name, category: categoryName, domain })
+  : t('tool.faq.aPlatforms', { name: d.name, category: categoryName, platforms: d.platforms.join(', ') });
+
+const peerPool = alternatives.length > 0 ? alternatives : similar;
+const faq = [
+  { q: t('tool.faq.qPrice', { name: d.name }), a: priceAnswer },
+  { q: t('tool.faq.qPlatforms', { name: d.name }), a: platformAnswer },
+  ...(peerPool.length > 0
+    ? [
+        {
+          q: t('tool.faq.qAlts', { name: d.name }),
+          a: t('tool.faq.aAlts', {
+            list: peerPool
+              .slice(0, 6)
+              .map((x) => `${x.data.name} (${t(`pricing.${x.data.pricing}`)})`)
+              .join(', '),
+          }),
+        },
+      ]
+    : []),
+];
+const compareRows = alternatives.length > 0 ? [tool, ...alternatives.slice(0, 6)] : [];
 ---
 <Base
   lang={lang}
   entry={entry}
   crumbs={[{ name: categoryName, path: `/category/${category.id}` }, { name: d.name, path: entry.path }]}
-  nodes={[software(url, tool, lang, categoryName)]}
+  nodes={[software(url, tool, lang, categoryName), faqPage(url, faq)]}
   pageExtra={{ mainEntity: { '@id': url + '#software' }, about: { '@id': url + '#software' } }}
   toolId={tool.id}
 >
@@ -47,7 +88,8 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
     <header class="tool-head">
       <div class="tool-head__title">
         <h1 class="t-display">{d.name}</h1>
-        <p class="t-lead tool-head__lead">{loc(d.description, lang)}</p>
+        {summaryText !== descText && <p class="t-meta mt-2">{summaryText}</p>}
+        <p class="t-lead tool-head__lead">{descText}</p>
         {d.note && (
           <figure class="author-note">
             <blockquote><p>{loc(d.note, lang)}</p></blockquote>
@@ -90,7 +132,7 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
         <div class="meta__row">
           <dt>{t('tool.tags')}</dt>
           <dd class="tags">
-            {d.tags.map((tag) => <a class="tag" href={u('/search', lang) + `?q=${encodeURIComponent(tag)}`}>{tag}</a>)}
+            {d.tags.map((tag) => <a class="tag" href={u('/search', lang) + `?q=${encodeURIComponent(tag)}`} rel="nofollow">{tag}</a>)}
           </dd>
         </div>
         <div class="meta__row">
@@ -117,6 +159,61 @@ const pricing = [t(`pricing.${d.pricing}`), d.openSource ? t('pricing.openSource
         <div class="shot-fallback">{domain}</div>
       )}
     </a>
+
+    {compareRows.length > 1 && (
+      <section class="section--more" aria-labelledby="compare">
+        <div class="section-head">
+          <h2 class="t-title" id="compare">{t('tool.compare', { name: d.name })}</h2>
+          {alternatives.length >= 2 && (
+            <a class="link t-small" href={u(`/alternatives/${tool.id}`, lang)}>{t('tool.allAlternatives', { name: d.name })}</a>
+          )}
+        </div>
+        <div class="compare-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th scope="col">{t('compare.site')}</th>
+                <th scope="col">{t('compare.pricing')}</th>
+                <th scope="col">{t('compare.code')}</th>
+                <th scope="col">{t('compare.platforms')}</th>
+                <th scope="col">{t('compare.summary')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {compareRows.map((row) => (
+                <tr>
+                  <td>
+                    {row.id === tool.id ? (
+                      <span>{row.data.name}</span>
+                    ) : (
+                      <a class="link" href={u(`/tool/${row.id}`, lang)}>{row.data.name}</a>
+                    )}
+                  </td>
+                  <td>{t(`pricing.${row.data.pricing}`)}</td>
+                  <td>{row.data.openSource ? t('compare.open') : t('compare.closed')}</td>
+                  <td>{row.data.platforms.length ? row.data.platforms.join(', ') : 'Web'}</td>
+                  <td>{loc(row.data.summary, lang)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+
+    <section class="section--more" aria-labelledby="tool-faq">
+      <div class="section-head">
+        <h2 class="t-title" id="tool-faq">{t('alt.faq')}</h2>
+      </div>
+      <div class="faq">
+        {faq.map((f, i) => (
+          <details class="faq__item" open={i === 0}>
+            <summary class="faq__q">{f.q}</summary>
+            <p class="faq__a">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
 
     <Comments toolId={tool.id} lang={lang} />
 

@@ -19,8 +19,21 @@ export const TRAINING_BOTS = [
   'GPTBot', 'ClaudeBot', 'Google-Extended', 'Applebot-Extended', 'CCBot', 'Meta-ExternalAgent', 'Bytespider', 'Amazonbot', 'cohere-ai',
 ];
 
-/** Query parameters that do not create separate indexable pages (Yandex Clean-param). */
+/** Query parameters that do not create separate indexable pages (Yandex Clean-param + Googlebot Disallow). */
 export const CLEAN_PARAMS = 'q&category&pricing&platform&sort&saved&c&edit&next&subscribe&unsubscribe&ref&utm_source&utm_medium&utm_campaign&utm_content&utm_term&yclid&gclid&fbclid';
+const PARAM_DISALLOWS = [
+  'Disallow: /*?q=*',
+  'Disallow: /*?category=*',
+  'Disallow: /*?pricing=*',
+  'Disallow: /*?platform=*',
+  'Disallow: /*?sort=*',
+  'Disallow: /*?saved=*',
+  'Disallow: /*?c=*',
+  'Disallow: /*?edit=*',
+  'Disallow: /*?next=*',
+  'Disallow: /*?subscribe=*',
+  'Disallow: /*?unsubscribe=*',
+];
 
 export const GET: APIRoute = () => {
   const sitemap = absUrl('/sitemap-index.xml');
@@ -30,15 +43,17 @@ export const GET: APIRoute = () => {
         ...SEARCH_BOTS.map((b) => `User-agent: ${b}`),
         'Allow: /',
         'Disallow: /admin/',
+        ...PARAM_DISALLOWS,
         '',
         `# AI training crawlers: ${ALLOW_AI_TRAINING ? 'allowed' : 'not allowed'} (ALLOW_AI_TRAINING in src/site.config.ts)`,
         ...TRAINING_BOTS.map((b) => `User-agent: ${b}`),
         ALLOW_AI_TRAINING ? 'Allow: /' : 'Disallow: /',
-        ...(ALLOW_AI_TRAINING ? ['Disallow: /admin/'] : []),
+        ...(ALLOW_AI_TRAINING ? ['Disallow: /admin/', ...PARAM_DISALLOWS] : []),
         '',
         'User-agent: *',
         'Allow: /',
         'Disallow: /admin/',
+        ...PARAM_DISALLOWS,
         `Clean-param: ${CLEAN_PARAMS}`,
         '',
         `Sitemap: ${sitemap}`,
