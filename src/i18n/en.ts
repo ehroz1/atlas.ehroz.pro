@@ -32,6 +32,8 @@ export const en = {
   'hero.title.other': 'Browse {count} hand-picked sites',
   'hero.sub': 'Useful websites and tools for makers, developers and the curious.',
   'hero.cta': 'Submit a site',
+  'hero.picks': 'Get monthly picks',
+  'hero.newest': 'New',
 
   'search.label': 'Search sites and tools',
   'search.placeholder': 'Search & filter',

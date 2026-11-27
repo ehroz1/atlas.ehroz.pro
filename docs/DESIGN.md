@@ -128,7 +128,7 @@ put them together.
 | Back link | `.back` | `← Category` above a page title |
 | Chips | `.chips`, `.chip`, `aria-current="page"` | current = ink outline; hover = signal red |
 | Keyboard hint | `.kbd` | `/` focuses the search from anywhere |
-| Home hero | `.hero-panel`, `.is-live`, `.collage`, `.collage__item`, `.hero-panel__title/__sub/__cta` | rounded panel; 14 screenshots on one ellipse at equal angles (stacks at the sides, spread top/bottom), turning counter-clockwise; still with reduced motion. Logic in `HeroCollage.astro` |
+| Home hero | `.hero-intro`, `.hero-intro__title/__sub/__actions/__btn--primary/__btn--secondary/__card/__shot/__meta` | uppercase statement left with two buttons (newsletter, submit); card on the right with the newest site's screenshot, name and "New" label. Static. Markup in `HeroIntro.astro` |
 | Page hero | `.hero`, `.t-statement` | centered title + one line on category/other pages |
 | Category index | `.category-list`, `.category-row` | one row per category with examples and count |
 | Card | `.card`, `.card__media`, `.card__shot`, `.card__badge`, `.card__name`, `.card__category`, `.card__summary` | full-bleed 16:10 screenshot with a pricing badge, caption below; whole card is one link |

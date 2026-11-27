@@ -1044,68 +1044,70 @@ button.menu__item[hidden] { display: none; }
 .hero__aside a { color: var(--c-text); }
 .hero__aside a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 
-/* Home hero: a rounded panel with screenshots scattered around its edges
-   (clipped by the panel) and a short statement + one blue button in the
-   clear middle. Each .collage__item is placed with --x / --y in % of the
-   panel, so the arrangement is data, not CSS.                           */
-.hero-panel {
-  position: relative;
+/* Home hero: a large uppercase statement on the left with two buttons
+   under it, and one card on the right with the newest site's screenshot
+   (name and a "New" label below it). No panel, no motion.              */
+.hero-intro {
   display: grid;
-  place-items: center;
-  width: 100%;          /* definite width: min-height must not widen it via aspect-ratio */
-  min-height: 26rem;
-  aspect-ratio: 3.1 / 1;
-  overflow: hidden;
-  border: var(--border);
-  border-radius: var(--r-hero);
-  background: var(--c-bg);
-  isolation: isolate;
-}
-.hero-panel__content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
   align-items: center;
-  gap: var(--s-1);
-  max-width: 34rem;
-  padding: var(--s-6);
-  text-align: center;
+  gap: clamp(var(--s-8), 6vw, var(--s-24));
+  padding-block: clamp(var(--s-8), 5vw, var(--s-16));
 }
-.hero-panel__title { font-size: clamp(var(--fs-20), 1rem + 1.1vw, 2rem); font-weight: var(--fw-medium); letter-spacing: var(--ls-tight); line-height: var(--lh-tight); }
-/* the subline is clearly secondary: smaller and grey, so the title reads first */
-.hero-panel__sub { margin-top: var(--s-2); font-size: clamp(var(--fs-15), 0.85rem + 0.3vw, var(--fs-17)); color: var(--c-text-2); line-height: var(--lh-body); }
-.hero-panel__cta { margin-top: var(--s-6); }
+.hero-intro__title {
+  max-width: 16ch;
+  font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.hero-intro__sub { max-width: 32rem; margin-top: var(--s-5); font-size: var(--fs-17); color: var(--c-text-3); }
+.hero-intro__actions { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-8); }
+.hero-intro__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 2.875rem;
+  padding: 0 var(--s-6);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-15);
+  font-weight: var(--fw-medium);
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.hero-intro__btn svg { flex: none; }
+.hero-intro__btn--primary { background: var(--c-accent); color: var(--c-on-accent); }
+.hero-intro__btn--primary:hover { background: var(--c-accent-hover); }
+.hero-intro__btn--secondary { border: 1px solid var(--c-line); background: var(--c-fill); color: var(--c-text); font-family: var(--font-mono); }
+.hero-intro__btn--secondary:hover { background: var(--c-fill-hover); border-color: var(--c-line-strong); }
 
-.collage { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-/* every shot rides the same track; the script sets its transform */
-.collage__item {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 14.5%;
-  aspect-ratio: 5 / 3;
+.hero-intro__card { display: block; }
+.hero-intro__shot {
+  display: block;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
+  border: 1px solid var(--c-line);
   border-radius: var(--r-sm);
   background: var(--c-surface);
   box-shadow: var(--shadow-shot);
-  will-change: transform;
-  backface-visibility: hidden;
-  transition: opacity var(--dur) var(--ease);
 }
-/* a shot passing behind the text fades out instead of showing through it */
-.collage__item.is-covered { opacity: 0; }
-.collage__item img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-/* before the script runs (or without it) only the panel shows */
-.hero-panel:not(.is-live) .collage__item { visibility: hidden; }
-@media (max-width: 48rem) {
-  .hero-panel { aspect-ratio: auto; min-height: 31rem; }
-  .collage__item { width: 26%; }
-}
-@media (max-width: 34rem) {
-  .hero-panel { min-height: 26rem; }
-}
+.hero-intro__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform var(--dur-slow) var(--ease); }
+.hero-intro__card:hover .hero-intro__shot img { transform: scale(1.02); }
+.hero-intro__meta { display: flex; justify-content: space-between; gap: var(--s-4); margin-top: var(--s-3); font-family: var(--font-mono); font-size: var(--fs-13); }
+.hero-intro__name { color: var(--c-text-2); }
+.hero-intro__label { color: var(--c-text-3); }
+.hero-intro__card:hover .hero-intro__name { color: var(--c-text); }
 
+@media (max-width: 60rem) {
+  .hero-intro { grid-template-columns: 1fr; }
+  .hero-intro__card { max-width: 32rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro__shot img { transition: none; }
+}
 
 /* 13. TILES & CARDS ---------------------------------------------------------
    .card   – one site in the grid: a full-bleed screenshot (.card__media)
@@ -1867,7 +1869,7 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
    as it paints, and nothing else on the card has to know about loading.
    Only opacity is animated: it runs on the compositor, so 100+ pulsing
    placeholders cost no layout or paint (a moving background-position did). */
-.skel :is(.card__shot, .tile__shot, .collage__item img, .wall__item img, .edge-shots__item img, .finder__thumb img, .article-figure img, .article-cover img):not(.is-loaded) {
+.skel :is(.card__shot, .tile__shot, .hero-intro__shot img, .wall__item img, .edge-shots__item img, .finder__thumb img, .article-figure img, .article-cover img):not(.is-loaded) {
   background-color: var(--c-surface);
   animation: skeleton 1.4s ease-in-out infinite alternate;
 }
