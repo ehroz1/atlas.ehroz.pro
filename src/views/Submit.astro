@@ -156,6 +156,8 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
     if (channel === 'atlas' && enabled) {
       if (g('website')) { status.textContent = msg.sent; form.reset(); return; } // bot
       const btn = form.querySelector<HTMLButtonElement>('[data-channel=atlas]');
+      // disabling the focused button would drop focus to <body>: give it back in `finally`
+      const hadFocus = !!btn && document.activeElement === btn;
       if (btn) btn.disabled = true;
       status.textContent = msg.sending;
       try {
@@ -184,7 +186,7 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
       } catch (err) {
         status.textContent = /too many/.test((err as Error).message) ? msg.tooMany : msg.failed;
       } finally {
-        if (btn) btn.disabled = false;
+        if (btn) { btn.disabled = false; if (hadFocus) btn.focus(); }
       }
       return;
     }

@@ -22,6 +22,11 @@ const msg = {
   failed: t('comments.failed'),
   tooMany: t('comments.tooMany'),
   del: t('comments.delete'),
+  delLabel: t('comments.deleteLabel'),
+  delConfirm: t('comments.deleteConfirm'),
+  delFailed: t('comments.deleteFailed'),
+  posted: t('comments.posted'),
+  loadFailed: t('comments.loadFailed'),
   empty: t('comments.empty'),
 };
 ---
@@ -94,8 +99,12 @@ const msg = {
           del.className = 'link t-meta';
           del.type = 'button';
           del.textContent = msg.del;
+          del.setAttribute('aria-label', msg.delLabel);
           del.addEventListener('click', async () => {
-            await (await sb()).from('comments').delete().eq('id', c.id);
+            if (!confirm(msg.delConfirm)) return;
+            status.textContent = '';
+            const { error } = await (await sb()).from('comments').delete().eq('id', c.id);
+            if (error) { status.textContent = msg.delFailed; return; }
             load();
           });
           li.append(del);
@@ -106,12 +115,13 @@ const msg = {
 
     // the rows policy decides what comes back: approved + this user's own
     const load = async () => {
-      const { data } = await (await sb())
+      const { data, error } = await (await sb())
         .from('comments')
         .select('id,author_name,body,created_at,user_id')
         .eq('tool_id', toolId)
         .order('created_at', { ascending: true })
         .limit(200);
+      if (error) { status.textContent = msg.loadFailed; return; }
       render((data as C[]) ?? []);
     };
 
@@ -132,15 +142,19 @@ const msg = {
       const text = String(new FormData(form).get('body') ?? '').trim();
       if (!text) return;
       const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      // disabling the focused button would drop focus to <body>: give it back afterwards
+      const hadFocus = document.activeElement === btn;
       btn.disabled = true;
       status.textContent = '';
       const { error } = await (await sb()).from('comments').insert({ tool_id: toolId, body: text });
       btn.disabled = false;
+      if (hadFocus) btn.focus();
       if (error) {
         status.textContent = /too many/.test(error.message) ? msg.tooMany : msg.failed;
         return;
       }
       form.reset();
+      status.textContent = msg.posted;
       load();
     });
 

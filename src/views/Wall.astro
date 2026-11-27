@@ -71,7 +71,9 @@ const seen = new Set<string>();
   // 1. Tile the block 3 × 3: triple every row, then triple the rows.
   const baseRows = Array.from(plane.children) as HTMLElement[];
   const hide = (el: HTMLElement) => {
-    el.querySelectorAll('a').forEach((a) => {
+    // `el` is a whole row (links inside) or a single tile that is itself the link
+    const links = el.matches('a') ? [el] : Array.from(el.querySelectorAll('a'));
+    links.forEach((a) => {
       a.setAttribute('aria-hidden', 'true');
       a.tabIndex = -1;
       a.removeAttribute('aria-label');
@@ -105,6 +107,10 @@ const seen = new Set<string>();
   let y = blockH / 2 - innerHeight / 2;
   let tx = x;
   let ty = y;
+  // Which copy of the tiled block is drawn first. 1 is the middle copy (the default);
+  // 0 shows the original tiles, so a keyboard-focused tile can be the one on screen.
+  let kx = 1;
+  let ky = 1;
   let vx = 0; // coasting velocity after a drag, px/s
   let vy = 0;
   let dragging = false;
@@ -112,7 +118,7 @@ const seen = new Set<string>();
   let running = false;
 
   const draw = () => {
-    plane.style.transform = `translate3d(${-(blockW + mod(x, blockW))}px, ${-(blockH + mod(y, blockH))}px, 0)`;
+    plane.style.transform = `translate3d(${-(kx * blockW + mod(x, blockW))}px, ${-(ky * blockH + mod(y, blockH))}px, 0)`;
   };
   const frame = (now: number) => {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -217,6 +223,8 @@ const seen = new Set<string>();
   addEventListener('keydown', (e) => {
     const el = e.target as HTMLElement;
     if (blocked(el) || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+    // Space belongs to a focused button, link or summary (menu button, tiles): leave it alone
+    if (e.key === ' ' && el.closest?.('button, a, summary, [role="button"], [role="menuitem"]')) return;
     const step = 180;
     const page = innerHeight * 0.8;
     const moves: Record<string, [number, number]> = {
@@ -242,13 +250,44 @@ const seen = new Set<string>();
     draw();
   });
 
-  // Tabbing to a tile brings it into view.
+  // Tabbing to a tile brings it into view. The wall is the same block tiled 3 × 3 and
+  // the focusable tiles are the originals, so the camera has to move to the original,
+  // not to whichever copy happens to be near: pick the copy of the block that shows it,
+  // then centre the camera on it. The copies are identical, so the switch is invisible.
+  // The browser itself tries to scroll a focused tile into view inside the clipped wall,
+  // which would shift everything by whole blocks; the camera is the only thing that moves.
+  const pin = () => { wall.scrollLeft = 0; wall.scrollTop = 0; };
+  wall.addEventListener('scroll', pin);
   wall.addEventListener('focusin', (e) => {
     const a = (e.target as HTMLElement).closest('a');
     if (!a) return;
+    pin();
     const r = a.getBoundingClientRect();
-    if (r.left < 0 || r.right > innerWidth) tx += r.left - (innerWidth - r.width) / 2;
-    if (r.top < 0 || r.bottom > innerHeight) ty += r.top - (innerHeight - r.height) / 2;
+    if (r.left >= 0 && r.right <= innerWidth && r.top >= 72 && r.bottom <= innerHeight) {
+      // already clear of the edges and the bar: stop an earlier glide so it doesn't carry the tile away
+      tx = x;
+      ty = y;
+      vx = vy = 0;
+      return;
+    }
+    const pr = plane.getBoundingClientRect();
+    const px = r.left - pr.left; // the tile's place inside the plane, whatever the camera does
+    const py = r.top - pr.top;
+    // columns: the originals are the first copy (0 .. blockW)
+    kx = 0;
+    // keep 2px off the block's seam: right on it, rounding decides which side of the wrap the camera lands on
+    const keep = (v: number, size: number) => Math.min(size - 2, Math.max(2, v));
+    const mx = keep(px - (innerWidth - r.width) / 2, blockW);
+    // rows: the originals are the middle copy (blockH .. 2 * blockH)
+    const my = py - blockH - (innerHeight - r.height) / 2;
+    if (my >= 0) { ky = 1; } else { ky = 0; }
+    const targetY = keep(my >= 0 ? my : my + blockH, blockH);
+    // shortest way there, modulo one block
+    const dx = mod(mx - mod(x, blockW) + blockW / 2, blockW) - blockW / 2;
+    const dy = mod(targetY - mod(y, blockH) + blockH / 2, blockH) - blockH / 2;
+    vx = vy = 0;
+    tx = x + dx;
+    ty = y + dy;
     kick();
   });
 </script>
