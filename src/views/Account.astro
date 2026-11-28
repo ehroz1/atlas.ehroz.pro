@@ -1,20 +1,42 @@
 ---
 /**
- * /account/ — sign in (Google or an emailed link), plan, newsletter flag,
- * cloud collections and recommendation settings. Rendered as static HTML;
- * the script fills in the signed-in state. Not indexed.
+ * /account/ — one page, three moments:
+ *   1. gate     — sign in or sign up (Google or an emailed link; no password,
+ *                 the first sign-in creates the account), then "check your inbox";
+ *   2. welcome  — right after the account is created: name + newsletter,
+ *                 then the categories to show first (two short steps, skippable);
+ *   3. profile  — who you are, real counts, cloud collections with previews,
+ *                 profile settings, recommendations and the plan.
+ * Rendered as static HTML; the script picks the state. Not indexed.
  * Recommendations work without an account (localStorage).
+ * In `astro dev`, ?preview=in | welcome | sent shows a state without signing in.
  */
+import { getImage, Image } from 'astro:assets';
 import { u } from '~/lib/url';
 import Base from '~/layouts/Base.astro';
-import { getCategories } from '~/lib/data';
+import { getCategories, getTools } from '~/lib/data';
+import { shotFor } from '~/lib/shots';
 import { BACKEND } from '~/lib/backend';
+import { PRO } from '~/site.config';
 import { loc, useTranslations, type Lang } from '~/i18n';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const categories = await getCategories();
+const [categories, tools] = await Promise.all([getCategories(), getTools()]);
+
+// small previews for collection covers: id → [thumb, name]
+const thumbs: Record<string, [string, string]> = {};
+for (const tool of tools) {
+  const shot = shotFor(tool.id);
+  if (shot) thumbs[tool.id] = [(await getImage({ src: shot, width: 240, format: 'webp', quality: 70 })).src, tool.data.name];
+}
+// three screenshots fanned out next to the sign-in panel (featured first)
+const fan = tools.filter((x) => shotFor(x.id)).slice(0, 3);
+
+const plural = (key: 'account.sites') => ({
+  one: t(`${key}.one`), few: t(`${key}.few`), many: t(`${key}.many`), other: t(`${key}.other`),
+});
 const msg = {
   sent: t('account.sent'),
   error: t('account.error'),
@@ -23,97 +45,260 @@ const msg = {
   planFree: t('account.planFree'),
   planPro: t('account.planPro'),
   planProAlways: t('account.planProAlways'),
-  signedAs: t('account.signedAs'),
+  planFreeBody: t('account.planFreeBody', { n: PRO.freeCollections }),
+  planProBody: t('account.planProBody'),
+  since: t('account.since'),
+  noName: t('account.noName'),
   none: t('collections.none'),
   del: t('collections.delete'),
   delLabel: t('collections.deleteLabel'),
   delConfirm: t('collections.deleteConfirm'),
   delFailed: t('collections.deleteFailed'),
   priv: t('collections.private'),
+  pub: t('collections.public'),
+  limit: t('account.collLimit'),
+  sites: plural('account.sites'),
   rateLimit: t('account.rateLimit'),
   linkExpired: t('account.linkExpired'),
   nameFailed: t('account.nameFailed'),
   newsletterFailed: t('account.newsletterFailed'),
+  resend: t('account.resend'),
+  resendIn: t('account.resendIn'),
+  step: t('account.welcome.step'),
+  freeMax: PRO.freeCollections,
 };
+const perks = [
+  { title: t('account.perk.collections'), body: t('account.perk.collectionsBody', { n: PRO.freeCollections }) },
+  { title: t('account.perk.sync'), body: t('account.perk.syncBody') },
+  { title: t('account.perk.comments'), body: t('account.perk.commentsBody') },
+  { title: t('account.perk.newsletter'), body: t('account.perk.newsletterBody') },
+];
+const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2 3.5-5.1 3.5-8.7Z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1Z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.4.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9Z"/></svg>';
 ---
 <Base lang={lang} title={t('account.title')} description={t('account.lead')} noindex
-  crumbs={[{ name: t('account.h1'), path: '/account' }]} crumbsContainer="container container--narrow">
-  <div class="container container--narrow">
-    <div class="section section--top" data-account data-msg={JSON.stringify(msg)} data-lang={lang}>
-      <div class="stack" style="--gap: var(--s-3)">
-        <h1 class="t-statement">{t('account.h1')}</h1>
-        <p class="t-secondary">{t('account.lead')}</p>
-      </div>
+  crumbs={[{ name: t('account.h1'), path: '/account' }]} crumbsContainer="container">
+  <div class="container">
+    <div class="section section--page acc" data-account data-msg={JSON.stringify(msg)} data-lang={lang}
+      data-thumbs={JSON.stringify(thumbs)} data-state={BACKEND.enabled ? 'loading' : 'off'}>
 
-      {!BACKEND.enabled && <p class="notice mt-8">{t('account.off')}</p>}
+      {!BACKEND.enabled && (
+        <div class="stack" style="--gap: var(--s-3)">
+          <h1 class="t-statement">{t('account.h1')}</h1>
+          <p class="notice">{t('account.off')}</p>
+        </div>
+      )}
 
       {BACKEND.enabled && (
         <>
-          {/* signed out */}
-          <section class="mt-12 stack" style="--gap: var(--s-4)" data-signed-out>
-            <button class="btn btn--solid btn--lg auth-google" type="button" data-google>
-              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2 3.5-5.1 3.5-8.7Z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24Z"/><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1Z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.4.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9Z"/></svg>
-              {t('account.google')}
-            </button>
-            <p class="t-meta">{t('account.or')}</p>
-            <form class="form" data-email-form style="--gap: var(--s-3)">
-              <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
-              <div class="field">
-                <label class="field__label" for="acc-email">{t('account.email')}</label>
-                <input class="input" id="acc-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+          <h1 class="visually-hidden">{t('account.h1')}</h1>
+
+          {/* ---- 1. gate: sign in / sign up ---- */}
+          <section class="acc-gate" data-signed-out aria-labelledby="gate-h">
+            <div class="acc-gate__main">
+              <div class="stack" style="--gap: var(--s-3)">
+                <h2 class="t-statement" id="gate-h">{t('account.gate.title')}</h2>
+                <p class="t-secondary">{t('account.lead')}</p>
               </div>
-              <div class="cluster" style="--gap: var(--s-3)">
-                <button class="btn btn--lg" type="submit">{t('account.send')}</button>
+
+              <div class="acc-panel" data-step="start">
+                <div class="acc-panel__step" data-pane="start">
+                  <button class="btn btn--solid btn--lg acc-wide" type="button" data-google>
+                    <Fragment set:html={googleIcon} />
+                    {t('account.google')}
+                  </button>
+                  <p class="acc-or" aria-hidden="true"><span>{t('account.or')}</span></p>
+                  <form class="form" data-email-form style="--gap: var(--s-3)" novalidate>
+                    <div class="visually-hidden" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
+                    <div class="field">
+                      <label class="field__label" for="acc-email">{t('account.email')}</label>
+                      <input class="input" id="acc-email" name="email" type="email" required autocomplete="email"
+                        inputmode="email" placeholder="you@example.com" aria-describedby="acc-auth-status" />
+                    </div>
+                    <button class="btn btn--lg acc-wide" type="submit" data-send>{t('account.send')}</button>
+                  </form>
+                  <p class="t-meta" id="acc-auth-status" data-auth-status aria-live="polite"></p>
+                  <p class="acc-fine">
+                    {t('account.gate.note')}{' '}
+                    <a class="link" href={u('/privacy', lang)}>{t('account.privacy')}</a>
+                  </p>
+                </div>
+
+                <div class="acc-panel__step acc-sent" data-pane="sent" hidden tabindex="-1" aria-labelledby="sent-h">
+                  <svg class="acc-sent__art" viewBox="0 0 170 120" aria-hidden="true" fill="none" stroke="currentColor"
+                    stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M24 31c1-4 4-6 8-6h105c5 0 10 4 10 9l-1 60c0 5-4 9-9 9H32c-5 0-9-4-9-9l-1-58" />
+                    <path d="M25 31l58 42c3 2 7 2 10 0l51-40" />
+                    <path d="M28 98l40-32M140 97l-38-31" />
+                    <path d="M138 12l6-6M150 22l9-2M128 8l1-6" />
+                  </svg>
+                  <h2 class="t-title" id="sent-h">{t('account.sentTitle')}</h2>
+                  <p class="t-secondary" data-sent-body></p>
+                  <p class="t-meta">{t('account.sentHint')}</p>
+                  <div class="cluster" style="--gap: var(--s-2)">
+                    <button class="btn" type="button" data-resend disabled>{t('account.resend')}</button>
+                    <button class="btn btn--ghost" type="button" data-other>{t('account.otherEmail')}</button>
+                  </div>
+                  <p class="t-meta" data-sent-status aria-live="polite"></p>
+                </div>
               </div>
-            </form>
-            <p class="t-meta" data-auth-status aria-live="polite"></p>
+            </div>
+
+            <aside class="acc-gate__side" aria-labelledby="perks-h">
+              <div class="acc-fan" aria-hidden="true">
+                {fan.map((tool) => (
+                  <Image class="acc-fan__shot" src={shotFor(tool.id)!} alt="" width={420} format="webp" quality={70} loading="lazy" />
+                ))}
+              </div>
+              <h2 class="t-title" id="perks-h">{t('account.perks.title')}</h2>
+              <ol class="acc-perks">
+                {perks.map((p, i) => (
+                  <li class="acc-perks__item">
+                    <span class="acc-perks__n t-mono" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="stack" style="--gap: var(--s-1)">
+                      <span class="acc-perks__title">{p.title}</span>
+                      <span class="t-small t-secondary">{p.body}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <p class="t-meta">{t('account.perks.local')}</p>
+            </aside>
           </section>
 
-          {/* signed in */}
-          <section class="mt-12 stack" style="--gap: var(--s-5)" data-signed-in hidden>
-            <p class="t-secondary" data-who></p>
-            <dl class="meta">
-              <div class="meta__row">
-                <dt>{t('account.plan')}</dt>
-                <dd class="cluster" style="--gap: var(--s-3)">
-                  <span data-plan></span>
-                  <span class="card__partner" data-supporter hidden>{t('account.supporter')}</span>
-                  <a class="link" href={u('/pro', lang)} data-upgrade hidden>{t('account.upgrade')}</a>
-                  {BACKEND.billingPortal && <a class="link" href={BACKEND.billingPortal} rel="noopener" data-manage hidden>{t('account.manage')}</a>}
-                </dd>
-              </div>
-            </dl>
-            <form class="field field--short" data-name-form>
-              <label class="field__label" for="acc-name">{t('account.name')}</label>
-              <div class="input-row">
-                <input class="input" id="acc-name" name="name" maxlength="40" placeholder={t('account.namePh')} />
-                <button class="btn" type="submit">{t('prefs.save')}</button>
-              </div>
-            </form>
-            <p class="t-meta" data-account-status aria-live="polite"></p>
-            <p data-admin-link hidden><a class="btn btn--sm" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'}>{t('account.admin')}</a></p>
-            <label class="cluster t-small" style="--gap: var(--s-2)">
-              <input class="checkbox" type="checkbox" data-newsletter />
-              <span>{t('account.newsletter')} <span class="t-muted">· {t('account.newsletterHint')}</span></span>
-            </label>
+          {/* ---- 2. welcome: right after the account is created ---- */}
+          <section class="acc-welcome" data-welcome hidden aria-labelledby="welcome-h">
+            <div class="acc-panel acc-panel--welcome">
+              <h2 class="t-statement" id="welcome-h" tabindex="-1">{t('account.welcome.title')}</h2>
+              <p class="t-secondary">{t('account.welcome.lead')}</p>
 
-            <section class="stack" style="--gap: var(--s-3)" aria-labelledby="mine">
+              <form class="form" data-welcome-form style="--gap: var(--s-6)">
+                <div class="stack" style="--gap: var(--s-5)" data-wstep="1">
+                  <div class="field">
+                    <label class="field__label" for="w-name">{t('account.welcome.nameH')}</label>
+                    <input class="input" id="w-name" name="name" maxlength="40" autocomplete="nickname" placeholder={t('account.namePh')} />
+                    <span class="field__hint">{t('account.welcome.nameHint')}</span>
+                  </div>
+                  <label class="acc-toggle">
+                    <span class="stack" style="--gap: var(--s-1)">
+                      <span>{t('account.newsletter')}</span>
+                      <span class="t-meta">{t('account.newsletterHint')}</span>
+                    </span>
+                    <input class="switch" type="checkbox" role="switch" name="newsletter" />
+                  </label>
+                </div>
+
+                <fieldset class="field" data-wstep="2" hidden>
+                  <legend class="field__label">{t('account.welcome.catsH')}</legend>
+                  <p class="field__hint">{t('account.welcome.catsHint')}</p>
+                  <div class="chips chips--wrap mt-2">
+                    {categories.map((c) => (
+                      <label class="chip chip--check">
+                        <input type="checkbox" name="w-categories" value={c.id} />
+                        <span>{loc(c.data.name, lang)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <div class="split acc-welcome__foot">
+                  <span class="t-meta" data-welcome-step aria-live="polite"></span>
+                  <div class="cluster" style="--gap: var(--s-2)">
+                    <button class="btn btn--ghost" type="button" data-welcome-skip>{t('account.skip')}</button>
+                    <button class="btn" type="button" data-welcome-back hidden>{t('account.back')}</button>
+                    <button class="btn btn--solid" type="submit" data-welcome-next data-label-next={t('account.next')} data-label-done={t('account.done')}>{t('account.next')}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          {/* ---- 3. profile ---- */}
+          <section class="acc-profile" data-signed-in hidden aria-labelledby="acc-name-h">
+            <header class="acc-head">
+              <span class="acc-avatar" data-avatar aria-hidden="true"></span>
+              <div class="acc-head__text">
+                <h2 class="t-statement acc-head__name" id="acc-name-h" data-who-name></h2>
+                <p class="t-small t-secondary acc-head__email" data-who-email></p>
+                <p class="cluster t-meta" style="--gap: var(--s-2)">
+                  <span class="card__partner" data-plan-badge></span>
+                  <span class="card__partner" data-supporter hidden>{t('account.supporter')}</span>
+                  <span data-since></span>
+                </p>
+              </div>
+              <button class="btn btn--sm acc-head__out" type="button" data-signout>{t('account.signOut')}</button>
+            </header>
+
+            <dl class="acc-stats">
+              <div class="acc-stats__cell"><dt>{t('account.stat.collections')}</dt><dd class="t-mono" data-stat-coll>–</dd></div>
+              <div class="acc-stats__cell"><dt>{t('account.stat.saved')}</dt><dd class="t-mono" data-stat-saved>–</dd></div>
+              <div class="acc-stats__cell"><dt>{t('account.stat.seen')}</dt><dd class="t-mono" data-stat-seen>–</dd></div>
+            </dl>
+
+            <nav class="acc-nav" aria-label={t('account.navLabel')}>
+              <a class="chip" href="#mine">{t('collections.mine')}</a>
+              <a class="chip" href="#settings">{t('account.profile.title')}</a>
+              <a class="chip" href="#prefs">{t('prefs.title')}</a>
+              <a class="chip" href="#plan">{t('account.plan')}</a>
+            </nav>
+
+            <p class="t-meta" data-account-status aria-live="polite"></p>
+
+            <section class="acc-section" aria-labelledby="mine">
               <div class="section-head section-head--flush">
                 <h2 class="t-title" id="mine">{t('collections.mine')}</h2>
-                <a class="link t-small" href={u('/collection', lang)}>{t('collections.new')}</a>
+                <span class="t-meta" data-coll-limit></span>
               </div>
-              <ul class="coll-list" data-collections></ul>
+              <ul class="coll-grid" data-collections></ul>
+              <template data-coll-new>
+                <li class="coll-card coll-card--new">
+                  <a class="coll-card__new" href={u('/collection', lang)}>
+                    <span class="coll-card__plus" aria-hidden="true">+</span>
+                    <span>{t('collections.new')}</span>
+                  </a>
+                </li>
+              </template>
+              <template data-coll-empty>
+                <li class="coll-empty">
+                  <p class="empty__title">{t('collections.emptyTitle')}</p>
+                  <p class="t-small t-secondary">{t('collections.emptyBody')}</p>
+                  <a class="btn" href={u('/collection', lang)}>{t('collections.new')}</a>
+                </li>
+              </template>
             </section>
 
-            <p><button class="btn btn--sm" type="button" data-signout>{t('account.signOut')}</button></p>
+            <section class="acc-section" aria-labelledby="settings">
+              <h2 class="t-title" id="settings">{t('account.profile.title')}</h2>
+              <div class="acc-rows">
+                <form class="acc-row" data-name-form>
+                  <label class="acc-row__label" for="acc-name">{t('account.name')}</label>
+                  <div class="input-row">
+                    <input class="input" id="acc-name" name="name" maxlength="40" autocomplete="nickname" placeholder={t('account.namePh')} />
+                    <button class="btn" type="submit">{t('prefs.save')}</button>
+                  </div>
+                </form>
+                <div class="acc-row">
+                  <span class="acc-row__label">{t('account.email')}</span>
+                  <span class="acc-row__value" data-email-value></span>
+                </div>
+                <label class="acc-row acc-toggle">
+                  <span class="stack" style="--gap: var(--s-1)">
+                    <span>{t('account.newsletter')}</span>
+                    <span class="t-meta">{t('account.newsletterHint')}</span>
+                  </span>
+                  <input class="switch" type="checkbox" role="switch" data-newsletter />
+                </label>
+              </div>
+            </section>
           </section>
         </>
       )}
 
       {/* recommendations: always available, local first */}
-      <section class="mt-16 stack" style="--gap: var(--s-4)" id="prefs" aria-labelledby="prefs-h">
-        <h2 class="t-title" id="prefs-h">{t('prefs.title')}</h2>
-        <p class="t-secondary t-small">{t('prefs.lead')}</p>
+      <section class="acc-section" id="prefs-wrap" data-prefs-wrap aria-labelledby="prefs">
+        <div class="stack" style="--gap: var(--s-2)">
+          <h2 class="t-title" id="prefs">{t('prefs.title')}</h2>
+          <p class="t-secondary t-small">{t('prefs.lead')}</p>
+        </div>
         <form class="form" data-prefs style="--gap: var(--s-5)">
           <fieldset class="field">
             <legend class="field__label">{t('prefs.categories')}</legend>
@@ -126,7 +311,7 @@ const msg = {
               ))}
             </div>
           </fieldset>
-          <div class="field">
+          <div class="field field--short">
             <label class="field__label" for="prefs-pricing">{t('prefs.pricing')}</label>
             <select class="select" id="prefs-pricing" name="pricing">
               <option value="any">{t('prefs.pricing.any')}</option>
@@ -139,24 +324,65 @@ const msg = {
             {t('prefs.hideSeen')}
           </label>
           <div class="cluster" style="--gap: var(--s-3)">
-            <button class="btn btn--solid" type="submit">{t('prefs.save')}</button>
+            <button class="btn" type="submit">{t('prefs.save')}</button>
             <button class="btn btn--ghost" type="button" data-prefs-reset>{t('prefs.reset')}</button>
             <span class="t-meta" data-prefs-status aria-live="polite"></span>
           </div>
         </form>
       </section>
+
+      {BACKEND.enabled && (
+        <section class="acc-section" data-plan-wrap hidden aria-labelledby="plan">
+          <h2 class="t-title" id="plan">{t('account.plan')}</h2>
+          <div class="acc-plan">
+            <div class="stack" style="--gap: var(--s-1)">
+              <span class="acc-plan__name" data-plan></span>
+              <span class="t-small t-secondary" data-plan-body></span>
+            </div>
+            <div class="cluster" style="--gap: var(--s-2)">
+              <a class="btn" href={u('/pro', lang)} data-upgrade hidden>{t('account.upgrade')}</a>
+              {BACKEND.billingPortal && <a class="btn" href={BACKEND.billingPortal} rel="noopener" data-manage hidden>{t('account.manage')}</a>}
+              <a class="btn btn--ghost" href={import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/'} data-admin-link hidden>{t('account.admin')}</a>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   </div>
 </Base>
 
 <script>
-  import { enabled, sb, getProfile, updateProfile, readPrefs, writePrefs, isPro, sitePath, type Prefs } from '~/scripts/backend';
+  import { enabled, sb, maybeSignedIn, getProfile, updateProfile, readPrefs, writePrefs, isPro, sitePath, type Prefs, type Profile } from '~/scripts/backend';
+
+  type Coll = { id: string; title: string; tool_ids: string[]; is_public: boolean };
 
   const root = document.querySelector<HTMLElement>('[data-account]')!;
   const msg = JSON.parse(root.dataset.msg!);
+  const thumbs: Record<string, [string, string]> = JSON.parse(root.dataset.thumbs || '{}');
   const lang = root.dataset.lang as 'en' | 'ru';
   const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector<T>(s);
-  const fill = (tpl: string, vars: Record<string, string>) => tpl.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+  const fill = (tpl: string, vars: Record<string, string | number>) => tpl.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
+  const pluralOf = (n: number) => {
+    const c = new Intl.PluralRules(lang).select(n);
+    return `${n} ${msg.sites[c] ?? msg.sites.other}`;
+  };
+  const countKey = (key: string) => {
+    try { const v = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(v) ? v.length : 0; } catch { return 0; }
+  };
+
+  /* dev only: ?preview=in | welcome | sent — look at a state without an account */
+  const params = new URLSearchParams(location.search);
+  const preview = import.meta.env.DEV ? params.get('preview') : null;
+  const fakeProfile = {
+    id: 'preview', email: 'you@example.com', lang, prefs: {}, newsletter: true, unsub_token: '',
+    plan: 'free', plan_until: null, created_at: new Date(Date.now() - (preview === 'welcome' ? 0 : 86400e3 * 120)).toISOString(),
+    display_name: preview === 'welcome' ? null : 'Ehroz',
+  } as unknown as Profile;
+  const ids = Object.keys(thumbs);
+  let fakeColls: Coll[] = [
+    { id: 'a', title: lang === 'ru' ? 'Шрифты для лендинга' : 'Landing page fonts', tool_ids: ids.slice(3, 9), is_public: true },
+    { id: 'b', title: lang === 'ru' ? 'Референсы' : 'References', tool_ids: ids.slice(12, 14), is_public: false },
+  ];
 
   /* ---- recommendations ---- */
   const form = $<HTMLFormElement>('[data-prefs]')!;
@@ -185,67 +411,184 @@ const msg = {
 
   /* ---- account ---- */
   if (enabled) {
-    const out = $('[data-signed-out]')!;
-    const inn = $('[data-signed-in]')!;
+    const gate = $('[data-signed-out]')!;
+    const welcome = $('[data-welcome]')!;
+    const profileEl = $('[data-signed-in]')!;
+    const planWrap = $('[data-plan-wrap]')!;
     const status = $('[data-auth-status]')!;
+    const notice = $('[data-account-status]')!;
     const here = location.origin + location.pathname;
-    const params = new URLSearchParams(location.search);
     // the server's own wording stays out of sight; rate limits get a plain hint, everything else a generic retry
     const explain = (e: unknown) => (/rate limit|seconds|too many/i.test((e as Error)?.message ?? '') ? msg.rateLimit : msg.error);
-    const fail = (e: unknown) => (status.textContent = explain(e));
-    // result of name / newsletter / delete actions: visible while signed in
-    const notice = $('[data-account-status]')!;
+
+    const show = (state: 'out' | 'welcome' | 'in') => {
+      root.dataset.state = state;
+      gate.hidden = state !== 'out';
+      welcome.hidden = state !== 'welcome';
+      profileEl.hidden = state !== 'in';
+      planWrap.hidden = state !== 'in';
+      $('[data-prefs-wrap]')!.hidden = state === 'welcome';
+    };
 
     // error coming back from Google / an expired link
     const urlError = params.get('error_description') || new URLSearchParams(location.hash.slice(1)).get('error_description');
     if (urlError) status.textContent = msg.linkExpired;
 
+    /* -- gate: Google -- */
     $('[data-google]')!.addEventListener('click', async () => {
+      if (preview) return;
       (window as any).atlasTrack?.('sign_in', { method: 'google' });
       const { error } = await (await sb()).auth.signInWithOAuth({ provider: 'google', options: { redirectTo: here + location.search } });
-      if (error) fail(error);
+      if (error) status.textContent = explain(error);
     });
+
+    /* -- gate: emailed link, then "check your inbox" -- */
+    const panel = $('.acc-panel')!;
+    const emailForm = $<HTMLFormElement>('[data-email-form]')!;
+    const emailInput = $<HTMLInputElement>('#acc-email')!;
+    const resendBtn = $<HTMLButtonElement>('[data-resend]')!;
+    const sentStatus = $('[data-sent-status]')!;
+    let lastEmail = '';
+    let timer = 0;
+
+    const pane = (name: 'start' | 'sent') => {
+      panel.dataset.step = name;
+      panel.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== name));
+    };
+    const cooldown = (sec = 60) => {
+      clearInterval(timer);
+      resendBtn.disabled = true;
+      let left = sec;
+      const tick = () => {
+        resendBtn.textContent = left > 0 ? fill(msg.resendIn, { s: left }) : msg.resend;
+        if (left-- <= 0) { resendBtn.disabled = false; clearInterval(timer); }
+      };
+      tick();
+      timer = window.setInterval(tick, 1000);
+    };
+    const showSent = (email: string) => {
+      lastEmail = email;
+      $('[data-sent-body]')!.textContent = fill(msg.sent, { email });
+      sentStatus.textContent = '';
+      pane('sent');
+      $('[data-pane=sent]')!.focus();
+      cooldown();
+    };
 
     let sending = false;
-    $<HTMLFormElement>('[data-email-form]')!.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (sending) return;
-      const fd = new FormData(e.target as HTMLFormElement);
-      const email = String(fd.get('email') ?? '').trim();
-      if (fd.get('website')) { status.textContent = fill(msg.sent, { email }); return; }
+    const sendLink = async (email: string, honeypot = false) => {
+      if (sending) return false;
+      if (honeypot || preview) return true;
       (window as any).atlasTrack?.('sign_in', { method: 'email' });
       sending = true;
-      const { error } = await (await sb()).auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: here + location.search, data: { lang, newsletter: params.get('subscribe') === '1' } },
-      }).finally(() => { sending = false; });
-      if (error) fail(error);
-      else status.textContent = fill(msg.sent, { email });
-    });
+      try {
+        const { error } = await (await sb()).auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: here + location.search, data: { lang, newsletter: params.get('subscribe') === '1' } },
+        });
+        if (error) throw error;
+        return true;
+      } catch (e) {
+        return explain(e);
+      } finally {
+        sending = false;
+      }
+    };
 
-    const renderCollections = async (uid: string) => {
-      const list = $('[data-collections]')!;
-      const { data } = await (await sb()).from('collections').select('id,title,tool_ids,is_public').eq('owner', uid).order('created_at', { ascending: false });
-      list.replaceChildren();
-      if (!data?.length) {
-        const li = document.createElement('li');
-        li.className = 't-meta';
-        li.textContent = msg.none;
-        list.append(li);
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(emailForm);
+      const email = String(fd.get('email') ?? '').trim();
+      if (!emailInput.checkValidity() || !email) {
+        emailInput.setAttribute('aria-invalid', 'true');
+        emailInput.focus();
+        status.textContent = emailInput.validationMessage;
         return;
       }
-      for (const c of data) {
+      emailInput.removeAttribute('aria-invalid');
+      status.textContent = '';
+      const btn = $<HTMLButtonElement>('[data-send]')!;
+      btn.disabled = true;
+      const res = await sendLink(email, !!fd.get('website'));
+      btn.disabled = false;
+      if (res === true) showSent(email);
+      else if (res) status.textContent = res;
+    });
+    resendBtn.addEventListener('click', async () => {
+      const res = await sendLink(lastEmail);
+      if (res === true) { sentStatus.textContent = msg.saved; cooldown(); }
+      else if (res) sentStatus.textContent = res;
+    });
+    $('[data-other]')!.addEventListener('click', () => {
+      clearInterval(timer);
+      pane('start');
+      emailInput.select();
+      emailInput.focus();
+    });
+
+    /* -- welcome: two steps right after sign-up -- */
+    const wForm = $<HTMLFormElement>('[data-welcome-form]')!;
+    let wStep = 1;
+    const paintStep = () => {
+      wForm.querySelectorAll<HTMLElement>('[data-wstep]').forEach((s) => (s.hidden = Number(s.dataset.wstep) !== wStep));
+      $('[data-welcome-step]')!.textContent = fill(msg.step, { n: wStep });
+      $('[data-welcome-back]')!.hidden = wStep === 1;
+      const nextBtn = $('[data-welcome-next]')!;
+      nextBtn.textContent = (wStep === 2 ? nextBtn.dataset.labelDone : nextBtn.dataset.labelNext) ?? '';
+    };
+
+    const welcomedKey = (id: string) => `atlas:welcomed:${id}`;
+    const isFresh = (p: Profile & { created_at?: string; display_name?: string | null }) => {
+      if (preview) return preview === 'welcome';
+      try { if (localStorage.getItem(welcomedKey(p.id))) return false; } catch {}
+      const age = Date.now() - new Date(p.created_at ?? 0).getTime();
+      return !p.display_name && age < 30 * 60e3;
+    };
+
+    /* -- profile -- */
+    const renderCollections = async (uid: string) => {
+      const list = $('[data-collections]')!;
+      const data: Coll[] | null = preview
+        ? fakeColls
+        : (await (await sb()).from('collections').select('id,title,tool_ids,is_public').eq('owner', uid).order('created_at', { ascending: false })).data;
+      const n = data?.length ?? 0;
+      $('[data-stat-coll]')!.textContent = String(n);
+      list.replaceChildren();
+      if (!n) {
+        list.append(($<HTMLTemplateElement>('[data-coll-empty]')!).content.cloneNode(true));
+        return;
+      }
+      for (const c of data!) {
         const li = document.createElement('li');
-        li.className = 'coll-list__item';
+        li.className = 'coll-card';
         const a = document.createElement('a');
-        a.className = 'link';
+        a.className = 'coll-card__link';
         a.href = sitePath(`collection/?c=${encodeURIComponent(c.id)}`);
-        a.textContent = c.title;
+
+        const cover = document.createElement('span');
+        cover.className = 'coll-card__cover';
+        cover.setAttribute('aria-hidden', 'true');
+        const shots = c.tool_ids.filter((id) => thumbs[id]).slice(0, 3);
+        cover.dataset.count = String(shots.length);
+        for (const id of shots) {
+          const img = document.createElement('img');
+          img.src = thumbs[id][0];
+          img.alt = '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          cover.append(img);
+        }
+
+        const name = document.createElement('span');
+        name.className = 'coll-card__name';
+        name.textContent = c.title;
         const meta = document.createElement('span');
         meta.className = 't-meta';
-        meta.textContent = ` · ${c.tool_ids.length}${c.is_public ? '' : ' · ' + msg.priv}`;
+        meta.textContent = `${pluralOf(c.tool_ids.length)} · ${c.is_public ? msg.pub : msg.priv}`;
+        a.append(cover, name, meta);
+
         const del = document.createElement('button');
-        del.className = 'btn btn--sm btn--ghost';
+        del.className = 'btn btn--sm btn--ghost coll-card__del';
         del.type = 'button';
         del.textContent = msg.del;
         del.setAttribute('aria-label', fill(msg.delLabel, { title: c.title }));
@@ -254,38 +597,55 @@ const msg = {
           if (!confirm(fill(msg.delConfirm, { title: c.title }))) return;
           notice.textContent = '';
           try {
-            const { error } = await (await sb()).from('collections').delete().eq('id', c.id);
-            if (error) throw error;
+            if (preview) fakeColls = fakeColls.filter((x) => x.id !== c.id);
+            else {
+              const { error } = await (await sb()).from('collections').delete().eq('id', c.id);
+              if (error) throw error;
+            }
           } catch {
             notice.textContent = fill(msg.delFailed, { title: c.title });
             return;
           }
           renderCollections(uid);
         });
-        li.append(a, meta, del);
+        li.append(a, del);
         list.append(li);
+      }
+      list.append(($<HTMLTemplateElement>('[data-coll-new]')!).content.cloneNode(true));
+      return n;
+    };
+
+    const paintWho = (p: Profile & { display_name?: string | null; created_at?: string }) => {
+      const name = p.display_name?.trim() || '';
+      const nameEl = $('[data-who-name]')!;
+      nameEl.textContent = name || msg.noName;
+      nameEl.classList.toggle('is-empty', !name);
+      $('[data-who-email]')!.textContent = p.email ?? '';
+      $('[data-email-value]')!.textContent = p.email ?? '';
+      $('[data-avatar]')!.textContent = (name || p.email || '?').trim().charAt(0).toUpperCase();
+      if (p.created_at) {
+        const d = new Date(p.created_at).toLocaleDateString(lang, { day: 'numeric', month: 'long', year: 'numeric' });
+        $('[data-since]')!.textContent = fill(msg.since, { date: d });
       }
     };
 
+    const saveName = async (p: Profile, v: string) => {
+      if (preview) return null;
+      const { error } = await (await sb()).from('profiles').update({ display_name: v || null }).eq('id', p.id);
+      return error;
+    };
+
     const render = async () => {
-      const profile = await getProfile().catch(() => null);
-      out.hidden = !!profile;
-      inn.hidden = !profile;
-      if (!profile) return;
-      $('[data-who]')!.textContent = fill(msg.signedAs, { email: profile.email ?? '' });
-      const pro = isPro(profile);
-      $('[data-plan]')!.textContent = pro
-        ? profile.plan_until
-          ? fill(msg.planPro, { date: new Date(profile.plan_until).toLocaleDateString(lang) })
-          : msg.planProAlways
-        : msg.planFree;
-      $('[data-supporter]')!.hidden = !pro;
-      $('[data-upgrade]')!.hidden = pro;
-      const manage = $('[data-manage]');
-      if (manage) manage.hidden = !pro;
+      const profile = (preview && preview !== 'sent' ? fakeProfile : await getProfile().catch(() => null)) as
+        (Profile & { display_name?: string | null; created_at?: string; is_admin?: boolean }) | null;
+      if (!profile) {
+        show('out');
+        if (preview === 'sent') showSent('you@example.com');
+        return;
+      }
 
       // came from the newsletter form: turn the flag on
-      if (params.get('subscribe') === '1' && !profile.newsletter) {
+      if (params.get('subscribe') === '1' && !profile.newsletter && !preview) {
         try {
           await updateProfile({ newsletter: true });
           profile.newsletter = true;
@@ -293,17 +653,103 @@ const msg = {
           notice.textContent = msg.newsletterFailed;
         }
       }
+
+      // local prefs → account on first sign-in, account → local afterwards
+      const local = readPrefs();
+      if (Object.keys(profile.prefs ?? {}).length) {
+        try { localStorage.setItem('atlas:prefs', JSON.stringify(profile.prefs)); } catch {}
+        paint(profile.prefs);
+      } else if (Object.keys(local).length && !preview) {
+        updateProfile({ prefs: local }).catch(() => {});
+      }
+      if (profile.lang !== lang && !preview) updateProfile({ lang }).catch(() => {});
+
+      // a "next" target, e.g. back to /pro/ after signing in
+      const next = params.get('next');
+      if (next && /^[a-z0-9/-]+$/.test(next)) {
+        // the admin page exists once, outside the language folders
+        location.href = next.startsWith('admin') ? import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/' : sitePath(next);
+        return;
+      }
+
+      if (isFresh(profile)) return startWelcome(profile);
+      showProfile(profile);
+    };
+
+    const startWelcome = (profile: Profile & { display_name?: string | null }) => {
+      show('welcome');
+      wStep = 1;
+      paintStep();
+      (wForm.elements.namedItem('newsletter') as HTMLInputElement).checked = profile.newsletter;
+      const cats = readPrefs().categories ?? [];
+      wForm.querySelectorAll<HTMLInputElement>('input[name=w-categories]').forEach((i) => (i.checked = cats.includes(i.value)));
+      $('#welcome-h')!.focus();
+
+      const finish = () => {
+        try { localStorage.setItem(welcomedKey(profile.id), '1'); } catch {}
+        showProfile(profile);
+        $('#acc-name-h')!.setAttribute('tabindex', '-1');
+        $('#acc-name-h')!.focus();
+      };
+      $('[data-welcome-skip]')!.onclick = finish;
+      $('[data-welcome-back]')!.onclick = () => { wStep = 1; paintStep(); };
+      wForm.onsubmit = async (e) => {
+        e.preventDefault();
+        if (wStep === 1) {
+          const v = String(new FormData(wForm).get('name') ?? '').trim();
+          const wanted = (wForm.elements.namedItem('newsletter') as HTMLInputElement).checked;
+          if (v) { if (!(await saveName(profile, v))) profile.display_name = v; }
+          if (wanted !== profile.newsletter) {
+            if (!preview) await updateProfile({ newsletter: wanted }).catch(() => {});
+            profile.newsletter = wanted;
+          }
+          wStep = 2;
+          paintStep();
+          wForm.querySelector<HTMLInputElement>('input[name=w-categories]')?.focus();
+          return;
+        }
+        const categories = [...wForm.querySelectorAll<HTMLInputElement>('input[name=w-categories]:checked')].map((i) => i.value);
+        const p = { ...readPrefs(), categories };
+        if (preview) { try { localStorage.setItem('atlas:prefs', JSON.stringify(p)); } catch {} }
+        else await writePrefs(p);
+        paint(p);
+        finish();
+      };
+    };
+
+    const showProfile = (profile: Profile & { display_name?: string | null; created_at?: string; is_admin?: boolean }) => {
+      show('in');
+      paintWho(profile);
+
+      const pro = isPro(profile);
+      const planText = pro
+        ? profile.plan_until
+          ? fill(msg.planPro, { date: new Date(profile.plan_until).toLocaleDateString(lang) })
+          : msg.planProAlways
+        : msg.planFree;
+      $('[data-plan]')!.textContent = planText;
+      $('[data-plan-badge]')!.textContent = pro ? 'Pro' : msg.planFree;
+      $('[data-plan-body]')!.textContent = pro ? msg.planProBody : msg.planFreeBody;
+      $('[data-supporter]')!.hidden = !pro;
+      $('[data-upgrade]')!.hidden = pro;
+      const manage = $('[data-manage]');
+      if (manage) manage.hidden = !pro;
+      $('[data-admin-link]')!.hidden = !profile.is_admin;
+
+      $('[data-stat-saved]')!.textContent = String(countKey('atlas:saved'));
+      $('[data-stat-seen]')!.textContent = String(countKey('atlas:seen'));
+
       const nameForm = $<HTMLFormElement>('[data-name-form]')!;
       const nameInput = nameForm.querySelector<HTMLInputElement>('input')!;
-      nameInput.value = (profile as any).display_name ?? '';
+      nameInput.value = profile.display_name ?? '';
       nameForm.onsubmit = async (e) => {
         e.preventDefault();
         const v = nameInput.value.trim();
-        const { error } = await (await sb()).from('profiles').update({ display_name: v || null }).eq('id', profile.id);
+        const error = await saveName(profile, v);
         // announced through the live region; the button keeps its name
         notice.textContent = error ? msg.nameFailed : msg.saved;
+        if (!error) { profile.display_name = v || null; paintWho(profile); }
       };
-      $('[data-admin-link]')!.hidden = !(profile as any).is_admin;
 
       const nl = $<HTMLInputElement>('[data-newsletter]')!;
       nl.checked = profile.newsletter;
@@ -311,41 +757,32 @@ const msg = {
         if (nl.checked) (window as any).atlasTrack?.('newsletter_subscribe', { source: 'account' });
         notice.textContent = '';
         const wanted = nl.checked;
-        updateProfile({ newsletter: wanted }).catch(() => {
+        if (preview) return;
+        updateProfile({ newsletter: wanted }).then(() => (profile.newsletter = wanted)).catch(() => {
           // the save failed: show the real state again and say so
           nl.checked = !wanted;
           notice.textContent = msg.newsletterFailed;
         });
       };
 
-      // local prefs → account on first sign-in, account → local afterwards
-      const local = readPrefs();
-      if (Object.keys(profile.prefs ?? {}).length) {
-        localStorage.setItem('atlas:prefs', JSON.stringify(profile.prefs));
-        paint(profile.prefs);
-      } else if (Object.keys(local).length) {
-        updateProfile({ prefs: local }).catch(() => {});
-      }
-      if (profile.lang !== lang) updateProfile({ lang }).catch(() => {});
-
-      // a "next" target, e.g. back to /pro/ after signing in
-      const next = params.get('next');
-      if (next && /^[a-z0-9/-]+$/.test(next)) {
-        // the admin page exists once, outside the language folders
-        location.href = next.startsWith('admin') ? import.meta.env.BASE_URL.replace(/\/$/, '') + '/admin/' : sitePath(next);
-      }
-
-      renderCollections(profile.id);
+      renderCollections(profile.id).then((n) => {
+        $('[data-coll-limit]')!.textContent = pro || n === undefined ? '' : fill(msg.limit, { n, max: msg.freeMax });
+      });
     };
 
     $('[data-signout]')!.addEventListener('click', async () => {
-      await (await sb()).auth.signOut();
-      render();
+      if (!preview) await (await sb()).auth.signOut();
+      show('out');
+      pane('start');
     });
 
-    sb().then((c) => c.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') render();
-    }));
+    // guests see the gate at once; a returning member sees nothing until the profile loads
+    if (!preview && !maybeSignedIn()) show('out');
+    if (!preview) {
+      sb().then((c) => c.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') render();
+      }));
+    }
     render();
   }
 </script>

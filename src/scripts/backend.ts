@@ -51,6 +51,9 @@ export interface Profile {
   unsub_token: string;
   plan: 'free' | 'pro';
   plan_until: string | null;
+  created_at?: string;
+  display_name?: string | null;
+  is_admin?: boolean;
 }
 
 export async function getProfile(): Promise<Profile | null> {
