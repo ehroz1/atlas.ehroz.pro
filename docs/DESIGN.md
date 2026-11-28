@@ -148,6 +148,7 @@ put them together.
 | Key table | `.keys` | legal pages: storage key (mono) → what and how long; hairline rows |
 | Card rank | `.card__rank` | one grey line under the summary, e.g. "Place 1 · 120 views" on Popular |
 | Footer | `.site-footer--cols`, `.foot-top`, `.foot-brand`, `.foot-cols`, `.foot-col`, `.foot-bottom`; home adds `.site-footer--scenic`, `.foot-scene`, `.foot-scene__img` | every page: brand + three link columns + legal row; home only (`<Base scenicFooter>`): `src/assets/footer/mountains.webp` (transparent sky) full width at the very bottom |
+| Account | `.acc` (`data-state` out / welcome / in), `.acc-gate`, `.acc-panel`, `.acc-or`, `.acc-fan`, `.acc-perks`, `.acc-welcome`, `.acc-progress`, `.acc-head`, `.acc-avatar`, `.acc-badge`, `.acc-stats`, `.acc-nav`, `.acc-section`, `.coll-grid`, `.coll-card`, `.acc-rows`, `.acc-row`, `.acc-toggle`, `.switch`, `.acc-plan` | one page, three moments: sign in / sign up panel (Google, emailed link, then "check your inbox" with a 60 s resend), a two-step welcome right after the account is created (name + newsletter, then categories), and the profile (initial avatar, real counts, collections with 3-screenshot covers, settings rows, plan). In `astro dev`, `?preview=in|welcome|sent` shows a state without signing in |
 | Ranked grid | `<Gallery ordered notes>` | keeps the given order (no shuffle, saved sites not lifted); Popular only |
 
 Layout helpers: `.container`, `.stack` (`--gap`), `.cluster` (`--gap`),
