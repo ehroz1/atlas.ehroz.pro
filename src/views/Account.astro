@@ -126,7 +126,7 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
                 <div class="acc-panel__step acc-sent" data-pane="sent" hidden tabindex="-1" aria-labelledby="sent-h">
                   <svg class="acc-sent__art" viewBox="0 0 170 120" aria-hidden="true" fill="none" stroke="currentColor"
                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 34c0-5 4-9 9-9h106c5 0 10 4 10 9l-1 60c0 5-4 9-9 9H32c-5 0-9-4-9-9Z" />
+                    <path d="M24 31c1-4 4-6 8-6h105c5 0 10 4 10 9l-1 60c0 5-4 9-9 9H32c-5 0-9-4-9-9l-1-58" />
                     <path d="M25 31l58 42c3 2 7 2 10 0l51-40" />
                     <path d="M28 98l40-32M140 97l-38-31" />
                     <path d="M138 12l6-6M150 22l9-2M128 8l1-6" />
@@ -168,8 +168,6 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
           {/* ---- 2. welcome: right after the account is created ---- */}
           <section class="acc-welcome" data-welcome hidden aria-labelledby="welcome-h">
             <div class="acc-panel acc-panel--welcome">
-              <p class="t-meta" data-welcome-step aria-live="polite"></p>
-              <div class="acc-progress" aria-hidden="true"><span data-welcome-bar></span></div>
               <h2 class="t-statement" id="welcome-h" tabindex="-1">{t('account.welcome.title')}</h2>
               <p class="t-secondary">{t('account.welcome.lead')}</p>
 
@@ -203,8 +201,9 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
                 </fieldset>
 
                 <div class="split acc-welcome__foot">
-                  <button class="btn btn--ghost" type="button" data-welcome-skip>{t('account.skip')}</button>
+                  <span class="t-meta" data-welcome-step aria-live="polite"></span>
                   <div class="cluster" style="--gap: var(--s-2)">
+                    <button class="btn btn--ghost" type="button" data-welcome-skip>{t('account.skip')}</button>
                     <button class="btn" type="button" data-welcome-back hidden>{t('account.back')}</button>
                     <button class="btn btn--solid" type="submit" data-welcome-next data-label-next={t('account.next')} data-label-done={t('account.done')}>{t('account.next')}</button>
                   </div>
@@ -221,8 +220,8 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
                 <h2 class="t-statement acc-head__name" id="acc-name-h" data-who-name></h2>
                 <p class="t-small t-secondary acc-head__email" data-who-email></p>
                 <p class="cluster t-meta" style="--gap: var(--s-2)">
-                  <span class="acc-badge" data-plan-badge></span>
-                  <span class="acc-badge acc-badge--pro" data-supporter hidden>{t('account.supporter')}</span>
+                  <span class="card__partner" data-plan-badge></span>
+                  <span class="card__partner" data-supporter hidden>{t('account.supporter')}</span>
                   <span data-since></span>
                 </p>
               </div>
@@ -325,7 +324,7 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
             {t('prefs.hideSeen')}
           </label>
           <div class="cluster" style="--gap: var(--s-3)">
-            <button class="btn btn--solid" type="submit">{t('prefs.save')}</button>
+            <button class="btn" type="submit">{t('prefs.save')}</button>
             <button class="btn btn--ghost" type="button" data-prefs-reset>{t('prefs.reset')}</button>
             <span class="t-meta" data-prefs-status aria-live="polite"></span>
           </div>
@@ -533,7 +532,6 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
     const paintStep = () => {
       wForm.querySelectorAll<HTMLElement>('[data-wstep]').forEach((s) => (s.hidden = Number(s.dataset.wstep) !== wStep));
       $('[data-welcome-step]')!.textContent = fill(msg.step, { n: wStep });
-      $('[data-welcome-bar]')!.style.inlineSize = `${wStep * 50}%`;
       $('[data-welcome-back]')!.hidden = wStep === 1;
       const nextBtn = $('[data-welcome-next]')!;
       nextBtn.textContent = (wStep === 2 ? nextBtn.dataset.labelDone : nextBtn.dataset.labelNext) ?? '';
