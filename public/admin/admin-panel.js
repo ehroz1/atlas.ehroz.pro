@@ -185,14 +185,6 @@ async function renderOverview() {
 }
 
 /* ---------- submissions ---------- */
-async function photoUrls(paths) {
-  if (!paths?.length) return [];
-  try {
-    const r = await db('/storage/v1/object/sign/submissions', { method: 'POST', body: { expiresIn: 3600, paths } });
-    return r.map((x) => (x.signedURL ? SB + '/storage/v1' + x.signedURL : null)).filter(Boolean);
-  } catch { return []; }
-}
-
 async function renderSubs() {
   const status = $('#subs-filter').value;
   const rows = await db(`/rest/v1/submissions?select=*&order=created_at.desc&limit=200${status ? '&status=eq.' + status : ''}`);
@@ -202,7 +194,6 @@ async function renderSubs() {
   if (!rows.length) { list.replaceChildren(el('p', { class: 'muted' }, 'Заявок нет.')); return; }
   list.replaceChildren(...await Promise.all(rows.map(async (r) => {
     const dup = known(r.url);
-    const photos = await photoUrls(r.photos);
     const setStatus = async (st, btn) => {
       busy(btn, true);
       try { await db(`/rest/v1/submissions?id=eq.${r.id}`, { method: 'PATCH', body: { status: st }, prefer: 'return=minimal' }); renderSubs(); updateCounts(); }
@@ -221,7 +212,6 @@ async function renderSubs() {
       el('p', { class: 'muted' },
         [r.category ? 'Категория: ' + r.category : null, r.lang ? 'язык: ' + r.lang : null].filter(Boolean).join(' · '),
         r.email ? el('span', {}, ' · ', el('a', { href: `mailto:${r.email}?subject=${encodeURIComponent('Atlas: ' + r.name)}` }, r.email)) : null),
-      photos.length ? el('div', { class: 'photos' }, ...photos.map((u) => el('a', { href: u, target: '_blank', rel: 'noopener' }, el('img', { src: u, alt: '' })))) : null,
       el('div', { class: 'actions' },
         r.status !== 'added' ? el('button', { class: 'btn', type: 'button', onclick: () => addFromSubmission(r) }, 'Добавить в каталог') : null,
         r.status !== 'rejected' ? el('button', { class: 'btn', type: 'button', onclick: (e) => setStatus('rejected', e.target) }, 'Отклонить') : null,
@@ -231,7 +221,6 @@ async function renderSubs() {
           if (!confirm(`Удалить заявку «${r.name}» насовсем?`)) return;
           busy(e.target, true);
           try {
-            if (r.photos?.length) await db('/storage/v1/object/submissions', { method: 'DELETE', body: { prefixes: r.photos } }).catch(() => {});
             await db(`/rest/v1/submissions?id=eq.${r.id}`, { method: 'DELETE', prefer: 'return=minimal' });
             renderSubs(); updateCounts();
           } catch (err) { fail(err); busy(e.target, false); }

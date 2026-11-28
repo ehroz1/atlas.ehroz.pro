@@ -112,7 +112,7 @@ export function privacy(lang: Lang): Section[] {
         h: 'Форма «Предложить сайт»',
         p: has.backend
           ? [
-              'Заявка сохраняется в базе: ссылка, название, категория, ваш текст, фотографии, если вы их приложили, почта, если вы её указали, и IP-адрес (для защиты от спама). Если вы вошли, заявка связывается с аккаунтом.',
+              'Заявка сохраняется в базе: ссылка, название, категория, ваш текст, почта, если вы её указали, и IP-адрес (для защиты от спама). Если вы вошли, заявка связывается с аккаунтом.',
               'Заявки читает только автор каталога. Попросите — удалим.',
             ]
           : [
@@ -187,7 +187,7 @@ export function privacy(lang: Lang): Section[] {
       h: 'The “Submit a site” form',
       p: has.backend
         ? [
-            'A submission is stored in the database: the link, name, category, your text, photos if you attach any, your email if you give it, and the IP address (against spam). If you are signed in, it is linked to your account.',
+            'A submission is stored in the database: the link, name, category, your text, your email if you give it, and the IP address (against spam). If you are signed in, it is linked to your account.',
             'Only the curator reads submissions. Ask and we’ll delete yours.',
           ]
         : [

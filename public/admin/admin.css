@@ -254,8 +254,6 @@ a.stat[href]:hover { border-color: var(--c-line-strong); background: var(--c-fil
 .item p.muted { margin: 0 0 var(--s-3); font-size: var(--fs-13); }
 .item .actions { margin-top: var(--s-1); }
 .item .actions .btn { padding: var(--s-2) var(--s-4); font-size: var(--fs-14); }
-.photos { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-bottom: var(--s-3); }
-.photos img { width: 10rem; height: 6.25rem; object-fit: cover; object-position: top; border-radius: var(--r-xs); background: var(--c-fill); }
 @media (pointer: coarse) { .link, .tabs a, .chip { min-height: 2.5rem; display: inline-flex; align-items: center; } }
 
 /* skeleton: grey blocks with a moving shimmer while data is loading */

@@ -16,7 +16,7 @@ const [categories, entry] = await Promise.all([getCategories(), getPage('submit'
 const email = (import.meta.env.PUBLIC_SUBMIT_EMAIL as string | undefined) ?? SITE.submitEmail;
 const [leadBefore, leadAfter] = t('submit.lead', { criteria: '\u0000' }).split('\u0000');
 const phone = SITE.submitPhone;
-const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('submit.tooMany'), sending: t('submit.sending'), thanks: t('submit.thanks'), opened: t('submit.opened'), openedPhotos: t('submit.openedPhotos'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), openedPhotosChat: t('submit.openedPhotosChat'), copiedChat: t('submit.copiedChat') };
+const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('submit.tooMany'), sending: t('submit.sending'), opened: t('submit.opened'), subject: t('submit.subject'), openedChat: t('submit.openedChat'), copiedChat: t('submit.copiedChat') };
 ---
 <Base lang={lang} entry={entry} crumbs={[{ name: t('nav.submit'), path: '/submit' }]} crumbsContainer="container container--narrow">
   <div class="container container--narrow">
@@ -58,16 +58,6 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
         <div class="field">
           <label class="field__label" for="email">{t('submit.email')} <span class="field__optional">{t('submit.optional')}</span></label>
           <input class="input" id="email" name="email" type="email" placeholder={t('submit.emailPh')} autocomplete="email" />
-        </div>
-
-        <div class="field">
-          <label class="field__label" for="photos">{t('submit.photos')} <span class="field__optional">{t('submit.optional')}</span></label>
-          <div class="file">
-            <input class="file__input" id="photos" name="photos" type="file" accept="image/*" multiple />
-            <label class="btn btn--sm file__btn" for="photos">{t('submit.photosChoose')}</label>
-            <span class="file__name t-meta" data-file-name data-empty={t('submit.photosNone')}>{t('submit.photosNone')}</span>
-          </div>
-          <span class="field__hint">{BACKEND.enabled ? t('submit.photosHintDirect') : t('submit.photosHint')}</span>
         </div>
 
         <label class="cluster t-small t-secondary" style="--gap: var(--s-2)">
@@ -120,12 +110,6 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
     urlInput.setCustomValidity(ok ? '' : urlInput.dataset.invalid ?? 'Invalid link');
     urlInput.setAttribute('aria-invalid', String(!ok));
   };
-  // the browser's own file control is unstyled and in the browser's language: a label does its job
-  const photos = form?.querySelector<HTMLInputElement>('#photos');
-  const fileName = form?.querySelector<HTMLElement>('[data-file-name]');
-  photos?.addEventListener('change', () => {
-    if (fileName) fileName.textContent = photos.files?.length ? Array.from(photos.files, (f) => f.name).join(', ') : fileName.dataset.empty ?? '';
-  });
   urlInput?.addEventListener('blur', normalizeUrl);
   urlInput?.addEventListener('input', () => { urlInput.setCustomValidity(''); urlInput.removeAttribute('aria-invalid'); });
   form?.querySelectorAll<HTMLButtonElement>('[data-channel]').forEach((b) =>
@@ -150,7 +134,6 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
     try { host = new URL(g('url')).hostname.replace(/^www\./, ''); } catch {}
     const subject = `${msg.subject}: ${g('name') || host}`;
     (window as any).atlasTrack?.('contact_click', { method: `submit_${channel}` });
-    const files = (d.getAll('photos') as File[]).filter((f) => f.size > 0);
 
     // Straight to the admin's inbox (Supabase table `submissions`)
     if (channel === 'atlas' && enabled) {
@@ -163,13 +146,6 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
       try {
         const client = await sb();
         if (maybeSignedIn()) await getSession(); // attaches the user to the request when signed in
-        const photos: string[] = [];
-        for (const f of files.slice(0, 4)) {
-          if (f.size > 5 * 1024 * 1024 || !/^image\/(png|jpe?g|webp)$/.test(f.type)) continue;
-          const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${f.type.split('/')[1].replace('jpeg', 'jpg')}`;
-          const { error } = await client.storage.from('submissions').upload(path, f, { contentType: f.type });
-          if (!error) photos.push(path);
-        }
         const { error } = await client.from('submissions').insert({
           url: g('url'),
           name: (g('name') || host || g('url')).slice(0, 120), // optional in the form; the table needs one
@@ -178,7 +154,6 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
           email: g('email') || null,
           maker: !!d.get('maker'),
           lang: form.dataset.lang,
-          photos,
         });
         if (error) throw error;
         status.textContent = msg.sent;
@@ -191,20 +166,10 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
       return;
     }
 
-    // Phones: the share sheet carries real attachments into any chosen app.
-    if (files.length && navigator.canShare?.({ files })) {
-      try {
-        await navigator.share({ files, title: subject, text: `${subject}\n\n${body}` });
-        status.textContent = msg.thanks;
-        return;
-      } catch (err) {
-        if ((err as Error).name === 'AbortError') return;
-      }
-    }
     const text = `${subject}\n\n${body}`;
     if (channel === 'whatsapp') {
       window.open(`https://wa.me/${form.dataset.phone}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
-      status.textContent = files.length ? msg.openedPhotosChat : msg.openedChat;
+      status.textContent = msg.openedChat;
     } else if (channel === 'telegram') {
       // Telegram's phone links can't prefill text, so copy it for pasting.
       try { await navigator.clipboard.writeText(text); } catch {}
@@ -212,7 +177,7 @@ const msg = { sent: t('submit.sent'), failed: t('submit.failed'), tooMany: t('su
       status.textContent = msg.copiedChat;
     } else {
       location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      status.textContent = files.length ? msg.openedPhotos : msg.opened;
+      status.textContent = msg.opened;
     }
   });
 </script>

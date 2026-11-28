@@ -1820,12 +1820,6 @@ html.is-wall, html.is-wall body { overflow: hidden; height: 100%; overscroll-beh
 .field { display: grid; gap: var(--s-2); }
 .field__label { font-size: var(--fs-14); font-weight: var(--fw-medium); }
 .field__hint  { font-size: var(--fs-13); color: var(--c-text-3); }
-/* file picker: the native input stays for keyboards and screen readers, the label is the button */
-.file { display: flex; align-items: center; gap: var(--s-3); min-width: 0; }
-.file__input { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.file__input:focus-visible + .file__btn { outline: 2px solid var(--c-focus); outline-offset: 2px; }
-.file__btn { flex: none; cursor: pointer; }
-.file__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .field__error { font-size: var(--fs-13); color: var(--c-signal); }
 .checkbox { width: 1rem; height: 1rem; accent-color: var(--c-text); }
 /* WCAG 2.5.8: at least 24 px where fingers are */

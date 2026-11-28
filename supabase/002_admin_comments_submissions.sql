@@ -57,7 +57,6 @@ create table if not exists public.submissions (
   email      text check (email is null or char_length(email) <= 200),
   maker      boolean not null default false,
   lang       text,
-  photos     text[] not null default '{}',
   user_id    uuid references auth.users on delete set null default auth.uid(),
   ip         text default public.client_ip(),
   status     text not null default 'new' check (status in ('new', 'added', 'rejected')),
@@ -94,20 +93,14 @@ drop trigger if exists submissions_guard on public.submissions;
 create trigger submissions_guard before insert on public.submissions
   for each row execute function public.submissions_guard();
 
--- photos attached to a submission: private bucket, images up to 5 MB
-insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('submissions', 'submissions', false, 5242880, array['image/png', 'image/jpeg', 'image/webp'])
-on conflict (id) do nothing;
-
+-- removed: submissions no longer take attached photos. If this script ran
+-- before that change, this cleans up the old column, policies and bucket.
+alter table public.submissions drop column if exists photos;
 drop policy if exists "anyone uploads submission photos" on storage.objects;
-create policy "anyone uploads submission photos" on storage.objects
-  for insert to anon, authenticated with check (bucket_id = 'submissions');
 drop policy if exists "admin reads submission photos" on storage.objects;
-create policy "admin reads submission photos" on storage.objects
-  for select to authenticated using (bucket_id = 'submissions' and public.is_admin());
 drop policy if exists "admin deletes submission photos" on storage.objects;
-create policy "admin deletes submission photos" on storage.objects
-  for delete to authenticated using (bucket_id = 'submissions' and public.is_admin());
+delete from storage.objects where bucket_id = 'submissions';
+delete from storage.buckets where id = 'submissions';
 
 -- --------------------------------------------------------------- comments
 -- Silent moderation: a new comment is "pending". Everyone sees approved
