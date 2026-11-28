@@ -294,7 +294,7 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
       )}
 
       {/* recommendations: always available, local first */}
-      <section class="acc-section" id="prefs-wrap" data-prefs-wrap aria-labelledby="prefs">
+      <section class="acc-section" id="prefs-wrap" data-prefs-wrap aria-labelledby="prefs" hidden={BACKEND.enabled}>
         <div class="stack" style="--gap: var(--s-2)">
           <h2 class="t-title" id="prefs">{t('prefs.title')}</h2>
           <p class="t-secondary t-small">{t('prefs.lead')}</p>
@@ -427,7 +427,8 @@ const googleIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" width="18" heigh
       welcome.hidden = state !== 'welcome';
       profileEl.hidden = state !== 'in';
       planWrap.hidden = state !== 'in';
-      $('[data-prefs-wrap]')!.hidden = state === 'welcome';
+      // recommendations stay off the sign-in gate and the welcome steps; signed-in members see them
+      $('[data-prefs-wrap]')!.hidden = state !== 'in';
     };
 
     // error coming back from Google / an expired link
